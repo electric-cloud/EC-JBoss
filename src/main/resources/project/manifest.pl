@@ -1,0 +1,65 @@
+@files = (
+	# EC-JBoss plugin
+	['//property[propertyName="EC::JBoss"]/value', 'lib/EC/JBoss.pm'],
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="JBossCreateConfigForm"]/value'  , 'JBossCreateConfigForm.xml'],
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="JBossEditConfigForm"]/value'  , 'JBossEditConfigForm.xml'],
+
+	# matchers for an old procedures
+	['//property[propertyName="startstandaloneserver_matchers"]/value', 'matchers/startStandaloneServerMatchers.pl'],
+	['//property[propertyName="startdomainserver_matchers"]/value', 'matchers/startDomainServerMatchers.pl'],
+	['//property[propertyName="shutdowninstance_matchers"]/value', 'matchers/shutdownInstanceMatchers.pl'],
+	# end of old procedures matchers
+
+	['//property[propertyName="preamble"]/value',       'preamble.pl'],
+
+	['//procedure[procedureName="EnableDeploy"]/step[stepName="EnableDeploy"]/command' , 'server/enableDeploy.pl'],
+	['//procedure[procedureName="DisableDeploy"]/step[stepName="DisableDeploy"]/command' , 'server/disableDeploy.pl'],
+	['//procedure[procedureName="StartStandaloneServer"]/step[stepName="StartStandaloneServer"]/command' , 'server/startStandaloneServer.pl'],
+	['//procedure[procedureName="CheckDeployStatus"]/step[stepName="CheckDeployStatus"]/command' , 'server/checkDeployStatus.pl'],
+	['//procedure[procedureName="StartDomainServer"]/step[stepName="StartDomainServer"]/command' , 'server/startDomainServer.pl'],
+	['//procedure[procedureName="ShutdownStandaloneServer"]/step[stepName="ShutdownInstance"]/command' , 'server/shutdownInstance.pl'],
+	['//procedure[procedureName="DeployApp"]/step[stepName="DeployApp"]/command' , 'server/deployApp.pl'],
+	['//procedure[procedureName="UndeployApp"]/step[stepName="UndeployApp"]/command' , 'server/undeployApp.pl'],
+	['//procedure[procedureName="CheckServerStatus"]/step[stepName="CheckServerStatus"]/command' , 'server/checkServerStatus.pl'],
+	['//procedure[procedureName="CreateDatasource"]/step[stepName="CreateDatasource"]/command' , 'server/createDatasource.pl'],
+	['//procedure[procedureName="DeleteDatasource"]/step[stepName="DeleteDatasource"]/command' , 'server/deleteDatasource.pl'],
+	['//procedure[procedureName="RunCustomCommand"]/step[stepName="RunCustomCommand"]/command' , 'server/runCustomCommand.pl'],
+	['//procedure[procedureName="StartServers"]/step[stepName="StartServers"]/command' , 'server/startServers.pl'],
+	['//procedure[procedureName="StopServers"]/step[stepName="StopServers"]/command' , 'server/stopServers.pl'],
+
+	['//procedure[procedureName="CreateConfiguration"]/step[stepName="CreateConfiguration"]/command' , 'conf/createcfg.pl'],
+	['//procedure[procedureName="CreateConfiguration"]/step[stepName="CreateAndAttachCredential"]/command' , 'conf/createAndAttachCredential.pl'],
+	['//procedure[procedureName="DeleteConfiguration"]/step[stepName="DeleteConfiguration"]/command' , 'conf/deletecfg.pl'],
+
+	['//property[propertyName="ec_setup"]/value', 'ec_setup.pl'],
+
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="EnableDeploy"]/value', 'forms/jbossEnableDeployForm.xml'], 
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="DisableDeploy"]/value', 'forms/jbossDisableDeployForm.xml'], 
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="CheckServerStatus"]/value', 'forms/jbossCheckServerStatusForm.xml'], 
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="CheckDeployStatus"]/value', 'forms/jbossCheckDeployStatusForm.xml'], 
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="DeployApp"]/value', 'forms/jbossDeployAppForm.xml'], 
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="ShutdownStandaloneServer"]/value', 'forms/jbossShutdownStandaloneServerForm.xml'], 
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="StartDomainServer"]/value', 'forms/jbossStartDomainServerForm.xml'], 
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="StartStandaloneServer"]/value', 'forms/jbossStartStandaloneServerForm.xml'], 
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="UndeployApp"]/value', 'forms/jbossUndeployAppForm.xml'],
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="CreateDatasource"]/value', 'forms/jbossCreateDatasourceForm.xml'],
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="DeleteDatasource"]/value', 'forms/jbossDeleteDatasourceForm.xml'],
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="RunCustomCommand"]/value', 'forms/jbossRunCustomCommand.xml'],
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="StartServers"]/value', 'forms/jbossStartServers.xml'],
+	['//property[propertyName="ui_forms"]/propertySheet/property[propertyName="StopServers"]/value', 'forms/jbossStopServers.xml'],
+
+	['//procedure[procedureName="EnableDeploy"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossEnableDeployForm.xml'],
+	['//procedure[procedureName="DisableDeploy"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossDisableDeployForm.xml'],
+	['//procedure[procedureName="CheckServerStatus"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossCheckServerStatusForm.xml'],
+	['//procedure[procedureName="CheckDeployStatus"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossCheckDeployStatusForm.xml'],
+	['//procedure[procedureName="DeployApp"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossDeployAppForm.xml'],
+	['//procedure[procedureName="ShutdownStandaloneServer"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossShutdownStandaloneServerForm.xml'],
+	['//procedure[procedureName="StartDomainServer"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossStartDomainServerForm.xml'],
+	['//procedure[procedureName="StartStandaloneServer"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossStartStandaloneServerForm.xml'],
+	['//procedure[procedureName="UndeployApp"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossUndeployAppForm.xml'],	
+	['//procedure[procedureName="CreateDatasource"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossCreateDatasourceForm.xml'],	
+	['//procedure[procedureName="DeleteDatasource"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossDeleteDatasourceForm.xml'],
+	['//procedure[procedureName="RunCustomCommand"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossRunCustomCommand.xml'],
+	['//procedure[procedureName="StartServers"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossStartServers.xml'],
+	['//procedure[procedureName="StopServers"]/propertySheet/property[propertyName="ec_parameterForm"]/value', 'forms/jbossStopServers.xml'],
+);

@@ -1,0 +1,27 @@
+<editor>
+    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#RunCustomCommand</help>
+    <formElement>
+        <type>entry</type>
+        <label>Server configuration name:</label>
+        <property>serverconfig</property>
+        <required>1</required>
+        <documentation>Supply the configuration name of the JBoss server. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <htmlDocumentation>Supply the configuration name of the JBoss server.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
+    </formElement>
+    
+    <formElement>
+        <type>entry</type>
+        <label>Physical location of the jboss client script:</label>
+        <property>scriptphysicalpath</property>
+        <required>1</required>
+        <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.</documentation>
+    </formElement>
+
+    <formElement>
+        <type>textarea</type>
+        <label>Custom command:</label>
+        <property>customCommand</property>
+        <required>1</required>
+        <documentation>Custom command to run.</documentation>
+    </formElement>              
+</editor>

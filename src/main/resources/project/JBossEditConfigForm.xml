@@ -1,0 +1,21 @@
+<editor>
+
+    <formElement>
+        <type>entry</type>
+        <label>JBoss AS URL:</label>
+        <property>jboss_url</property>
+        <value></value>
+        <documentation>JBoss controller location. For example: localhost:9999.</documentation>
+        <required>1</required>
+    </formElement>
+    
+    <formElement>
+        <type>credential</type>
+        <label>Login as:</label>
+        <property>credential</property>
+        <value></value>
+        <required>0</required>
+    </formElement>
+
+    
+</editor>

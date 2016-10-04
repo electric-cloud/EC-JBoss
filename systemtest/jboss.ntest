@@ -1,0 +1,699 @@
+# -*-Perl-*-
+
+###############################
+# jboss.ntest
+#
+# Exercise basic components of EC-JBoss plugin
+#
+# Copyright (c) 2005-2010 Electric Cloud, Inc.
+# All rights reserved
+###############################
+
+use strict;
+use warnings;
+use ECTest;
+use JSON;
+
+initCommander();
+
+$::gPlugin_name   = $::ENV{PLUGIN_NAME};
+$::gPlugin_key    = $::gPlugin_name;
+$::gPlugin_key    =~ s/-[^-]+$//;
+$::gPlugin_driver = $::gPlugin_key;
+$::gPlugin_driver =~ s/-/::/g;
+
+   use constant {
+       SUCCESS => 0,
+       ERROR   => 1,
+       WINDOWS_OS_ID => 'MSWin32'
+   };
+
+# win/lin matches the chronic3 procedure platform property
+$::gPlatform       = 'lin';
+if ($^O eq WINDOWS_OS_ID) {
+    $::gPlatform = 'win';
+}
+
+# from initCommander
+$::N = $adminSession;
+my $xpath = $::N->getPlugin($::gPlugin_key);
+$::gPlugin_name = $xpath->findvalue('//pluginName')->value;
+$::gPlugin_ver = $xpath->findvalue('//pluginVersion')->value;
+$::gCreatePrivateDirs = 1;
+
+# triggers fake data
+$::gRunTestUseFakeOutput = 1;
+
+$::gProjectImported = 0;
+$::gtestProjectName = 'JBossTestProject';
+
+my $outcome = '';
+
+########################################################################
+# importProject - imports the test project and asserts that the specified
+#                 procedures exists
+#
+# Arguments:
+#   -none
+#
+# Returns:
+#   -nothing
+#
+########################################################################
+sub importProject() {
+ 
+    #assert project exists and is imported
+    assertOK($::N->import(
+             { file =>"$::gTestFileDir/jbossSystemTests.xml",
+               path  => "/projects/JBossTestProject",
+               force => 1
+             } ), 'import unsuccessful');
+    
+    #assert all given procedures exist   
+    assertOK($::N->getProcedure($::gtestProjectName, 'deployApp-Single'),
+      'deployApp-Single procedure doesn\'t exist');
+    
+    #assert all given procedures exist   
+    assertOK($::N->getProcedure($::gtestProjectName, 'shutdownInstance'),
+      'shutdownInstance procedure doesn\'t exist');
+    
+    #assert all given procedures exist   
+    assertOK($::N->getProcedure($::gtestProjectName, 'startDomainServer'),
+       'startDomainServer procedure doesn\'t exist');
+    
+    #assert all given procedures exist   
+    assertOK($::N->getProcedure($::gtestProjectName, 'startStandaloneServer'),
+       'startStandaloneServer procedure doesn\'t exist');
+    
+    #assert all given procedures exist   
+    assertOK($::N->getProcedure($::gtestProjectName, 'undeployApp'),
+       'undeployApp procedure doesn\'t exist');
+    
+    #assert all given procedures exist   
+    assertOK($::N->getProcedure($::gtestProjectName, 'checkDeployStatus'),
+       'checkDeployStatus procedure doesn\'t exist');
+    
+    #assert all given procedures exist   
+    assertOK($::N->getProcedure($::gtestProjectName, 'createDatasource'),
+       'createDatasoure procedure doesn\'t exist');
+    
+    #assert all given procedures exist   
+    assertOK($::N->getProcedure($::gtestProjectName, 'deleteDatasource'),
+       'deleteDatasource procedure doesn\'t exist');
+    
+    #assert all given procedures exist   
+    assertOK($::N->getProcedure($::gtestProjectName, 'enableDeploy'),
+       'enableDeploy procedure doesn\'t exist');
+    
+    #assert all given procedures exist   
+    assertOK($::N->getProcedure($::gtestProjectName, 'disableDeployment'),
+       'disableDeployment procedure doesn\'t exist');
+        $::gProjectImported = 1;
+}
+
+########################################################################
+# doSetup - invokes the project import method in case it hasn't been 
+#           executed
+#
+# Arguments:
+#   -none
+#
+# Returns:
+#   -nothing
+#
+########################################################################
+sub doSetup() {
+
+    if(! $::gProjectImported) {
+        importProject();
+    }
+    
+}
+
+################################
+# check-components-present - Check that the plugin contains required components
+#
+# Arguments:
+#   none
+#
+# Returns:
+#   none
+#
+################################
+ntest "check-components-present", {}, sub {
+    
+    my $xpath = $::N->getSteps("$::gPlugin_name","CreateConfiguration");
+    assertOK($xpath,"CreateConfiguration");
+    assertEq("CreateConfiguration", $xpath->findvalue("//step[1]/stepName"), "step 1 is CreateConfiguration");
+    assertEq("CreateAndAttachCredential", $xpath->findvalue("//step[2]/stepName"), "step 2 is CreateAndAttachCredential");
+
+};
+
+################################
+# setup-create configuration - Test creating a configuration
+#
+# Arguments:
+#   none
+#
+# Returns:
+#   none
+#
+################################
+ntest "setup-create configuration", {}, sub {
+    my $xpath = $::N->runProcedure("$::gPlugin_name", 
+        { procedureName => "CreateConfiguration",
+          pollInterval  => '0.2',
+          timeout       => 600,
+          actualParameter => [ 
+            { actualParameterName => 'config', value => "config1" }, 
+            { actualParameterName => 'jboss_url', value => "http://localhost:9990/console" },
+            { actualParameterName => 'credential', value => "config1" }, 
+          ],
+          credential => [ 
+            { credentialName => 'config1', userName => "admin", password => "admin", },
+          ],
+        });
+
+    assertOK($xpath, 'run create configuration procedure');
+    # make sure it finished
+    my $jobId = 0;
+    my $status = '';
+    assertDef($xpath, 'runProcedure finished without a timeout');
+    if ($xpath) {
+        $jobId  = $xpath->findvalue("//jobId");
+        $status = $xpath->findvalue("//status");
+
+        assertTrue($jobId && $jobId ne "",'valid job id');
+        assertEq('completed',$status,"job $jobId complete");
+
+        #abort if job did not finish
+        if ($status ne 'completed') {
+            assertOK($::N->abortJob($jobId, {force => 1}));
+        }
+    }
+
+    # examine log files
+    $xpath = $::N->getJobDetails($jobId);
+
+    writeFile("$::gCurrentTestDir/createConfiguration.log","====Job Details====\n$xpath->{_xml}\n");
+
+    # check that the config and credential exist
+    $xpath = $::N->getProperty("/projects/$::gPlugin_name/jboss_cfgs/config1/jboss_url");
+    assertEq('http://localhost:9990/console', $xpath->findvalue("//value")->string_value,"server url");
+    
+    $xpath = $::N->getCredential("$::gPlugin_name",'config1');
+    assertEq('admin', $xpath->findvalue("//userName")->string_value, 'Credential user');
+};
+
+
+ntest "createDatasource", {}, sub {
+
+      doSetup();
+      
+      # run test job
+      my $xpath = $::N->runProcedure($::gtestProjectName, 
+              {procedureName => "createDatasource",
+              pollInterval  => '1',
+              timeout => 600,
+                   actualParameter => [
+                  
+                  ]
+      });
+          
+       
+      # make sure it finished
+      my $jobId = 0;
+      my $status = '';
+      
+      assertOK($xpath, 'runProcedure has errors');
+      if ($xpath) {
+          $jobId  = $xpath->findvalue("//jobId");
+          $status = $xpath->findvalue("//status");
+          $outcome = $xpath->findvalue("//outcome");
+  
+          assertTrue($jobId && $jobId ne "",'valid job id');
+          assertEq('completed',$status,"job $jobId complete");
+  
+          #abort if job did not finish
+          if ($status ne 'completed') {
+              assertOK($::N->abortJob($jobId, {force => 1}));
+          }
+      }
+
+      # get the job details
+      $xpath = $::N->getJobDetails($jobId);
+    
+      my $commands_history = $xpath->findvalue(
+        "//property[propertyName='commands_history']/value"
+      ) . '';
+
+      my $commandLine = '';
+      if ($commands_history) {
+        $commandLine = decode_json($commands_history);
+      }
+      $commandLine = $commandLine->[0]->{command} if $commandLine;
+      assertTrue(($commandLine =~ m/jboss-admin\.(bat|sh).*?--command="data-source.*?add/is), $commandLine);
+      # get the value of the commands lines
+      # my $commandLine = $xpath->findvalue("//property[propertyName='connectCmdLine']/value");
+
+      # assertTrue(($commandLine =~ m/jboss-admin.bat" --file=file-([0-9a-f\-]+).cli/), $commandLine);
+      
+};
+
+
+ntest "deleteDatasource", {}, sub {
+
+      doSetup();
+      
+      # run test job
+      my $xpath = $::N->runProcedure($::gtestProjectName, 
+              {procedureName => "deleteDatasource",
+              pollInterval  => '1',
+              timeout => 600,
+                   actualParameter => [
+                  
+                  ]
+      });
+          
+       
+      # make sure it finished
+      my $jobId = 0;
+      my $status = '';
+      
+      assertOK($xpath, 'runProcedure has errors');
+      if ($xpath) {
+          $jobId  = $xpath->findvalue("//jobId");
+          $status = $xpath->findvalue("//status");
+          $outcome = $xpath->findvalue("//outcome");
+  
+          assertTrue($jobId && $jobId ne "",'valid job id');
+          assertEq('completed',$status,"job $jobId complete");
+  
+          #abort if job did not finish
+          if ($status ne 'completed') {
+              assertOK($::N->abortJob($jobId, {force => 1}));
+          }
+      }
+
+      # get the job details
+      $xpath = $::N->getJobDetails($jobId);
+   
+      # get the value of the commands lines
+      my $commands_history = $xpath->findvalue(
+        "//property[propertyName='commands_history']/value"
+      ) . '';
+
+      my $commandLine = '';
+      if ($commands_history) {
+        $commandLine = decode_json($commands_history);
+      }
+      $commandLine = $commandLine->[0]->{command} if $commandLine;
+      assertTrue(($commandLine =~ m/jboss-admin\.(bat|sh).*?--command="data-source.*?remove/is), $commandLine);
+      
+};
+
+
+ntest "enableDeploy", {}, sub {
+
+      doSetup();
+      
+      # run test job
+      my $xpath = $::N->runProcedure($::gtestProjectName, 
+              {procedureName => "enableDeploy",
+              pollInterval  => '1',
+              timeout => 600,
+                   actualParameter => [
+                  
+                  ]
+      });
+          
+       
+      # make sure it finished
+      my $jobId = 0;
+      my $status = '';
+      
+      assertOK($xpath, 'runProcedure has errors');
+      if ($xpath) {
+          $jobId  = $xpath->findvalue("//jobId");
+          $status = $xpath->findvalue("//status");
+          $outcome = $xpath->findvalue("//outcome");
+  
+          assertTrue($jobId && $jobId ne "",'valid job id');
+          assertEq('completed',$status,"job $jobId complete");
+  
+          #abort if job did not finish
+          if ($status ne 'completed') {
+              assertOK($::N->abortJob($jobId, {force => 1}));
+          }
+      }
+
+      # get the job details
+      $xpath = $::N->getJobDetails($jobId);
+      
+      my $commands_history = $xpath->findvalue(
+        "//property[propertyName='commands_history']/value"
+      ) . '';
+      my $commandLine = '';
+      if ($commands_history) {
+        $commandLine = decode_json($commands_history);
+      }
+      $commandLine = $commandLine->[0]->{command} if $commandLine;
+      assertTrue(($commandLine =~ m/jboss-admin\.(?:bat|sh).+?--command="deploy/), $commandLine);      
+};
+
+ntest "disableDeployment", {}, sub {
+
+      doSetup();
+      
+      # run test job
+      my $xpath = $::N->runProcedure($::gtestProjectName, 
+              {procedureName => "disableDeployment",
+              pollInterval  => '1',
+              timeout => 600,
+                   actualParameter => [
+                  
+                  ]
+      });
+          
+       
+      # make sure it finished
+      my $jobId = 0;
+      my $status = '';
+      
+      assertOK($xpath, 'runProcedure has errors');
+      if ($xpath) {
+          $jobId  = $xpath->findvalue("//jobId");
+          $status = $xpath->findvalue("//status");
+          $outcome = $xpath->findvalue("//outcome");
+  
+          assertTrue($jobId && $jobId ne "",'valid job id');
+          assertEq('completed',$status,"job $jobId complete");
+  
+          #abort if job did not finish
+          if ($status ne 'completed') {
+              assertOK($::N->abortJob($jobId, {force => 1}));
+          }
+      }
+
+      # get the job details
+      $xpath = $::N->getJobDetails($jobId);
+   
+      my $commands_history = $xpath->findvalue(
+        "//property[propertyName='commands_history']/value"
+      ) . '';
+      my $commandLine = '';
+      if ($commands_history) {
+        $commandLine = decode_json($commands_history);
+      }
+      $commandLine = $commandLine->[0]->{command} if $commandLine;
+      assertTrue(($commandLine =~ m/jboss-admin\.(?:bat|sh).+?--command="undeploy/), $commandLine);    
+};
+
+ntest "deployApp-Single", {}, sub {
+
+      doSetup();
+      
+      # run test job
+      my $xpath = $::N->runProcedure($::gtestProjectName, 
+              {procedureName => "deployApp-Single",
+              pollInterval  => '1',
+              timeout => 600,
+                   actualParameter => [
+                  
+                  ]
+      });
+          
+       
+      # make sure it finished
+      my $jobId = 0;
+      my $status = '';
+      
+      assertOK($xpath, 'runProcedure has errors');
+      if ($xpath) {
+          $jobId  = $xpath->findvalue("//jobId");
+          $status = $xpath->findvalue("//status");
+          $outcome = $xpath->findvalue("//outcome");
+  
+          assertTrue($jobId && $jobId ne "",'valid job id');
+          assertEq('completed',$status,"job $jobId complete");
+  
+          #abort if job did not finish
+          if ($status ne 'completed') {
+              assertOK($::N->abortJob($jobId, {force => 1}));
+          }
+      }
+
+      # get the job details
+      $xpath = $::N->getJobDetails($jobId);
+
+      # get the value of the commands lines
+      my $commands_history = $xpath->findvalue(
+        "//jobStep[stepName='Deployment']/propertySheet/property[propertyName='commands_history']/value"
+      ) . '';
+      my $commandLine = '';
+      if ($commands_history) {
+        $commandLine = decode_json($commands_history);
+      }
+      $commandLine = $commandLine->[0]->{command} if $commandLine;
+      assertTrue(($commandLine =~ m/jboss-admin\.(?:bat|sh).+?--command="deploy/), $commandLine);
+};
+
+
+
+ntest "undeployApp", {}, sub {
+
+      doSetup();
+      
+      # run test job
+      my $xpath = $::N->runProcedure($::gtestProjectName, 
+              {procedureName => "undeployApp",
+              pollInterval  => '1',
+              timeout => 600,
+                   actualParameter => [
+                  
+                  ]
+      });
+          
+       
+      # make sure it finished
+      my $jobId = 0;
+      my $status = '';
+      
+      assertOK($xpath, 'runProcedure has errors');
+      if ($xpath) {
+          $jobId  = $xpath->findvalue("//jobId");
+          $status = $xpath->findvalue("//status");
+          $outcome = $xpath->findvalue("//outcome");
+  
+          assertTrue($jobId && $jobId ne "",'valid job id');
+          assertEq('completed',$status,"job $jobId complete");
+  
+          #abort if job did not finish
+          if ($status ne 'completed') {
+              assertOK($::N->abortJob($jobId, {force => 1}));
+          }
+      }
+
+      # get the job details
+      $xpath = $::N->getJobDetails($jobId);
+   
+      # get the value of the commands lines
+      my $commands_history = $xpath->findvalue(
+        # "//jobStep[stepName='undeployApp']/propertySheet/property[propertyName='commands_history']/value"
+        "//property[propertyName='commands_history']/value"
+      ) . '';
+      # my $commands_history = $xpath->findvalue("//property[propertyName='commands_history']")->value() . '';
+      my $commandLine = '';
+      if ($commands_history) {
+        $commandLine = decode_json($commands_history);
+      }
+      $commandLine = $commandLine->[0]->{command} if $commandLine;
+      assertTrue(($commandLine =~ m/jboss-admin\.(?:bat|sh).+?--command="undeploy/), $commandLine);
+      # my $commandLine = $xpath->findvalue("//property[propertyName='connectCmdLine']/value");
+      # assertTrue(($commandLine =~ m/"jboss-admin.bat" --file=file-([0-9a-f\-]+).cli/), $commandLine);
+      
+};
+
+ntest "checkServerStatus", {}, sub {
+
+      doSetup();
+      
+      # run test job
+      my $xpath = $::N->runProcedure($::gtestProjectName, 
+              {procedureName => "checkServerStatus",
+              pollInterval  => '1',
+              timeout => 600,
+                   actualParameter => [
+                  
+                  ]
+      });
+          
+       
+      # make sure it finished
+      my $jobId = 0;
+      my $status = '';
+      
+      assertOK($xpath, 'runProcedure has errors');
+      if ($xpath) {
+          $jobId  = $xpath->findvalue("//jobId");
+          $status = $xpath->findvalue("//status");
+          $outcome = $xpath->findvalue("//outcome");
+  
+          assertTrue($jobId && $jobId ne "",'valid job id');
+          assertEq('completed',$status,"job $jobId complete");
+  
+          #abort if job did not finish
+          if ($status ne 'completed') {
+              assertOK($::N->abortJob($jobId, {force => 1}));
+          }
+      }
+
+      # get the job details
+      $xpath = $::N->getJobDetails($jobId);
+   
+};
+
+
+ntest "checkDeployStatus", {}, sub {
+
+      doSetup();
+      
+      # run test job
+      my $xpath = $::N->runProcedure($::gtestProjectName, 
+              {procedureName => "checkDeployStatus",
+              pollInterval  => '1',
+              timeout => 600,
+                   actualParameter => [
+                  
+                  ]
+      });
+          
+       
+      # make sure it finished
+      my $jobId = 0;
+      my $status = '';
+      
+      assertOK($xpath, 'runProcedure has errors');
+      if ($xpath) {
+          $jobId  = $xpath->findvalue("//jobId");
+          $status = $xpath->findvalue("//status");
+          $outcome = $xpath->findvalue("//outcome");
+  
+          assertTrue($jobId && $jobId ne "",'valid job id');
+          assertEq('completed',$status,"job $jobId complete");
+  
+          #abort if job did not finish
+          if ($status ne 'completed') {
+              assertOK($::N->abortJob($jobId, {force => 1}));
+          }
+      }
+
+      # get the job details
+      $xpath = $::N->getJobDetails($jobId);
+};
+
+
+
+ntest "startDomainServer", {}, sub {
+
+      doSetup();
+      
+      # run test job
+      my $xpath = $::N->runProcedure($::gtestProjectName, 
+              {procedureName => "startDomainServer",
+              pollInterval  => '1',
+              timeout => 600,
+                   actualParameter => [
+                  
+                  ]
+      });
+          
+       
+      # make sure it finished
+      my $jobId = 0;
+      my $status = '';
+      
+      assertOK($xpath, 'runProcedure has errors');
+      if ($xpath) {
+          $jobId  = $xpath->findvalue("//jobId");
+          $status = $xpath->findvalue("//status");
+          $outcome = $xpath->findvalue("//outcome");
+  
+          assertTrue($jobId && $jobId ne "",'valid job id');
+          assertEq('completed',$status,"job $jobId complete");
+  
+          #abort if job did not finish
+          if ($status ne 'completed') {
+              assertOK($::N->abortJob($jobId, {force => 1}));
+          }
+      }
+
+      # get the job details
+      $xpath = $::N->getJobDetails($jobId);
+   
+      # get the value of the commands lines
+      my $commandLine = $xpath->findvalue("//property[propertyName='startDomainServerLine']/value");
+      
+      if($^O eq 'MSWin32'){
+      
+          assertTrue(($commandLine =~ m/ecdaemon -- ec-perl -e "exec\('\\\\\\"domain.bat\\\\\\" 1>jbossstartdomainserver-([0-9a-f\-]+).log 2>jbossstartdomainserver-([0-9a-f\-]+).err'\);"/), '');
+      
+      }else{
+          assertTrue(($commandLine =~ m/ecdaemon -- sh -c "domain.bat"/), "command line differs from what is expected, got: $commandLine");
+      }
+      
+      
+};
+
+ntest "startStandaloneServer", {}, sub {
+
+      doSetup();
+      
+      # run test job
+      my $xpath = $::N->runProcedure($::gtestProjectName, 
+              {procedureName => "startStandaloneServer",
+              pollInterval  => '1',
+              timeout => 600,
+                   actualParameter => [
+                  
+                  ]
+      });
+          
+       
+      # make sure it finished
+      my $jobId = 0;
+      my $status = '';
+      
+      assertOK($xpath, 'runProcedure has errors');
+      if ($xpath) {
+          $jobId  = $xpath->findvalue("//jobId");
+          $status = $xpath->findvalue("//status");
+          $outcome = $xpath->findvalue("//outcome");
+  
+          assertTrue($jobId && $jobId ne "",'valid job id');
+          assertEq('completed',$status,"job $jobId complete");
+  
+          #abort if job did not finish
+          if ($status ne 'completed') {
+              assertOK($::N->abortJob($jobId, {force => 1}));
+          }
+      }
+
+      # get the job details
+      $xpath = $::N->getJobDetails($jobId);
+   
+      # get the value of the commands lines
+      my $commandLine = $xpath->findvalue("//property[propertyName='startStandaloneServerLine']/value");
+      
+      if($^O eq 'MSWin32'){
+          assertTrue(($commandLine =~ m/ecdaemon -- ec-perl -e "exec\('\\\\\\"D:\\Programs\\jboss-as-web-7.0.1.Final\\bin\\standalone.bat\\\\\\" 1>jbossstartstandaloneserver-([0-9a-f\-]+).log 2>jbossstartstandaloneserver-([0-9a-f\-]+).err'\);"/), '');
+      
+      }else{
+          assertTrue(($commandLine =~ m/ecdaemon -- sh -c "D:\\Programs\\jboss-as-web-7.0.1.Final\\bin\\standalone.bat"/), "command line differs from what is expected, got: $commandLine");
+      }
+      
+      
+      
+};
+
+
