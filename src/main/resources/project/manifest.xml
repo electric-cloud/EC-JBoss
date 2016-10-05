@@ -85,10 +85,6 @@
     <xpath>//procedure[procedureName=&quot;StopServers&quot;]/step[stepName=&quot;StopServers&quot;]/command</xpath>
   </file>
   <file>
-    <path>server/checkServerGroupStatus.pl</path>
-    <xpath>//procedure[procedureName=&quot;CheckServerGroupStatus&quot;]/step[stepName=&quot;CheckServerGroupStatus&quot;]/command</xpath>
-  </file>
-  <file>
     <path>conf/createcfg.pl</path>
     <xpath>//procedure[procedureName=&quot;CreateConfiguration&quot;]/step[stepName=&quot;CreateConfiguration&quot;]/command</xpath>
   </file>
@@ -161,10 +157,6 @@
     <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;StopServers&quot;]/value</xpath>
   </file>
   <file>
-    <path>forms/jbossCheckServerGroupStatus.xml</path>
-    <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;CheckServerGroupStatus&quot;]/value</xpath>
-  </file>
-  <file>
     <path>forms/jbossEnableDeployForm.xml</path>
     <xpath>//procedure[procedureName=&quot;EnableDeploy&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
   </file>
@@ -219,9 +211,5 @@
   <file>
     <path>forms/jbossStopServers.xml</path>
     <xpath>//procedure[procedureName=&quot;StopServers&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
-  </file>
-  <file>
-    <path>forms/jbossCheckServerGroupStatus.xml</path>
-    <xpath>//procedure[procedureName=&quot;CheckServerGroupStatus&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
   </file>
 </fileset>
