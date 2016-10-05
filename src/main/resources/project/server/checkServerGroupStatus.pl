@@ -61,11 +61,14 @@ sub main {
     if ( scalar keys %uniq == 1 ) {
         my ($status) = keys %uniq;
         $jboss->out("Server group $server_group_name is $status");
+        $jboss->set_property('server_group_status', $status);
     }
     else {
         for my $host_name ( keys %$servers ) {
             for my $server_name ( keys %{$servers->{$host_name}}) {
                 $jboss->out("$server_name (host: $host_name) is $servers->{$host_name}->{$server_name}->{status}");
+                # What should we set in this case?
+                $jboss->set_property('server_group_status', 'PARTIAL');
             }
         }
     }
