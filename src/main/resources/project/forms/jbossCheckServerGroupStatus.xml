@@ -24,4 +24,20 @@
         <required>1</required>
         <documentation>Serversgroup</documentation>
     </formElement>
+
+    <formElement>
+        <type>select</type>
+        <label>Criteria:</label>
+        <property>criteria</property>
+        <required>1</required>
+        <documentation>Criteria</documentation>
+        <option>
+            <name>STARTED</name>
+            <value>STARTED</value>
+        </option>
+        <option>
+            <name>STOPPED</name>
+            <value>STOPPED</value>
+        </option>
+    </formElement>
 </editor>

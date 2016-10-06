@@ -27,6 +27,7 @@ sub main {
 
     my $params = $jboss->get_params_as_hashref(
         'serversgroup',
+        'criteria'
     );
 
     # Seems like servers in one group could be on different hosts
@@ -62,6 +63,12 @@ sub main {
         my ($status) = keys %uniq;
         $jboss->out("Server group $server_group_name is $status");
         $jboss->set_property('server_group_status', $status);
+        if ( $status eq $params->{criteria} ) {
+            $jboss->success;
+        }
+        else {
+            $jboss->error;
+        }
     }
     else {
         for my $host_name ( keys %$servers ) {
@@ -72,7 +79,7 @@ sub main {
             }
         }
     }
-    $jboss->success;
+    $jboss->error;
     return 1;
 }
 
