@@ -30,7 +30,7 @@
         <label>Criteria:</label>
         <property>criteria</property>
         <required>1</required>
-        <documentation>Criteria</documentation>
+        <documentation>A desired status of all servers in the group. The procedure will fail if the criteria is not met.</documentation>
         <option>
             <name>STARTED</name>
             <value>STARTED</value>

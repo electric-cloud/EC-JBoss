@@ -64,10 +64,12 @@ sub main {
         $jboss->out("Server group $server_group_name is $status");
         $jboss->set_property('server_group_status', $status);
         if ( $status eq $params->{criteria} ) {
+            $jboss->out("Criteria met");
             $jboss->success;
+            return 1;
         }
         else {
-            $jboss->error;
+            $jboss->bail_out("Criteria $params->{criteria} is not met, group status is $status");
         }
     }
     else {
@@ -78,8 +80,9 @@ sub main {
                 $jboss->set_property('server_group_status', 'PARTIAL');
             }
         }
+        $jboss->bail_out("Criteria $params->{criteria} is not met, servers in group are in different states");
     }
-    $jboss->error;
+
     return 1;
 }
 
