@@ -22,7 +22,7 @@
         <label>Servers group:</label>
         <property>serversgroup</property>
         <required>1</required>
-        <documentation>Serversgroup</documentation>
+        <documentation>The name of server group to be checked.</documentation>
     </formElement>
 
     <formElement>
