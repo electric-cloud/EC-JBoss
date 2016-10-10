@@ -136,11 +136,17 @@ $xpath = $ec->attachCredential($projName, $credName, {
         stepName => 'CheckDeployStatus'
     }
 );
+
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'CheckServerGroupStatus',
+        stepName => 'CheckServerGroupStatus'
+    }
+);
 $errors .= $ec->checkAllErrors($xpath);
 
 
 if ($errors ne '') {
-    
+
     # Cleanup the partially created configuration we just created
     $ec->deleteProperty($configPath);
     $ec->deleteCredential($projName, $credName);
@@ -148,5 +154,5 @@ if ($errors ne '') {
     $ec->setProperty("/myJob/configError", $errMsg);
     print $errMsg;
     exit ERROR;
-    
+
 }

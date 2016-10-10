@@ -1,4 +1,4 @@
-# Data that drives the create step picker registration for this plugin.	
+# Data that drives the create step picker registration for this plugin.
 my %checkServerStatus = (
     label       => "JBoss - Check Server Status",
     procedure   => "CheckServerStatus",
@@ -86,6 +86,13 @@ my %stopServers = (
     category    => "Application Server"
 );
 
+my %checkServerGroupStatus = (
+    label       => "JBoss - Check Server Group Status",
+    procedure   => "CheckServerGroupStatus",
+    description => "Checks server group status",
+    category    => "Application Server"
+);
+
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
@@ -104,6 +111,7 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Delete Datas
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Run Custom Command");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Run Start Servers");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Run Stop Servers");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Group Status");
 
 
 @::createStepPickerSteps = (
@@ -120,10 +128,11 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Run Stop Ser
     \%deleteDatasource,
     \%runCustomCommand,
     \%startServers,
-    \%stopServers
+    \%stopServers,
+    \%checkServerGroupStatus,
 );
-							
-							
+
+
 if ($upgradeAction eq "upgrade") {
     my $query = $commander->newBatch();
     my $newcfg = $query->getProperty(
@@ -146,13 +155,13 @@ if ($upgradeAction eq "upgrade") {
             });
         }
     }
-    
+
     # Copy configuration credentials and attach them to the appropriate steps
     my $nodes = $query->find($creds);
     if ($nodes) {
         my @nodes = $nodes->findnodes('credential/credentialName');
         for (@nodes) {
-        	
+
             my $cred = $_->string_value;
 
             # Clone the credential
@@ -180,27 +189,27 @@ if ($upgradeAction eq "upgrade") {
                     changePermissionsPrivilege => 'allow'
                 });
             }
-            
+
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                 procedureName => 'StartStandaloneServer',
                 stepName => 'StartStandaloneServer'
             });
-            
+
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                 procedureName => 'StartDomainServer',
                 stepName => 'StartDomainServer'
             });
-            
+
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                 procedureName => 'CheckServerStatus',
                 stepName => 'CheckServerStatus'
             });
-            
+
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                 procedureName => 'ShutdownStandaloneServer',
                 stepName => 'ShutdownInstance'
             });
-            
+
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                 procedureName => 'RunCustomCommand',
                 stepName => 'RunCustomCommand'
@@ -256,7 +265,11 @@ if ($upgradeAction eq "upgrade") {
                 stepName => 'CheckDeployStatus'
             });
 
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                procedureName => 'CheckServerGroupStatus',
+                stepName => 'CheckServerGroupStatus'
+            });
         }
     }
 }
-							
+
