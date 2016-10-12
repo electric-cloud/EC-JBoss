@@ -409,6 +409,7 @@ sub convert_response_to_json {
 
     $response =~ s/\s=>\s/:/gs;
     $response =~ s/undefined/null/gs;
+    $response =~ s/"\n"/"\\n"/gs;
 
     return $response;
 }
@@ -432,6 +433,7 @@ sub decode_answer {
         $json = decode_json($response);
         1;
     } or do {
+        print "Error occured: $@\n";
         $json = undef;
     };
 
@@ -642,16 +644,19 @@ Postprocessor for JBoss responses.
 sub process_response {
     my ($self, %params) = @_;
 
+    my $silent = 0;
+
+    $silent = 1 if $self->{silent};
     if (!exists $params{code} || !exists $params{stdout} || !exists $params{stderr}) {
         croak "Wrong response hash";
         return ;
     }
 
-    if ($params{stdout}) {
+    if (!$silent && $params{stdout}) {
         $self->out("Command output: $params{stdout}");
     }
 
-    if ($params{stderr}) {
+    if (!$silent && $params{stderr}) {
         $self->out("Error stream: $params{stderr}");
     }
 
@@ -665,7 +670,7 @@ sub process_response {
         $self->error();
         my $prop = '';
 
-        if (ref $stdout eq 'HASH') {    
+        if (ref $stdout eq 'HASH') {
             if (ref $stdout->{'failure-description'}) {
                 $prop = $stdout->{'failure-description'}->{'domain-failure-description'};
             }

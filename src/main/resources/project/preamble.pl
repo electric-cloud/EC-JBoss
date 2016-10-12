@@ -29,3 +29,4 @@ my $load = sub {
 };
 
 $load->('/myProject/jboss_driver/EC::JBoss');
+$load->('/myProject/jboss_driver/File::Path');
