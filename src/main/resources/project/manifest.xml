@@ -9,6 +9,10 @@
     <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;JBossCreateConfigForm&quot;]/value</xpath>
   </file>
   <file>
+    <path>lib/File/Path.pm</path>
+    <xpath>//property[propertyName=&quot;File::Path&quot;]/value</xpath>
+  </file>
+  <file>
     <path>JBossEditConfigForm.xml</path>
     <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;JBossEditConfigForm&quot;]/value</xpath>
   </file>
@@ -87,6 +91,10 @@
   <file>
     <path>server/checkServerGroupStatus.pl</path>
     <xpath>//procedure[procedureName=&quot;CheckServerGroupStatus&quot;]/step[stepName=&quot;CheckServerGroupStatus&quot;]/command</xpath>
+  </file>
+  <file>
+    <path>server/performCleanup.pl</path>
+    <xpath>//procedure[procedureName=&quot;PerformCleanup&quot;]/step[stepName=&quot;PerformCleanup&quot;]/command</xpath>
   </file>
   <file>
     <path>conf/createcfg.pl</path>
@@ -223,5 +231,9 @@
   <file>
     <path>forms/jbossCheckServerGroupStatus.xml</path>
     <xpath>//procedure[procedureName=&quot;CheckServerGroupStatus&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+  </file>
+  <file>
+    <path>forms/jbossPerformCleanup.xml</path>
+    <xpath>//procedure[procedureName=&quot;PerformCleanup&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
   </file>
 </fileset>
