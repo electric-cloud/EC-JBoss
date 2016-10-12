@@ -16,6 +16,23 @@
         <required>1</required>
         <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.</documentation>
     </formElement>
+
+    <formElement>
+        <type>entry</type>
+        <label>Hostname:</label>
+        <property>hostname</property>
+        <required>0</required>
+        <value>master</value>
+        <documentation>Hostname for domain mode. Leave empty for standalone</documentation>
+    </formElement>
+
+    <formElement>
+        <type>entry</type>
+        <label>Servername:</label>
+        <property>servername</property>
+        <required>0</required>
+        <documentation>Servername for domain mode. Leave empty for standalone.</documentation>
+    </formElement>
     
     <formElement>
         <type>checkbox</type>

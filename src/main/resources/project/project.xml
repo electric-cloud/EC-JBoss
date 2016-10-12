@@ -2486,6 +2486,27 @@
                                     </propertySheet>
                                 </property>
 
+                                <property>
+                                    <propertyName>hostname</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>servername</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -2507,7 +2528,22 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
+            
+            <formalParameter>
+                <formalParameterName>hostname</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Hostname for domain mode only.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>servername</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Servername for domain mode only.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            
             <formalParameter>
                 <formalParameterName>cleanup_data</formalParameterName>
                 <defaultValue></defaultValue>
