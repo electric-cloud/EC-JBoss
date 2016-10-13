@@ -49,7 +49,8 @@
 				<li><a href="#StartServers">StartServers</a></li>
 				<li><a href="#StartStandaloneServer">StartStandaloneServer</a></li>
 				<li><a href="#StopServers">StopServers</a></li>
-				<li><a href="#UndeployApp">UndeployApp</a></li>
+                <li><a href="#UndeployApp">UndeployApp</a></li>
+				<li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a></li>
 				</ul>
         <a href="#procedures">Plugin Procedures</a><br />
         <a href="#rns">Release Notes</a>
@@ -1043,6 +1044,8 @@
                 </tbody>
             </table>
             </li>
+
+            <img src="../../plugins/@PLUGIN_NAME@/images/CheckServerGroupStatus/CheckServerGroupStatus.png" />
 						</ol>
 
     </div>
