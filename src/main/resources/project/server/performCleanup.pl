@@ -52,6 +52,11 @@ sub main {
     }
 
     my $server = $jboss_type eq 'DOMAIN' ? 'domain' : 'server';
+    $server = 'server' if $params->{servername} && $params->{hostname};
+    my $tmp_key = "jboss.$server.temp.dir";
+    my $data_key = "jboss.$server.data.dir";
+    $jboss->out("Temp key: ", $tmp_key);
+    $jboss->out("Data key: ", $data_key);
     my %result = $jboss->run_command($command);
     my ($tmp_dir, $data_dir);
     my $errors = {
@@ -59,10 +64,12 @@ sub main {
         msgs => [],
     };
 
+    my $decoded_response = $jboss->decode_answer($result{stdout});
     if ($params->{cleanup_tmp}) {
         $jboss->out("tmp cleanup requested");
-        if ($result{stdout} =~ m/"jboss.$server.temp.dir".*?"(.+?)"/is) {
-            $tmp_dir = $1;
+        # if ($result{stdout} =~ m/"jboss.$server.temp.dir".*?"(.+?)"/is) {
+        if ($decoded_response->{result}->{$tmp_key}) {
+            $tmp_dir = $decoded_response->{result}->{$tmp_key};
             $tmp_dir =~ s|\/\s*?$||gs;
             $jboss->out("tmp dir found: ", $tmp_dir);
             my $err;
@@ -86,8 +93,9 @@ sub main {
 
     if ($params->{cleanup_data}) {
         $jboss->out("data cleanup requested");
-        if ($result{stdout} =~ m/"jboss.$server.data.dir".*?"(.+?)"/is) {
-            $data_dir = $1;
+        # if ($result{stdout} =~ m/"jboss.$server.data.dir".*?"(.+?)"/is) {
+        if ($decoded_response->{result}->{$data_key}) {
+            $data_dir = $decoded_response->{result}->{$data_key};
             $data_dir =~ s|\/\s*?$||gs;
             $jboss->out("data dir found: ", $data_dir);
             my $err;
