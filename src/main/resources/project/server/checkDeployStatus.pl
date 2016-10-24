@@ -23,6 +23,21 @@ sub main {
         appname
     /);
 
+    my $launch_type = $jboss->get_launch_type();
+    print Dumper $launch_type;
+    my $server_groups = [];
+
+    if ($launch_type eq 'domain') {
+        $server_groups = $jboss->get_server_groups();
+    }
+    print Dumper $server_groups;
+    # logic for domain check
+    if ($launch_type eq 'domain') {
+        ...;
+        return;
+    }
+    # logic for standalone mode
+
     my $command = "/deployment=$params->{appname}:read-attribute(name=status)";
     my %result = $jboss->run_command($command);
     $jboss->process_response(%result);

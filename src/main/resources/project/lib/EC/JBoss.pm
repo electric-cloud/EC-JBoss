@@ -798,6 +798,51 @@ sub is_win {
 }
 
 
+=item B<get_launch_type>
+
+Returns JBoss launch type.
+
+    return $jboss->get_launch_type();
+
+=cut
+
+sub get_launch_type {
+    my ($self) = @_;
+
+    my $command = ':read-attribute(name=launch-type)';
+    my %r = $self->run_command($command);
+    my $jboss_type = $self->decode_answer($r{stdout})->{result};
+    $jboss_type = lc $jboss_type;
+
+    if ($jboss_type ne 'domain' && $jboss_type ne 'standalone') {
+        $self->bail_out("Unknown JBoss Launch Type: $jboss_type");
+    }
+
+    return $jboss_type;
+}
+
+
+=item B<get_server_groups>
+
+Returns server groups from domain setup. Should be used in domain mode only.
+
+=cut
+
+sub get_server_groups {
+    my ($self) = @_;
+
+    my $command = '/:read-children-names(child-type=server-group)';
+
+    my %r = $self->run_command($command);
+    my $decoded_response = $self->decode_answer($r{stdout});
+
+    if ($decoded_response->{result} && ref $decoded_response->{result} eq 'ARRAY') {
+        return $decoded_response->{result};
+    }
+    $self->bail_out("Should be an array reference");
+}
+
+
 1;
 
 =back
