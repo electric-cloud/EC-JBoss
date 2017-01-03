@@ -661,7 +661,10 @@ sub process_response {
     }
 
     # code is > 1, so it's an error
-    my $stdout = $self->decode_answer($params{stdout});
+    my $stdout = {};
+    if ($params{stdout}) {
+        $self->decode_answer($params{stdout});
+    }
     $stdout = $params{stdout} unless defined $stdout;
 
     $self->set_property('commands_history', encode_json($self->{history}));

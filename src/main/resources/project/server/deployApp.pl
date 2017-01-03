@@ -18,7 +18,7 @@ sub main {
         plugin_name     =>  $PLUGIN_NAME,
         plugin_key      =>  $PLUGIN_KEY,
     );
-    
+
     my $params = $jboss->get_params_as_hashref(qw/
         scriptphysicalpath
         warphysicalpath
@@ -55,7 +55,7 @@ sub main {
     }
 
     my %result = $jboss->run_command($command);
-    
+
     if ($result{stdout}) {
         $jboss->out("Command output: $result{stdout}");
     }
