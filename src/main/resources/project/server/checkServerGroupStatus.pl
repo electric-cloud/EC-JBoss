@@ -13,7 +13,7 @@ Copyright (c) 2016 Electric Cloud, Inc.
 =cut
 
 $[/myProject/procedure_helpers/preamble]
-use Data::Dumper;
+
 my $PROJECT_NAME = '$[/myProject/projectName]';
 my $SLEEP_TIME = 5;
 
