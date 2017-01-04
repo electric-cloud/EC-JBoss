@@ -16,12 +16,18 @@
         <required>1</required>
         <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.</documentation>
     </formElement>
-    
     <formElement>
         <type>entry</type>
         <label>Servers group:</label>
         <property>serversgroup</property>
         <required>1</required>
         <documentation>Serversgroup</documentation>
-    </formElement>              
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Wait time:</label>
+        <property>wait_time</property>
+        <required>0</required>
+        <documentation>Wait time.</documentation>
+    </formElement>
 </editor>

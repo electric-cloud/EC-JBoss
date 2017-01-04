@@ -2113,6 +2113,16 @@
                                         </property>
                                     </propertySheet>
                                 </property>
+                                <property>
+                                    <propertyName>wait_time</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -2140,6 +2150,13 @@
                 <defaultValue></defaultValue>
                 <description>Specifies the command to run.</description>
                 <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>wait_time</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Wait time.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <step>
@@ -2229,6 +2246,16 @@
                                     </propertySheet>
                                 </property>
 
+                                <property>
+                                    <propertyName>wait_time</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -2256,6 +2283,13 @@
                 <defaultValue></defaultValue>
                 <description>Specifies the command to run.</description>
                 <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>wait_time</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Wait time.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <step>
@@ -2354,6 +2388,16 @@
                                         </property>
                                     </propertySheet>
                                 </property>
+                                <property>
+                                    <propertyName>wait_time</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
 
                             </propertySheet>
                         </property>
@@ -2389,6 +2433,13 @@
                 <defaultValue></defaultValue>
                 <description>Specifies the criteria to check.</description>
                 <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>wait_time</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Wait time.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <step>

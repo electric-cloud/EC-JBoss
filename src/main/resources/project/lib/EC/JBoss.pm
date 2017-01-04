@@ -582,8 +582,12 @@ Sets outcome step status to success.
 =cut
 
 sub success {
-    my ($self) = @_;
+    my ($self, @message) = @_;
 
+    if (@message) {
+        my $msg = join '', @message;
+        $self->set_property(summary => $msg);
+    }
     return $self->_set_outcome('success');
 }
 
@@ -597,8 +601,12 @@ Sets outcome step status to error.
 =cut
 
 sub error {
-    my ($self) = @_;
+    my ($self, @message) = @_;
 
+    if (@message) {
+        my $msg = join '', @message;
+        $self->set_property(summary => $msg);
+    }
     return $self->_set_outcome('error');
 }
 
@@ -800,6 +808,75 @@ sub is_win {
     return 0;
 }
 
+=item B<get_servergroup_status>
+
+Returns servergroup status in hashref format and statuses list in arrayref format.
+
+=cut
+
+sub get_servergroup_status {
+    my ($self, $server_group_name) = @_;
+
+    my $servers = {};
+    my @states = ();
+    if (!$server_group_name) {
+        $self->bail_out("Servergroup parameter is mandatory");
+    }
+    my %hosts_response = $self->run_command(':read-children-names(child-type=host)');
+    my $hosts_json = $self->decode_answer($hosts_response{stdout});
+
+    for my $host_name (@{$hosts_json->{result}}) {
+        my $command = sprintf '/host=%s:read-children-resources(child-type=server-config,include-runtime=true)', $host_name;
+        my %response = $self->run_command($command);
+        my $children_json = $self->decode_answer($response{stdout});
+
+        for my $server_name ( keys %{$children_json->{result} } ) {
+            my $group = $children_json->{result}->{$server_name}->{group};
+            next unless $group eq $server_group_name;
+
+            my $status = $children_json->{result}->{$server_name}->{status};
+            $servers->{$host_name}->{$server_name} = {status => $status};
+            push @states, $status;
+            $self->out("Found server $server_name in state $status");
+        }
+    }
+
+    return ($servers, \@states);
+}
+
+=item B<trim>
+
+Trim function.
+
+=cut
+
+sub trim {
+    my ($jboss, $string) = @_;
+
+    $string =~ s/^\s+//gs;
+    $string =~ s/\s+$//gs;
+    return $string;
+}
+
+
+=item B<run_jboss_command_and_bail_out_on_error>
+
+Executes jboss command and bails out if error occured.
+
+=cut
+
+# Bailing out if the command failed
+sub run_jboss_command_and_bail_out_on_error {
+    my ($jboss, $command) = @_;
+
+    my %response = $jboss->run_command($command);
+    if ( $response{code} ) {
+        $jboss->process_response(%response);
+        $jboss->bail_out('An error occured while running jboss command');
+    }
+    my $json = $jboss->decode_answer($response{stdout});
+    return $json;
+}
 
 1;
 

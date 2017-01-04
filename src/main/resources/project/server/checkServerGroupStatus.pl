@@ -15,6 +15,7 @@ Copyright (c) 2016 Electric Cloud, Inc.
 $[/myProject/procedure_helpers/preamble]
 
 my $PROJECT_NAME = '$[/myProject/projectName]';
+my $SLEEP_TIME = 5;
 
 $|=1;
 
@@ -27,78 +28,89 @@ sub main {
 
     my $params = $jboss->get_params_as_hashref(
         'serversgroup',
-        'criteria'
+        'criteria',
+        'wait_time'
     );
 
+    $params->{wait_time} = $jboss->trim($params->{wait_time});
+    my $wait_time = undef;
+    if (defined $params->{wait_time} && $params->{wait_time} ne '') {
+        $wait_time = $params->{wait_time};
+        if ($wait_time !~ m/^\d+$/s) {
+            $jboss->bail_out("Wait time should be a positive integer");
+        }
+    }
     # Seems like servers in one group could be on different hosts
     # So we have to list all hosts
 
     my $server_group_name = $params->{serversgroup};
-    my $servers = {};
-    my @states = ();
-    my $hosts_json = run_jboss_command($jboss, ':read-children-names(child-type=host)');
-    for my $host_name ( @{$hosts_json->{result}}) {
-        my $command = sprintf '/host=%s:read-children-resources(child-type=server-config,include-runtime=true)', $host_name;
-        my $children_json = run_jboss_command($jboss, $command);
+    my $done = 0;
+    my $time_start = time();
 
-        for my $server_name ( keys %{$children_json->{result} } ) {
-            my $group = $children_json->{result}->{$server_name}->{group};
-            next unless $group eq $server_group_name;
+    my $result = {
+        error => 0,
+        msg => ''
+    };
 
-            my $status = $children_json->{result}->{$server_name}->{status};
-            $servers->{$host_name}->{$server_name} = {status => $status};
-            push @states, $status;
-            $jboss->out("Found server $server_name in state $status");
+    while (!$done) {
+        # wait time is not defined, it's empty so, one loop iteration only.
+        my $time_diff = time() - $time_start;
+        if (!defined $wait_time) {
+            $done = 1;
         }
-    }
+        elsif ($wait_time && $time_diff >= $wait_time) {
+            $done = 1;
+            last;
+        }
+        # otherwise we will wait forever.
 
-    unless( keys %$servers ) {
-        $jboss->bail_out("No servers found in server-group $server_group_name");
-    }
+        my ($servers, $states_ref) = $jboss->get_servergroup_status($server_group_name);
+        my @states = @$states_ref;
 
-    my %uniq = map { $_ => 1 } @states;
-    # If there is only one unique status, then we can assume that all it is "server group status"
-    # There are two terminal statuses: STARTED AND STOPPED (and there also are STARTING and I guess STOPPING)
-    if ( scalar keys %uniq == 1 ) {
-        my ($status) = keys %uniq;
-        $jboss->out("Server group $server_group_name is $status");
-        $jboss->set_property('server_group_status', $status);
-        if ( $status eq $params->{criteria} ) {
-            $jboss->out("Criteria met");
-            $jboss->success;
-            return 1;
+        if (!@states) {
+            $jboss->bail_out("Server group '$server_group_name' doesn't exist or empty");
+        }
+        my %uniq = map { $_ => 1 } @states;
+        # If there is only one unique status, then we can assume that all it is "server group status"
+        # There are two terminal statuses: STARTED AND STOPPED (and there also are STARTING and I guess STOPPING)
+        if (scalar keys %uniq == 1) {
+            my $status = $states[0];
+            $jboss->out("Server group $server_group_name is $status");
+            $jboss->set_property('server_group_status', $status);
+            if ($status eq $params->{criteria}) {
+                # we done, criteria was met.
+                $result->{msg} = "All servers in '$server_group_name' are $params->{criteria}.";
+                $result->{error} = 0;
+                $done = 1;
+                last;
+            }
+            # sleep there for next loop iteration
+            $result->{msg} = "Criteria $params->{criteria} is not met, group status is $status";
+            $result->{error} = 1;
+            sleep $SLEEP_TIME;
         }
         else {
-            $jboss->bail_out("Criteria $params->{criteria} is not met, group status is $status");
+            # statuses > 1, so, criteria wasn't met for sure.
+            for my $host_name ( keys %$servers ) {
+                for my $server_name ( keys %{$servers->{$host_name}}) {
+                    $jboss->out("$server_name (host: $host_name) is $servers->{$host_name}->{$server_name}->{status}");
+                    # What should we set in this case?
+                    $jboss->set_property('server_group_status', 'PARTIAL');
+                }
+            }
+            $result->{msg} = "Criteria $params->{criteria} is not met, servers in group are in different states";
+            $result->{error} = 1;
+            sleep $SLEEP_TIME;
         }
+    }
+
+    if ($result->{error}) {
+        $jboss->error($result->{msg});
     }
     else {
-        for my $host_name ( keys %$servers ) {
-            for my $server_name ( keys %{$servers->{$host_name}}) {
-                $jboss->out("$server_name (host: $host_name) is $servers->{$host_name}->{$server_name}->{status}");
-                # What should we set in this case?
-                $jboss->set_property('server_group_status', 'PARTIAL');
-            }
-        }
-        $jboss->bail_out("Criteria $params->{criteria} is not met, servers in group are in different states");
+        $jboss->success($result->{msg});
     }
-
     return 1;
 }
-
-
-# Bailing out if the command failed
-sub run_jboss_command {
-    my ($jboss, $command) = @_;
-
-    my %response = $jboss->run_command($command);
-    if ( $response{code} ) {
-        $jboss->process_response(%response);
-        $jboss->bail_out('An error occured while running jboss command');
-    }
-    my $json = $jboss->decode_answer($response{stdout});
-    return $json;
-}
-
 
 1;
