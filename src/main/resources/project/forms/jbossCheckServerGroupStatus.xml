@@ -30,7 +30,7 @@
         <label>Wait time:</label>
         <property>wait_time</property>
         <required>0</required>
-        <documentation>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait untill criteria is met. Default 300.</documentation>
+        <documentation>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</documentation>
         <value>300</value>
     </formElement>
     <formElement>
