@@ -15,7 +15,7 @@ EC JBoss integration plugin logic.
 package EC::JBoss;
 use strict;
 use warnings;
-use subs qw/is_win/;
+use subs qw/is_win is_positive_int/;
 use Carp;
 use JSON;
 
@@ -456,9 +456,15 @@ sub _syscall_win32 {
     my $command = join '', @command;
 
     my $result_folder = $ENV{COMMANDER_WORKSPACE};
-    $command .= qq| 1> "$result_folder/command.stdout" 2> "$result_folder/command.stderr"|;
+    if (!$result_folder) {
+        $self->out(1, "Missing ENV for result folder. Result folder set to .");
+        $result_folder = '.';
+    }
+    my $stderr_filename = 'command_' . gen_random_numbers(42) . '.stderr';
+    my $stdout_filename = 'command_' . gen_random_numbers(42) . '.stdout';
+    $command .= qq| 1> "$result_folder/$stdout_filename" 2> "$result_folder/$stderr_filename"|;
     if (is_win) {
-        $self->logit(1, "Windows detected");
+        $self->dbg("MSWin32 detected");
         $ENV{NOPAUSE} = 1;
     }
 
@@ -469,14 +475,47 @@ sub _syscall_win32 {
         code => $? >> 8,
     };
 
-    open my $stderr, "$result_folder/command.stderr" or croak "Can't open stderr: $@";
-    open my $stdout, "$result_folder/command.stdout" or croak "Can't open stdout: $@";
+    open my $stderr, "$result_folder/$stderr_filename" or croak "Can't open stderr file ($stderr_filename) : $!";
+    open my $stdout, "$result_folder/$stdout_filename" or croak "Can't open stdout file ($stdout_filename) : $!";
     $retval->{stdout} = join '', <$stdout>;
     $retval->{stderr} = join '', <$stderr>;
     close $stdout;
     close $stderr;
+
+    # Cleaning up
+    unlink("$result_folder/$stderr_filename");
+    unlink("$result_folder/$stdout_filename");
+
     return $retval;
 }
+
+# sub _syscall_win32 {
+#     my ($self, @command) = @_;
+
+#     my $command = join '', @command;
+
+#     my $result_folder = $ENV{COMMANDER_WORKSPACE};
+#     $command .= qq| 1> "$result_folder/command.stdout" 2> "$result_folder/command.stderr"|;
+#     if (is_win) {
+#         $self->logit(1, "Windows detected");
+#         $ENV{NOPAUSE} = 1;
+#     }
+
+#     my $pid = system($command);
+#     my $retval = {
+#         stdout => '',
+#         stderr => '',
+#         code => $? >> 8,
+#     };
+
+#     open my $stderr, "$result_folder/command.stderr" or croak "Can't open stderr: $@";
+#     open my $stdout, "$result_folder/command.stdout" or croak "Can't open stdout: $@";
+#     $retval->{stdout} = join '', <$stdout>;
+#     $retval->{stderr} = join '', <$stderr>;
+#     close $stdout;
+#     close $stderr;
+#     return $retval;
+# }
 
 
 =item B<_syscall>
@@ -582,8 +621,12 @@ Sets outcome step status to success.
 =cut
 
 sub success {
-    my ($self) = @_;
+    my ($self, @message) = @_;
 
+    if (@message) {
+        my $msg = join '', @message;
+        $self->set_property(summary => $msg);
+    }
     return $self->_set_outcome('success');
 }
 
@@ -597,8 +640,12 @@ Sets outcome step status to error.
 =cut
 
 sub error {
-    my ($self) = @_;
+    my ($self, @message) = @_;
 
+    if (@message) {
+        my $msg = join '', @message;
+        $self->set_property(summary => $msg);
+    }
     return $self->_set_outcome('error');
 }
 
@@ -661,7 +708,10 @@ sub process_response {
     }
 
     # code is > 1, so it's an error
-    my $stdout = $self->decode_answer($params{stdout});
+    my $stdout = {};
+    if ($params{stdout}) {
+        $self->decode_answer($params{stdout});
+    }
     $stdout = $params{stdout} unless defined $stdout;
 
     $self->set_property('commands_history', encode_json($self->{history}));
@@ -797,6 +847,152 @@ sub is_win {
     return 0;
 }
 
+=item B<get_servergroup_status>
+
+Returns servergroup status in hashref format and statuses list in arrayref format.
+
+=cut
+
+sub get_servergroup_status {
+    my ($self, $server_group_name) = @_;
+
+    my $servers = {};
+    my @states = ();
+    if (!$server_group_name) {
+        $self->bail_out("Servergroup parameter is mandatory");
+    }
+    my %hosts_response = $self->run_command(':read-children-names(child-type=host)');
+    my $hosts_json = $self->decode_answer($hosts_response{stdout});
+
+    for my $host_name (@{$hosts_json->{result}}) {
+        my $command = sprintf '/host=%s:read-children-resources(child-type=server-config,include-runtime=true)', $host_name;
+        my %response = $self->run_command($command);
+        my $children_json = $self->decode_answer($response{stdout});
+
+        for my $server_name ( keys %{$children_json->{result} } ) {
+            my $group = $children_json->{result}->{$server_name}->{group};
+            next unless $group eq $server_group_name;
+
+            my $status = $children_json->{result}->{$server_name}->{status};
+            $servers->{$host_name}->{$server_name} = {status => $status};
+            push @states, $status;
+            $self->out("Found server $server_name in state $status");
+        }
+    }
+
+    return ($servers, \@states);
+}
+
+=item B<trim>
+
+Trim function.
+
+=cut
+
+sub trim {
+    my ($jboss, $string) = @_;
+
+    $string =~ s/^\s+//gs;
+    $string =~ s/\s+$//gs;
+    return $string;
+}
+
+
+=item B<run_jboss_command_and_bail_out_on_error>
+
+Executes jboss command and bails out if error occured.
+
+=cut
+
+# Bailing out if the command failed
+sub run_jboss_command_and_bail_out_on_error {
+    my ($jboss, $command) = @_;
+
+    my %response = $jboss->run_command($command);
+    if ( $response{code} ) {
+        $jboss->process_response(%response);
+        $jboss->bail_out('An error occured while running jboss command');
+    }
+    my $json = $jboss->decode_answer($response{stdout});
+    return $json;
+}
+
+
+=item B<gen_random_numbers>
+
+Generates random numbers by seed provided.
+
+=cut
+
+sub gen_random_numbers {
+    my ($mod) = @_;
+
+    my $rand = rand($mod);
+    $rand =~ s/\.//s;
+    return $rand;
+}
+
+
+sub run_commands_until_done {
+    my ($self, $params, $action) = @_;
+
+    my $time_limit = $params->{time_limit};
+    my $sleep_time = $params->{sleep_time};
+
+    if ($time_limit eq '') {
+        $time_limit = undef;
+    }
+    elsif (!is_positive_int($time_limit)) {
+        $self->out("time_limit should be a positive integer.");
+        exit 1;
+    }
+
+    if (!$sleep_time) {
+        $self->out("sleep_time parameter is mandatory.");
+    }
+
+    unless(is_positive_int($sleep_time)) {
+        $self->out("sleep_time should be a positive integer.");
+    }
+    if (!$action || ref $action ne 'CODE') {
+        $self->out("Action param is mandatory");
+        exit 1;
+    }
+
+    my $time_start = time();
+
+    my $done = 0;
+    my $retval = 0;
+
+    while (!$done) {
+        my $diff = time() - $time_start;
+        # time limit undefined, so, only 1 iteration.
+        if (!defined $time_limit) {
+            $done = 1;
+        }
+        elsif ($time_limit && $diff >= $time_limit) {
+            $done = 1;
+            last;
+        }
+        # else time limit is 0, so it is unlimited.
+        $retval = $action->($self);
+        if ($retval) {
+            last;
+        }
+        sleep $sleep_time unless $done;
+    }
+    return $retval;
+}
+
+
+sub is_positive_int {
+    my ($check) = @_;
+
+    if ($check !~ m/^\d+$/s) {
+        return 0;
+    }
+    return 1;
+}
 
 =item B<get_launch_type>
 

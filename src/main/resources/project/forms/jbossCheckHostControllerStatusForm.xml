@@ -1,5 +1,5 @@
 <editor>
-    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#StartServers</help>
+    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#CheckHostControllerStatus</help>
     <formElement>
         <type>entry</type>
         <label>Server configuration name:</label>
@@ -16,18 +16,37 @@
         <required>1</required>
         <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.</documentation>
     </formElement>
+
     <formElement>
         <type>entry</type>
-        <label>Servers group:</label>
-        <property>serversgroup</property>
+        <label>HostController name:</label>
+        <property>hostcontroller_name</property>
         <required>1</required>
-        <documentation>Serversgroup</documentation>
+        <documentation>Host controller name. Default is 'master'.</documentation>
+        <value>master</value>
     </formElement>
+
     <formElement>
         <type>entry</type>
         <label>Wait time:</label>
         <property>wait_time</property>
         <required>0</required>
-        <documentation>Wait time.</documentation>
+        <documentation>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</documentation>
+        <value>300</value>
+    </formElement>
+    <formElement>
+        <type>select</type>
+        <label>Criteria:</label>
+        <property>criteria</property>
+        <required>1</required>
+        <documentation>A desired status of host controller. The procedure will fail if the criteria is not met.</documentation>
+        <option>
+            <name>RUNNING</name>
+            <value>RUNNING</value>
+        </option>
+        <option>
+            <name>NOT RUNNING</name>
+            <value>NOT_RUNNING</value>
+        </option>
     </formElement>
 </editor>
