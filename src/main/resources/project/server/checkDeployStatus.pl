@@ -23,17 +23,40 @@ sub main {
         appname
     /);
 
+    my $appname = $params->{appname};
     my $launch_type = $jboss->get_launch_type();
-    print Dumper $launch_type;
-    my $server_groups = [];
-
+    # my $server_groups = [];
+    my $servers = {};
     if ($launch_type eq 'domain') {
-        $server_groups = $jboss->get_server_groups();
+        # $server_groups = $jboss->get_server_groups();
+        $servers = $jboss->get_servers();
     }
-    print Dumper $server_groups;
     # logic for domain check
+    my @errors = ();
     if ($launch_type eq 'domain') {
-        ...;
+        for my $host (keys %$servers) {
+            for my $server (@{$servers->{$host}}) {
+                my $command = sprintf '/host=%s/server=%s/deployment=%s:read-attribute(name=status)', $host, $server, $appname;
+                my %result = $jboss->run_command($command);
+                if ($result{code}) {
+                    $jboss->out("Application $appname (server: $server, host: $host is NOT OK");
+                    push @errors, $server;
+                    next;
+                }
+
+                my $json = $jboss->decode_answer($result{stdout});
+                if ($json->{result} ne 'OK') {
+                    $jboss->out("Application $appname (server: '$server', host: '$host') is NOT OK");
+                    push @errors, $server;
+                }
+                $jboss->out("Application $appname (server: $server, host: $host is $json->{result}");
+            }
+        }
+
+        if (@errors) {
+            my $msg = 'Wrong application status on the following servers: ' . join (', ', @errors);
+            $jboss->bail_out($msg);
+        }
         return;
     }
     # logic for standalone mode

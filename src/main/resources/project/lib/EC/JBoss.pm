@@ -1038,6 +1038,35 @@ sub get_server_groups {
     $self->bail_out("Should be an array reference");
 }
 
+sub get_hosts {
+    my ($self) = @_;
+    my %hosts_response = $self->run_command(':read-children-names(child-type=host)');
+    my $hosts_json = $self->decode_answer($hosts_response{stdout});
+
+    return $hosts_json->{result};
+}
+
+
+sub get_servers {
+    my ($self, $hosts) = @_;
+
+    if ($hosts && ref $hosts ne 'ARRAY') {
+        $self->bail_out("Hosts should be a array reference.");
+    }
+
+    if (!$hosts) {
+        $hosts = $self->get_hosts();
+    }
+    my $retval = {};
+    for my $host (@$hosts) {
+        my $command = sprintf "/host=%s:read-children-resources(child-type=server)", $host;
+        my %result = $self->run_command($command);
+        my $json = $self->decode_answer($result{stdout});
+        my @servers_list = keys %{$json->{result}};
+        $retval->{$host} = \@servers_list;
+    }
+    return $retval;
+}
 
 1;
 
