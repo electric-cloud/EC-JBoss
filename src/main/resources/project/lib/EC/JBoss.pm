@@ -464,7 +464,7 @@ sub _syscall_win32 {
     my $stdout_filename = 'command_' . gen_random_numbers(42) . '.stdout';
     $command .= qq| 1> "$result_folder/$stdout_filename" 2> "$result_folder/$stderr_filename"|;
     if (is_win) {
-        $self->dbg("MSWin32 detected");
+        $self->out("MSWin32 detected");
         $ENV{NOPAUSE} = 1;
     }
 
