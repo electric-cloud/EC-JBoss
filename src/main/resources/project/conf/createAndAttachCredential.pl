@@ -151,6 +151,13 @@ $xpath = $ec->attachCredential($projName, $credName, {
 );
 $errors .= $ec->checkAllErrors($xpath);
 
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'CheckHostControllerStatus',
+        stepName => 'CheckHostControllerStatus'
+    }
+);
+$errors .= $ec->checkAllErrors($xpath);
+
 
 if ($errors ne '') {
 

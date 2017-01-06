@@ -100,6 +100,13 @@ my %performCleanup = (
     category    => "Application Server"
 );
 
+my %checkHostControllerStatus = (
+    label       => "JBoss - Check HostController Status",
+    procedure   => "CheckHostControllerStatus",
+    description => "Checks HostController Status",
+    category    => "Application Server"
+);
+
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
@@ -120,6 +127,7 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Run Start Se
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Run Stop Servers");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Group Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - PerformCleanup");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - CheckHostControllerStatus");
 
 
 @::createStepPickerSteps = (
@@ -138,7 +146,8 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - PerformClean
     \%startServers,
     \%stopServers,
     \%checkServerGroupStatus,
-    \%performCleanup
+    \%performCleanup,
+    \%checkHostControllerStatus
 );
 
 
@@ -282,6 +291,10 @@ if ($upgradeAction eq "upgrade") {
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                 procedureName => 'PerformCleanup',
                 stepName => 'PerformCleanup'
+            });
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                procedureName => 'CheckHostControllerStatus',
+                stepName => 'CheckHostControllerStatus'
             });
         }
     }
