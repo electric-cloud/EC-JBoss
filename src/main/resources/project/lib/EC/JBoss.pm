@@ -939,7 +939,7 @@ sub run_commands_until_done {
     my $time_limit = $params->{time_limit};
     my $sleep_time = $params->{sleep_time};
 
-    if ($time_limit eq '' or !defined $time_limit) {
+    if ($time_limit eq '') {
         $time_limit = undef;
     }
     elsif (!is_pos_int($time_limit)) {
