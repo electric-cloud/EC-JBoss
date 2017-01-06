@@ -15,7 +15,7 @@ EC JBoss integration plugin logic.
 package EC::JBoss;
 use strict;
 use warnings;
-use subs qw/is_win is_pos_int/;
+use subs qw/is_win is_positive_int/;
 use Carp;
 use JSON;
 
@@ -942,7 +942,7 @@ sub run_commands_until_done {
     if ($time_limit eq '') {
         $time_limit = undef;
     }
-    elsif (!is_pos_int($time_limit)) {
+    elsif (!is_positive_int($time_limit)) {
         $self->out("time_limit should be a positive integer.");
         exit 1;
     }
@@ -951,7 +951,7 @@ sub run_commands_until_done {
         $self->out("sleep_time parameter is mandatory.");
     }
 
-    unless(is_pos_int($sleep_time)) {
+    unless(is_positive_int($sleep_time)) {
         $self->out("sleep_time should be a positive integer.");
     }
     if (!$action || ref $action ne 'CODE') {
@@ -985,7 +985,7 @@ sub run_commands_until_done {
 }
 
 
-sub is_pos_int {
+sub is_positive_int {
     my ($check) = @_;
 
     if ($check !~ m/^\d+$/s) {
