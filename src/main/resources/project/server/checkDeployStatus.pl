@@ -100,12 +100,12 @@ sub main {
     # logic for standalone mode
 
     my $command = "/deployment=$params->{appname}:read-attribute(name=status)";
-    my %result;
-    $jboss->run_commands_until_done({
+
+    my $result = $jboss->run_commands_until_done({
         time_limit => $params->{wait_time},
         sleep_time => 5,
     }, sub {
-        %result = $jboss->run_command($command);
+        my %result = $jboss->run_command($command);
         my $json = $jboss->decode_answer($result{stdout});
         if (!is_criteria_met_standalone($json, $params->{criteria})) {
             $jboss->out("Criteria was not met. Application status: $result{stdout}");
@@ -113,7 +113,12 @@ sub main {
         }
         return 1;
     });
-    $jboss->process_response(%result);
+
+    if ($result) {
+        $jboss->success();
+    }
+    $jboss->error();
+
 };
 
 sub is_criteria_met_standalone {
