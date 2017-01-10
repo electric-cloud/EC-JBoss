@@ -1048,10 +1048,24 @@ sub get_hosts {
 
 
 sub get_servers {
-    my ($self, $hosts) = @_;
+    my ($self, %params) = @_;
+
+    my $hosts = undef;
+    my $servers = [];
+    my $groups = [];
+
+    if ($params{hosts}) {
+        $hosts = $params{hosts};
+    }
+    if ($params{servers}) {
+        $servers = $params{servers};
+    }
+    if ($params{groups}) {
+        $groups = $params{groups};
+    }
 
     if ($hosts && ref $hosts ne 'ARRAY') {
-        $self->bail_out("Hosts should be a array reference.");
+        $self->bail_out("Hosts should be an array reference.");
     }
 
     if (!$hosts) {
@@ -1059,13 +1073,48 @@ sub get_servers {
     }
     my $retval = {};
     for my $host (@$hosts) {
-        my $command = sprintf "/host=%s:read-children-resources(child-type=server)", $host;
+        # my $command = sprintf "/host=%s:read-children-resources(child-type=server)", $host;
+        my $command = sprintf "/host=%s:read-children-resources(child-type=server-config,include-runtime=true)", $host;
         my %result = $self->run_command($command);
         my $json = $self->decode_answer($result{stdout});
+        if (@$groups) {
+            my @keys = keys %{$json->{result}};
+            for my $k (@keys) {
+                my $group = $json->{result}->{$k}->{group};
+                if (!$group || !$self->in_array($group => $groups)) {
+                    delete $json->{result}->{$k};
+                }
+            }
+        }
+        if (@$servers) {
+            my @keys = keys %{$json->{result}};
+            for my $k (@keys) {
+                if (!$self->in_array($k => $servers)) {
+                   delete $json->{result}->{$k};
+                }
+            }
+        }
         my @servers_list = keys %{$json->{result}};
         $retval->{$host} = \@servers_list;
     }
     return $retval;
+}
+
+
+sub in_array {
+    my ($self, $what, $where)  = @_;
+
+    if (!$what || !$where) {
+        $self->bail_out("Missing arguments for in_array");
+    }
+
+    if (!ref $where || ref $where ne 'ARRAY') {
+        $self->bail_out("2nd argument should be an ARRAY reference");
+    }
+    for my $elem (@$where) {
+        return 1 if $elem eq $what;
+    }
+    return 0;
 }
 
 1;
