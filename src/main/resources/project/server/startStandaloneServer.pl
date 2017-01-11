@@ -17,8 +17,7 @@
 # Copyright (c) 2011 Electric Cloud, Inc.
 # All rights reserved
 # -------------------------------------------------------------------------
-   
-   
+
 # -------------------------------------------------------------------------
 # Includes
 # -------------------------------------------------------------------------
@@ -29,18 +28,23 @@ use Cwd;
 use File::Spec;
 use ElectricCommander::PropDB;
 $|=1;
-   
+
 # -------------------------------------------------------------------------
 # Constants
 # -------------------------------------------------------------------------
 use constant {
     SUCCESS => 0,
-    ERROR   => 1,              SQUOTE => q{'},       DQUOTE => q{"},       BSLASH => q{\\},
-       
+    ERROR   => 1,
+    SQUOTE => q{'},
+    DQUOTE => q{"},
+    BSLASH => q{\\},
     PLUGIN_NAME => 'EC-JBoss',
     WIN_IDENTIFIER => 'MSWin32',
-    CREDENTIAL_ID => 'credential',              MAX_ELAPSED_TEST_TIME => 30,       SLEEP_INTERVAL_TIME => 3,              SERVER_RESPONDING => 1,       SERVER_NOT_RESPONDING => 0,
-       
+    CREDENTIAL_ID => 'credential',
+    MAX_ELAPSED_TEST_TIME => 30,
+    SLEEP_INTERVAL_TIME => 3,
+    SERVER_RESPONDING => 1,
+    SERVER_NOT_RESPONDING => 0,
 };
 ########################################################################
 # trim - deletes blank spaces before and after the entered value in 
@@ -54,21 +58,19 @@ use constant {
 #
 ########################################################################  
 sub trim($) {
-   
     my ($untrimmedString) = @_;
-      
     my $string = $untrimmedString;
-      
+
     #removes leading spaces
     $string =~ s/^\s+//;
-      
+
     #removes trailing spaces
     $string =~ s/\s+$//;
-      
+
     #returns trimmed string
     return $string;
 }
-  
+
 # -------------------------------------------------------------------------
 # Variables
 # -------------------------------------------------------------------------
@@ -94,11 +96,31 @@ sub main() {
     my $cmdLine = '';
     my %props;
     # start admin server using ecdaemon
+    my %config = getConfiguration($::gServerConfig);
+
+    if (isServerAlreadyAlive(\%config)) {
+        print "Server is already alive on url $config{jboss_url}";
+        exit 0;
+    }
     startServer($::gScriptPhysicalLocation, $::gAlternateJBossConfig);
     verifyServerIsStarted($::gServerConfig);
     setProperties(\%props);
 }
 
+sub isServerAlreadyAlive {
+    my ($config) = @_;
+
+    my $url = $config->{jboss_url};
+    my $agent = LWP::UserAgent->new(env_proxy => 1,keep_alive => 1, timeout => 30);
+    my $header = HTTP::Request->new(GET => $url);
+    my $request = HTTP::Request->new('GET', $url, $header);
+
+    my $response = $agent->request($request);
+    if ($response->is_success()) {
+        return 1;
+    }
+    return 0;
+}
 ########################################################################
 # startServer - uses ecdaemon for starting a Server
 #
@@ -237,15 +259,17 @@ sub getConfiguration($){
     my $xpath = $::gEC->getFullCredential($configRow{credential});
     $configToUse{'user'} = $xpath->findvalue("//userName");
     $configToUse{'password'} = $xpath->findvalue("//password");
-      
     foreach my $c (keys %configRow) {
         #getting all values except the credential that was read previously
         if ($c ne CREDENTIAL_ID) {
             $configToUse{$c} = $configRow{$c};
         }
-          
     }
 
+    if ($configToUse{jboss_url} !~ m/^https?/s) {
+        $configToUse{jboss_url} = 'http://' . $configToUse{jboss_url};
+        print "Provided URL is not absolute. Let's assume that it's http: $configToUse{jboss_url}\n";
+    }
     return %configToUse;
 }
 ##########################################################################
@@ -261,8 +285,8 @@ sub getConfiguration($){
 #   none
 #
 #########################################################################
-sub verifyServerIsStarted($) {
-    my ($configName) = @_;
+sub verifyServerIsStarted {
+    my ($configName, $check_once) = @_;
     # create args array
     my @args = ();
     my %props;
