@@ -410,6 +410,7 @@ sub convert_response_to_json {
     $response =~ s/\s=>\s/:/gs;
     $response =~ s/undefined/null/gs;
     $response =~ s/"\n"/"\\n"/gs;
+    $response =~ s/:expression\s/: /gs;
 
     return $response;
 }
