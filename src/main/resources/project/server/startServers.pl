@@ -11,8 +11,9 @@ Starts jboss servers group(domain mode).
 Copyright (c) 2014 Electric Cloud, Inc.
 
 =cut
-$[/myProject/procedure_helpers/preamble]
 
+$[/myProject/procedure_helpers/preamble]
+use Data::Dumper;
 my $PROJECT_NAME = '$[/myProject/projectName]';
 my $DESIRED_STATUS = 'STARTED';
 my $SLEEP_TIME = 5;
@@ -39,6 +40,27 @@ sub main {
         $wait_time = $params->{wait_time};
         if ($wait_time !~ m/^\d+$/s) {
             $jboss->bail_out("Wait time should be a positive integer");
+        }
+    }
+
+    my ($servers, $states) = $jboss->get_servergroup_status($params->{serversgroup});
+
+    $jboss->{silent} = 1;
+    my $servers_with_terminal_status = $jboss->is_servergroup_has_status(
+        $params->{serversgroup},
+        ['STARTED']
+    );
+    $jboss->{silent} = 0;
+    if (@$servers_with_terminal_status) {
+        for my $server_record (@$servers_with_terminal_status) {
+            $jboss->out_warning(
+                sprintf(
+                    "Server %s on %s is already in %s state",
+                    $server_record->{server},
+                    $server_record->{host},
+                    $server_record->{status}
+                )
+            );
         }
     }
     my $command = sprintf '/server-group=%s:start-servers', $params->{serversgroup};
