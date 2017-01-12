@@ -26,7 +26,14 @@
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>ServerGrops:</label>
+        <label>Hosts:</label>
+        <property>hosts</property>
+        <required>0</required>
+        <documentation>Hosts.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>ServerGroups:</label>
         <property>serversgroup</property>
         <required>0</required>
         <documentation>ServerGroups.</documentation>

@@ -1051,7 +1051,7 @@ sub get_hosts {
 sub get_servers {
     my ($self, %params) = @_;
 
-    my $hosts = undef;
+    my $hosts = [];
     my $servers = [];
     my $groups = [];
 
@@ -1069,11 +1069,17 @@ sub get_servers {
         $self->bail_out("Hosts should be an array reference.");
     }
 
-    if (!$hosts) {
-        $hosts = $self->get_hosts();
+    my $got_hosts = $self->get_hosts();
+
+    if (@$hosts) {
+        @$got_hosts = grep {$self->in_array($_ => $hosts)} @$got_hosts;
+    }
+
+    if (!@$got_hosts) {
+        $self->bail_out("No hosts were found by your request.");
     }
     my $retval = {};
-    for my $host (@$hosts) {
+    for my $host (@$got_hosts) {
         # my $command = sprintf "/host=%s:read-children-resources(child-type=server)", $host;
         my $command = sprintf "/host=%s:read-children-resources(child-type=server-config,include-runtime=true)", $host;
         my %result = $self->run_command($command);
