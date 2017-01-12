@@ -807,10 +807,17 @@ Is equivalent to
 sub out {
     my ($self, @msg) = @_;
 
+    return 1 if ($self->{silent});
     return $self->logit(1, @msg);
 }
 
+sub out_warning {
+    my ($self, @msg) = @_;
 
+    my $warning = "WARNING:";
+    unshift @msg, $warning;
+    return $self->out(@msg);
+}
 =item B<bail_out>
 
 Terminating execution immediately with error message.
@@ -1122,6 +1129,38 @@ sub in_array {
         return 1 if $elem eq $what;
     }
     return 0;
+}
+
+
+sub is_servergroup_has_status {
+    my ($self, $servergroup, $status_list) = @_;
+
+    # will return an array reference for easy iteration.
+    my $retval = [];
+
+    my ($servers, $states) = $self->get_servergroup_status($servergroup);
+
+    my $found = 0;
+    for my $status (@$status_list) {
+        if ($self->in_array($status => $states)) {
+            $found = 1;
+        }
+    }
+
+    if ($found) {
+        for my $host (keys %$servers) {
+            for my $server (keys %{$servers->{$host}}) {
+                if ($self->in_array($servers->{$host}->{$server}->{status}, $status_list)) {
+                    push @$retval, {
+                        status => $servers->{$host}->{$server}->{status},
+                        host => $host,
+                        server => $server
+                    };
+                }
+            }
+        }
+    }
+    return $retval;
 }
 
 1;

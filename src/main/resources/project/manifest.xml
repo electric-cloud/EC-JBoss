@@ -117,6 +117,10 @@
         <xpath>//property[propertyName=&quot;ec_setup&quot;]/value</xpath>
     </file>
     <file>
+        <path>postp_matchers.pl</path>
+        <xpath>//property[propertyName=&quot;postp_matchers&quot;]/value</xpath>
+    </file>
+    <file>
         <path>forms/jbossEnableDeployForm.xml</path>
         <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;EnableDeploy&quot;]/value</xpath>
     </file>
