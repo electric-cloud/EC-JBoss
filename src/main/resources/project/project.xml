@@ -1284,6 +1284,16 @@
                                         </property>
                                     </propertySheet>
                                 </property>
+                                <property>
+                                    <propertyName>hosts</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -1338,6 +1348,14 @@
                 <formalParameterName>wait_time</formalParameterName>
                 <defaultValue></defaultValue>
                 <description>Wait time.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+
+            <formalParameter>
+                <formalParameterName>hosts</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Hosts list.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>

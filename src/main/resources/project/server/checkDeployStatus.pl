@@ -25,19 +25,21 @@ sub main {
         serversgroup
         criteria
         wait_time
+        hosts
     /);
 
     my @servers = ();
     my @server_groups = ();
-
+    my @hosts = ();
     if ($params->{servers}) {
-        print "Servers.\n";
         @servers = map {$jboss->trim($_); $_;} split(',', $params->{servers});
     }
 
     if ($params->{serversgroup}) {
-        print "Server group.\n";
         @server_groups = map {$jboss->trim($_); $_;} split(',', $params->{serversgroup});
+    }
+    if ($params->{hosts}) {
+        @hosts = map {$jboss->trim($_); $_;} split(',', $params->{hosts});
     }
 
     my $appname = $params->{appname};
@@ -47,7 +49,7 @@ sub main {
     if ($launch_type eq 'domain') {
         # $server_groups = $jboss->get_server_groups();
         $servers = $jboss->get_servers(
-            hosts => undef,
+            hosts => \@hosts,
             servers => \@servers,
             groups => \@server_groups
         );
