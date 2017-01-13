@@ -2,19 +2,21 @@
     <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#DisableDeploy</help>
     <formElement>
         <type>entry</type>
-        <label>Server configuration name:</label>
+        <label>Configuration Name:</label>
         <property>serverconfig</property>
         <required>1</required>
         <documentation>Supply the configuration name of the JBoss server. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <propertyReference>/plugins/@PLUGIN_NAME@/project/jboss_cfgs</propertyReference>
         <htmlDocumentation>Supply the configuration name of the JBoss server.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
     </formElement>
-    
+
     <formElement>
         <type>entry</type>
         <label>Physical location of the jboss client script:</label>
         <property>scriptphysicalpath</property>
-        <required>1</required>
-        <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.</documentation>
+        <required>0</required>
+        <propertyReference type="property">/plugins/@PLUGIN_NAME@/project/jboss_cfgs/$serverconfig/scriptphysicalpath</propertyReference>
+        <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</documentation>
     </formElement>
 
     <formElement>
@@ -23,5 +25,5 @@
         <property>appname</property>
         <required>1</required>
         <documentation>Unique name of the deployment to disable.</documentation>
-    </formElement>      
+    </formElement>
 </editor>

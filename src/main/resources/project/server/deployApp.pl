@@ -29,6 +29,9 @@ sub main {
         assignallservergroups
     /);
 
+    my $is_domain = 0;
+    my $launch_type = $jboss->get_launch_type();
+    $is_domain = 1 if $launch_type eq 'domain';
     if (!$jboss->{dryrun} && !-e $params->{warphysicalpath}) {
             croak "File: $params->{warphysicalpath} doesn't exists";
     }
@@ -47,11 +50,13 @@ sub main {
         $command .= ' --force ';
     }
 
-    if ($params->{assignallservergroups}) {
-        $command .= ' --all-server-groups ';
-    }
-    elsif ($params->{assignservergroups}) {
-        $command .= qq/ --server-groups=$params->{assignservergroups}/;
+    if ($is_domain) {
+        if ($params->{assignallservergroups}) {
+            $command .= ' --all-server-groups ';
+        }
+        elsif ($params->{assignservergroups}) {
+            $command .= qq/ --server-groups=$params->{assignservergroups}/;
+        }
     }
 
     my %result = $jboss->run_command($command);

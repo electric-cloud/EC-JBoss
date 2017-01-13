@@ -18,6 +18,15 @@
     </formElement>
 
     <formElement>
+        <type>entry</type>
+        <label>Physical location of the jboss client script:</label>
+        <property>scriptphysicalpath</property>
+        <value></value>
+        <documentation>JBoss controller location. For example: localhost:9999.</documentation>
+        <required>0</required>
+    </formElement>
+
+    <formElement>
         <type>credential</type>
         <label>Login as:</label>
         <property>credential</property>

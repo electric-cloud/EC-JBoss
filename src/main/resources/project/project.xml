@@ -125,6 +125,16 @@
                                     </propertySheet>
                                 </property>
                                 <property>
+                                    <propertyName>scriptphysicalpath</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
                                     <propertyName>credential</propertyName>
                                     <propertySheet>
                                         <property>
@@ -155,7 +165,13 @@
                 <type>entry</type>
             </formalParameter>
 
-
+            <formalParameter>
+                <formalParameterName>scriptphysicalpath</formalParameterName>
+                <defaultValue/>
+                <description>Physical path to jboss-cli.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
             <formalParameter>
                 <formalParameterName>credential</formalParameterName>
                 <defaultValue/>
@@ -603,8 +619,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
 
@@ -811,8 +827,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
 
@@ -1030,8 +1046,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
 
@@ -1160,8 +1176,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <step>
@@ -1315,8 +1331,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
 
@@ -1470,8 +1486,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
 
@@ -1586,8 +1602,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
 
@@ -1810,11 +1826,10 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>connectionURL</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1999,8 +2014,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
 
@@ -2107,8 +2122,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
 
@@ -2231,8 +2246,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
 
@@ -2365,11 +2380,10 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>serversgroup</formalParameterName>
                 <defaultValue></defaultValue>
@@ -2509,8 +2523,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
 
@@ -2653,8 +2667,8 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
+                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
@@ -2699,173 +2713,6 @@
                 <workingDirectory/>
                 <workspaceName/>
                 <procedureName>CheckHostControllerStatus</procedureName>
-                <projectName>EC-JBoss</projectName>
-                <propertySheet>
-                    <property>
-                        <propertyName>ec_customEditorData</propertyName>
-                        <propertySheet>
-                            <property>
-                                <propertyName>formType</propertyName>
-                                <expandable>1</expandable>
-                                <value>command</value>
-                            </property>
-                        </propertySheet>
-                    </property>
-                </propertySheet>
-            </step>
-        </procedure>
-        <procedure>
-            <procedureName>PerformCleanup</procedureName>
-            <description>Performs Cleanup.</description>
-            <jobNameTemplate>jboss-perform-cleanup-$[jobId]</jobNameTemplate>
-            <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
-            <propertySheet>
-                <property>
-                        <propertyName>ec_parameterForm</propertyName>
-                        <expandable>1</expandable>
-                        <value></value>
-                </property>
-                <property>
-                    <propertyName>ec_customEditorData</propertyName>
-                    <propertySheet>
-                        <property>
-                            <propertyName>parameters</propertyName>
-                            <propertySheet>
-                                <property>
-                                    <propertyName>serverconfig</propertyName>
-                                    <propertySheet>
-                                        <property>
-                                            <propertyName>formType</propertyName>
-                                            <expandable>1</expandable>
-                                            <value>standard</value>
-                                        </property>
-                                    </propertySheet>
-                                </property>
-                                <property>
-                                    <propertyName>scriptphysicalpath</propertyName>
-                                    <propertySheet>
-                                        <property>
-                                            <propertyName>formType</propertyName>
-                                            <expandable>1</expandable>
-                                            <value>standard</value>
-                                        </property>
-                                    </propertySheet>
-                                </property>
-
-                                <property>
-                                    <propertyName>cleanup_data</propertyName>
-                                    <propertySheet>
-                                        <property>
-                                            <propertyName>formType</propertyName>
-                                            <expandable>1</expandable>
-                                            <value>standard</value>
-                                        </property>
-                                    </propertySheet>
-                                </property>
-
-                                <property>
-                                    <propertyName>cleanup_tmp</propertyName>
-                                    <propertySheet>
-                                        <property>
-                                            <propertyName>formType</propertyName>
-                                            <expandable>1</expandable>
-                                            <value>standard</value>
-                                        </property>
-                                    </propertySheet>
-                                </property>
-
-                                <property>
-                                    <propertyName>hostname</propertyName>
-                                    <propertySheet>
-                                        <property>
-                                            <propertyName>formType</propertyName>
-                                            <expandable>1</expandable>
-                                            <value>standard</value>
-                                        </property>
-                                    </propertySheet>
-                                </property>
-                                <property>
-                                    <propertyName>servername</propertyName>
-                                    <propertySheet>
-                                        <property>
-                                            <propertyName>formType</propertyName>
-                                            <expandable>1</expandable>
-                                            <value>standard</value>
-                                        </property>
-                                    </propertySheet>
-                                </property>
-
-                            </propertySheet>
-                        </property>
-                    </propertySheet>
-                </property>
-            </propertySheet>
-
-            <formalParameter>
-                <formalParameterName>serverconfig</formalParameterName>
-                <defaultValue/>
-                <description>Supply the configuration name of the JBoss server.(Required)</description>
-                <required>1</required>
-                <type>entry</type>
-            </formalParameter>
-
-            <formalParameter>
-                <formalParameterName>scriptphysicalpath</formalParameterName>
-                <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'. (Required)</description>
-                <required>1</required>
-                <type>entry</type>
-            </formalParameter>
-            
-            <formalParameter>
-                <formalParameterName>hostname</formalParameterName>
-                <defaultValue></defaultValue>
-                <description>Hostname for domain mode only.</description>
-                <required>0</required>
-                <type>entry</type>
-            </formalParameter>
-            <formalParameter>
-                <formalParameterName>servername</formalParameterName>
-                <defaultValue></defaultValue>
-                <description>Servername for domain mode only.</description>
-                <required>0</required>
-                <type>entry</type>
-            </formalParameter>
-            
-            <formalParameter>
-                <formalParameterName>cleanup_data</formalParameterName>
-                <defaultValue></defaultValue>
-                <description>Cleanup data folder?</description>
-                <required>1</required>
-                <type>checkbox</type>
-            </formalParameter>
-            <formalParameter>
-                <formalParameterName>cleanup_tmp</formalParameterName>
-                <defaultValue></defaultValue>
-                <description>Cleanup tmp folder?.</description>
-                <required>1</required>
-                <type>checkbox</type>
-            </formalParameter>
-            <step>
-                <stepName>PerformCleanup</stepName>
-                <alwaysRun>0</alwaysRun>
-                <broadcast>0</broadcast>
-                <command/>
-                <condition/>
-                <description/>
-                <errorHandling>failProcedure</errorHandling>
-                <exclusive>0</exclusive>
-                <logFileName/>
-                <parallel>0</parallel>
-                <releaseExclusive>0</releaseExclusive>
-                <resourceName/>
-                <retries>0</retries>
-                <shell>ec-perl</shell>
-                <timeLimit/>
-                <timeLimitUnits>minutes</timeLimitUnits>
-                <workingDirectory/>
-                <workspaceName/>
-                <procedureName>PerformCleanup</procedureName>
                 <projectName>EC-JBoss</projectName>
                 <propertySheet>
                     <property>
