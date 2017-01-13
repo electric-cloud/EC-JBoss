@@ -2,11 +2,21 @@
     <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#CreateDatasource</help>
     <formElement>
         <type>entry</type>
-        <label>Server configuration name:</label>
+        <label>Configuration Name:</label>
         <property>serverconfig</property>
         <required>1</required>
         <documentation>Supply the configuration name of the JBoss server. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <propertyReference>/plugins/@PLUGIN_NAME@/project/jboss_cfgs</propertyReference>
         <htmlDocumentation>Supply the configuration name of the JBoss server.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
+    </formElement>
+
+    <formElement>
+        <type>entry</type>
+        <label>Physical location of the jboss client script:</label>
+        <property>scriptphysicalpath</property>
+        <required>0</required>
+        <propertyReference type="property">/plugins/@PLUGIN_NAME@/project/jboss_cfgs/$serverconfig/scriptphysicalpath</propertyReference>
+        <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</documentation>
     </formElement>
 
     <formElement>
@@ -15,14 +25,6 @@
         <property>application_name</property>
         <required>1</required>
         <documentation>Application name.</documentation>
-    </formElement> 
-
-    <formElement>
-        <type>entry</type>
-        <label>Physical location of the jboss client script:</label>
-        <property>scriptphysicalpath</property>
-        <required>1</required>
-        <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.</documentation>
     </formElement>
 
     <formElement>
@@ -31,21 +33,21 @@
         <property>connectionURL</property>
         <required>1</required>
         <documentation>The JDBC driver connection URL. i.e., 'jdbc:mysql://localhost:3306/ectest'.</documentation>
-    </formElement>      
+    </formElement>
     <formElement>
         <type>entry</type>
         <label>Driver Class:</label>
         <property>driverClass</property>
         <required>1</required>
         <documentation>The fully qualifed name of the JDBC driver class. i.e., 'com.mysql.jdbc.Driver'.</documentation>
-    </formElement>      
+    </formElement>
     <formElement>
         <type>entry</type>
         <label>JNDI Name:</label>
         <property>jndiName</property>
         <required>1</required>
         <documentation>Specifies the JNDI name for the datasource. This should start with either java:/ or java:jboss/. i.e., 'java:jboss/datasources/MySql'.</documentation>
-    </formElement>      
+    </formElement>
     <formElement>
         <type>entry</type>
         <label>Driver Name:</label>
@@ -61,14 +63,13 @@
         <required>0</required>
         <documentation>Profile name for domain mode.</documentation>
     </formElement>
-
     <formElement>
         <type>credential</type>
         <label>Datasource credential:</label>
         <property>dsCredential</property>
         <required>0</required>
         <documentation>Specify credential that contains username and password for data source.</documentation>
-    </formElement>      
+    </formElement>
 
     <formElement>
         <type>checkbox</type>
@@ -78,5 +79,5 @@
         <uncheckedValue>0</uncheckedValue>
         <initiallyChecked>0</initiallyChecked>
         <documentation>Specifies if the datasource should be enabled after creation.</documentation>
-    </formElement>                  
+    </formElement>
 </editor>

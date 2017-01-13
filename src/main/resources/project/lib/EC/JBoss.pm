@@ -81,8 +81,27 @@ sub new {
     }
 
     $self->{project_name} = $params{project_name};
-    $params{script_path} ||= $self->get_param('scriptphysicalpath');
+
     $params{config_name} ||= $self->get_param('serverconfig');
+
+    if ($params{config_name}) {
+        $self->{config_name} = $params{config_name};
+    }
+
+    my $creds = $self->get_credentials();
+    # script path parameter is empty.
+    if (!$params{script_path}) {
+        if ($creds->{scriptphysicalpath}) {
+            $params{script_path} = $creds->{scriptphysicalpath};
+        }
+        if ($self->get_param('scriptphysicalpath')) {
+            $params{script_path} = $self->get_param('scriptphysicalpath');
+        }
+    }
+    unless ($params{script_path}) {
+        $self->bail_out("No script physical path were found neither in configuration nor in procedure.");
+    }
+    # $params{script_path} ||= $self->get_param('scriptphysicalpath');
 
     my $dryrun = undef;
     if ($self->{plugin_key}) {
@@ -114,9 +133,7 @@ sub new {
 
         $self->{script_path} = $params{script_path};
     }
-    if ($params{config_name}) {
-        $self->{config_name} = $params{config_name};
-    }
+
 
     $self->{script_path} = qq|"$params{script_path}"|;
     $self->{config_name} = $params{config_name};
@@ -262,7 +279,7 @@ Returns credentials by credentials name specified at object creation.
 sub get_credentials {
     my ($self) = @_;
 
-    if ($self->{_credentials}) {
+    if ($self->{_credentials} && ref $self->{_credentials} eq 'HASH' && %{$self->{_credentials}}) {
         return $self->{_credentials};
     }
     if (!$self->{config_name}) {
@@ -304,7 +321,9 @@ sub get_credentials {
     $retval->{user} = '' . $xpath->findvalue("//userName");
     $retval->{password} = '' . $xpath->findvalue("//password");
     $retval->{jboss_url} = '' . $config_row{jboss_url};
-
+    if ($config_row{scriptphysicalpath}) {
+        $retval->{scriptphysicalpath} = '' . $config_row{scriptphysicalpath};
+    }
     return $retval;
 
 }
