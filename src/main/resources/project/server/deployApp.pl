@@ -50,7 +50,7 @@ sub main {
         $command .= ' --force ';
     }
 
-    if ($is_domain) {
+    if ($is_domain && !$params->{force}) {
         if ($params->{assignallservergroups}) {
             $command .= ' --all-server-groups ';
         }
