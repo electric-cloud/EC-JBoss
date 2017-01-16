@@ -52,4 +52,11 @@
         <initiallyChecked>0</initiallyChecked>
         <documentation>Select this option to disable the deployment and keep the content of the deployment, or unselect it to disable the deployment and removes its content from the repository.</documentation>
     </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Additional options:</label>
+        <property>additional_options</property>
+        <required>0</required>
+        <documentation>Additional options for deploy command.</documentation>
+    </formElement>
 </editor>

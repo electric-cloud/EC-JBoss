@@ -27,6 +27,7 @@ sub main {
         force
         assignservergroups
         assignallservergroups
+        additional_options
     /);
 
     my $is_domain = 0;
@@ -57,6 +58,11 @@ sub main {
         elsif ($params->{assignservergroups}) {
             $command .= qq/ --server-groups=$params->{assignservergroups}/;
         }
+    }
+
+    if ($params->{additional_options}) {
+        $params->{additional_options} = $jboss->escape_string($params->{additional_options});
+        $command .= ' ' . $params->{additional_options} . ' ';
     }
 
     my %result = $jboss->run_command($command);

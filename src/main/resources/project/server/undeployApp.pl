@@ -21,6 +21,7 @@ sub main {
         keepcontent
         servergroups
         allrelevantservergroups
+        additional_options
     /);
 
     my $command = qq/undeploy $params->{appname} /;
@@ -35,8 +36,11 @@ sub main {
         $command .= qq/ --server-groups=$params->{servergroups} /;
     }
 
+    if ($params->{additional_options}) {
+        $params->{additional_options} = $jboss->escape_string($params->{additional_options});
+        $command .= ' ' . $params->{additional_options} . ' ';
+    }
     my %result = $jboss->run_command($command);
-    
     if ($result{stdout}) {
         $jboss->out("Command output: $result{stdout}");
     }
