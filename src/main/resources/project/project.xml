@@ -135,6 +135,16 @@
                                     </propertySheet>
                                 </property>
                                 <property>
+                                    <propertyName>java_opts</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
                                     <propertyName>credential</propertyName>
                                     <propertySheet>
                                         <property>
@@ -170,6 +180,13 @@
                 <defaultValue/>
                 <description>Physical path to jboss-cli.</description>
                 <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>java_opts</formalParameterName>
+                <defaultValue/>
+                <description>Additional JAVA_OPTS</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
@@ -801,7 +818,16 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
+                                <property>
+                                    <propertyName>additional_options</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
 
                             </propertySheet>
                         </property>
@@ -868,6 +894,14 @@
                 <formalParameterName>assignservergroups</formalParameterName>
                 <defaultValue></defaultValue>
                 <description>Provide the comma-separated list of server group names the deploy command applies to. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+
+            <formalParameter>
+                <formalParameterName>additional_options</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Additional options for deploy command.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
@@ -976,11 +1010,9 @@
                                             <value>0</value>
                                         </property>
                                     </propertySheet>
-
                                 </property>
 
                                 <property>
-
                                     <propertyName>allrelevantservergroups</propertyName>
                                     <propertySheet>
                                         <property>
@@ -1004,7 +1036,6 @@
                                             <value>0</value>
                                         </property>
                                     </propertySheet>
-
                                 </property>
 
                                 <property>
@@ -1028,7 +1059,16 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
+                                <property>
+                                    <propertyName>additional_options</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -1059,7 +1099,6 @@
                 <type>entry</type>
             </formalParameter>
 
-
             <formalParameter>
                 <formalParameterName>keepcontent</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1084,6 +1123,13 @@
                 <type>entry</type>
             </formalParameter>
 
+            <formalParameter>
+                <formalParameterName>additional_options</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Additional options for undeployapp command.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
             <step>
                 <stepName>UndeployApp</stepName>
                 <alwaysRun>0</alwaysRun>

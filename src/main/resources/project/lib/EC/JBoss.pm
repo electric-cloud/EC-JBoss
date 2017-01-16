@@ -89,6 +89,17 @@ sub new {
     }
 
     my $creds = $self->get_credentials();
+    my $java_opts = $creds->{java_opts};
+    if ($java_opts) {
+        $self->out("Found JAVA_OPTS parameter: ", $java_opts);
+        my $new_java_opts = $java_opts;
+        if ($ENV{JAVA_OPTS}) {
+            $new_java_opts = $ENV{JAVA_OPTS} . ' ' . $java_opts;
+        }
+
+        $ENV{JAVA_OPTS} = $new_java_opts;
+        $self->out("New JAVA_OPTS value: $new_java_opts");
+    }
     # script path parameter is empty.
     if (!$params{script_path}) {
         if ($creds->{scriptphysicalpath}) {
@@ -323,6 +334,9 @@ sub get_credentials {
     $retval->{jboss_url} = '' . $config_row{jboss_url};
     if ($config_row{scriptphysicalpath}) {
         $retval->{scriptphysicalpath} = '' . $config_row{scriptphysicalpath};
+    }
+    if ($config_row{java_opts}) {
+        $retval->{java_opts} = '' . $config_row{java_opts};
     }
     return $retval;
 

@@ -33,5 +33,13 @@
         <value></value>
         <required>0</required>
     </formElement>
-    
+
+    <formElement>
+        <type>entry</type>
+        <label>Additional Java options:</label>
+        <property>java_opts</property>
+        <value></value>
+        <documentation>Additional java options.</documentation>
+        <required>0</required>
+    </formElement>
 </editor>

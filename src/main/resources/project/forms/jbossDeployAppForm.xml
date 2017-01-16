@@ -64,4 +64,11 @@
         <initiallyChecked>0</initiallyChecked>
         <documentation>Select this option to force deployment. If the deployment with the specified name already exists, by default, deployment is aborted and a corresponding message is printed. Switch --force (or -f) forces the replacement of the existing deployment with the one specified in the command arguments.</documentation>
     </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Additional options:</label>
+        <property>additional_options</property>
+        <required>0</required>
+        <documentation>Additional options for deploy command.</documentation>
+    </formElement>
 </editor>

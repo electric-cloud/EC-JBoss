@@ -77,7 +77,20 @@ sub trim($) {
 $::gEC = new ElectricCommander();
 $::gEC->abortOnError(0);
 $::gScriptPhysicalLocation = ($::gEC->getProperty("scriptphysicalpath") )->findvalue("//value");
-$::gAlternateJBossConfig = ($::gEC->getProperty("alternatejbossconfig") )->findvalue("//value");  $::gServerConfig = ($::gEC->getProperty("serverconfig") )->findvalue("//value");
+$::gAlternateJBossConfig = ($::gEC->getProperty("alternatejbossconfig") )->findvalue("//value");
+
+$::gServerConfig = ($::gEC->getProperty("serverconfig") )->findvalue("//value");
+
+my %tempConfig = &getConfiguration($::gServerConfig);
+
+if ($tempConfig{java_opts}) {
+    my $new_java_opts = $tempConfig{java_opts};
+    if ($ENV{JAVA_OPTS}) {
+        $new_java_opts = $ENV{JAVA_OPTS} . ' ' . $new_java_opts;
+    }
+    $ENV{JAVA_OPTS} = $new_java_opts;
+}
+
 # -------------------------------------------------------------------------
 # Main functions
 # -------------------------------------------------------------------------
