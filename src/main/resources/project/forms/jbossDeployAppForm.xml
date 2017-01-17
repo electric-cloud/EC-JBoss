@@ -53,7 +53,7 @@
         <label>Server groups to apply:</label>
         <property>assignservergroups</property>
         <required>0</required>
-        <documentation> Provide the comma-separated list of server group names the deploy command applies to. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</documentation>
+        <documentation>Provide the comma-separated list of server group names the deploy command applies to. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</documentation>
     </formElement>
     <formElement>
         <type>checkbox</type>

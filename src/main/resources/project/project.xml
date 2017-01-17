@@ -24,7 +24,6 @@
                     </property>
                 </propertySheet>
             </property>
-
             <property>
                 <propertyName>procedure_helpers</propertyName>
                 <description>Preamble for loading necessary modules.</description>
@@ -37,7 +36,6 @@
                     </property>
                 </propertySheet>
             </property>
-
             <property>
                 <propertyName>ui_forms</propertyName>
                 <description>Property sheet to hold XML specification for forms</description>
@@ -55,26 +53,21 @@
                     </property>
                 </propertySheet>
             </property>
-
             <property>
                 <propertyName>startstandaloneserver_matchers</propertyName>
                 <expandable>0</expandable>
                 <value/>
             </property>
-
-
             <property>
                 <propertyName>shutdowninstance_matchers</propertyName>
                 <expandable>0</expandable>
                 <value/>
             </property>
-
              <property>
                 <propertyName>startdomainserver_matchers</propertyName>
                 <expandable>0</expandable>
                 <value/>
             </property>
-
             <property>
                 <propertyName>ec_setup</propertyName>
                 <expandable>0</expandable>
@@ -154,7 +147,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -174,7 +166,6 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue/>
@@ -370,7 +361,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>alternatejbossconfig</propertyName>
                                     <propertySheet>
@@ -381,7 +371,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -392,7 +381,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -401,11 +389,10 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'. (Required)</description>
+                <description>Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>alternatejbossconfig</formalParameterName>
                 <defaultValue/>
@@ -413,15 +400,13 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start. (Required)</description>
+                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <step>
                 <stepName>StartStandaloneServer</stepName>
                 <alwaysRun>0</alwaysRun>
@@ -458,9 +443,7 @@
                 </propertySheet>
             </step>
         </procedure>
-
         <procedure>
-
             <procedureName>StartDomainServer</procedureName>
             <description>Start a Server in "domain" mode</description>
             <jobNameTemplate>jboss-startdomainserver-$[jobId]</jobNameTemplate>
@@ -477,7 +460,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -488,7 +470,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>alternatejbossconfig</propertyName>
                                     <propertySheet>
@@ -499,7 +480,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -510,21 +490,18 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                             </propertySheet>
                         </property>
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'. (Required)</description>
+                <description>Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>alternatejbossconfig</formalParameterName>
                 <defaultValue/>
@@ -532,15 +509,13 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration holds information about the domain you want to start. (Required)</description>
+                <description>Supply the configuration name of the JBoss server. This configuration holds information about the domain you want to start.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <step>
                 <stepName>StartDomainServer</stepName>
                 <alwaysRun>0</alwaysRun>
@@ -577,9 +552,7 @@
                 </propertySheet>
             </step>
         </procedure>
-
         <procedure>
-
             <procedureName>ShutdownStandaloneServer</procedureName>
             <description>Shutdown a running standalone server</description>
             <jobNameTemplate>jboss-shutdownstandaloneserver-$[jobId]</jobNameTemplate>
@@ -596,7 +569,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -607,7 +579,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -618,13 +589,11 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                             </propertySheet>
                         </property>
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
@@ -632,7 +601,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -640,7 +608,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <step>
                 <stepName>ShutdownInstance</stepName>
                 <alwaysRun>0</alwaysRun>
@@ -677,9 +644,7 @@
                 </propertySheet>
             </step>
         </procedure>
-
         <procedure>
-
             <procedureName>DeployApp</procedureName>
             <description>Deploys the application designated by the war file path or enables an already existing but disabled in the repository deployment designated by the name argument.</description>
             <jobNameTemplate>jboss-deployapp-$[jobId]</jobNameTemplate>
@@ -696,7 +661,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -707,7 +671,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>warphysicalpath</propertyName>
                                     <propertySheet>
@@ -729,9 +692,7 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
-
                                     <propertyName>force</propertyName>
                                     <propertySheet>
                                         <property>
@@ -755,11 +716,8 @@
                                             <value>0</value>
                                         </property>
                                     </propertySheet>
-
                                 </property>
-
                                 <property>
-
                                     <propertyName>assignallservergroups</propertyName>
                                     <propertySheet>
                                         <property>
@@ -783,9 +741,7 @@
                                             <value>0</value>
                                         </property>
                                     </propertySheet>
-
                                 </property>
-
                                 <property>
                                     <propertyName>assignservergroups</propertyName>
                                     <propertySheet>
@@ -796,7 +752,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>appname</propertyName>
                                     <propertySheet>
@@ -807,7 +762,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>runtimename</propertyName>
                                     <propertySheet>
@@ -828,7 +782,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -841,15 +794,13 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>warphysicalpath</formalParameterName>
                 <defaultValue/>
-                <description>Path to the application to deploy. Required in case the deployment doesn't exist in the repository. (Required)</description>
+                <description>Path to the application to deploy. Required in case the deployment doesn't exist in the repository.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -857,7 +808,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>appname</formalParameterName>
                 <defaultValue></defaultValue>
@@ -865,7 +815,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>runtimename</formalParameterName>
                 <defaultValue></defaultValue>
@@ -873,7 +822,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>force</formalParameterName>
                 <defaultValue></defaultValue>
@@ -881,7 +829,6 @@
                 <required>0</required>
                 <type>checkbox</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>assignallservergroups</formalParameterName>
                 <defaultValue></defaultValue>
@@ -889,7 +836,6 @@
                 <required>0</required>
                 <type>checkbox</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>assignservergroups</formalParameterName>
                 <defaultValue></defaultValue>
@@ -897,7 +843,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>additional_options</formalParameterName>
                 <defaultValue></defaultValue>
@@ -905,7 +850,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <step>
                 <stepName>DeployApp</stepName>
                 <alwaysRun>0</alwaysRun>
@@ -917,7 +861,6 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName/>
                 <retries>0</retries>
@@ -941,11 +884,8 @@
                     </property>
                 </propertySheet>
             </step>
-
         </procedure>
-
         <procedure>
-
             <procedureName>UndeployApp</procedureName>
             <description>Undeploys a deployment with the given name and, depending on the arguments, removes its content from the repository.</description>
             <jobNameTemplate>jboss-undeployapp-$[jobId]</jobNameTemplate>
@@ -962,7 +902,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -973,7 +912,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -984,9 +922,7 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
-
                                     <propertyName>keepcontent</propertyName>
                                     <propertySheet>
                                         <property>
@@ -1011,7 +947,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>allrelevantservergroups</propertyName>
                                     <propertySheet>
@@ -1037,7 +972,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>servergroups</propertyName>
                                     <propertySheet>
@@ -1048,7 +982,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>appname</propertyName>
                                     <propertySheet>
@@ -1074,7 +1007,6 @@
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
@@ -1082,7 +1014,6 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1090,15 +1021,13 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>appname</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Unique name of the deployment to undeploy. (Required)</description>
+                <description>Unique name of the deployment to undeploy.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>keepcontent</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1106,7 +1035,6 @@
                 <required>0</required>
                 <type>checkbox</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>allrelevantservergroups</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1114,7 +1042,6 @@
                 <required>0</required>
                 <type>checkbox</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>servergroups</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1122,7 +1049,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>additional_options</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1141,7 +1067,6 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName/>
                 <retries>0</retries>
@@ -1165,11 +1090,8 @@
                     </property>
                 </propertySheet>
             </step>
-
         </procedure>
-
         <procedure>
-
             <procedureName>CheckServerStatus</procedureName>
             <description>Check the HTTP status of a given URL</description>
             <jobNameTemplate>jboss-checkserverstatus-$[jobId]</jobNameTemplate>
@@ -1211,7 +1133,6 @@
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
@@ -1237,7 +1158,6 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName/>
                 <retries>0</retries>
@@ -1289,7 +1209,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -1300,7 +1219,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>appname</propertyName>
                                     <propertySheet>
@@ -1373,7 +1291,6 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1381,7 +1298,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>appname</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1410,7 +1326,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>wait_time</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1418,7 +1333,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>hosts</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1426,7 +1340,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <step>
                 <stepName>CheckDeployStatus</stepName>
                 <alwaysRun>0</alwaysRun>
@@ -1438,7 +1351,6 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName/>
                 <retries>0</retries>
@@ -1463,9 +1375,7 @@
                 </propertySheet>
             </step>
         </procedure>
-
         <procedure>
-
             <procedureName>EnableDeploy</procedureName>
             <description>Enables an already existing but disabled in the repository deployment designated by the name argument. Implemented only for the Standalone Mode.</description>
             <jobNameTemplate>jboss-deployapp-$[jobId]</jobNameTemplate>
@@ -1482,7 +1392,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -1493,7 +1402,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -1504,7 +1412,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>appname</propertyName>
                                     <propertySheet>
@@ -1520,7 +1427,6 @@
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
@@ -1528,7 +1434,6 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1536,7 +1441,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>appname</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1579,9 +1483,7 @@
                 </propertySheet>
             </step>
         </procedure>
-
         <procedure>
-
             <procedureName>DisableDeploy</procedureName>
             <description>Disables a deployment designated by the name argument. Implemented only for the Standalone Mode.</description>
             <jobNameTemplate>jboss-deployapp-$[jobId]</jobNameTemplate>
@@ -1598,7 +1500,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -1609,7 +1510,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -1620,7 +1520,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>appname</propertyName>
                                     <propertySheet>
@@ -1636,7 +1535,6 @@
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
@@ -1644,7 +1542,6 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1652,7 +1549,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>appname</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1671,7 +1567,6 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName/>
                 <retries>0</retries>
@@ -1696,9 +1591,7 @@
                 </propertySheet>
             </step>
         </procedure>
-
         <procedure>
-
             <procedureName>CreateDatasource</procedureName>
             <description>Creates a datasource in JBoss.</description>
             <jobNameTemplate>jboss-createdatasource-$[jobId]</jobNameTemplate>
@@ -1715,7 +1608,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -1726,7 +1618,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>application_name</propertyName>
                                     <propertySheet>
@@ -1737,7 +1628,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>profile</propertyName>
                                     <propertySheet>
@@ -1748,7 +1638,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -1759,7 +1648,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>connectionURL</propertyName>
                                     <propertySheet>
@@ -1770,7 +1658,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>driverClass</propertyName>
                                     <propertySheet>
@@ -1781,7 +1668,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>jndiName</propertyName>
                                     <propertySheet>
@@ -1792,7 +1678,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>driverName</propertyName>
                                     <propertySheet>
@@ -1803,7 +1688,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>dsCredential</propertyName>
                                     <propertySheet>
@@ -1844,7 +1728,6 @@
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
@@ -1852,7 +1735,6 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>application_name</formalParameterName>
                 <defaultValue/>
@@ -1860,7 +1742,6 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>profile</formalParameterName>
                 <defaultValue/>
@@ -1868,7 +1749,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1879,35 +1759,31 @@
             <formalParameter>
                 <formalParameterName>connectionURL</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>The JDBC driver connection URL. i.e., 'jdbc:mysql://localhost:3306/ectest'. (Required)</description>
+                <description>The JDBC driver connection URL. i.e., 'jdbc:mysql://localhost:3306/ectest'.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>driverClass</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>The fully qualifed name of the JDBC driver class. i.e., 'com.mysql.jdbc.Driver'. (Required)</description>
+                <description>The fully qualifed name of the JDBC driver class. i.e., 'com.mysql.jdbc.Driver'.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>jndiName</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Specifies the JNDI name for the datasource. This should start with either java:/ or java:jboss/. i.e., 'java:jboss/datasources/MySql'. (Required)</description>
+                <description>Specifies the JNDI name for the datasource. This should start with either java:/ or java:jboss/. i.e., 'java:jboss/datasources/MySql'.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>driverName</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Defines the JDBC driver the datasource should use. This can be either the name of the .jar file or the name of the module, depending on how the driver has been deployed. i.e., 'mysql-connector-java-5.1.20-bin.jar'. (Required)</description>
+                <description>Defines the JDBC driver the datasource should use. This can be either the name of the .jar file or the name of the module, depending on how the driver has been deployed. i.e., 'mysql-connector-java-5.1.20-bin.jar'.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>dsCredential</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1915,7 +1791,6 @@
                 <required>0</required>
                 <type>credential</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>enabled</formalParameterName>
                 <defaultValue></defaultValue>
@@ -1934,7 +1809,6 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName/>
                 <retries>0</retries>
@@ -1962,9 +1836,7 @@
                 </attachedParameters>
             </step>
         </procedure>
-
         <procedure>
-
             <procedureName>DeleteDatasource</procedureName>
             <description>Deletes a datasource in JBoss.</description>
             <jobNameTemplate>jboss-deletedatasource-$[jobId]</jobNameTemplate>
@@ -1981,7 +1853,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -1992,7 +1863,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>application_name</propertyName>
                                     <propertySheet>
@@ -2003,8 +1873,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
-
                                 <property>
                                     <propertyName>profile</propertyName>
                                     <propertySheet>
@@ -2015,7 +1883,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -2026,13 +1893,11 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                             </propertySheet>
                         </property>
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
@@ -2040,7 +1905,6 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>profile</formalParameterName>
                 <defaultValue/>
@@ -2048,7 +1912,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>application_name</formalParameterName>
                 <defaultValue/>
@@ -2056,7 +1919,6 @@
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -2064,7 +1926,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <step>
                 <stepName>DeleteDatasource</stepName>
                 <alwaysRun>0</alwaysRun>
@@ -2076,7 +1937,6 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName/>
                 <retries>0</retries>
@@ -2101,10 +1961,7 @@
                 </propertySheet>
             </step>
         </procedure>
-
-
         <procedure>
-
             <procedureName>RunCustomCommand</procedureName>
             <description>Runs custom scripts or procedures.</description>
             <jobNameTemplate>jboss-runcustomscript-$[jobId]</jobNameTemplate>
@@ -2121,7 +1978,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -2132,7 +1988,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>customCommand</propertyName>
                                     <propertySheet>
@@ -2161,7 +2016,7 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start. (Required)</description>
+                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -2172,7 +2027,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>customCommand</formalParameterName>
                 <defaultValue></defaultValue>
@@ -2232,7 +2086,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -2243,7 +2096,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>serversgroup</propertyName>
                                     <propertySheet>
@@ -2254,7 +2106,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -2280,15 +2131,13 @@
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start. (Required)</description>
+                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -2296,7 +2145,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>serversgroup</formalParameterName>
                 <defaultValue></defaultValue>
@@ -2347,7 +2195,6 @@
                 </propertySheet>
             </step>
         </procedure>
-
         <procedure>
             <procedureName>StopServers</procedureName>
             <description>Stops servers.</description>
@@ -2365,7 +2212,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -2376,7 +2222,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>serversgroup</propertyName>
                                     <propertySheet>
@@ -2387,7 +2232,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -2398,7 +2242,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>wait_time</propertyName>
                                     <propertySheet>
@@ -2414,15 +2257,13 @@
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start. (Required)</description>
+                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -2497,7 +2338,6 @@
                         <property>
                             <propertyName>parameters</propertyName>
                             <propertySheet>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -2508,7 +2348,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>serversgroup</propertyName>
                                     <propertySheet>
@@ -2519,7 +2358,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
@@ -2530,7 +2368,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>criteria</propertyName>
                                     <propertySheet>
@@ -2551,21 +2388,18 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                             </propertySheet>
                         </property>
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start. (Required)</description>
+                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
@@ -2573,7 +2407,6 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-
             <formalParameter>
                 <formalParameterName>serversgroup</formalParameterName>
                 <defaultValue></defaultValue>
@@ -2702,7 +2535,6 @@
                     </propertySheet>
                 </property>
             </propertySheet>
-
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
@@ -2749,7 +2581,6 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName/>
                 <retries>0</retries>
