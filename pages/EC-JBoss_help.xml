@@ -4,12 +4,12 @@
     <head>
         <meta name="generator" content="HTML Tidy for Windows (vers 14 February 2006), see www.w3.org" />
         <meta content="text/html; charset=us-ascii" http-equiv="content-type" />
-        <title>ElectricFlow Plugin for @PLUGIN_KEY@</title>
+        <title>ElectricFlow Plugin for JBoss EAP.</title>
         <link rel="stylesheet" href="../../plugins/@PLUGIN_KEY@/pluginhelp.css" type="text/css" media="screen" />
     </head>
     <body>
         <div class="help">
-            <h1>JBoss</h1>
+            <h1>@PLUGIN_KEY@</h1>
             <p>Plugin Version @PLUGIN_VERSION@</p>
             <hr style="margin-left: -10px; margin-top: 10px; height: 1px; width: 100%; color: #5981BD;" noshade="noshade" />
 
