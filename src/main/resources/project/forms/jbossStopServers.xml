@@ -2,14 +2,13 @@
     <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#StopServers</help>
     <formElement>
         <type>entry</type>
-        <label>Configuration Name:</label>
+        <label>Configuration name:</label>
         <property>serverconfig</property>
         <required>1</required>
-        <documentation>Supply the configuration name of the JBoss server. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
         <propertyReference>/plugins/@PLUGIN_NAME@/project/jboss_cfgs</propertyReference>
-        <htmlDocumentation>Supply the configuration name of the JBoss server.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
+        <htmlDocumentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
     </formElement>
-
     <formElement>
         <type>entry</type>
         <label>Physical location of the jboss client script:</label>
@@ -23,13 +22,14 @@
         <label>Servers group:</label>
         <property>serversgroup</property>
         <required>1</required>
-        <documentation>Serversgroup</documentation>
+        <documentation>The name of the server group to stop.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Wait time:</label>
         <property>wait_time</property>
         <required>0</required>
-        <documentation>Wait time.</documentation>
+        <value>300</value>
+        <documentation>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</documentation>
     </formElement>
 </editor>
