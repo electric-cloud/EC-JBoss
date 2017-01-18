@@ -21,10 +21,10 @@
 
     <formElement>
         <type>entry</type>
-        <label>Application name:</label>
-        <property>application_name</property>
+        <label>Datasource name:</label>
+        <property>datasource_name</property>
         <required>1</required>
-        <documentation>Application name.</documentation>
+        <documentation>Datasource name to delete.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>

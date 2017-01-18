@@ -901,6 +901,7 @@
             <h1 id="rns">Release Notes</h1>
             <h2>@PLUGIN_KEY@ 2.1.5</h2>
             <ul>
+                <li>Form for DeleteDatasource has been changed. Property "application_name" has been renamed to "datasource_name".</li>
                 <li>CheckHostControllerStatus procedure has been added.</li>
                 <li>CheckServerGroupStatus procedure has been added.</li>
                 <li>Fixed an issue when CheckDeploymentStatus was unable to check status of deployment in the domain mode.</li>

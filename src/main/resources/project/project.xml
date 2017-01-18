@@ -1864,7 +1864,7 @@
                                     </propertySheet>
                                 </property>
                                 <property>
-                                    <propertyName>application_name</propertyName>
+                                    <propertyName>datasource_name</propertyName>
                                     <propertySheet>
                                         <property>
                                             <propertyName>formType</propertyName>
@@ -1913,9 +1913,9 @@
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
-                <formalParameterName>application_name</formalParameterName>
+                <formalParameterName>datasource_name</formalParameterName>
                 <defaultValue/>
-                <description>Application name.</description>
+                <description>Datasource name to delete.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
