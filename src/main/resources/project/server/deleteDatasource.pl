@@ -19,12 +19,12 @@ sub main {
 
     my $params = $jboss->get_params_as_hashref(qw/
         serverconfig
-        application_name
+        datasource_name
         profile
     /);
 
     my $command = 'data-source remove ';
-    $command .= qq| --name=$params->{application_name} |;
+    $command .= qq| --name=$params->{datasource_name} |;
 
     if ($params->{profile}) {
         $command .= qq| --profile=$params->{profile} |;
