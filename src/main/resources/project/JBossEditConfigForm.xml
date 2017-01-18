@@ -1,5 +1,4 @@
 <editor>
-
     <formElement>
         <type>entry</type>
         <label>JBoss AS URL:</label>
@@ -13,7 +12,7 @@
         <label>Physical location of the jboss client script:</label>
         <property>scriptphysicalpath</property>
         <value></value>
-        <documentation>JBoss controller location. For example: localhost:9999.</documentation>
+        <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.</documentation>
         <required>0</required>
     </formElement>
     <formElement>
@@ -23,14 +22,12 @@
         <value></value>
         <required>0</required>
     </formElement>
-
     <formElement>
         <type>entry</type>
         <label>Additional Java options:</label>
         <property>java_opts</property>
         <value></value>
-        <documentation>Additional java options.</documentation>
+        <documentation>Additional java options. This line will be added to the value of JAVA_OPTS environment variable.</documentation>
         <required>0</required>
     </formElement>
-    
 </editor>

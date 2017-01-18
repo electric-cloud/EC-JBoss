@@ -34,7 +34,6 @@ ECMock->mock_sub('ElectricCommander',
     },
     setProperty => sub {
         my ($caller, $key, $value) = @_;
-        
         ${ElectricCommander::prop_base}{$key} = $value;
     },
 );

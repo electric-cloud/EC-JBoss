@@ -28,6 +28,8 @@
                 <a href="#setupconfig">Setting Up the Plugin Configuration</a>
                 <ul>
                     <li><a href="#CheckDeployStatus">CheckDeployStatus</a></li>
+                    <li><a href="#CheckHostControllerStatus">CheckHostControllerStatus</a></li>
+                    <li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a></li>
                     <li><a href="#CheckServerStatus">CheckServerStatus</a></li>
                     <li><a href="#CreateDatasource">CreateDatasource</a></li>
                     <li><a href="#DeleteDatasource">DeleteDatasource</a></li>
@@ -41,7 +43,6 @@
                     <li><a href="#StartStandaloneServer">StartStandaloneServer</a></li>
                     <li><a href="#StopServers">StopServers</a></li>
                     <li><a href="#UndeployApp">UndeployApp</a></li>
-                    <li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a></li>
                 </ul>
                 <a href="#procedures">Plugin Procedures</a><br />
                 <a href="#rns">Release Notes</a>
@@ -123,18 +124,27 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class='required'>Configuration Name</td>
-                                <td>A unique name for the configuration with connection information for the JBoss server. </td>
+                                <td class='required'>Configuration name</td>
+                                <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                             </tr>
                             <tr>
-                                <td class='required'>JBoss AS URL</td>
-                                <td>URL of the JBoss AS, including the protocol, IP address, and port number of the server, such as <i>http://127.0.0.1:9999</i>. </td>
+                                <td class='required'>JBoss controller location</td>
+                                <td>JBoss controller location. For example: localhost:9999.</td>
+                            </tr>
+                            <tr>
+                                <td>Physical location of the jboss client script</td>
+                                <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'</td>
                             </tr>
                             <tr>
                                 <td>Login as</td>
                                 <td><i>Username</i>: The user name that ElectricFlow uses to communicate with the JBoss server.<br />
                                     <i>Password</i>: Provide the password for the <i>Username</i>.<br />
-                                    <i>Retype Password</i>: Re-enter the password.</td>
+                                    <i>Retype Password</i>: Re-enter the password.
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Additional Java options</td>
+                                <td>Additional java options. This line will be added to the value of JAVA_OPTS environment variable.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -149,7 +159,7 @@
 
             <div id="CheckDeployStatus">
                 <h2>CheckDeployStatus</h2>
-                <p>This procedure checks the status of a URL that corresponds to a deployment.</p>
+                <p>This procedure checks the status of a deployed application using jboss client script.</p>
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the CheckDeployStatus procedure.</li>
@@ -163,16 +173,37 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of a configuration for the JBoss server. This configuration has information about the domain that you want to start.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>Location of the JBoss command-line interface (CLI) script, such <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                    <td class='required'>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Deployment Name</td>
-                                    <td>Name of the deployment.</td>
+                                    <td>Unique name of the deployment.</td>
+                                </tr>
+
+                                <tr>
+                                    <td>Hosts</td>
+                                    <td>Provide the comma-separated list of host names.</td>
+                                </tr>
+                                <tr>
+                                    <td>Server groups</td>
+                                    <td>Provide the comma-separated list of server group names. If "Hosts" parameter has been provided, procedure will search for server groups within that hosts list.</td>
+                                </tr>
+                                <tr>
+                                    <td>Servers</td>
+                                    <td>Provide the comma-separated list of server names. If "Server groups" parameter has been provided, procedure will search for servers within that group.</td>
+                                </tr>
+                                <tr>
+                                    <td class="required">Success criteria</td>
+                                    <td>A desired terminal status of the deployment. The procedure will fail if criteria will not be reached.</td>
+                                </tr>
+                                <tr>
+                                    <td>Wait time</td>
+                                    <td>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -186,9 +217,9 @@
                     After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CheckDeployStatus</b> step,
                     click the Log icon to see the diagnostic information.
                 </p>
-                <!--
-                    <p>After the job runs, you can view the results, including the following job details, which show the status of the
-                        deployment:</p>
+                <p>
+                    After the job runs, you can view the results, including the following job details, which show the status of the deployment:
+                </p>
                     <br />
                     <img src="../../plugins/@PLUGIN_NAME@/images/CheckDeployStatus/ECJBossCheckDeployStatus3.png" />
                     <br />
@@ -198,17 +229,16 @@
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/CheckDeployStatus/ECJBossCheckDeployStatus4.png" />
                 <br />
-                -->
+
 
             </div>
-
-            <div id="CheckServerStatus">
-                <h2>CheckServerStatus</h2>
-                <p>The CheckServerStatus procedure checks the status of the specified server.</p>
+            <div id="CheckHostControllerStatus"> <a name="CheckHostControllerStatus" id="CheckHostControllerStatus"></a>
+                <h2>CheckHostControllerStatus</h2>
+                <p>The CheckHostControllerStatus procedure checks status of JBoss' Host Controller.</p>
                 <h3>Input</h3>
                 <ol>
-                    <li>Go to the CheckServerStatus procedure.</li>
-                    <li>Enter the following parameters: <br />
+                    <li>Go to the CheckHostControllerStatus procedure.</li>
+                    <li>Enter the following parameters:<br />
                         <table class="grid">
                             <thead>
                                 <tr>
@@ -218,19 +248,70 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of the configuration with connection information for the JBoss server.
-                                        This configuration has information about the domain that you want to start. </td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>Name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>Location of the JBoss command-line interface (CLI) script, such <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                    <td class='required'>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>Host controller name</td>
+                                    <td>Host controller name. Default is 'master'.</td>
+                                </tr>
+                                <tr>
+                                    <td>Wait time</td>
+                                    <td>Wait time for terminal state in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>Success criteria</td>
+                                    <td>A desired terminal status of the host controller. The procedure will fail if criteria will not be reached.</td>
                                 </tr>
                             </tbody>
                         </table>
-                        <br />
-                        <img src="../../plugins/@PLUGIN_NAME@/images/CheckServerStatus/ECJBossCheckServerStatus2.png" />
-                        <br />
+                    </li>
+                    <img src="../../plugins/@PLUGIN_NAME@/images/CheckHostControllerStatus/CheckHostControllerStatus2.png" />
+                </ol>
+                <h3>Output</h3>
+                <p>After the job runs, you can view the results, including the following job details, which show that host controller is running.</p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CheckHostControllerStatus/CheckHostControllerStatus3.png" />
+                <br />
+                <p>In the <b>CheckHostControllerStatus</b> step, click the Log icon to see the diagnostic information. The output is similar to the
+                    following diagnostic report:</p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CheckHostControllerStatus/CheckHostControllerStatus3.png" />
+                <br />
+            </div>
+            <div id="CheckServerStatus">
+                <h2>CheckServerStatus</h2>
+                <p>The CheckServerStatus procedure checks the status of the specified server.</p>
+                <h3>Input</h3>
+                <ol>
+                    <li>Go to the CheckServerStatus procedure.</li>
+                    <li>Enter the following parameters: <br />
+                    <table class="grid">
+                        <thead>
+                            <tr>
+                                <th>Parameter</th>
+                                <th>Description</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class='required'>Server Configuration Name</td>
+                                <td>The name of the configuration with connection information for the JBoss server.
+                                This configuration has information about the domain that you want to start. </td>
+                            </tr>
+                            <tr>
+                                <td class='required'>Physical Location of the JBoss Client Script</td>
+                                <td>Location of the JBoss command-line interface (CLI) script, such <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/CheckServerStatus/ECJBossCheckServerStatus2.png" />
+                    <br />
                     </li>
                 </ol>
                 <h3>Output</h3>
@@ -412,47 +493,44 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of a configuration for the JBoss server. This configuration has information about the domain that you want to start.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>The physical location of the JBoss client script, such as <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                    <td class='required'>Physical location of the jboss client script.</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Path to the Application to Deploy</td>
-                                    <td>The path to the application to be deployed. This parameter is required when the application does not exist in the repository. </td>
+                                    <td class='required'>Path to the application to deploy</td>
+                                    <td>Path to the application to deploy. Required in case the deployment doesn't exist in the repository.</td>
                                 </tr>
                                 <tr>
-                                    <td>Deployment Name</td>
-                                    <td>The unique name of the deployment.<br />
-                                        If the file path parameter in the <b>Physical Location of the JBoss Client Script</b> field is specified, the deployment name is optional.
-                                        ElectricFlow uses the file name as the default value.<br />
-                                        If the file path argument is not specified, ElectricFlow enables the existing application specified in the <b>Deployment Name</b> field.</td>
+                                    <td>Deployment name</td>
+                                    <td>Unique name of the deployment. If the file path argument is specified, the name argument is optional with the file name been the default value. If the file path argument isn't specified then the command is supposed to enable an already existing but disabled deployment, and in this case the name argument is required.</td>
                                 </tr>
                                 <tr>
-                                    <td>Server Groups to Apply</td>
-                                    <td>A comma-separated list of server groups to which this procedure applies. <br />
-                                        This parameter applies only to domain servers.<br />
-                                        You must select <b>Server groups to apply</b> or <b>Apply To All Servers</b>.</td>
+                                    <td>Runtime name for deployment</td>
+                                    <td>Provide the runtime name for the deployment.</td>
                                 </tr>
                                 <tr>
-                                    <td>Runtime Name for Deployment</td>
-                                    <td>The runtime name of the deployment.</td>
+                                    <td>Apply to all servers</td>
+                                    <td>Select this option to deploy to all available servers. This indicates that deployment applies to all available server groups. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</td>
                                 </tr>
                                 <tr>
-                                    <td>Apply To All Servers</td>
-                                    <td>Select this parameter to deploy the application to all available servers.<br />
-                                        This parameter applies only to domain servers.<br />
-                                        You must select <b>Server groups to apply</b> or <b>Apply To All Servers</b>.</td>
+                                    <td>Server groups to apply</td>
+                                    <td>Provide the comma-separated list of server group names the deploy command applies to. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</td>
                                 </tr>
                                 <tr>
-                                    <td>Force Deployment</td>
+                                    <td>Force deployment</td>
                                     <td>Select this parameter to force the deployment application to run.<br />
                                         By default, if the deployment application with the specified name already exists,
                                         the deployment is aborted and a message appears.<br />
                                         Use Switch --force (or -f) to force the replacement of the existing deployment with the one
                                         specified in the command arguments.</td>
+                                </tr>
+                                <tr>
+                                    <td>Additional options</td>
+                                    <td>Additional options for deploy command.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -466,11 +544,13 @@
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployApp3.png" />
                 <br />
+                <!--
                 <p>In the <b>DeployApp</b> step, click the Log icon to see the diagnostic information. The output is similar to the following
                     diagnostic report:</p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployApp4.png" />
                 <br />
+                -->
             </div>
 
             <div id="DisableDeploy"><a name='DisableDeploy' id="DisableDeploy"></a>
@@ -698,26 +778,38 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of the configuration for the JBoss server.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>The physical location of the JBoss client script, such as <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                    <td class='required'>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
-                                    <td>Server Groups</td>
-                                    <td>The names of the server groups to start.</td>
+                                    <td class="required">Server group</td>
+                                    <td>The name of the server group to start.</td>
+                                </tr>
+                                <tr>
+                                    <td>Wait time</td>
+                                    <td>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
                                 </tr>
                             </tbody>
                         </table>
                     </li>
                     <br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers1.png" />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers2.png" />
                     <br />
                 </ol>
                 <h3>Output</h3>
                 <p>After the job runs, you can view the results in the Job Details page. In the <b>StartServers</b> step, click the Log icon to see the diagnostic information.</p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers3.png" />
+                <br />
+                <p>In the <b>StartServers</b> step, click the Log icon to see the diagnostic information. The output is
+                    similar to the following diagnostic report:</p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers4.png" />
+                <br />
             </div>
             <div id="StartStandaloneServer"> <a name="StartStandaloneServer" id="StartStandaloneServer"></a>
                 <h2>StartStandaloneServer</h2>
@@ -781,24 +873,36 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of the configuration for the JBoss server.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>The physical location of the JBoss client script, such as <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                    <td class='required'>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Server Groups</td>
-                                    <td>The names of the server groups to stop.</td>
+                                    <td class='required'>Servers group</td>
+                                    <td>The name of the server group to stop.</td>
+                                </tr>
+                                <tr>
+                                    <td>Wait time</td>
+                                    <td>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
                                 </tr>
                             </tbody>
                         </table>
                     </li>
-                    <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers1.png" />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServers2.png" />
                 </ol>
                 <h3>Output</h3>
                 <p>After the job runs, you can view the results in the Job Details page. In the <b>StopServers</b> step, click the Log icon to see the diagnostic information.</p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServers3.png" />
+                <br />
+                <p>In the <b>StopServers</b> step, click the Log icon to see the diagnostic information. The output is
+                    similar to the following diagnostic report:</p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServers4.png" />
+                <br />
             </div>
             <div id="UndeployApp"> <a name='UndeployApp' id="UndeployApp"></a>
                 <h2>UndeployApp</h2>
@@ -816,32 +920,32 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of the configuration for the JBoss server.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>The physical location of the JBoss client script, such as <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i>.</td>
+                                    <td class='required'>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Deployment Name</td>
-                                    <td>The unique name of the application to undeploy. </td>
+                                    <td>Unique name of the application (deployment) to undeploy.</td>
                                 </tr>
                                 <tr>
-                                    <td>Apply Undeploy to All Server Groups</td>
-                                    <td>Select this parameter to run this procedure in all server groups in which the application is enabled.<br />
-                                        This parameter applies only to domain servers.<br />
-                                        You must select <b>Server groups to apply</b> or <b>Apply To All Servers</b>.</td>
+                                    <td>Apply undeploy to all server groups</td>
+                                    <td>Select this option to apply undeploy to all server groups in which the deployment is enabled. Either server-groups or all-relevant-server-groups is required in domain mode. This argument is not applicable in standalone mode.</td>
                                 </tr>
                                 <tr>
-                                    <td>Server Groups to Apply</td>
-                                    <td>A comma-separated list of server groups to which this procedure applies.<br />
-                                        This parameter applies only to domain servers.</td>
+                                    <td>Server groups to apply</td>
+                                    <td>Provide the comma-separated list of server group names the undeploy command applies to.</td>
                                 </tr>
                                 <tr>
-                                    <td>Keep Content</td>
-                                    <td>Select this parameter to disable the deployment and keep the its content. When this is not selected, the deployment is
-                                        disabled and its content is removed from the repository.</td>
+                                    <td>Keep content</td>
+                                    <td>Select this option to disable the deployment and keep the content of the deployment, or unselect it to disable the deployment and removes its content from the repository.</td>
+                                </tr>
+                                <tr>
+                                    <td>Wait time</td>
+                                    <td>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -849,16 +953,17 @@
                     <img src="../../plugins/@PLUGIN_NAME@/images/UndeployApp/ECJBossUndeployApp2.png" />
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results, including the following job details, which show that the application was
-                    undeployed:</p>
+                <p>After the job runs, you can view the results, including the following job details, which show that the application was undeployed:</p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/UndeployApp/ECJBossUndeployApp3.png" />
                 <br />
+                <!--
                 <p>In the <b>UndeployApp</b> step, click the Log icon to see the diagnostic information. The output is similar to the
                     following diagnostic report:</p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/UndeployApp/ECJBossUndeployApp4.png" />
                 <br />
+                -->
             </div>
             <div id="CheckServerGroupStatus"> <a name='CheckServerGroupStatus' id="CheckServerGroupStatus"></a>
                 <h2>CheckServerGroupStatus</h2>
