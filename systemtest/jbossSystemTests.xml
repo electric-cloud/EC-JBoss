@@ -293,9 +293,9 @@
             <inheriting>1</inheriting>
           </acl>
           <property>
-            <propertyName>application_name</propertyName>
+            <propertyName>datasource_name</propertyName>
             <expandable>1</expandable>
-            <value>AppName</value>
+            <value>DatasourceName</value>
           </property>
 
           <property>

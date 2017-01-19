@@ -1128,6 +1128,56 @@
                                         </property>
                                     </propertySheet>
                                 </property>
+                                <property>
+                                    <propertyName>host</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>server</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>wait_time</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>criteria</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>url_check</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -1147,7 +1197,46 @@
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
-            <step>
+
+            <formalParameter>
+                <formalParameterName>host</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Provide a host name to check. Applicable only for domain mode and will be ignored for standalone server.</description>
+                <required>0</required>
+                <type>entry</type>
+             </formalParameter>
+
+             <formalParameter>
+                 <formalParameterName>server</formalParameterName>
+                 <defaultValue></defaultValue>
+                 <description>Provide a server name to check. Applicable only for domain mode and will be ignored for standalone server..</description>
+                 <required>0</required>
+                 <type>entry</type>
+             </formalParameter>
+             
+             <formalParameter>
+                 <formalParameterName>criteria</formalParameterName>
+                 <defaultValue></defaultValue>
+                 <description>A desired terminal status of the server. The procedure will fail if criteria will not be reached.</description>
+                 <required>1</required>
+                 <type>entry</type>
+             </formalParameter>
+             
+             <formalParameter>
+                 <formalParameterName>wait_time</formalParameterName>
+                 <defaultValue></defaultValue>
+                 <description>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</description>
+                 <required>0</required>
+                 <type>entry</type>
+             </formalParameter>
+             <formalParameter>
+                 <formalParameterName>url_check</formalParameterName>
+                 <defaultValue></defaultValue>
+                 <description>Select this option to check JBoss server url for availability.</description>
+                 <required>0</required>
+                 <type>checkbox</type>
+             </formalParameter>
+             <step>
                 <stepName>CheckServerStatus</stepName>
                 <alwaysRun>0</alwaysRun>
                 <broadcast>0</broadcast>
@@ -1422,6 +1511,16 @@
                                         </property>
                                     </propertySheet>
                                 </property>
+                                <property>
+                                    <propertyName>appname</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -1446,6 +1545,13 @@
                 <defaultValue></defaultValue>
                 <description>Unique name of the deployment to enable.</description>
                 <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>assignservergroups</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Provide the comma-separated list of server group names the enable deployment command applies to. Server groups parameter is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <step>
@@ -1530,6 +1636,16 @@
                                         </property>
                                     </propertySheet>
                                 </property>
+                                <property>
+                                    <propertyName>assignservergroups</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -1554,6 +1670,13 @@
                 <defaultValue></defaultValue>
                 <description>Unique name of the deployment to disable.</description>
                 <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>assignservergroups</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Provide the comma-separated list of server group names the disable deployment command applies to. Server groups parameter is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</description>
+                <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <step>

@@ -41,6 +41,8 @@ sub main {
         $command .= ' ' . $params->{additional_options} . ' ';
     }
     my %result = $jboss->run_command($command);
+
+    $jboss->{success_message} = sprintf 'Application %s has been successfully undeployed.', $params->{appname};
     if ($result{stdout}) {
         $jboss->out("Command output: $result{stdout}");
     }

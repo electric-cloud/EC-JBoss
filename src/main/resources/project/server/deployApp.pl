@@ -67,6 +67,7 @@ sub main {
 
     my %result = $jboss->run_command($command);
 
+    $jboss->{success_message} = sprintf 'Application %s (%s) has been successfully deployed.', $params->{appname}, $params->{warphysicalpath};
     if ($result{stdout}) {
         $jboss->out("Command output: $result{stdout}");
     }

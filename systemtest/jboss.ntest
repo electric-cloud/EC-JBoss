@@ -173,6 +173,7 @@ ntest "setup-create configuration", {}, sub {
             { actualParameterName => 'config', value => "config1" },
             { actualParameterName => 'jboss_url', value => "http://localhost:9990/console" },
             { actualParameterName => 'credential', value => "config1" },
+            { actualParameterName => 'scriptphysicalpath', value => ''}
           ],
           credential => [
             { credentialName => 'config1', userName => "admin", password => "admin", },
@@ -219,6 +220,7 @@ ntest "setup-create configuration 6.4", {}, sub {
             { actualParameterName => 'config', value => "config2" },
             { actualParameterName => 'jboss_url', value => "http://localhost:9999" },
             { actualParameterName => 'credential', value => "config2" },
+            { actualParameterName => 'scriptphysicalpath', value => ''}
           ],
           credential => [
             { credentialName => 'config2', userName => "admin", password => "adminjboss1@@", },
@@ -732,10 +734,12 @@ ntest "startStandaloneServer", {}, sub {
       # get the value of the commands lines
       my $commandLine = $xpath->findvalue("//property[propertyName='startStandaloneServerLine']/value");
 
-      if($^O eq 'MSWin32'){
+      print "CommandLine: $commandLine\n\n";
+      if($^O eq 'MSWin32') {
           assertTrue(($commandLine =~ m/ecdaemon -- ec-perl -e "exec\('\\\\\\"D:\\Programs\\jboss-as-web-7.0.1.Final\\bin\\standalone.bat\\\\\\" 1>jbossstartstandaloneserver-([0-9a-f\-]+).log 2>jbossstartstandaloneserver-([0-9a-f\-]+).err'\);"/), '');
 
-      }else{
+      }
+      else {
           assertTrue(($commandLine =~ m/ecdaemon -- sh -c "D:\\Programs\\jboss-as-web-7.0.1.Final\\bin\\standalone.bat"/), "command line differs from what is expected, got: $commandLine");
       }
 
