@@ -775,7 +775,12 @@ sub process_response {
         $self->warning();
         return 1;
     }
-    $self->success();
+    my $success_msg = '';
+    if ($self->{success_message}) {
+        $success_msg = $self->{success_message};
+        $self->out($success_msg);
+    }
+    $self->success($success_msg);
     return 1;
 }
 
@@ -1048,7 +1053,12 @@ sub get_launch_type {
 
     my $command = ':read-attribute(name=launch-type)';
     my %r = $self->run_command($command);
-    my $jboss_type = $self->decode_answer($r{stdout})->{result};
+    my $temp = $self->decode_answer($r{stdout});
+    unless ($temp) {
+        print "Return nothing\n";
+        return '';
+    }
+    my $jboss_type = $temp->{result};
     $jboss_type = lc $jboss_type;
 
     if ($jboss_type ne 'domain' && $jboss_type ne 'standalone') {
@@ -1194,6 +1204,15 @@ sub is_servergroup_has_status {
         }
     }
     return $retval;
+}
+
+sub fix_url {
+    my ($self, $url) = @_;
+
+    if ($url !~ m/^http/s) {
+        $url = 'http://' . $url;
+    }
+    return $url;
 }
 
 1;

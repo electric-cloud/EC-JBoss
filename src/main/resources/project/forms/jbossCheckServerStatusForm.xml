@@ -17,4 +17,50 @@
         <propertyReference type="property">/plugins/@PLUGIN_NAME@/project/jboss_cfgs/$serverconfig/scriptphysicalpath</propertyReference>
         <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</documentation>
     </formElement>
+    <formElement>
+        <type>checkbox</type>
+        <label>Perform URL check:</label>
+        <property>url_check</property>
+        <checkedValue>1</checkedValue>
+        <uncheckedValue>0</uncheckedValue>
+        <initiallyChecked>0</initiallyChecked>
+        <documentation>Select this option to check JBoss server url for availability.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Host:</label>
+        <property>host</property>
+        <required>0</required>
+        <documentation>Provide a host name to check. Applicable only for domain mode and will be ignored for standalone server.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Server:</label>
+        <property>server</property>
+        <required>0</required>
+        <documentation>Provide a server name to check. Applicable only for domain mode and will be ignored for standalone server.</documentation>
+    </formElement>
+    <formElement>
+        <type>select</type>
+        <label>Success criteria:</label>
+        <property>criteria</property>
+        <required>1</required>
+        <documentation>A desired terminal status of the server. The procedure will fail if criteria will not be reached.</documentation>
+        <option>
+            <name>RUNNING</name>
+            <value>RUNNING</value>
+        </option>
+        <option>
+            <name>NOT RUNNING</name>
+            <value>NOT_RUNNING</value>
+        </option>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Wait time:</label>
+        <property>wait_time</property>
+        <required>0</required>
+        <value>300</value>
+        <documentation>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</documentation>
+    </formElement>
 </editor>

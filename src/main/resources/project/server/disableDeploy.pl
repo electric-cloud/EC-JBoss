@@ -12,12 +12,20 @@ sub main {
         plugin_name     =>  $PLUGIN_NAME,
         plugin_key      =>  $PLUGIN_KEY,
     );
-    
     my $params = $jboss->get_params_as_hashref(qw/
         appname
+        assignservergroups
     /);
 
     my $command = "undeploy --name=$params->{appname} --keep-content";
+    my $launch_type = $jboss->get_launch_type();
+    if ($launch_type eq 'domain' && !$params->{assignservergroups}) {
+        $jboss->bail_out('When JBoss server is launched as domain, "Server groups" parameter is mandatory');
+    }
 
+    if ($launch_type eq 'domain') {
+        $command .= " --server-groups=$params->{assignservergroups}";
+    }
+    $jboss->{success_message} = "Application $params->{appname} has been successfully disabled.";
     $jboss->process_response($jboss->run_command($command));
 }

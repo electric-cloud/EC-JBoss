@@ -24,4 +24,11 @@
         <required>1</required>
         <documentation>Unique name of the deployment to enable.</documentation>
     </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Server groups:</label>
+        <property>assignservergroups</property>
+        <required>0</required>
+        <documentation>Provide the comma-separated list of server group names the enable deployment command applies to. Server groups parameter is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</documentation>
+    </formElement>
 </editor>
