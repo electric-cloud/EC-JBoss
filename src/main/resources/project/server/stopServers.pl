@@ -38,11 +38,15 @@ sub main {
     if (defined $params->{wait_time} && $params->{wait_time} ne '') {
         $wait_time = $params->{wait_time};
         if ($wait_time !~ m/^\d+$/s) {
-            $jboss->bail_out("Wait time should be a positive integer");
+            $jboss->bail_out("Wait time should be a positive integer.");
         }
     }
 
     my ($servers, $states) = $jboss->get_servergroup_status($params->{serversgroup});
+
+    if (!@$states) {
+        $jboss->bail_out("Server group $params->{serversgroup} does not exist or empty.");
+    }
 
     $jboss->{silent} = 1;
     my $servers_with_terminal_status = $jboss->is_servergroup_has_status(
