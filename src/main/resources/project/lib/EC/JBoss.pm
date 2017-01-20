@@ -221,11 +221,21 @@ sub run_command {
 
     my $result;
     if ($self->{dryrun}) {
-        $result = {
-            code    =>  0,
-            stderr  =>  '',
-            stdout  =>  'DUMMY-STDOUT',
-        };
+        my $dryrun_response = $self->get_dryrun_response(@command);
+        if ($dryrun_response) {
+            $result = {
+                code => $dryrun_response->{code},
+                stderr => $dryrun_response->{stderr},
+                stdout => $dryrun_response->{stdout},
+            };
+        }
+        else {
+            $result = {
+                code    =>  0,
+                stderr  =>  '',
+                stdout  =>  'DUMMY-STDOUT',
+            };
+        }
     }
     else {
         if (is_win) {
@@ -1213,6 +1223,31 @@ sub fix_url {
         $url = 'http://' . $url;
     }
     return $url;
+}
+
+sub get_dryrun_response {
+    my ($self, @command) = @_;
+
+    my $command = join ' ', @command;
+    my $property = '';
+    eval {
+        $property = $self->ec()->getProperty(
+            "/plugins/$self->{plugin_key}/project/dryrun_response"
+        )->findvalue('//value')->string_value();
+    };
+
+    return undef unless $property;
+    my $json = decode_json($property);
+    my $retval = undef;
+    for my $row (@{$json->{commands}}) {
+        my $regexp = quotemeta($row->{command});
+        if ($command =~ m/$regexp/s) {
+            $retval = $row;
+            last;
+        }
+    }
+    # add search mechanism there.
+    return $retval;
 }
 
 1;

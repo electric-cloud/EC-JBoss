@@ -734,7 +734,6 @@ ntest "startStandaloneServer", {}, sub {
       # get the value of the commands lines
       my $commandLine = $xpath->findvalue("//property[propertyName='startStandaloneServerLine']/value");
 
-      print "CommandLine: $commandLine\n\n";
       if($^O eq 'MSWin32') {
           assertTrue(($commandLine =~ m/ecdaemon -- ec-perl -e "exec\('\\\\\\"D:\\Programs\\jboss-as-web-7.0.1.Final\\bin\\standalone.bat\\\\\\" 1>jbossstartstandaloneserver-([0-9a-f\-]+).log 2>jbossstartstandaloneserver-([0-9a-f\-]+).err'\);"/), '');
 
@@ -785,3 +784,122 @@ ntest "checkServerGroupStatus", {}, sub {
 };
 
 
+ntest "CheckHostControllerStatus_OK", {}, sub {
+    doSetup();
+    set_check_host_controller_fixtures();
+    # run test job
+    my $xpath = $::N->runProcedure($::gtestProjectName, {
+        procedureName => "checkHostControllerStatus_OK",
+        pollInterval  => '1',
+        timeout => 600,
+        actualParameter => []
+    });
+
+
+    # make sure it finished
+    my $jobId = 0;
+    my $status = '';
+
+    assertOK($xpath, 'runProcedure has errors');
+    if ($xpath) {
+        $jobId  = $xpath->findvalue("//jobId");
+        $status = $xpath->findvalue("//status");
+        $outcome = $xpath->findvalue("//outcome");
+        assertTrue($jobId && $jobId ne "",'valid job id');
+        assertEq('completed',$status,"job $jobId complete");
+        assertTrue($outcome eq 'success', "Success");
+
+        #abort if job did not finish
+        if ($status ne 'completed') {
+            assertOK($::N->abortJob($jobId, {force => 1}));
+        }
+    }
+
+    unset_fixtures();
+    # get the job details
+    $xpath = $::N->getJobDetails($jobId);
+};
+
+ntest "CheckHostControllerStatus Wrong But OK", {}, sub {
+    doSetup();
+    set_check_host_controller_fixtures();
+    # run test job
+    my $xpath = $::N->runProcedure($::gtestProjectName, {
+        procedureName => "checkHostControllerStatus_Wrong_but_OK",
+        pollInterval  => '1',
+        timeout => 600,
+        actualParameter => []
+    });
+
+    # make sure it finished
+    my $jobId = 0;
+    my $status = '';
+
+    assertOK($xpath, 'runProcedure has errors');
+    if ($xpath) {
+        $jobId  = $xpath->findvalue("//jobId");
+        $status = $xpath->findvalue("//status");
+        $outcome = $xpath->findvalue("//outcome");
+        assertTrue($jobId && $jobId ne "",'valid job id');
+        assertEq('completed', $status, "job $jobId complete");
+        assertTrue($outcome eq 'success', "Success");
+
+        #abort if job did not finish
+        if ($status ne 'completed') {
+            assertOK($::N->abortJob($jobId, {force => 1}));
+        }
+    }
+
+    unset_fixtures();
+    # get the job details
+    $xpath = $::N->getJobDetails($jobId);
+};
+
+### fixtures functions ###
+sub set_check_host_controller_fixtures {
+    my $dryrun_out = {
+        commands => [
+            {
+                command => ':read-children-resources(child-type=host,include-runtime=true)',
+                stdout => q|{"outcome" => "success","result" => {"master" => {"host-state" => "running"}}}|,
+                stderr => '',
+                code => 0,
+            }
+        ],
+    };
+
+    set_dryrun_response($dryrun_out);
+}
+
+
+sub set_domain_mode_fixtures {
+    my $dryrun_out = {
+        commands => [
+            {
+                command => ':read-attribute(name=launch-type)',
+                stdout => q|{"outcome" => "success","result" => "DOMAIN"}|,
+                stderr => '',
+                code => 0,
+            }
+        ]
+    };
+}
+
+
+sub unset_fixtures {
+    return unset_dryrun_response();
+}
+
+
+### Utility functions
+sub set_dryrun_response {
+    my ($response) = @_;
+
+    return undef unless $response;
+    my $json = encode_json($response);
+    $::N->setProperty("/plugins/$::gPlugin_name/project/dryrun_response", $json);
+}
+
+sub unset_dryrun_response {
+    $::N->deleteProperty("/plugins/$::gPlugin_name/project/dryrun_response");
+}
