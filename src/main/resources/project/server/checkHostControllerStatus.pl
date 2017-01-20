@@ -19,6 +19,9 @@ use strict;
 use Data::Dumper;
 
 my $PROJECT_NAME = '$[/myProject/projectName]';
+my $PLUGIN_NAME = '@PLUGIN_NAME@';
+my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
 $|=1;
 
 main();
@@ -26,8 +29,9 @@ main();
 sub main {
     my $jboss = EC::JBoss->new(
         project_name    =>  $PROJECT_NAME,
+        plugin_name     =>  $PLUGIN_NAME,
+        plugin_key      =>  $PLUGIN_KEY,
     );
-
     my $params = $jboss->get_params_as_hashref(
         'hostcontroller_name',
         'criteria',
@@ -57,6 +61,7 @@ sub get_hostcontroller_status {
 
     my $command = ':read-children-resources(child-type=host,include-runtime=true)';
     my %result = $jboss->run_command($command);
+    print Dumper \%result;
     # if ($result{code} == 1 && $result{stdout} =~ m/Connection\srefused/s) {
     if ($result{code} == 1) {
         return 'not_running';
@@ -67,7 +72,8 @@ sub get_hostcontroller_status {
         $jboss->bail_out();
     }
     if (!$json->{result}->{$name}) {
-        $jboss->bail_out("HostController with name '$name' doesn't exist");
+        # $jboss->bail_out("HostController with name '$name' doesn't exist");
+        return 'not_running';
     }
     return $json->{result}->{$name}->{'host-state'};
 

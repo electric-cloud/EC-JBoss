@@ -111,7 +111,7 @@ sub main() {
     # start admin server using ecdaemon
     my %config = getConfiguration($::gServerConfig);
 
-    if (isServerAlreadyAlive(\%config)) {
+    if (!is_dryrun_enabled() && isServerAlreadyAlive(\%config)) {
         print "Server is already alive on url $config{jboss_url}";
         exit 0;
     }
@@ -388,5 +388,17 @@ sub verifyServerIsStarted {
         }
     }
 }
+
+
+sub is_dryrun_enabled {
+    my $dryrun = 0;
+    eval {
+        $dryrun = $::gEC->getProperty(
+            '/plugins/@PLUGIN_KEY@/project/dryrun'
+        )->findvalue('//value')->string_value();
+    };
+    return $dryrun;
+}
+
 main();
 1;
