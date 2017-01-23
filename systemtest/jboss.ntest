@@ -173,7 +173,8 @@ ntest "setup-create configuration", {}, sub {
             { actualParameterName => 'config', value => "config1" },
             { actualParameterName => 'jboss_url', value => "http://localhost:9990/console" },
             { actualParameterName => 'credential', value => "config1" },
-            { actualParameterName => 'scriptphysicalpath', value => ''}
+            { actualParameterName => 'scriptphysicalpath', value => ''},
+            { actualParameterName => 'log_level', value => '4'}
           ],
           credential => [
             { credentialName => 'config1', userName => "admin", password => "admin", },
@@ -566,7 +567,7 @@ ntest "undeployApp", {}, sub {
 ntest "checkServerStatus", {}, sub {
 
       doSetup();
-
+      set_check_server_status_fixtures();
       # run test job
       my $xpath = $::N->runProcedure($::gtestProjectName,
               {procedureName => "checkServerStatus",
@@ -590,6 +591,7 @@ ntest "checkServerStatus", {}, sub {
 
           assertTrue($jobId && $jobId ne "",'valid job id');
           assertEq('completed',$status,"job $jobId complete");
+          assertTrue($outcome eq 'success', "Success");
 
           #abort if job did not finish
           if ($status ne 'completed') {
@@ -599,7 +601,7 @@ ntest "checkServerStatus", {}, sub {
 
       # get the job details
       $xpath = $::N->getJobDetails($jobId);
-
+      unset_fixtures();
 };
 
 
@@ -607,6 +609,7 @@ ntest "checkDeployStatus", {}, sub {
 
       doSetup();
 
+      set_check_deploy_status_fixtures();
       # run test job
       my $xpath = $::N->runProcedure($::gtestProjectName,
               {procedureName => "checkDeployStatus",
@@ -630,7 +633,7 @@ ntest "checkDeployStatus", {}, sub {
 
           assertTrue($jobId && $jobId ne "",'valid job id');
           assertEq('completed',$status,"job $jobId complete");
-
+          assertTrue($outcome eq 'success', "Success");
           #abort if job did not finish
           if ($status ne 'completed') {
               assertOK($::N->abortJob($jobId, {force => 1}));
@@ -639,6 +642,7 @@ ntest "checkDeployStatus", {}, sub {
 
       # get the job details
       $xpath = $::N->getJobDetails($jobId);
+      unset_fixtures();
 };
 
 
@@ -746,7 +750,7 @@ ntest "startStandaloneServer", {}, sub {
 
 ntest "checkServerGroupStatus", {}, sub {
       doSetup();
-
+      set_check_server_group_status_fixtures();
       # run test job
       my $xpath = $::N->runProcedure($::gtestProjectName,
               {procedureName => "CheckServerGroupStatus",
@@ -770,6 +774,7 @@ ntest "checkServerGroupStatus", {}, sub {
 
           assertTrue($jobId && $jobId ne "",'valid job id');
           assertEq('completed',$status,"job $jobId complete");
+          assertTrue($outcome eq 'success', "Success");
 
           #abort if job did not finish
           if ($status ne 'completed') {
@@ -779,8 +784,7 @@ ntest "checkServerGroupStatus", {}, sub {
 
       # get the job details
       $xpath = $::N->getJobDetails($jobId);
-
-
+      unset_fixtures();
 };
 
 
@@ -815,9 +819,9 @@ ntest "CheckHostControllerStatus_OK", {}, sub {
         }
     }
 
-    unset_fixtures();
     # get the job details
     $xpath = $::N->getJobDetails($jobId);
+    unset_fixtures();
 };
 
 ntest "CheckHostControllerStatus Wrong But OK", {}, sub {
@@ -850,10 +854,164 @@ ntest "CheckHostControllerStatus Wrong But OK", {}, sub {
         }
     }
 
+    # get the job details
+    $xpath = $::N->getJobDetails($jobId);
     unset_fixtures();
+};
+
+ntest "RunCustomCommandOK", {}, sub {
+    doSetup();
+    run_custom_command_fixtures();
+    # run test job
+    my $xpath = $::N->runProcedure($::gtestProjectName, {
+        procedureName => "RunCustomCommandOK",
+        pollInterval  => '1',
+        timeout => 600,
+        actualParameter => []
+    });
+
+    # make sure it finished
+    my $jobId = 0;
+    my $status = '';
+
+    assertOK($xpath, 'runProcedure has errors');
+    if ($xpath) {
+        $jobId  = $xpath->findvalue("//jobId");
+        $status = $xpath->findvalue("//status");
+        $outcome = $xpath->findvalue("//outcome");
+        assertTrue($jobId && $jobId ne "",'valid job id');
+        assertEq('completed', $status, "job $jobId complete");
+        assertTrue($outcome eq 'success', "Success");
+
+        #abort if job did not finish
+        if ($status ne 'completed') {
+            assertOK($::N->abortJob($jobId, {force => 1}));
+        }
+    }
+
+    # get the job details
+    $xpath = $::N->getJobDetails($jobId);
+    unset_fixtures();
+};
+
+ntest "RunCustomCommandConfigDoesntExist", {}, sub {
+    doSetup();
+    # run test job
+    my $xpath = $::N->runProcedure($::gtestProjectName, {
+        procedureName => "RunCustomCommandConfigDoesntExist",
+        pollInterval  => '1',
+        timeout => 600,
+        actualParameter => []
+    });
+
+    # make sure it finished
+    my $jobId = 0;
+    my $status = '';
+    assertOK($xpath, 'runProcedure has errors');
+    if ($xpath) {
+        $jobId  = $xpath->findvalue("//jobId");
+        $status = $xpath->findvalue("//status");
+        $outcome = $xpath->findvalue("//outcome");
+        my $jobDetails = $::N->getJobDetails($jobId);
+        my $summary = $jobDetails->findvalue(
+            "//property[propertyName='summary']/value"
+        )->string_value();
+        assertTrue($summary eq "Configuration nonexistent_config doesn't exist.\n", "Configuration does't exist");
+        assertTrue($jobId && $jobId ne "", 'valid job id');
+        assertEq('completed', $status, "job $jobId complete");
+        assertTrue($outcome eq 'error', "Success");
+        #abort if job did not finish
+        if ($status ne 'completed') {
+            assertOK($::N->abortJob($jobId, {force => 1}));
+        }
+    }
+
     # get the job details
     $xpath = $::N->getJobDetails($jobId);
 };
+
+ntest "RunCommandCantConnect", {}, sub {
+    doSetup();
+    set_cant_connect_fixtures();
+    # run test job
+    my $xpath = $::N->runProcedure($::gtestProjectName, {
+        procedureName => "RunCommandCantConnect",
+        pollInterval  => '1',
+        timeout => 600,
+        actualParameter => []
+    });
+
+    # make sure it finished
+    my $jobId = 0;
+    my $status = '';
+
+    assertOK($xpath, 'runProcedure has errors');
+    if ($xpath) {
+        $jobId  = $xpath->findvalue("//jobId");
+        $status = $xpath->findvalue("//status");
+        $outcome = $xpath->findvalue("//outcome");
+        my $jobDetails = $::N->getJobDetails($jobId);
+        my $summary = $jobDetails->findvalue(
+            "//property[propertyName='summary']/value"
+        )->string_value();
+        assertTrue($summary =~ m/^Failed\sto\sconnect\sto\sthe controller/s, "Failed to connect to the controller");
+
+        assertTrue($jobId && $jobId ne "",'valid job id');
+        assertEq('completed', $status, "job $jobId complete");
+        assertTrue($outcome eq 'error', "Error");
+
+        #abort if job did not finish
+        if ($status ne 'completed') {
+            assertOK($::N->abortJob($jobId, {force => 1}));
+        }
+    }
+
+    # get the job details
+    $xpath = $::N->getJobDetails($jobId);
+    unset_fixtures();
+};
+
+ntest "RunCommandCantAuthenticate", {}, sub {
+    doSetup();
+    set_wrong_credentials_fixtures();
+    # run test job
+    my $xpath = $::N->runProcedure($::gtestProjectName, {
+        procedureName => "RunCommandCantConnect",
+        pollInterval  => '1',
+        timeout => 600,
+        actualParameter => []
+    });
+
+    # make sure it finished
+    my $jobId = 0;
+    my $status = '';
+
+    assertOK($xpath, 'runProcedure has errors');
+    if ($xpath) {
+        $jobId  = $xpath->findvalue("//jobId");
+        $status = $xpath->findvalue("//status");
+        $outcome = $xpath->findvalue("//outcome");
+        my $jobDetails = $::N->getJobDetails($jobId);
+        my $summary = $jobDetails->findvalue(
+            "//property[propertyName='summary']/value"
+        )->string_value();
+        assertTrue($summary =~ m/Unable\sto\sauthenticate\sagainst\scontroller/s, "Unable to authenticate against controller.");
+
+        assertTrue($jobId && $jobId ne "",'valid job id');
+        assertEq('completed', $status, "job $jobId complete");
+        assertTrue($outcome eq 'error', "Error");
+
+        #abort if job did not finish
+        if ($status ne 'completed') {
+            assertOK($::N->abortJob($jobId, {force => 1}));
+        }
+    }
+
+    # get the job details
+    $xpath = $::N->getJobDetails($jobId);
+    unset_fixtures();
+};
+
 
 ### fixtures functions ###
 sub set_check_host_controller_fixtures {
@@ -872,7 +1030,7 @@ sub set_check_host_controller_fixtures {
 }
 
 
-sub set_domain_mode_fixtures {
+sub set_check_deploy_status_fixtures {
     my $dryrun_out = {
         commands => [
             {
@@ -880,12 +1038,120 @@ sub set_domain_mode_fixtures {
                 stdout => q|{"outcome" => "success","result" => "DOMAIN"}|,
                 stderr => '',
                 code => 0,
+            },
+            {
+                command => ':read-children-names(child-type=host)',
+                stdout => q|{"outcome" => "success","result" => ["master"]}|,
+                stderr => '',
+                code => 0,
+            },
+            {
+                command => '/host=master:read-children-resources(child-type=server-config,include-runtime=true)',
+                stdout => q|{"outcome" => "success","result" => {"server-one" => {"group" => "main-server-group","name" => "server-one","status" => "STARTED"}}}|,
+                stderr => '',
+                code => 0,
+            },
+            {
+                command => q|/host=master/server=server-one/deployment=HelloWorld:read-attribute(name=status)|,
+                stdout => q|{"outcome" => "success","result" => "OK"}|,
+                stderr => '',
+                code => 0,
             }
         ]
     };
+
+    set_dryrun_response($dryrun_out);
+}
+
+sub set_check_server_group_status_fixtures {
+    my $dryrun_out = {
+        commands => [
+            {
+                command => ':read-attribute(name=launch-type)',
+                stdout => q|{"outcome" => "success","result" => "DOMAIN"}|,
+                stderr => '',
+                code => 0,
+            },
+            {
+                command => ':read-children-names(child-type=host)',
+                stdout => q|{"outcome" => "success","result" => ["master"]}|,
+                stderr => '',
+                code => 0,
+            },
+            {
+                command => '/host=master:read-children-resources(child-type=server-config,include-runtime=true)',
+                stdout => q|{"outcome" => "success","result" => {"server-one" => {"group" => "main-server-group","name" => "server-one","status" => "STARTED"}}}|,
+                stderr => '',
+                code => 0,
+            }
+        ]
+    };
+
+    set_dryrun_response($dryrun_out);
 }
 
 
+sub set_check_server_status_fixtures {
+    my $dryrun_out = {
+        commands => [
+            {
+                command => ':read-attribute(name=launch-type)',
+                stdout => q|{"outcome" => "success","result" => "STANDALONE"}|,
+                stderr => '',
+                code => 0,
+            },
+            {
+                command => ':read-attribute(name=server-state)',
+                stdout => q|{"outcome" => "success","result" => "running"}|,
+                stderr => '',
+                code => 0,
+            },
+        ]
+    };
+    set_dryrun_response($dryrun_out);
+}
+
+sub run_custom_command_fixtures {
+        my $dryrun_out = {
+        commands => [
+            {
+                command => ':read-attribute(name=launch-type)',
+                stdout => q|{"outcome" => "success","result" => "STANDALONE"}|,
+                stderr => '',
+                code => 0,
+            },
+        ]
+    };
+    set_dryrun_response($dryrun_out);
+}
+
+sub set_cant_connect_fixtures {
+    my $dryrun_out = {
+        commands => [
+            {
+                command => ':read-attribute(name=launch-type)',
+                stdout => q|Failed to connect to the controller: The controller is not available...|,
+                stderr => '',
+                code => 1,
+            },
+        ]
+    };
+    set_dryrun_response($dryrun_out);
+}
+
+sub set_wrong_credentials_fixtures {
+    my $dryrun_out = {
+        commands => [
+            {
+                command => ':read-attribute(name=launch-type)',
+                stdout => q|Failed to connect to the controller: Unable to authenticate against controller...|,
+                stderr => '',
+                code => 1,
+            },
+        ]
+    };
+    set_dryrun_response($dryrun_out);
+}
 sub unset_fixtures {
     return unset_dryrun_response();
 }

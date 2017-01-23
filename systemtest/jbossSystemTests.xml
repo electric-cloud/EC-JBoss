@@ -63,21 +63,36 @@
             <inheriting>1</inheriting>
           </acl>
           <property>
-            <propertyName>serverconfig</propertyName>
-            <expandable>1</expandable>
-            <value>config1</value>
+              <propertyName>serverconfig</propertyName>
+              <expandable>1</expandable>
+              <value>config1</value>
           </property>
 
           <property>
-            <propertyName>scriptphysicalpath</propertyName>
-            <expandable>1</expandable>
-            <value>C:\jboss\jboss-as-web-7.0.1.Final\bin\jboss-admin.bat</value>
+              <propertyName>scriptphysicalpath</propertyName>
+              <expandable>1</expandable>
+              <value>C:\jboss\jboss-as-web-7.0.1.Final\bin\jboss-admin.bat</value>
           </property>
 
           <property>
-            <propertyName>appname</propertyName>
-            <expandable>1</expandable>
-            <value>webapp1</value>
+              <propertyName>appname</propertyName>
+              <expandable>1</expandable>
+              <value>HelloWorld</value>
+          </property>
+          <property>
+              <propertyName>criteria</propertyName>
+              <expandable>1</expandable>
+              <value>OK</value>
+          </property>
+          <property>
+              <propertyName>servers</propertyName>
+              <expandable>1</expandable>
+              <value>server-one</value>
+          </property>
+          <property>
+              <propertyName>serversgroup</propertyName>
+              <expandable>1</expandable>
+              <value>main-server-group</value>
           </property>
         </actualParameters>
         <propertySheet>
@@ -140,7 +155,11 @@
             <expandable>1</expandable>
             <value>config1</value>
           </property>
-
+          <property>
+            <propertyName>criteria</propertyName>
+            <expandable>1</expandable>
+            <value>RUNNING</value>
+          </property>
           <property>
             <propertyName>scriptphysicalpath</propertyName>
             <expandable>1</expandable>
@@ -1457,35 +1476,8 @@
           <value>5</value>
         </property>
       </propertySheet>
-        <step>
-          <stepName>shutdown_server</stepName>
-          <alwaysRun>0</alwaysRun>
-          <broadcast>0</broadcast>
-          <command>/home/build/EAP-6.4.0/bin/jboss-cli.sh --connect --command=":shutdown"</command>
-          <condition />
-          <description />
-          <errorHandling>ignore</errorHandling>
-          <exclusive>0</exclusive>
-          <exclusiveMode>none</exclusiveMode>
-          <lastModifiedBy>admin</lastModifiedBy>
-          <logFileName />
-          <owner>admin</owner>
-          <parallel>0</parallel>
-          <postProcessor />
-          <precondition />
-          <procedureName>CheckServerGroupStatus</procedureName>
-          <releaseExclusive>0</releaseExclusive>
-          <releaseMode>none</releaseMode>
-          <resourceName />
-          <shell>sh</shell>
-          <timeLimit />
-          <timeLimitUnits>minutes</timeLimitUnits>
-          <tracked>1</tracked>
-          <workingDirectory />
-          <workspaceName />
-        </step>
-        <step>
-          <stepName>start domain server</stepName>
+      <step>
+          <stepName>check server group status</stepName>
           <alwaysRun>0</alwaysRun>
           <broadcast>0</broadcast>
           <condition />
@@ -1498,120 +1490,63 @@
           <parallel>0</parallel>
           <precondition />
           <procedureName>CheckServerGroupStatus</procedureName>
+          <projectName>Jboss systemtest</projectName>
           <releaseExclusive>0</releaseExclusive>
           <releaseMode>none</releaseMode>
           <resourceName />
-          <subprocedure>StartDomainServer</subprocedure>
+          <subprocedure>CheckServerGroupStatus</subprocedure>
           <subproject>/plugins/EC-JBoss/project</subproject>
           <timeLimit />
           <timeLimitUnits>minutes</timeLimitUnits>
           <tracked>1</tracked>
           <workspaceName />
-            <acl>
+          <acl>
               <inheriting>1</inheriting>
-            </acl>
-            <actualParameters>
+          </acl>
+          <actualParameters>
               <acl>
-                <inheriting>1</inheriting>
+                  <inheriting>1</inheriting>
               </acl>
               <property>
-                <propertyName>scriptphysicalpath</propertyName>
-                <expandable>1</expandable>
-                <value>/home/build/EAP-6.4.0/bin/domain.sh</value>
+                  <propertyName>scriptphysicalpath</propertyName>
+                  <expandable>1</expandable>
+                  <value>/home/build/EAP-6.4.0/bin/jboss-cli.sh</value>
               </property>
               <property>
-                <propertyName>serverconfig</propertyName>
-                <expandable>1</expandable>
-                <value>config2</value>
+                  <propertyName>serverconfig</propertyName>
+                  <expandable>1</expandable>
+                  <value>config1</value>
               </property>
-            </actualParameters>
-            <propertySheet>
+              <property>
+                  <propertyName>serversgroup</propertyName>
+                  <expandable>1</expandable>
+                  <value>main-server-group</value>
+              </property>
+              <property>
+                  <propertyName>criteria</propertyName>
+                  <expandable>1</expandable>
+                  <value>STARTED</value>
+              </property>
+          </actualParameters>
+          <propertySheet>
               <acl>
-                <inheriting>1</inheriting>
+                  <inheriting>1</inheriting>
               </acl>
               <property>
-                <propertyName>ec_customEditorData</propertyName>
-                <propertySheet>
-                  <acl>
-                    <inheriting>1</inheriting>
-                  </acl>
-                  <property>
-                    <propertyName>formType</propertyName>
-                    <expandable>1</expandable>
-                    <value>procedure</value>
-                  </property>
-                </propertySheet>
+                  <propertyName>ec_customEditorData</propertyName>
+                  <propertySheet>
+                      <acl>
+                          <inheriting>1</inheriting>
+                      </acl>
+                      <property>
+                          <propertyName>formType</propertyName>
+                          <expandable>1</expandable>
+                          <value>procedure</value>
+                      </property>
+                  </propertySheet>
               </property>
-            </propertySheet>
-
-        </step>
-        <step>
-            <stepName>check server group status</stepName>
-            <alwaysRun>0</alwaysRun>
-            <broadcast>0</broadcast>
-            <condition />
-            <description />
-            <errorHandling>failProcedure</errorHandling>
-            <exclusive>0</exclusive>
-            <exclusiveMode>none</exclusiveMode>
-            <lastModifiedBy>admin</lastModifiedBy>
-            <owner>admin</owner>
-            <parallel>0</parallel>
-            <precondition />
-            <procedureName>CheckServerGroupStatus</procedureName>
-            <projectName>Jboss systemtest</projectName>
-            <releaseExclusive>0</releaseExclusive>
-            <releaseMode>none</releaseMode>
-            <resourceName />
-            <subprocedure>CheckServerGroupStatus</subprocedure>
-            <subproject>/plugins/EC-JBoss/project</subproject>
-            <timeLimit />
-            <timeLimitUnits>minutes</timeLimitUnits>
-            <tracked>1</tracked>
-            <workspaceName />
-            <acl>
-              <inheriting>1</inheriting>
-            </acl>
-            <actualParameters>
-              <acl>
-                <inheriting>1</inheriting>
-              </acl>
-              <property>
-                <propertyName>scriptphysicalpath</propertyName>
-                <expandable>1</expandable>
-                <value>/home/build/EAP-6.4.0/bin/jboss-cli.sh</value>
-              </property>
-              <property>
-                <propertyName>serverconfig</propertyName>
-                <expandable>1</expandable>
-                <value>config2</value>
-              </property>
-              <property>
-                <propertyName>serversgroup</propertyName>
-                <expandable>1</expandable>
-                <value>main-server-group</value>
-              </property>
-            </actualParameters>
-            <propertySheet>
-              <acl>
-                <inheriting>1</inheriting>
-              </acl>
-              <property>
-                <propertyName>ec_customEditorData</propertyName>
-                <propertySheet>
-                  <acl>
-                    <inheriting>1</inheriting>
-                  </acl>
-                  <property>
-                    <propertyName>formType</propertyName>
-                    <expandable>1</expandable>
-                    <value>procedure</value>
-                  </property>
-                </propertySheet>
-              </property>
-            </propertySheet>
-          </step>
-
+          </propertySheet>
+      </step>
       </procedure>
 
       <procedure>
@@ -1751,6 +1686,180 @@
               </propertySheet>
           </step>
       </procedure>
-       
+
+      <procedure>
+          <procedureName>RunCustomCommandOK</procedureName>
+          <jobNameTemplate>$[/javascript &#10;&#10;// This handles setting job names for production builds&#10;// and user builds.&#10;&#10;var jobName     = 'RunCustomCommandOK-';&#10;var timestamp   = getProperty('/timestamp yyyyMMddHHmm');&#10;var buildNumber = getProperty('/increment /projects/[JBossTestProject]/procedures/[RunCustomCommandOK]/buildCounter');&#10;&#10;// Append the build number and time stamp&#10;&#10;jobName += buildNumber + '-' + timestamp;&#10;&#10;// The jobName is our result&#10;&#10;jobName;&#10;&#10;]</jobNameTemplate>
+          <resourceName>local</resourceName>
+          <acl>
+              <inheriting>1</inheriting>
+          </acl>
+          <propertySheet>
+              <acl>
+                  <inheriting>1</inheriting>
+              </acl>
+              <property>
+                  <propertyName>buildCounter</propertyName>
+                  <expandable>1</expandable>
+                  <value>5</value>
+              </property>
+          </propertySheet>
+          <step>
+              <stepName>RunCustomCommandOK</stepName>
+              <alwaysRun>0</alwaysRun>
+              <broadcast>0</broadcast>
+              <errorHandling>failProcedure</errorHandling>
+              <exclusiveMode>none</exclusiveMode>
+              <parallel>0</parallel>
+              <releaseMode>none</releaseMode>
+              <resourceName></resourceName>
+              <subprocedure>RunCustomCommand</subprocedure>
+              <subproject>/plugins/EC-JBoss/project</subproject>
+              <acl>
+                  <inheriting>1</inheriting>
+              </acl>
+              <actualParameters>
+                  <acl>
+                      <inheriting>1</inheriting>
+                  </acl>
+                  <property>
+                      <propertyName>serverconfig</propertyName>
+                      <expandable>1</expandable>
+                      <value>config1</value>
+                  </property>
+                  <property>
+                      <propertyName>customCommand</propertyName>
+                      <expandable>1</expandable>
+                      <value>:read-attribute(name=launch-type)</value>
+                  </property>
+                  <property>
+                      <propertyName>scriptphysicalpath</propertyName>
+                      <expandable>1</expandable>
+                      <value>jboss-admin.bat</value>
+                  </property>
+              </actualParameters>
+              <propertySheet>
+                  <acl>
+                      <inheriting>1</inheriting>
+                  </acl>
+              </propertySheet>
+          </step>
+      </procedure>
+      <procedure>
+          <procedureName>RunCustomCommandConfigDoesntExist</procedureName>
+          <jobNameTemplate>$[/javascript &#10;&#10;// This handles setting job names for production builds&#10;// and user builds.&#10;&#10;var jobName     = 'RunCustomCommandConfigDoesntExist-';&#10;var timestamp   = getProperty('/timestamp yyyyMMddHHmm');&#10;var buildNumber = getProperty('/increment /projects/[JBossTestProject]/procedures/[RunCustomCommandConfigDoesntExist]/buildCounter');&#10;&#10;// Append the build number and time stamp&#10;&#10;jobName += buildNumber + '-' + timestamp;&#10;&#10;// The jobName is our result&#10;&#10;jobName;&#10;&#10;]</jobNameTemplate>
+          <resourceName>local</resourceName>
+          <acl>
+              <inheriting>1</inheriting>
+          </acl>
+          <propertySheet>
+              <acl>
+                  <inheriting>1</inheriting>
+              </acl>
+              <property>
+                  <propertyName>buildCounter</propertyName>
+                  <expandable>1</expandable>
+                  <value>5</value>
+              </property>
+          </propertySheet>
+          <step>
+              <stepName>RunCustomCommandOK</stepName>
+              <alwaysRun>0</alwaysRun>
+              <broadcast>0</broadcast>
+              <errorHandling>failProcedure</errorHandling>
+              <exclusiveMode>none</exclusiveMode>
+              <parallel>0</parallel>
+              <releaseMode>none</releaseMode>
+              <resourceName></resourceName>
+              <subprocedure>RunCustomCommand</subprocedure>
+              <subproject>/plugins/EC-JBoss/project</subproject>
+              <acl>
+                  <inheriting>1</inheriting>
+              </acl>
+              <actualParameters>
+                  <acl>
+                      <inheriting>1</inheriting>
+                  </acl>
+                  <property>
+                      <propertyName>serverconfig</propertyName>
+                      <expandable>1</expandable>
+                      <value>nonexistent_config</value>
+                  </property>
+                  <property>
+                      <propertyName>customCommand</propertyName>
+                      <expandable>1</expandable>
+                      <value>:read-attribute(name=launch-type)</value>
+                  </property>
+                  <property>
+                      <propertyName>scriptphysicalpath</propertyName>
+                      <expandable>1</expandable>
+                      <value>jboss-admin.bat</value>
+                  </property>
+              </actualParameters>
+              <propertySheet>
+                  <acl>
+                      <inheriting>1</inheriting>
+                  </acl>
+              </propertySheet>
+          </step>
+      </procedure>
+      <procedure>
+          <procedureName>RunCommandCantConnect</procedureName>
+          <jobNameTemplate>$[/javascript &#10;&#10;// This handles setting job names for production builds&#10;// and user builds.&#10;&#10;var jobName     = 'RunCommandCantConnect-';&#10;var timestamp   = getProperty('/timestamp yyyyMMddHHmm');&#10;var buildNumber = getProperty('/increment /projects/[JBossTestProject]/procedures/[RunCommandCantConnect]/buildCounter');&#10;&#10;// Append the build number and time stamp&#10;&#10;jobName += buildNumber + '-' + timestamp;&#10;&#10;// The jobName is our result&#10;&#10;jobName;&#10;&#10;]</jobNameTemplate>
+          <resourceName>local</resourceName>
+          <acl>
+              <inheriting>1</inheriting>
+          </acl>
+          <propertySheet>
+              <acl>
+                  <inheriting>1</inheriting>
+              </acl>
+              <property>
+                  <propertyName>buildCounter</propertyName>
+                  <expandable>1</expandable>
+                  <value>5</value>
+              </property>
+          </propertySheet>
+          <step>
+              <stepName>RunCommandCantConnect</stepName>
+              <alwaysRun>0</alwaysRun>
+              <broadcast>0</broadcast>
+              <errorHandling>failProcedure</errorHandling>
+              <exclusiveMode>none</exclusiveMode>
+              <parallel>0</parallel>
+              <releaseMode>none</releaseMode>
+              <resourceName></resourceName>
+              <subprocedure>RunCustomCommand</subprocedure>
+              <subproject>/plugins/EC-JBoss/project</subproject>
+              <acl>
+                  <inheriting>1</inheriting>
+              </acl>
+              <actualParameters>
+                  <acl>
+                      <inheriting>1</inheriting>
+                  </acl>
+                  <property>
+                      <propertyName>serverconfig</propertyName>
+                      <expandable>1</expandable>
+                      <value>config1</value>
+                  </property>
+                  <property>
+                      <propertyName>customCommand</propertyName>
+                      <expandable>1</expandable>
+                      <value>:read-attribute(name=launch-type)</value>
+                  </property>
+                  <property>
+                      <propertyName>scriptphysicalpath</propertyName>
+                      <expandable>1</expandable>
+                      <value>jboss-admin.bat</value>
+                  </property>
+              </actualParameters>
+              <propertySheet>
+                  <acl>
+                      <inheriting>1</inheriting>
+                  </acl>
+              </propertySheet>
+          </step>
+      </procedure>
   </project>
 </exportedData>
