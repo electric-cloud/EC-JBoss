@@ -63,7 +63,10 @@ B<debug> => enables debug mode.
 sub new {
     my ($class, %params) = @_;
 
-    my $self = {};
+    my $self = {
+        plugin_key => '',
+        plugin_name => '',
+    };
     bless $self, $class;
 
     $self->{log_level} = $params{log_level};
@@ -89,6 +92,12 @@ sub new {
     }
 
     my $creds = $self->get_credentials();
+
+    if ($creds->{log_level} && is_positive_int($creds->{log_level})) {
+        $self->{log_level} = $creds->{log_level};
+        $creds->{log_level} = 4 if $creds->{log_level} > 4;
+    }
+
     my $java_opts = $creds->{java_opts};
     if ($java_opts) {
         $self->out("Found JAVA_OPTS parameter: ", $java_opts);
@@ -132,6 +141,7 @@ sub new {
 
     if ($params{debug}) {
         $self->{debug} = 1;
+        $self->{log_level} = 4;
     }
 
     if ($params{script_path}) {
@@ -348,6 +358,10 @@ sub get_credentials {
     if ($config_row{java_opts}) {
         $retval->{java_opts} = '' . $config_row{java_opts};
     }
+    if ($config_row{log_level}) {
+        $retval->{log_level} = '' . $config_row{log_level};
+    }
+
     return $retval;
 
 }
@@ -387,7 +401,7 @@ sub get_param {
         $retval = $ec->getProperty($param)->findvalue('//value') . '';
         1;
     } or do {
-        $self->logit(2, "Error '$@' was occured while getting property: $param");
+        $self->logit(3, "Error '$@' was occured while getting property: $param");
         $retval = undef;
     };
 
@@ -471,13 +485,15 @@ Decodes jboss answer to Perl object.
 sub decode_answer {
     my ($self, $response) = @_;
 
+    $self->log_debug("Going to decode JBoss response: $response");
     $response = $self->convert_response_to_json($response);
+    $self->log_debug("Converted response: ", $response);
     my $json;
     eval {
         $json = decode_json($response);
         1;
     } or do {
-        print "Error occured: $@\n";
+        $self->log_error("Error occured during decoding converted JBoss answer: $@");
         $json = undef;
     };
 
@@ -651,7 +667,7 @@ $jboss->set_property(key => 'value');
 sub set_property {
     my ($self, $key, $value) = @_;
 
-    $self->logit(3, "Key: $key => $value");
+    $self->log_debug("Setting property '$key' = '$value'");
     $self->ec()->setProperty("/myCall/$key", $value);
 }
 
@@ -802,7 +818,7 @@ specified runlevel it just returns.
 
 Newline will be added automatically.
 
-    $jboss->logit(10, "Deep debug message");
+    $jboss->logit(4, "Deep debug message");
 
 =cut
 
@@ -859,6 +875,97 @@ sub out {
     return $self->logit(1, @msg);
 }
 
+
+=item B<log_info>
+
+Alias to logit(1, @msg)
+
+    $jboss->log_info("Hello world!");
+
+Is equivalent to
+
+    $jboss->logit(1, 'INFO: ', "Hello world!");
+
+=cut
+
+sub log_info {
+    my ($self, @msg) = @_;
+
+    unshift @msg, 'INFO: ';
+    return $self->out(@msg);
+}
+
+
+=item B<log_warning>
+
+Alias to logit(1, @msg)
+
+    $jboss->log_warning("Hello world!");
+
+Is equivalent to
+
+    $jboss->logit(2, 'WARNING:', "Hello world!");
+
+=cut
+
+sub log_warning {
+    my ($self, @msg) = @_;
+
+    return 1 if ($self->{silent});
+    unshift @msg, 'WARNING: ';
+    return $self->logit(2, @msg);
+}
+
+
+=item B<log_error>
+
+Alias to logit(3, @msg)
+
+    $jboss->log_error("Hello world!");
+
+Is equivalent to
+
+    $jboss->logit(3, 'ERROR: ', "Hello world!");
+
+=cut
+
+sub log_error {
+    my ($self, @msg) = @_;
+
+    return 1 if ($self->{silent});
+    unshift @msg, 'ERROR: ';
+    return $self->logit(3, @msg);
+}
+
+
+=item B<log_debug>
+
+Alias to logit(4, @msg)
+
+    $jboss->log_debug("Hello world!");
+
+Is equivalent to
+
+    $jboss->logit(4, 'DEBUG', "Hello world!");
+
+=cut
+
+sub log_debug {
+    my ($self, @msg) = @_;
+
+    unshift @msg, 'DEBUG: ';
+    return $self->logit(3, @msg);
+}
+
+
+=item B<out_warning>
+
+Triggers postprocessor to set this message to summary with warning outcome.
+
+    $jboss->out_warning("Deprecated");
+
+=cut
+
 sub out_warning {
     my ($self, @msg) = @_;
 
@@ -866,6 +973,8 @@ sub out_warning {
     unshift @msg, $warning;
     return $self->out(@msg);
 }
+
+
 =item B<bail_out>
 
 Terminating execution immediately with error message.

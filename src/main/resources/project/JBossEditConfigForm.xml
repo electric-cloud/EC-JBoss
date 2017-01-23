@@ -23,6 +23,30 @@
         <required>0</required>
     </formElement>
     <formElement>
+        <type>select</type>
+        <label>Log Level:</label>
+        <property>log_level</property>
+        <value>1</value>
+        <option>
+            <name>INFO</name>
+            <value>1</value>
+        </option>
+        <option>
+            <name>WARNING</name>
+            <value>2</value>
+        </option>
+        <option>
+            <name>ERROR</name>
+            <value>3</value>
+        </option>
+        <option>
+            <name>DEBUG</name>
+            <value>4</value>
+        </option>
+        <documentation>Log level to use for logging output. INFO=1, WARNING=2, ERROR=3, DEBUG=4.</documentation>
+        <required>0</required>
+    </formElement>
+    <formElement>
         <type>entry</type>
         <label>Additional Java options:</label>
         <property>java_opts</property>

@@ -61,7 +61,6 @@ sub get_hostcontroller_status {
 
     my $command = ':read-children-resources(child-type=host,include-runtime=true)';
     my %result = $jboss->run_command($command);
-    print Dumper \%result;
     # if ($result{code} == 1 && $result{stdout} =~ m/Connection\srefused/s) {
     if ($result{code} == 1) {
         return 'not_running';

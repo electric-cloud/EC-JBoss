@@ -14,10 +14,10 @@ Copyright (c) 2014 Electric Cloud, Inc.
 
 $[/myProject/procedure_helpers/preamble]
 
-use warnings;
-use strict;
-
 my $PROJECT_NAME = '$[/myProject/projectName]';
+my $PLUGIN_NAME = '@PLUGIN_NAME@';
+my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
 $|=1;
 
 main();
@@ -25,6 +25,8 @@ main();
 sub main {
     my $jboss = EC::JBoss->new(
         project_name    =>  $PROJECT_NAME,
+        plugin_name     =>  $PLUGIN_NAME,
+        plugin_key      =>  $PLUGIN_KEY,
     );
 
     my $params = $jboss->get_params_as_hashref('customCommand', 'serverconfig', 'scriptphysicalpath');

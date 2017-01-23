@@ -9,7 +9,7 @@ use ECMock qw/
 
 use JSON;
 use Data::Dumper;
-use Test::More tests => 2;
+use Test::More tests => 5;
 
 use lib 'src/main/resources/project/lib';
 
@@ -73,5 +73,20 @@ ok($result, "Decoded correct OK answer for CheckHostControllerStatus procedure."
 
 # 2 - Check paster reaction on JBoss mode. Domain, or standalone.
 $str = q|{"outcome" => "success","result" => "DOMAIN"}|;
+$result = $jboss->decode_answer($str);
+ok($result, "Decoded JBoss response on launch mode request");
+
+# 3 - Check parser reaction on JBoss gethost command response.
+$str = q|{"outcome" => "success","result" => ["master"]}|;
+$result = $jboss->decode_answer($str);
+ok($result, "Decoded JBoss response on launch mode request");
+
+# 4 - Check parser reaction on JBoss get server runtime response.
+$str = q|{"outcome" => "success","result" => {"server-one" => {"group" => "main-server-group","name" => "server-one","status" => "STARTED"}}}|;
+$result = $jboss->decode_answer($str);
+ok($result, "Decoded JBoss response on launch mode request");
+
+# 5 - Check parser reaction on JBoss get application runtime status.
+$str = q|{"outcome" => "success","result" => "OK"}|;
 $result = $jboss->decode_answer($str);
 ok($result, "Decoded JBoss response on launch mode request");
