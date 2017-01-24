@@ -39,7 +39,7 @@ ECMock->mock_sub('ElectricCommander',
 );
 
 ECMock->mock_sub('EC::JBoss',
-    get_credentials => sub {
+    get_plugin_configuration => sub {
         my ($self) = @_;
 
         if (!$self->{_credentials}) {

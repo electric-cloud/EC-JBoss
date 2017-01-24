@@ -91,7 +91,7 @@ sub new {
         $self->{config_name} = $params{config_name};
     }
 
-    my $creds = $self->get_credentials();
+    my $creds = $self->get_plugin_configuration();
 
     if ($creds->{log_level} && is_positive_int($creds->{log_level})) {
         $self->{log_level} = $creds->{log_level};
@@ -201,7 +201,7 @@ For example:
 sub run_command {
     my ($self, @command) = @_;
 
-    my $credentials = $self->get_credentials();
+    my $credentials = $self->get_plugin_configuration();
     my $command = $self->{script_path} . ' ';
 
     my $controller_address = $self->get_controller_location();
@@ -295,19 +295,19 @@ sub init {
     my ($self) = @_;
 
     if ($self->{config_name}) {
-        $self->get_credentials();
+        $self->get_plugin_configuration();
     }
     return 1;
 }
 
 
-=item B<get_credentials>
+=item B<get_plugin_configuration>
 
 Returns credentials by credentials name specified at object creation.
 
 =cut
 
-sub get_credentials {
+sub get_plugin_configuration {
     my ($self) = @_;
 
     if ($self->{_credentials} && ref $self->{_credentials} eq 'HASH' && %{$self->{_credentials}}) {
@@ -446,7 +446,7 @@ backward compatibility.
 sub get_controller_location {
     my ($self) = @_;
 
-    my $cred = $self->get_credentials();
+    my $cred = $self->get_plugin_configuration();
     my $controller = $cred->{jboss_url};
     return undef unless $controller;
     $controller =~ s|^(?:.*?://)||s;
