@@ -29,7 +29,7 @@ sub main {
         wait_time
     /);
 
-    my $creds = $jboss->get_credentials();
+    my $creds = $jboss->get_plugin_configuration();
     if ($params->{url_check}) {
         # do check via LWP.
         my $url = $jboss->fix_url($creds->{jboss_url});
