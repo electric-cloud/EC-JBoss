@@ -71,7 +71,8 @@ sub main {
                     my $command = sprintf '/host=%s/server=%s/deployment=%s:read-attribute(name=status)', $host, $server, $appname;
                     my %result = $jboss->run_command($command);
                     if ($result{code}) {
-                        $jboss->out("Application $appname (server: '$server', host: '$host') is NOT OK. Criteria was not met.");
+                        $jboss->out("Application $appname (server: '$server', host: '$host') is NOT OK.");
+                        # IF returned error AND expected ok THEN treat it as error. Otherwise it is an expected behaviour.
                         if ($params->{criteria} eq 'OK') {
                             push @errors, $server;
                         }
