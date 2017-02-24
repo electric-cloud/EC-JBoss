@@ -18,7 +18,8 @@ $::gWarningsList = [];
     {
         id =>        "warning",
         pattern =>          q{WARNING:(.+)},
-        action =>           q{&replaceSummary(addWarning("Warning: $1")); setProperty("outcome", "warning" );},
+        action =>           q{incValue("warnings");eval{&replaceSummary(addWarning("Warning: $1"));};setWarnings();},
+        # action => q{setWarnings();}
     },
 );
 
@@ -40,4 +41,16 @@ sub addWarning {
 
     push @{$::gWarningsList}, $str;
     return join "\n", @{$::gWarningsList};
+}
+sub setWarnings {
+    eval {
+        setProperty("/myParent/outcome", "warning" )
+    };
+    eval {
+        setProperty("/myJobStep/outcome", "warning" )
+    };
+    eval {
+        setProperty("outcome", "warning" )
+    };
+    # setProperty("/myJobStep/outcome", 'error');
 }
