@@ -47,14 +47,18 @@ sub main {
     # my $server_groups = [];
     my $servers = {};
     if ($launch_type eq 'domain') {
+        $jboss->log_debug("Requesting servers with following parameters:");
+        $jboss->log_debug("Hosts: " . join ', ', @hosts);
+        $jboss->log_debug("Servers: " . join ', ', @servers);
+        $jboss->log_debug("Groups: " . join ', ', @server_groups);
         # $server_groups = $jboss->get_server_groups();
         $servers = $jboss->get_servers(
             hosts => \@hosts,
             servers => \@servers,
             groups => \@server_groups
         );
+        $jboss->log_debug("Servers found: " . Dumper $servers);
     }
-
     # logic for domain check
     if ($launch_type eq 'domain') {
         my @errors = ();

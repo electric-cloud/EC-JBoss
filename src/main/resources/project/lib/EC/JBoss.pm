@@ -270,7 +270,14 @@ sub run_command {
             }
         }
     }
+    # Another workaround for windows
+    if (is_win && $result->{stderr}) {
+        $result->{code} = 1;
+    }
 
+    if ($result->{code} == 0 && $command =~ m/command="deploy/s && $result->{stdout} =~ m/already\sexists\sin\sthe\sdeployment\srepository/s) {
+        $result->{code} = 1;
+    }
     # end of check
     unshift @{$self->{history}}, {
         command     =>  $self->safe_command($command),
@@ -1270,6 +1277,7 @@ sub get_servers {
         my $command = sprintf "/host=%s:read-children-resources(child-type=server-config,include-runtime=true)", $host;
         my %result = $self->run_command($command);
         my $json = $self->decode_answer($result{stdout});
+        $self->log_debug("Found servers on host:");
         if (@$groups) {
             my @keys = keys %{$json->{result}};
             for my $k (@keys) {
