@@ -277,7 +277,7 @@ sub run_command {
             }
         }
         else {
-            if ($result->{stdout} =~ m/^(JBAS\d{6}):/s) {
+            if ($result->{stdout} =~ m/(JBAS\d{6}):/s) {
                 $result->{code} = 1;
             }
         }
