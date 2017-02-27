@@ -34,7 +34,7 @@ sub main {
     my $launch_type = $jboss->get_launch_type();
     $is_domain = 1 if $launch_type eq 'domain';
     if (!$jboss->{dryrun} && !-e $params->{warphysicalpath}) {
-        croak "File: $params->{warphysicalpath} doesn't exists";
+        $jboss->bail_out("File: $params->{warphysicalpath} doesn't exists");
     }
 
     my $command = qq/deploy $params->{warphysicalpath} /;
