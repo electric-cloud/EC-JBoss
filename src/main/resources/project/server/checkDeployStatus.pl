@@ -125,9 +125,9 @@ sub main {
 
     if ($result) {
         $jboss->success();
+        return 1;
     }
     $jboss->error();
-
 };
 
 sub is_criteria_met_standalone {
