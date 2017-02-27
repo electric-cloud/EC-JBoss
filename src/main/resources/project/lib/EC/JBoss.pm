@@ -66,6 +66,7 @@ sub new {
     my $self = {
         plugin_key => '',
         plugin_name => '',
+        do_we_have_error_on_interact_support => 0,
     };
     bless $self, $class;
 
@@ -227,6 +228,9 @@ sub run_command {
 
     $command .= '--command="' . $self->escape_string(join (' ', @command)) . '"';
 
+    if ($self->{do_we_have_error_on_interact_support}) {
+        $command .= ' --error-on-interact';
+    }
     $self->out("Executing command: ", $self->safe_command($command));
 
     my $result;
@@ -320,6 +324,8 @@ sub init {
     if ($self->{config_name}) {
         $self->get_plugin_configuration();
     }
+
+    $self->do_we_have_error_on_interact_support();
     return 1;
 }
 
@@ -1382,6 +1388,59 @@ sub get_dryrun_response {
     }
     # add search mechanism there.
     return $retval;
+}
+
+
+sub get_jboss_server_version {
+    my ($self) = @_;
+
+    my $version = {
+        product_name => '',
+        product_version => ''
+    };
+
+    if ($self->{dryrun}) {
+        $version->{product_name} = 'JBoss EAP';
+        $version->{product_version} = '7.0.0.GA';
+
+        return $version;
+    }
+
+    my %r;
+    my $t;
+    %r = $self->run_command(":read-attribute(name=product-name)");
+    $t = $self->decode_answer($r{stdout});
+    if ($t->{outcome} eq 'success') {
+        $version->{product_name} = $t->{result};
+    }
+    %r = $self->run_command(":read-attribute(name=product-version)");
+    $t = $self->decode_answer($r{stdout});
+    if ($t->{outcome} eq 'success') {
+        $version->{product_version} = $t->{result};
+    }
+
+    $self->log_debug("Determined product version: ", $version->{product_name}, ': ', $version->{product_version});
+    return $version;
+
+}
+
+
+sub do_we_have_error_on_interact_support {
+    my ($self) = @_;
+
+    my $version = $self->get_jboss_server_version();
+    my $major;
+    if ($version->{product_version} =~ m/^(\d+)\./s) {
+        $major = $1;
+        $self->log_debug("Major version is: $major");
+    }
+    if ($version->{product_name} eq 'JBoss EAP' && $major >= 7) {
+        $self->log_debug("We have --error-on-interact support");
+        $self->{do_we_have_error_on_interact_support} = 1;
+        return 1;
+    }
+    $self->log_debug("We don't have --error-on-interact support");
+    return 0;
 }
 
 1;
