@@ -260,16 +260,24 @@ sub run_command {
         }
     }
     # now we need to check jboss response. In some cases jboss-cli could return exit code 0 when command is finished with error.
-    if ($result->{code} == 0 && $result->{stdout} && (my $decoded_answer = $self->decode_answer($result->{stdout}))) {
-        $self->log_debug("Checking output for possible errors...\n");
-        my @flat = ();
-        eval {
-            my %t = %$decoded_answer;
-            @flat = %t;
-        };
-        for my $row (@flat) {
-            if ($row =~ m/(JBAS\d{6}:)/s) {
-                $self->log_debug("Triggered error on $1");
+    if (is_win && $result->{code} == 0 && $result->{stdout}) {
+        my $decoded_answer = $self->decode_answer($result->{stdout});
+        if ($decoded_answer) {
+            $self->log_debug("Checking output for possible errors...\n");
+            my @flat = ();
+            eval {
+                my %t = %$decoded_answer;
+                @flat = %t;
+            };
+            for my $row (@flat) {
+                if ($row =~ m/^(JBAS\d{6}):/s) {
+                    $self->log_debug("Triggered error on $1");
+                    $result->{code} = 1;
+                }
+            }
+        }
+        else {
+            if ($result->{stdout} =~ m/^(JBAS\d{6}):/s) {
                 $result->{code} = 1;
             }
         }
