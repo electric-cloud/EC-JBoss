@@ -30,11 +30,12 @@ sub main {
         additional_options
     /);
 
+    $jboss->log_debug("Params: " . Dumper $params);
     my $is_domain = 0;
     my $launch_type = $jboss->get_launch_type();
     $is_domain = 1 if $launch_type eq 'domain';
     if (!$jboss->{dryrun} && !-e $params->{warphysicalpath}) {
-            croak "File: $params->{warphysicalpath} doesn't exists";
+        croak "File: $params->{warphysicalpath} doesn't exists";
     }
 
     my $command = qq/deploy $params->{warphysicalpath} /;
@@ -57,6 +58,9 @@ sub main {
         }
         elsif ($params->{assignservergroups}) {
             $command .= qq/ --server-groups=$params->{assignservergroups}/;
+        }
+        else {
+            $jboss->bail_out("When JBoss mode is domain checkbox 'Apply to all servers' should be checked or 'Server groups to apply' should be provided.");
         }
     }
 
