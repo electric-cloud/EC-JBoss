@@ -30,7 +30,6 @@ sub main {
         additional_options
     /);
 
-    $jboss->log_debug("Params: " . Dumper $params);
     my $is_domain = 0;
     my $launch_type = $jboss->get_launch_type();
     $is_domain = 1 if $launch_type eq 'domain';
