@@ -283,12 +283,17 @@ sub run_command {
         }
     }
     # Another workaround for windows
-    if (is_win && $result->{stderr}) {
-        $result->{code} = 1;
-    }
+    if (is_win) {
+        if (is_win && $result->{stderr}) {
+            $result->{code} = 1;
+        }
 
-    if ($result->{code} == 0 && $command =~ m/command="deploy/s && $result->{stdout} =~ m/already\sexists\sin\sthe\sdeployment\srepository/s) {
-        $result->{code} = 1;
+        if ($result->{code} == 0 && $command =~ m/command="deploy/s && $result->{stdout} =~ m/already\sexists\sin\sthe\sdeployment\srepository/s) {
+            $result->{code} = 1;
+        }
+        if ($result->{code} == 0 && $result->{stdout} =~ m/is\snot\sfound\samong\sthe\sregistered\sdeployments\./s) {
+            $result->{code = 1;
+        }
     }
     # end of check
     unshift @{$self->{history}}, {
