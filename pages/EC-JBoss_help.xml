@@ -45,6 +45,7 @@
                     <li><a href="#UndeployApp">UndeployApp</a></li>
                 </ul>
                 <a href="#procedures">Plugin Procedures</a><br />
+                <a href="#known-issues">Known Issues</a><br />
                 <a href="#rns">Release Notes</a>
             </p>
             <h1 id="overview">Overview</h1>
@@ -129,7 +130,7 @@
                             </tr>
                             <tr>
                                 <td class='required'>JBoss controller location</td>
-                                <td>JBoss controller location. For example: localhost:9999.</td>
+                                <td>JBoss controller location. For example: localhost:9999. If secured connection is being used, see <a href="#known-issues">known issues</a> section of this document.</td>
                             </tr>
                             <tr>
                                 <td>Physical location of the jboss client script</td>
@@ -1003,6 +1004,33 @@
                 </ol>
 
             </div>
+            <h1 id="known-issues">Known Issues</h1>
+            <h2>Windows only. jboss-cli.bat from JBoss EAP 6 exits with wrong code.</h2>
+            jboss-cli.bat does not exit with correct return code when calling it from a wrapper script. It always exits with 0, even if the operation failed.<br />
+            Details: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1223877" target="_BLANK">https://bugzilla.redhat.com/show_bug.cgi?id=1223877</a>
+            <br />
+
+            <h2>All systems. jboss-cli in non-interactive (--command) mode still prompts user for input if certificate is not valid (self-signed, invalid, etc).</h2>
+            Affects Secured JBoss connection only. If target certificate is not valid, self-signed, expored, etc, boss-cli will ask for connection confirmation, even in non-interactive mode.
+            <br />
+            Details:<br />
+            <a href="https://issues.jboss.org/browse/WFLY-2950">https://issues.jboss.org/browse/WFLY-2950</a>
+            <a href="https://issues.jboss.org/browse/WFCORE-869">https://issues.jboss.org/browse/WFCORE-869</a>
+            <br />
+            This issue has not been fixed in the JBoss EAP 7. But --error-on-interact option as workaround has been added.
+            <br />
+            As result, plugin procedure may hang unexpectedly, if secured connection is being used and certificate is invalid.
+
+            Solutions:
+            <ul>
+                <li>Use valid certificate.</li>
+                <li>Use --error-on-interact as additional parameter. Procedure will not hang, but will be failed, if certificate is invalid.</li>
+                <li>
+                    In the plugin configuration, using "Additional Java options" field, provide keystore file with certificate accepted. It could be achieved with the following value:
+                    <pre>-Djavax.net.ssl.trustStore=/paht/to/your.keystore</pre>
+                </li>
+            </ul>
+
             <h1 id="rns">Release Notes</h1>
             <h2>@PLUGIN_KEY@ 2.1.5</h2>
             <ul>
