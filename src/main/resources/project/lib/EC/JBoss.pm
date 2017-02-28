@@ -66,7 +66,7 @@ sub new {
     my $self = {
         plugin_key => '',
         plugin_name => '',
-        do_we_have_error_on_interact_support => 0,
+        # do_we_have_error_on_interact_support => 0,
     };
     bless $self, $class;
 
@@ -228,9 +228,9 @@ sub run_command {
 
     $command .= '--command="' . $self->escape_string(join (' ', @command)) . '"';
 
-    if ($self->{do_we_have_error_on_interact_support}) {
-        $command .= ' --error-on-interact';
-    }
+    # if ($self->{do_we_have_error_on_interact_support}) {
+    #     $command .= ' --error-on-interact';
+    # }
     $self->out("Executing command: ", $self->safe_command($command));
 
     my $result;
@@ -333,7 +333,7 @@ sub init {
         $self->get_plugin_configuration();
     }
 
-    $self->do_we_have_error_on_interact_support();
+    # $self->do_we_have_error_on_interact_support();
     return 1;
 }
 
