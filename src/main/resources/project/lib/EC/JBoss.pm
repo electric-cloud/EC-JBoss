@@ -259,6 +259,7 @@ sub run_command {
             $result = $self->_syscall($command);
         }
     }
+    $self->log_debug("Code: '$result->{code}', STDOUT: '$result->{stdout}', STDERR: '$result->{stderr}'");
     # now we need to check jboss response. In some cases jboss-cli could return exit code 0 when command is finished with error.
     if (is_win && $result->{code} == 0 && $result->{stdout}) {
         my $decoded_answer = $self->decode_answer($result->{stdout});
@@ -292,7 +293,7 @@ sub run_command {
             $result->{code} = 1;
         }
         if ($result->{code} == 0 && $result->{stdout} =~ m/is\snot\sfound\samong\sthe\sregistered\sdeployments\./s) {
-            $result->{code = 1;
+            $result->{code} = 1;
         }
     }
     # end of check
