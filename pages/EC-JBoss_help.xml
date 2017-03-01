@@ -1007,7 +1007,12 @@
             <h1 id="known-issues">Known Issues</h1>
             <h2>Windows only. jboss-cli.bat from JBoss EAP 6 exits with wrong code.</h2>
             jboss-cli.bat does not exit with correct return code when calling it from a wrapper script. It always exits with 0, even if the operation failed.<br />
-            Details: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1223877" target="_BLANK">https://bugzilla.redhat.com/show_bug.cgi?id=1223877</a>
+            For ElectricFlow it means that jboss-cli response may be interpreted wrong.<br />
+            Details: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1223877" target="_BLANK">https://bugzilla.redhat.com/show_bug.cgi?id=1223877</a> <br />
+            Solution:
+            <p>
+                Make sure that JBoss 6 with all updates is being used. For JBoss EAP 6.4 latest Cummulative Pack should be installed.
+            </p>
             <br />
 
             <h2>All systems. jboss-cli in non-interactive (--command) mode still prompts user for input if certificate is not valid (self-signed, invalid, etc).</h2>
