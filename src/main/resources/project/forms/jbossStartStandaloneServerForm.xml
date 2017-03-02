@@ -14,7 +14,7 @@
 		<label>Physical location of the standalone script:</label>
 		<property>scriptphysicalpath</property>
 		<required>1</required>
-		<documentation>Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'. (Required)</documentation>
+		<documentation>Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'.</documentation>
 	</formElement>		
 	<formElement>
 		<type>entry</type>

@@ -14,7 +14,7 @@
         <label>Physical location of the domain script:</label>
         <property>scriptphysicalpath</property>
         <required>1</required>
-        <documentation>	Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'. (Required)</documentation>
+        <documentation>Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>

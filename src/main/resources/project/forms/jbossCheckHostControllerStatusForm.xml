@@ -19,7 +19,7 @@
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Host сontroller name:</label>
+        <label>Host controller name:</label>
         <property>hostcontroller_name</property>
         <required>1</required>
         <documentation>Host controller name. Default is 'master'.</documentation>
