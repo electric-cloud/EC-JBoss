@@ -19,7 +19,7 @@
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Deployment Name:</label>
+        <label>Deployment name:</label>
         <property>appname</property>
         <required>1</required>
         <documentation>Unique name of the deployment to enable.</documentation>

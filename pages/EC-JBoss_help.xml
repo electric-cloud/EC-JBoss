@@ -72,13 +72,12 @@
                  Why should I care? What general functionality does the plugin include? What functionality does the plugin omit? -->
 
             <p>
-                Use the @PLUGIN_KEY@ plugin to interact with the JBoss Application Server Version 7 (JBoss AS7)
-                to do tasks such as managing servers and deployments.
+                Use the EC-JBoss plugin to interact with the JBoss EAP Server Version 7 (JBoss EAP 7) to do tasks such as managing servers and deployments.
             </p>
 
             <h2>Supported Versions</h2>
             <p>
-                This plugin was developed and tested with following JBoss versions: JBoss AS 7.0.1 ZAP.
+                This plugin was developed and tested with following JBoss versions:
                 <ul>
                     <li>JBoss EAP 6.0 on Linux and Windows</li>
                     <li>JBoss EAP 6.2 on Linux and Windows</li>
@@ -134,7 +133,7 @@
                             </tr>
                             <tr>
                                 <td>Physical location of the jboss client script</td>
-                                <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'</td>
+                                <td>Provide the physical location of the jboss Command Line Interface script, i.e: <i>jboss-cli.bat</i>, <i>/path/to/jboss-cli.sh</i></td>
                             </tr>
                             <tr>
                                 <td>Login as</td>
@@ -175,10 +174,10 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical location of the jboss client script</td>
+                                    <td>Physical location of the jboss client script</td>
                                     <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
@@ -215,11 +214,8 @@
                 </ol>
                 <h3>Output</h3>
                 <p>
-                    After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CheckDeployStatus</b> step,
-                    click the Log icon to see the diagnostic information.
-                </p>
-                <p>
-                    After the job runs, you can view the results, including the following job details, which show the status of the deployment:
+                    After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CheckDeployStatus</b> step, click the Log icon to see the diagnostic information and status of the deployment: 
+                    
                 </p>
                     <br />
                     <img src="../../plugins/@PLUGIN_NAME@/images/CheckDeployStatus/ECJBossCheckDeployStatus3.png" />
@@ -250,10 +246,10 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>Name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical location of the jboss client script</td>
+                                    <td>Physical location of the jboss client script</td>
                                     <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
@@ -281,7 +277,7 @@
                 <p>In the <b>CheckHostControllerStatus</b> step, click the Log icon to see the diagnostic information. The output is similar to the
                     following diagnostic report:</p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/CheckHostControllerStatus/CheckHostControllerStatus3.png" />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CheckHostControllerStatus/CheckHostControllerStatus4.png" />
                 <br />
             </div>
             <div id="CheckServerStatus">
@@ -300,13 +296,12 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td class='required'>Server Configuration Name</td>
-                                <td>The name of the configuration with connection information for the JBoss server.
-                                This configuration has information about the domain that you want to start. </td>
+                                <td class='required'>Configuration name</td>
+                                <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                             </tr>
                             <tr>
-                                <td class='required'>Physical Location of the JBoss Client Script</td>
-                                <td>Location of the JBoss command-line interface (CLI) script, such <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                <td>Physical location of the jboss client script</td>
+                                <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                             </tr>
                         </tbody>
                     </table>
@@ -352,16 +347,16 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of a configuration for the JBoss server.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Application Name</td>
                                     <td>The name of the application to deploy.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>Location of the JBoss command-line interface (CLI) script, such <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                    <td>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Connection Driver URL</td>
@@ -433,12 +428,12 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of a configuration for the JBoss server.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>Location of the JBoss command-line interface (CLI) script, such <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                    <td>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Application Name</td>
@@ -495,10 +490,10 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical location of the jboss client script.</td>
+                                    <td>Physical location of the jboss client script</td>
                                     <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
@@ -556,7 +551,7 @@
 
             <div id="DisableDeploy"><a name='DisableDeploy' id="DisableDeploy"></a>
                 <h2>DisableDeploy</h2>
-                <p>This procedure applies only in standalone mode. It disables the specified deployment.</p>
+                <p>This procedure disables the specified deployment.</p>
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the DisableDeploy procedure.</li>
@@ -570,16 +565,20 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of a configuration for the JBoss server.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>The physical location of the JBoss client script, such as <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                    <td>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Deployment Name</td>
+                                    <td class='required'>Deployment name</td>
                                     <td>The unique name of the deployment to disable.</td>
+                                </tr>
+                                <tr>
+                                    <td>Server groups</td>
+                                    <td>Provide the comma-separated list of server group names the disable deployment command applies to. Server groups parameter is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -601,7 +600,7 @@
             </div>
             <div id="EnableDeploy"><a name='EnableDeploy' id="EnableDeploy"></a>
                 <h2>EnableDeploy</h2>
-                <p>This procedure applies only in standalone mode. It enables the specified deployment
+                <p>This procedure enables the specified deployment
                     in the repository. This deployment is disabled and is currently not running.</p>
                 <h3>Input</h3>
                 <ol>
@@ -616,16 +615,20 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of a configuration for the JBoss server.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>The physical location of the JBoss client script, such as <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                    <td>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Deployment Name</td>
-                                    <td>The unique name of the deployment to enable.</td>
+                                    <td class='required'>Deployment name</td>
+                                    <td>Unique name of the deployment to enable.</td>
+                                </tr>
+                                <tr>
+                                    <td>Server groups</td>
+                                    <td>Provide the comma-separated list of server group names the enable deployment command applies to. Server groups parameter is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -661,12 +664,12 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of a configuration for the JBoss server.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>The physical location of the JBoss client script, such as <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i> (a file or directory).</td>
+                                    <td>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Custom Command</td>
@@ -703,8 +706,8 @@
                                         to shut down the server.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>The physical location of the client script, such as <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i>.</td>
+                                    <td>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -733,13 +736,12 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of the configuration for the JBoss server. This configuration has information about the
-                                        domain.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the Domain Script</td>
-                                    <td>The absolute physical path of the domain script, such as <i>domain.bat</i>, <i>/usr/tools/bin/domain.sh</i>, or <i>C:\Program Files\JBoss\bin\domain.bat</i>.</td>
+                                    <td class='required'>Physical location of the domain script</td>
+                                    <td>Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</td>
                                 </tr>
                                 <tr>
                                     <td>Optional Configuration Name</td>
@@ -780,10 +782,10 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical location of the jboss client script</td>
+                                    <td>Physical location of the jboss client script</td>
                                     <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
@@ -828,16 +830,15 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of the configuration for the JBoss server. This configuration has the connection information
-                                        about the standalone server.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the Standalone Script</td>
-                                    <td>The absolute physical path of the standalone script, such as <i>standalone.bat</i>, <i>/usr/tools/bin/standalone.sh</i>, or <i>C:\Program Files\JBoss\bin\standalone.bat</i>.</td>
+                                    <td class='required'>Physical location of the standalone script</td>
+                                    <td>Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'.</td>
                                 </tr>
                                 <tr>
-                                    <td>Optional Configuration Name</td>
+                                    <td>Optional configuration name</td>
                                     <td>The name of the XML configuration file used when you start the server with a different configuration.</td>
                                 </tr>
                             </tbody>
@@ -875,10 +876,10 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical location of the jboss client script</td>
+                                    <td>Physical location of the jboss client script</td>
                                     <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
@@ -922,10 +923,10 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical location of the jboss client script</td>
+                                    <td>Physical location of the jboss client script</td>
                                     <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
@@ -982,16 +983,20 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Server Configuration Name</td>
-                                    <td>The name of the configuration for the JBoss server.</td>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical Location of the JBoss Client Script</td>
-                                    <td>The physical location of the JBoss client script, such as <i>jboss-cli.bat</i> or <i>/path/to/jboss-cli.sh</i>.</td>
+                                    <td>Physical location of the jboss client script</td>
+                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Server group name</td>
                                     <td>The name of server group to be checked.</td>
+                                </tr>
+                                <tr>
+                                    <td>Wait time</td>
+                                    <td>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Criteria</td>
@@ -1016,7 +1021,7 @@
             <br />
 
             <h2>All systems. jboss-cli in non-interactive (--command) mode still prompts user for input if certificate is not valid (self-signed, invalid, etc).</h2>
-            Affects Secured JBoss connection only. If target certificate is not valid, self-signed, expored, etc, boss-cli will ask for connection confirmation, even in non-interactive mode.
+            Affects Secured JBoss connection only. If target certificate is not valid, self-signed, exported, etc, boss-cli will ask for connection confirmation, even in non-interactive mode.
             <br />
             Details:<br />
             <a href="https://issues.jboss.org/browse/WFLY-2950">https://issues.jboss.org/browse/WFLY-2950</a>
@@ -1032,7 +1037,7 @@
                 <li>Use --error-on-interact as additional parameter. Procedure will not hang, but will be failed, if certificate is invalid.</li>
                 <li>
                     In the plugin configuration, using "Additional Java options" field, provide keystore file with certificate accepted. It could be achieved with the following value:
-                    <pre>-Djavax.net.ssl.trustStore=/paht/to/your.keystore</pre>
+                    <pre>-Djavax.net.ssl.trustStore=/path/to/your.keystore</pre>
                 </li>
             </ul>
 
@@ -1055,6 +1060,8 @@
                 </li>
                 <li>"Additional Java options" and "Physical location of the jboss client script" fields have been added to configuration.</li>
                 <li>"Physical location of the jboss client script" field has been updated and now it is optional.</li>
+                <li>EnableDeploy procedure has been improved to work with both domain and standalone modes.</li>
+                <li>DisableDeploy procedure has been improved to work with both domain and standalone modes.</li>
             </ul>
             <h2>@PLUGIN_KEY@ 2.1.4</h2>
             <ul>
