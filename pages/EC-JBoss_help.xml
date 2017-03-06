@@ -359,24 +359,24 @@
                                     <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Connection Driver URL</td>
+                                    <td class='required'>Connection driver URL</td>
                                     <td>The URL for the JDBC driver connection, such as <i>jdbc:mysql://localhost:3306/ectest</i>.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Driver Class</td>
+                                    <td class='required'>Driver class</td>
                                     <td>The fully qualifed name of the JDBC driver class, such as <i>com.mysql.jdbc.Driver</i>.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>JNDI Name</td>
+                                    <td class='required'>JNDI name</td>
                                     <td>The JNDI name for the datasource that should start with java:/ or java:jboss/, such as <i>java:jboss/datasources/MySql</i>.</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Driver Name</td>
+                                    <td class='required'>Driver name</td>
                                     <td>The JDBC driver used by the datasource that can be the name of the .jar file or of the module, such as <i>mysql-connector-java-5.1.20-bin.jar</i>,
                                         depending on how the driver has been deployed.</td>
                                 </tr>
                                 <tr>
-                                    <td>Profile Name</td>
+                                    <td>Profile name</td>
                                     <td>The name of the profile used in domain mode.</td>
                                 </tr>
                                 <tr>
@@ -384,7 +384,7 @@
                                     <td>Credential that contains username and password for data source (need to be attached to step).</td>
                                 </tr>
                                 <tr>
-                                    <td>Enable Datasource</td>
+                                    <td>Enable datasource?</td>
                                     <td>Select this parameter to enable the datasource after it is created.</td>
                                 </tr>
                             </tbody>
@@ -1040,7 +1040,17 @@
                     <pre>-Djavax.net.ssl.trustStore=/path/to/your.keystore</pre>
                 </li>
             </ul>
-
+            <h2>All systems, JBoss 6.2. CLI fails to show app status when runtime-name is different from the deployment name.</h2>
+            jboss-cli may fail with "no metrics available" result during CheckDeployStatus procedure.
+            <p>
+                For details see: <a href="https://access.redhat.com/solutions/481643" target="_BLANK">https://access.redhat.com/solutions/481643</a>.<br />
+                Bugzilla reference: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1007696" target="_BLANK">https://bugzilla.redhat.com/show_bug.cgi?id=1007696</a>. <br />
+                WildFly reference: <a href="https://issues.jboss.org/browse/WFLY-2061" target="_BLANK">https://issues.jboss.org/browse/WFLY-2061</a>. <br />
+            </p>
+            Solution:
+            <p>
+                Latest version of JBoss 6.2 is required. This issue has been fixed in 6.2.1.
+            </p>
             <h1 id="rns">Release Notes</h1>
             <h2>@PLUGIN_KEY@ 2.1.5</h2>
             <ul>

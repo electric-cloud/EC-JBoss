@@ -29,28 +29,28 @@
 
     <formElement>
         <type>entry</type>
-        <label>Connection Driver URL:</label>
+        <label>Connection driver URL:</label>
         <property>connectionURL</property>
         <required>1</required>
         <documentation>The JDBC driver connection URL. i.e., 'jdbc:mysql://localhost:3306/ectest'.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Driver Class:</label>
+        <label>Driver class:</label>
         <property>driverClass</property>
         <required>1</required>
         <documentation>The fully qualifed name of the JDBC driver class. i.e., 'com.mysql.jdbc.Driver'.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>JNDI Name:</label>
+        <label>JNDI name:</label>
         <property>jndiName</property>
         <required>1</required>
         <documentation>Specifies the JNDI name for the datasource. This should start with either java:/ or java:jboss/. i.e., 'java:jboss/datasources/MySql'.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Driver Name:</label>
+        <label>Driver name:</label>
         <property>driverName</property>
         <required>1</required>
         <documentation>Defines the JDBC driver the datasource should use. This can be either the name of the .jar file or the name of the module, depending on how the driver has been deployed. i.e., 'mysql-connector-java-5.1.20-bin.jar'.</documentation>
@@ -73,7 +73,7 @@
 
     <formElement>
         <type>checkbox</type>
-        <label>Enable Datasource:</label>
+        <label>Enable Datasource?:</label>
         <property>enabled</property>
         <checkedValue>1</checkedValue>
         <uncheckedValue>0</uncheckedValue>
