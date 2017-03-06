@@ -1021,7 +1021,7 @@
             <br />
 
             <h2>All systems. jboss-cli in non-interactive (--command) mode still prompts user for input if certificate is not valid (self-signed, invalid, etc).</h2>
-            Affects Secured JBoss connection only. If target certificate is not valid, self-signed, exported, etc, boss-cli will ask for connection confirmation, even in non-interactive mode.
+            Affects Secured JBoss connection only. If target certificate is not valid, self-signed, exported, etc, jboss-cli will ask for connection confirmation, even in non-interactive mode.
             <br />
             Details:<br />
             <a href="https://issues.jboss.org/browse/WFLY-2950">https://issues.jboss.org/browse/WFLY-2950</a>
@@ -1040,7 +1040,7 @@
                     <pre>-Djavax.net.ssl.trustStore=/path/to/your.keystore</pre>
                 </li>
             </ul>
-            <h2>All systems, JBoss 6.2. CLI fails to show app status when runtime-name is different from the deployment name.</h2>
+            <h2>All systems, JBoss 6.2, JBoss 6.0. CLI fails to show app status when runtime-name is different from the deployment name.</h2>
             jboss-cli may fail with "no metrics available" result during CheckDeployStatus procedure.
             <p>
                 For details see: <a href="https://access.redhat.com/solutions/481643" target="_BLANK">https://access.redhat.com/solutions/481643</a>.<br />
