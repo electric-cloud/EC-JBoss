@@ -20,12 +20,13 @@
                  ideas, examples, and so on. It is OK to copy them word-for-word only if it is appropriate, such as FOSS.
                  However, do not do this with commercial software. -->
 
-            <p>Revised on January 17, 2017</p>
+            <p>Revised on March 7, 2017</p>
 
             <h1>Contents</h1>
             <p>
                 <a href="#overview">Overview</a><br />
                 <a href="#setupconfig">Setting Up the Plugin Configuration</a>
+                <a href="#procedures">Plugin Procedures</a><br />
                 <ul>
                     <li><a href="#CheckDeployStatus">CheckDeployStatus</a></li>
                     <li><a href="#CheckHostControllerStatus">CheckHostControllerStatus</a></li>
@@ -44,7 +45,6 @@
                     <li><a href="#StopServers">StopServers</a></li>
                     <li><a href="#UndeployApp">UndeployApp</a></li>
                 </ul>
-                <a href="#procedures">Plugin Procedures</a><br />
                 <a href="#known-issues">Known Issues</a><br />
                 <a href="#rns">Release Notes</a>
             </p>
@@ -81,7 +81,7 @@
                 <ul>
                     <li>JBoss EAP 6.0 on Linux and Windows</li>
                     <li>JBoss EAP 6.2 on Linux and Windows</li>
-                    <li>JBoss EAP 6.5 on Linux and Windows</li>
+                    <li>JBoss EAP 6.4 on Linux and Windows</li>
                     <li>JBoss EAP 7.0 on Linux and Windows</li>
                 </ul>
             </p>
