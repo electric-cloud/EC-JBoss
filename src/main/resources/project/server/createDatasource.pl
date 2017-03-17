@@ -43,18 +43,11 @@ sub main {
     	$command .= qq| --profile=$params->{profile} |;
 	}
 
-    if ($params->{enabled}) {
-        $command .= ' --enabled=true ';
-    }
-    else {
-        $command .= ' --enabled=false ';
-    }
-
     if ($params->{dsCredential}) {
         my $xpath = $ec->getFullCredential('dsCredential');
         my $userName = $xpath->findvalue("//userName");
         my $password = $xpath->findvalue("//password");
-        
+
         if ($userName) {
             $command .= qq| --user-name=$userName |;
         }
@@ -63,8 +56,19 @@ sub main {
             $command .= qq| --password=$password |;
         }
     }
-    
     my %result = $jboss->run_command($command);
-
+    if ($params->{enabled}) {
+        my $ds_profile = $params->{profile};
+        $ds_profile ||= 'default';
+        my $enable_command = sprintf 'data-source enable --name=%s --profile=%s', $params->{application_name}, $ds_profile;
+        $jboss->out("Enabling datasource...");
+        my %enable_res = $jboss->run_command($enable_command);
+        unless ($enable_res{code}) {
+            $jboss->out("Enabled.");
+        }
+        else {
+            $jboss->bail_out("Failed to enable datasource.");
+        }
+    }
     $jboss->process_response(%result);
 }

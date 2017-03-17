@@ -1072,6 +1072,7 @@
                 <li>"Physical location of the jboss client script" field has been updated and now it is optional.</li>
                 <li>EnableDeploy procedure has been improved to work with both domain and standalone modes.</li>
                 <li>DisableDeploy procedure has been improved to work with both domain and standalone modes.</li>
+                <li>Fixed a bug when CreateDatasource was failed during enabling datasource on JBoss 6.0.0.</li>
             </ul>
             <h2>@PLUGIN_KEY@ 2.1.4</h2>
             <ul>
