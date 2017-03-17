@@ -1433,6 +1433,9 @@ sub get_jboss_server_version {
         $version->{product_version} = $t->{result};
     }
 
+    if ($r{code} > 0) {
+        $self->bail_out("Error occured during version check.");
+    }
     $self->log_debug("Determined product version: ", $version->{product_name}, ': ', $version->{product_version});
     return $version;
 
