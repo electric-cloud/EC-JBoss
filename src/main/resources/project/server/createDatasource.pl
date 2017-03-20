@@ -43,6 +43,21 @@ sub main {
     	$command .= qq| --profile=$params->{profile} |;
 	}
 
+    my $is_6_0_0 = $jboss->is_6_0_0();
+    $jboss->log_debug("Is JBoss 6.0.0: $is_6_0_0");
+
+    # on JBoss 6.0.0 there is no --enabled option and command fails.
+    # this workaround adds --enabled flag only when JBoss version is 6.0.0.
+
+    if (!$is_6_0_0) {
+        if ($params->{enabled}) {
+            $command .= ' --enabled=true ';
+        }
+        else {
+            $command .= ' --enabled=false ';
+        }
+    }
+
     if ($params->{dsCredential}) {
         my $xpath = $ec->getFullCredential('dsCredential');
         my $userName = $xpath->findvalue("//userName");
@@ -57,7 +72,7 @@ sub main {
         }
     }
     my %result = $jboss->run_command($command);
-    if ($params->{enabled}) {
+    if ($is_6_0_0 && $params->{enabled}) {
         my $ds_profile = $params->{profile};
         $ds_profile ||= 'default';
         my $enable_command = sprintf 'data-source enable --name=%s --profile=%s', $params->{application_name}, $ds_profile;
