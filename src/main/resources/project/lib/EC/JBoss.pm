@@ -1404,6 +1404,21 @@ sub get_dryrun_response {
     return $retval;
 }
 
+sub is_6_0_0 {
+    my ($self) = @_;
+
+    my $version = $self->get_jboss_server_version();
+
+    if (!$version->{product_version}) {
+        $self->bail_out("Wrong JBoss version");
+    }
+
+    if ($version->{product_version} =~ m/^6\.0\.0/s) {
+        return 1;
+    }
+    return 0;
+}
+
 
 sub get_jboss_server_version {
     my ($self) = @_;
