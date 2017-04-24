@@ -37,7 +37,7 @@ sub main {
         $jboss->bail_out("File: $params->{warphysicalpath} doesn't exists");
     }
 
-    my $command = qq/deploy $params->{warphysicalpath} /;
+    my $command = qq/deploy "$params->{warphysicalpath}"/;
 
     if ($params->{appname}) {
         $command .= qq/ --name=$params->{appname} /;
