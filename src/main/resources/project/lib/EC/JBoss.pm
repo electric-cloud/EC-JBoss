@@ -36,9 +36,9 @@ BEGIN {
     }
 };
 
-=item B<new> 
+=item B<new>
 
-Constructor. Returns EC::JBoss object. 
+Constructor. Returns EC::JBoss object.
 
     my $jboss = EC::JBoss->new(
         project_name => 'PROJECT_NAME',
@@ -888,13 +888,14 @@ and returns escaped string.
 =cut
 
 sub escape_string {
-    my ($self, $string) = @_; 
+    my ($self, $string) = @_;
 
     croak "Missing string" unless $string;
 
     $string =~ s|\\|\\\\|;
     # $string =~ s/(\s)/\\$1/gs;
-    $string =~ s|"|\\\\\\"|gs;
+    # $string =~ s|"|\\\\\\"|gs;
+    $string =~ s|"|\\"|gs;
     return $string;
 }
 
