@@ -129,7 +129,9 @@
                             </tr>
                             <tr>
                                 <td class='required'>JBoss controller location</td>
-                                <td>JBoss controller location. For example: localhost:9999. If secured connection is being used, see <a href="#known-issues">known issues</a> section of this document.</td>
+                                <td>
+                                    JBoss controller location. For example: localhost:9999. You can find this information in "$JBOSS_HOME/bin/jboss-cli.xml". If secured connection is being used, see Known Issues section in the documentation.
+                                </td>
                             </tr>
                             <tr>
                                 <td>Physical location of the jboss client script</td>
