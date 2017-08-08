@@ -12,8 +12,7 @@
         <label>JBoss controller location:</label>
         <property>jboss_url</property>
         <value></value>
-        <documentation>
-            JBoss controller location. For example: localhost:9999. If secured connection is being used, see <a href="/commander/pages/@PLUGIN_KEY@-@PLUGIN_VERSION@/EC-JBoss_help#known-issues" target="_BLANK">Known Issues</a> section in the documentation.
+        <documentation>JBoss controller location. For example: localhost:9999. You can find this information in "$JBOSS_HOME/bin/jboss-cli.xml". If secured connection is being used, see <a href="/commander/pages/@PLUGIN_KEY@-@PLUGIN_VERSION@/EC-JBoss_help#known-issues" target="_BLANK">Known Issues</a> section in the documentation.
         </documentation>
         <required>1</required>
     </formElement>
