@@ -508,15 +508,22 @@
                                 </tr>
                                 <tr>
                                     <td>Runtime name for deployment</td>
-                                    <td>Provide the runtime name for the deployment.</td>
+                                    <td>Provide the runtime name for the deployment. In Jboss the runtime name must end with the extension of the file being deployed. So if you deploy example.war the runtime name must end with .war.</td>
                                 </tr>
                                 <tr>
                                     <td>Apply to all servers</td>
-                                    <td>Select this option to deploy to all available servers. This indicates that deployment applies to all available server groups. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</td>
+                                    <td>
+                                        Select this option to deploy to all available servers. This indicates that deployment applies to all available server groups.
+                                        Either server-groups or all-server-groups is required in domain mode.
+                                        This argument is not applicable in standalone mode or when force deployment is enabled and will be ignored.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Server groups to apply</td>
-                                    <td>Provide the comma-separated list of server group names the deploy command applies to. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</td>
+                                    <td>
+                                        Provide the comma-separated list of server group names the deploy command applies to. Either server-groups or all-server-groups is required in domain mode.
+                                        This argument is not applicable in standalone mode or when force deployment is enabled and will be ignored.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Force deployment</td>

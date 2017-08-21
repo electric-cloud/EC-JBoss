@@ -36,7 +36,7 @@
         <label>Runtime name for deployment:</label>
         <property>runtimename</property>
         <required>0</required>
-        <documentation>Provide the runtime name for the deployment.</documentation>
+        <documentation>Provide the runtime name for the deployment. In Jboss the runtime name must end with the extension of the file being deployed. So if you deploy example.war the runtime name must end with .war.</documentation>
     </formElement>
     <formElement>
         <type>checkbox</type>
@@ -45,14 +45,14 @@
         <checkedValue>1</checkedValue>
         <uncheckedValue>0</uncheckedValue>
         <initiallyChecked>1</initiallyChecked>
-        <documentation>Select this option to deploy to all available servers. This indicates that deployment applies to all available server groups. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</documentation>
+        <documentation>Select this option to deploy to all available servers. This indicates that deployment applies to all available server groups. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode or when force deployment is enabled and will be ignored.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Server groups to apply:</label>
         <property>assignservergroups</property>
         <required>0</required>
-        <documentation>Provide the comma-separated list of server group names the deploy command applies to. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode and will be ignored.</documentation>
+        <documentation>Provide the comma-separated list of server group names the deploy command applies to. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode or when force deployment is enabled and will be ignored.</documentation>
     </formElement>
     <formElement>
         <type>checkbox</type>
