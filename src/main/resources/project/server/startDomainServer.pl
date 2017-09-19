@@ -181,6 +181,7 @@ sub startServer($){
         $commandline = SQUOTE . $commandline .  " 1>" . $logfile . " 2>" . $errfile . SQUOTE;
         $commandline = "exec(" . $commandline . ");";
         $commandline = DQUOTE . $commandline . DQUOTE;
+        print "Command line: $commandline\n";
         @systemcall = ("ecdaemon", "--", "ec-perl", "-e", $commandline);
 
     }
@@ -195,6 +196,8 @@ sub startServer($){
         if ($alternateConfig && $alternateConfig ne '') {
             $commandline .= " --domain-config=" . DQUOTE . $alternateConfig . DQUOTE . " ";
         }
+        $commandline = SQUOTE . $commandline . SQUOTE;
+        print "Command line: $commandline\n";
         @systemcall = ("ecdaemon", "--", "sh", "-c", $commandline);
     }
     #print "Command Parameters:\n" . Dumper(@systemcall) . "--------------------\n";
@@ -202,7 +205,7 @@ sub startServer($){
     my $cmdLine = createCommandLine(\@systemcall);
     $props{'startDomainServerLine'} = $cmdLine;
     setProperties(\%props);
-    print "cmd line: $cmdLine\n";
+    print "Command line for ecdaemon: $cmdLine\n";
     system($cmdLine);
 
 }
