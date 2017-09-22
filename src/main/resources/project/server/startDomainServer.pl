@@ -300,8 +300,12 @@ sub getConfiguration($){
         }
     }
 
-    return %configToUse;
+    if ($configToUse{jboss_url} !~ m/^https?/s) {
+        $configToUse{jboss_url} = 'http://' . $configToUse{jboss_url};
+        print "Provided URL is not absolute. Let's assume that it's http: $configToUse{jboss_url}\n";
+    }
 
+    return %configToUse;
 }
 
 ##########################################################################
