@@ -746,8 +746,8 @@
                                     <td>Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</td>
                                 </tr>
                                 <tr>
-                                    <td>Optional Configuration Name</td>
-                                    <td>The name of the XML configuration file that ElectricFlow uses to start the domain with a different configuration.</td>
+                                    <td>Optional domain configuration name</td>
+                                    <td>Name of the domain configuration file that ElectricFlow uses to start the domain with a different domain configuration (--domain-config). By default domain.xml is used.</td>
                                 </tr>
                             </tbody>
                         </table>

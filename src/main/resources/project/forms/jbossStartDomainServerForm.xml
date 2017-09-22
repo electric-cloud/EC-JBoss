@@ -18,9 +18,9 @@
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Optional configuration name:</label>
+        <label>Optional domain configuration name:</label>
         <property>alternatejbossconfig</property>
         <required>0</required>
-        <documentation>Provide the XML config file if you want to start your domain with a different configuration.</documentation>
+        <documentation>Provide name of the domain configuration file if you want to start your domain with a different domain configuration (--domain-config). By default domain.xml is used.</documentation>
     </formElement>
 </editor>
