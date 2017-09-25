@@ -24,7 +24,7 @@
         <checkedValue>1</checkedValue>
         <uncheckedValue>0</uncheckedValue>
         <initiallyChecked>0</initiallyChecked>
-        <documentation>Select this option to check JBoss server url for availability.</documentation>
+        <documentation>Select this option to check JBoss server url for availability instead of checking terminal status with jboss-cli.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
@@ -45,7 +45,7 @@
         <label>Success criteria:</label>
         <property>criteria</property>
         <required>1</required>
-        <documentation>A desired terminal status of the server. The procedure will fail if criteria will not be reached.</documentation>
+        <documentation>A desired status of the server. The procedure fails if criteria is not met. If "Perform URL check" is not set: only terminal status 'running' for standalone and 'STARTED' for domain meet RUNNING criteria.</documentation>
         <option>
             <name>RUNNING</name>
             <value>RUNNING</value>

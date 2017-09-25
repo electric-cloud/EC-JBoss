@@ -1234,7 +1234,7 @@
              <formalParameter>
                  <formalParameterName>criteria</formalParameterName>
                  <defaultValue></defaultValue>
-                 <description>A desired terminal status of the server. The procedure will fail if criteria will not be reached.</description>
+                 <description>A desired status of the server. The procedure fails if criteria is not met. If "Perform URL check" is not set: only terminal status 'running' for standalone and 'STARTED' for domain meet RUNNING criteria.</description>
                  <required>1</required>
                  <type>entry</type>
              </formalParameter>
@@ -1249,7 +1249,7 @@
              <formalParameter>
                  <formalParameterName>url_check</formalParameterName>
                  <defaultValue></defaultValue>
-                 <description>Select this option to check JBoss server url for availability.</description>
+                 <description>Select this option to check JBoss server url for availability instead of checking terminal status with jboss-cli.</description>
                  <required>0</required>
                  <type>checkbox</type>
              </formalParameter>
