@@ -183,7 +183,7 @@ sub startServer($){
         $commandline = SQUOTE . $commandline .  " 1>" . $logfile . " 2>" . $errfile . SQUOTE;
         $commandline = "exec(" . $commandline . ");";
         $commandline = DQUOTE . $commandline . DQUOTE;
-        print "Linea de comando: $commandline\n";
+        print "Command line: $commandline\n";
         @systemcall = ("ecdaemon", "--", "ec-perl", "-e", $commandline);
     }
     else {
@@ -197,6 +197,8 @@ sub startServer($){
         if ($alternateConfig && $alternateConfig ne '') {
             $commandline .= " --server-config=" . DQUOTE . $alternateConfig . DQUOTE . " ";
         }
+        $commandline = SQUOTE . $commandline . SQUOTE;
+        print "Command line: $commandline\n";
         @systemcall = ("ecdaemon", "--", "sh", "-c", $commandline);
     }
     #print "Command Parameters:\n" . Dumper(@systemcall) . "--------------------\n";
@@ -204,6 +206,7 @@ sub startServer($){
     my $cmdLine = createCommandLine(\@systemcall);
     $props{'startStandaloneServerLine'} = $cmdLine;
     setProperties(\%props);
+    print "Command line for ecdaemon: $cmdLine\n";
     system($cmdLine);
 }
 ########################################################################
