@@ -14,7 +14,8 @@ Copyright (c) 2014 Electric Cloud, Inc.
 $[/myProject/procedure_helpers/preamble]
 
 my $PROJECT_NAME = '$[/myProject/projectName]';
-my $DESIRED_STATUS = 'STOPPED';
+my $STATUS_STOPPED = 'STOPPED'; # stopped status for servers with auto-start true
+my $STATUS_DISABLED = 'DISABLED'; # stopped status for servers with auto-start false
 my $SLEEP_TIME = 5;
 
 $|=1;
@@ -86,7 +87,7 @@ sub main {
         my ($servers, $states_ref) = $jboss->get_servergroup_status($params->{serversgroup});
         my %seen = ();
         @$states_ref = grep {!$seen{$_}++} @$states_ref;
-        if (scalar @$states_ref == 1 && $states_ref->[0] eq $DESIRED_STATUS) {
+        if ( scalar @$states_ref == 1 && ( $states_ref->[0] eq $STATUS_STOPPED || $states_ref->[0] eq $STATUS_DISABLED ) ) {
             $res->{error} = 0;
             $res->{msg} = '';
             last;
