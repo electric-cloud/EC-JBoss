@@ -19,8 +19,6 @@ sub main {
         plugin_key      =>  $PLUGIN_KEY,
     );
 
-    my $check_result = undef;
-
     my $params = $jboss->get_params_as_hashref(qw/
         host
         server
@@ -31,6 +29,8 @@ sub main {
 
     my $creds = $jboss->get_plugin_configuration();
     if ($params->{url_check}) {
+        my $check_result;
+
         # do check via LWP.
         my $url = $jboss->fix_url($creds->{jboss_url});
         my $ua = LWP::UserAgent->new();
@@ -53,16 +53,16 @@ sub main {
         $jboss->error("Criteria is not met. Server at $url should be in $params->{criteria} status.");
         return 1;
     }
-    my $launch_type;
-    $check_result = undef;
 
-    $check_result = $jboss->run_commands_until_done({
+    my $launch_type;
+    $jboss->run_commands_until_done({
         sleep_time => 5,
         time_limit => $params->{wait_time}
     }, sub {
         eval {
             $launch_type = $jboss->get_launch_type();
         };
+        $jboss->log_info("launch type is '" . ($launch_type ? $launch_type : "unknown") . "'");
         if (!$launch_type && $params->{criteria} eq 'NOT_RUNNING') {
             return 1;
         }
@@ -74,12 +74,16 @@ sub main {
 
     if (!$launch_type) {
         if ($params->{criteria} eq 'NOT_RUNNING') {
+            # we assume that server is not running in case we cannot retrieve launch type
             $jboss->success("Server is not running. Criteria met");
+            return;
         }
         else {
-            $jboss->bail_out("Unknown launch type. Criteria not met.");
+            $jboss->error("Unknown launch type. Criteria not met.");
+            return;
         }
     }
+
     my $command = '';
     if ($launch_type eq 'domain') {
         # domain detected
@@ -94,16 +98,24 @@ sub main {
     }
 
     my %result = ();
-    $check_result = undef;
+    my $state_criteria_met;
     $jboss->run_commands_until_done({
         sleep_time => 5,
         time_limit => $params->{wait_time},
         }, sub {
             %result = $jboss->run_command($command);
-            $check_result = is_criteria_met($jboss, \%result, $launch_type, $params->{criteria});
-            return $check_result;
+            $state_criteria_met = is_criteria_met($jboss, \%result, $launch_type, $params->{criteria});
+            return $state_criteria_met;
         });
-    # $jboss->process_response(%result);
+
+    if ($state_criteria_met) {
+        $jboss->success("Criteria '" .$params->{criteria} . "' met");
+        return;
+    }
+    else {
+        $jboss->error("Criteria '" .$params->{criteria} . "' not met.");
+        return;
+    }
 };
 
 sub is_criteria_met_url {
@@ -116,13 +128,17 @@ sub is_criteria_met_url {
     else {
         return 1 unless $resp->is_success();
     }
-    return 0
+    return 0;
 }
+
 sub is_criteria_met {
     my ($jboss, $result, $launch_type, $criteria) = @_;
 
     my $json = $jboss->decode_answer($result->{stdout});
     $json = {} unless $json;
+
+    $jboss->log_info("state is '" . ($json->{result} ? $json->{result} : "unknown") . "'");
+
     if ($launch_type eq 'domain') {
         # server is running
         if ($json->{result} && $json->{result} eq 'STARTED') {
@@ -142,15 +158,22 @@ sub is_criteria_met {
 
     }
     else {
-        if ($json->{outcome} && $json->{outcome} eq 'success' && $json->{result} && $json->{result} eq 'running') {
-            if ($criteria eq 'RUNNING') {
-                return 1;
-            }
+        # state 'running' meet the RUNNING criteria
+        # states such as 'starting', 'reload-required', 'restart-required', 'stopping' or other meet the NOT_RUNNING criteria
+        # undefined state meet the NOT_RUNNING criteria
+        my $state_is_considered_as_running;
+        if ( $json->{outcome} && $json->{outcome} eq 'success' && $json->{result} && $json->{result} eq 'running' ) {
+            $state_is_considered_as_running = 1;
+        }
+
+        if ( $criteria eq 'RUNNING' && $state_is_considered_as_running ) {
+            return 1;
+        }
+        elsif ( $criteria eq 'NOT_RUNNING' && !$state_is_considered_as_running ) {
+            return 1;
+        }
+        else {
             return 0;
         }
-        if ($criteria eq 'RUNNING') {
-            return 0;
-        }
-        return 1;
     }
 }
