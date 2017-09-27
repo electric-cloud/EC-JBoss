@@ -84,10 +84,12 @@ sub main {
             $done = 1;
             last;
         }
-        my ($servers, $states_ref) = $jboss->get_servergroup_status($params->{serversgroup});
-        my %seen = ();
-        @$states_ref = grep {!$seen{$_}++} @$states_ref;
-        if ( scalar @$states_ref == 1 && ( $states_ref->[0] eq $STATUS_STOPPED || $states_ref->[0] eq $STATUS_DISABLED ) ) {
+        my ($servers, $all_states_ref) = $jboss->get_servergroup_status($params->{serversgroup});
+
+        my @stopped_states = grep { $_ eq $STATUS_STOPPED || $_ eq $STATUS_DISABLED } @$all_states_ref;
+        my $all_servers_are_stopped = ( scalar @stopped_states == scalar @$all_states_ref ) ? 1 : 0;
+
+        if ( $all_servers_are_stopped ) {
             $res->{error} = 0;
             $res->{msg} = '';
             last;
