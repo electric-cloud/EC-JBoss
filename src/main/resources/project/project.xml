@@ -498,6 +498,16 @@
                                     </propertySheet>
                                 </property>
                                 <property>
+                                    <propertyName>alternatejbossconfighost</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
                                         <property>
@@ -522,7 +532,14 @@
             <formalParameter>
                 <formalParameterName>alternatejbossconfig</formalParameterName>
                 <defaultValue/>
-                <description>Provide the XML config file if you want to start your domain with a different configuration.</description>
+                <description>Name of the domain configuration file that ElectricFlow uses to start the host controller with a different domain configuration (--domain-config). By default domain.xml is used.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>alternatejbossconfighost</formalParameterName>
+                <defaultValue/>
+                <description>Name of the host configuration file that ElectricFlow uses to start the host controller with a different host configuration (--host-config). By default host.xml is used.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
