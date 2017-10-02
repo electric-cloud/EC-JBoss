@@ -26,7 +26,7 @@
     <formElement>
         <type>entry</type>
         <label>Optional host configuration name:</label>
-        <property>alternatejbossconfighost</property>
+        <property>alternateJBossConfigHost</property>
         <required>0</required>
         <documentation>Name of the host configuration file that ElectricFlow uses to start the host controller with a different host configuration (--host-config). By default host.xml is used.</documentation>
     </formElement>

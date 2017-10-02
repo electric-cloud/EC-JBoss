@@ -1200,7 +1200,7 @@
             <value></value>
           </property>
           <property>
-            <propertyName>alternatejbossconfighost</propertyName>
+            <propertyName>alternateJBossConfigHost</propertyName>
             <expandable>1</expandable>
             <value></value>
           </property>

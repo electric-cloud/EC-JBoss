@@ -84,7 +84,7 @@ $::gEC->abortOnError(0);
 
 $::gScriptPhysicalLocation = ($::gEC->getProperty("scriptphysicalpath") )->findvalue("//value");
 $::gAlternateJBossConfigDomain = ($::gEC->getProperty("alternatejbossconfig") )->findvalue("//value");
-$::gAlternateJBossConfigHost = ($::gEC->getProperty("alternatejbossconfighost") )->findvalue("//value");
+$::gAlternateJBossConfigHost = ($::gEC->getProperty("alternateJBossConfigHost") )->findvalue("//value");
 $::gServerConfig = ($::gEC->getProperty("serverconfig") )->findvalue("//value");
 
 my %tempConfig = &getConfiguration($::gServerConfig);
