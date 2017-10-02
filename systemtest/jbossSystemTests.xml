@@ -1200,6 +1200,11 @@
             <value></value>
           </property>
           <property>
+            <propertyName>alternateJBossConfigHost</propertyName>
+            <expandable>1</expandable>
+            <value></value>
+          </property>
+          <property>
             <propertyName>scriptphysicalpath</propertyName>
             <expandable>1</expandable>
             <value>domain.bat</value>

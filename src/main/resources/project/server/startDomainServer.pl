@@ -83,7 +83,8 @@ $::gEC = new ElectricCommander();
 $::gEC->abortOnError(0);
 
 $::gScriptPhysicalLocation = ($::gEC->getProperty("scriptphysicalpath") )->findvalue("//value");
-$::gAlternateJBossConfig = ($::gEC->getProperty("alternatejbossconfig") )->findvalue("//value");
+$::gAlternateJBossConfigDomain = ($::gEC->getProperty("alternatejbossconfig") )->findvalue("//value");
+$::gAlternateJBossConfigHost = ($::gEC->getProperty("alternateJBossConfigHost") )->findvalue("//value");
 $::gServerConfig = ($::gEC->getProperty("serverconfig") )->findvalue("//value");
 
 my %tempConfig = &getConfiguration($::gServerConfig);
@@ -117,7 +118,7 @@ sub main() {
     my %props;
 
     #start admin server using ecdaemon
-    startServer($::gScriptPhysicalLocation, $::gAlternateJBossConfig);
+    startServer($::gScriptPhysicalLocation, $::gAlternateJBossConfigDomain, $::gAlternateJBossConfigHost);
     verifyServerIsStarted($::gServerConfig);
 
     setProperties(\%props);
@@ -139,7 +140,7 @@ sub main() {
 #
 ########################################################################
 sub startServer($){
-    my ($scriptPhysicalLocation, $alternateConfig) = @_;
+    my ($scriptPhysicalLocation, $alternateConfigDomain, $alternateConfigHost) = @_;
 
     # $The quote and backslash constants are just a convenient way to represtent literal literal characters so it is obvious
     # in the concatentations. NOTE: BSLASH ends up being a single backslash, it needs to be doubled here so it does not
@@ -172,8 +173,11 @@ sub startServer($){
         # using the sysinternals procmon tool.
         my $commandline = BSLASH . BSLASH . BSLASH . DQUOTE . $scriptPhysicalLocation . BSLASH . BSLASH . BSLASH . DQUOTE;
 
-        if ($alternateConfig && $alternateConfig ne '') {
-            $commandline .= " --domain-config=" . BSLASH . BSLASH . BSLASH . DQUOTE . $alternateConfig . BSLASH . BSLASH . BSLASH . DQUOTE;
+        if ($alternateConfigDomain && $alternateConfigDomain ne '') {
+            $commandline .= " --domain-config=" . BSLASH . BSLASH . BSLASH . DQUOTE . $alternateConfigDomain . BSLASH . BSLASH . BSLASH . DQUOTE;
+        }
+        if ($alternateConfigHost && $alternateConfigHost ne '') {
+            $commandline .= " --host-config=" . BSLASH . BSLASH . BSLASH . DQUOTE . $alternateConfigHost . BSLASH . BSLASH . BSLASH . DQUOTE;
         }
 
         my $logfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".log";
@@ -193,8 +197,11 @@ sub startServer($){
         # really important since the vital information goes directly to $CATALINA_HOME/logs/catalina.out anyway. It can lose
         # important error messages if the paths are bad, etc. so this will be a JIRA.
         my $commandline = DQUOTE . $scriptPhysicalLocation . DQUOTE;
-        if ($alternateConfig && $alternateConfig ne '') {
-            $commandline .= " --domain-config=" . DQUOTE . $alternateConfig . DQUOTE . " ";
+        if ($alternateConfigDomain && $alternateConfigDomain ne '') {
+            $commandline .= " --domain-config=" . DQUOTE . $alternateConfigDomain . DQUOTE . " ";
+        }
+        if ($alternateConfigHost && $alternateConfigHost ne '') {
+            $commandline .= " --host-config=" . DQUOTE . $alternateConfigHost . DQUOTE . " ";
         }
         $commandline = SQUOTE . $commandline . SQUOTE;
         print "Command line: $commandline\n";
