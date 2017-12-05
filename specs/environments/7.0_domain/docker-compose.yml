@@ -14,7 +14,7 @@ services:
   jboss:
     image: electricflow/jboss7
     environment:
-      - JBOSS_MODE=standalone
+      - JBOSS_MODE=domain
     ports:
       - "8080:8080"
       - "9990:9990"
