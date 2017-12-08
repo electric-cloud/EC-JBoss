@@ -59,8 +59,8 @@ class StartServers extends PluginTestHelper {
         waitUntil {
             jobCompleted result.jobId
         }
-        def logs = getJobProperty("/myJob/debug_logs", result.jobId)
-        SpockTestSupport.logger.debug(logs)
+//        def logs = getJobProperty("/myJob/debug_logs", result.jobId)
+//        SpockTestSupport.logger.debug(logs)
         assert jobStatus(result.jobId).outcome == expectedOutcome
         def properties = getJobProperties(result.jobId)
         where:
