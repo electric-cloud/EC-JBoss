@@ -6,7 +6,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     def createConfiguration(configName, props = [:]) {
         def username = System.getenv('JBOSS_USERNAME') ?: 'admin'
         def password = System.getenv('JBOSS_PASSWORD') ?: 'changeme'
-        def jboss_url = System.getenv('JBOSS_CONTROLLER_URL') ?: 'http://jboss:9990'
+        def jboss_url = System.getenv('JBOSS_CONTROLLER_URL') ?: 'jboss:9990'
 
         createPluginConfiguration(
                 'EC-JBoss',
