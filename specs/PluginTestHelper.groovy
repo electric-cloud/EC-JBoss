@@ -11,7 +11,10 @@ class PluginTestHelper extends PluginSpockTestSupport {
         createPluginConfiguration(
                 'EC-JBoss',
                 configName,
-                [jboss_url: jboss_url],
+                [jboss_url: jboss_url,
+                 scriptphysicalpath: '',
+                 java_opts: '',
+                 log_level: 'INFO'],
                 username,
                 password,
                 props
