@@ -24,7 +24,7 @@ class StartServers extends PluginTestHelper {
     }
 
     def doCleanupSpec() {
-        dsl "deleteProject(projectName: '$projectName')"
+//        dsl "deleteProject(projectName: '$projectName')"
     }
 
     def runProcedure(def parameters) {
