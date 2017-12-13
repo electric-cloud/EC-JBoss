@@ -36,6 +36,33 @@ BEGIN {
     }
 };
 
+{
+    my $tec = ElectricCommander->new();
+    my $log_property_path;
+    eval {
+        $log_property_path = $tec->getProperty('/plugins/EC-JBoss/project/ec_debug_logToProperty')->findvalue('//value')->string_value();
+    };
+    if ($log_property_path) {
+        ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/lib/EC/LogTrapper.pm");
+
+        EC::LogTrapper::open_handle();
+        tie *STDOUT, "EC::LogTrapper", (
+                print =>
+                sub {
+                    my $value = '';
+                    eval {
+                        $value = $tec->getProperty($log_property_path)->findvalue('//value')->string_value();
+                    };
+                    $value .= join '', @_;
+                    $tec->setProperty($log_property_path, $value);
+                    print @_;
+                    # print map { uc } @_;
+                }
+            );
+    }
+
+};
+
 =item B<new>
 
 Constructor. Returns EC::JBoss object.
