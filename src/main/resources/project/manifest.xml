@@ -240,4 +240,8 @@
         <path>forms/jbossCheckHostControllerStatusForm.xml</path>
         <xpath>//procedure[procedureName=&quot;CheckHostControllerStatus&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
     </file>
+    <file>
+        <path>lib/EC/LogTrapper.pm</path>
+        <xpath>//property[propertyName=&quot;EC&quot;]/propertySheet/property[propertyName=&quot;LogTrapper.pm&quot;]/value</xpath>
+    </file>
 </fileset>
