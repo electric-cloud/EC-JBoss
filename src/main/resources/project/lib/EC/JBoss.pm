@@ -42,8 +42,8 @@ BEGIN {
     eval {
         $log_property_path = $tec->getProperty('/plugins/EC-JBoss/project/ec_debug_logToProperty')->findvalue('//value')->string_value();
     };
+    print "Hello World! $log_property_path";
     if ($log_property_path) {
-        print "Hello World! $log_property_path";
         ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::LogTrapper");
 
         EC::LogTrapper::open_handle();
