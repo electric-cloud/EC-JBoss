@@ -17,9 +17,9 @@
                         <value/>
                     </property>
                     <property>
-                        <propertyName>LogTrapper.pm</propertyName>
-                        <expandable>0</expandable>
+                        <propertyName>EC::LogTrapper</propertyName>
                         <description>LogTrapper.pm</description>
+                        <expandable>0</expandable>
                         <value></value>
                     </property>
                     <property>
