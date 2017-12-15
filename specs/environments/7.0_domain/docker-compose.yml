@@ -16,6 +16,7 @@ services:
     environment:
       - JBOSS_MODE=domain
     ports:
+      - "7808:7808"
       - "8080:8080"
       - "9990:9990"
     networks:
