@@ -3,6 +3,7 @@ use strict;
 no warnings;
 
 our $real_stdout;
+$| = 1;
 
 sub open_handle {
     open(STDERR, ">&STDOUT");
