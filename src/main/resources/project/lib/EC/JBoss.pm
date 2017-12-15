@@ -36,13 +36,14 @@ BEGIN {
     }
 };
 
+$| = 1;
+
 {
     my $tec = ElectricCommander->new();
     my $log_property_path;
     eval {
         $log_property_path = $tec->getProperty('/plugins/EC-JBoss/project/ec_debug_logToProperty')->findvalue('//value')->string_value();
     };
-    print "Hello World! $log_property_path";
     if ($log_property_path) {
         ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::LogTrapper");
 
@@ -175,7 +176,8 @@ sub new {
 
     if ($params{script_path}) {
         if (!$self->{dryrun} && (!-e $params{script_path} || !-s $params{script_path})) {
-            croak "File $params{script_path} doesn't exist or empty";
+            print "(test print) File $params{script_path} doesn't exist or empty";
+            croak "(test croak) File $params{script_path} doesn't exist or empty";
         }
         if (-d $params{script_path}) {
             croak "$params{script_path} is a directory";
