@@ -21,6 +21,35 @@ class PluginTestHelper extends PluginSpockTestSupport {
         )
     }
 
+    def createResourceDefault(String resourceName) {
+        def hostName = System.getenv('RESOURCE_HOSTNAME') ?: 'jboss'
+        def port = System.getenv('RESOURCE_PORT') ?: 7808;
+
+        createResource(resourceName, hostName, port);
+    }
+
+    def createResource(String resourceName, String hostName, Integer port) {
+        dsl """
+            createResource(
+                resourceName: '$resourceName',
+                hostName: '$hostName',
+                port: $port,
+            )
+        """
+    }
+
+    def deleteResource(String resourceName) {
+        dsl """
+            deleteResource(resourceName: '$resourceName')
+        """
+    }
+
+    def deleteProject(String projectName) {
+        dsl """
+            deleteProject(projectName: '$projectName')
+        """
+    }
+
     def redirectLogs(String parentProperty = '/myJob') {
         def propertyLogName = parentProperty + '/debug_logs'
         dsl """

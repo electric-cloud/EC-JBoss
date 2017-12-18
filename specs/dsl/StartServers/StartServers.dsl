@@ -1,11 +1,12 @@
 def projName = args.projName
+def resName = args.resName
 
 project projName, {
     procedure 'Start Servers Procedure', {
         description = ''
         jobNameTemplate = ''
         projectName = projName
-        resourceName = ''
+        resourceName = resName
         timeLimit = ''
         timeLimitUnits = 'minutes'
         workspaceName = ''

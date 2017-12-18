@@ -7,6 +7,8 @@ class StartServers extends PluginTestHelper {
     @Shared
     def projectName = 'EC-JBoss Specs StartServers Project'
     @Shared
+    def resourceName = 'EC-JBoss Resource'
+    @Shared
     def testProcedureName = 'Start Servers Procedure'
     @Shared
     def defaultConfigName = 'specConfig'
@@ -17,14 +19,16 @@ class StartServers extends PluginTestHelper {
 
     def doSetupSpec() {
         dsl 'setProperty(propertyName: "/plugins/EC-JBoss/project/ec_debug_logToProperty", value: "/myJob/debug_logs")'
-        createConfiguration('specConfig')
-        logger.info("Hello World!")
-        logger.info("doSetupSpec")
-        dslFile 'dsl/StartServers/StartServers.dsl', [projName: projectName]
+        createConfiguration(defaultConfigName)
+        createResourceDefault(resourceName)
+        logger.info("Hello World! doSetupSpec")
+        dslFile 'dsl/StartServers/StartServers.dsl', [projName: projectName, resName: resourceName]
     }
 
     def doCleanupSpec() {
-//        dsl "deleteProject(projectName: '$projectName')"
+        logger.info("Hello World! doCleanupSpec")
+//        deleteProject(projectName)
+//        deleteResource(resourceName);
     }
 
     def runProcedure(def parameters) {
