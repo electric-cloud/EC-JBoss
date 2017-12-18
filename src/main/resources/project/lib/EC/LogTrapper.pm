@@ -6,7 +6,8 @@ our $real_stdout;
 $| = 1;
 
 sub open_handle {
-    open(STDERR, ">&STDOUT");
+    # raw filehandle assignment.
+    *STDERR = *STDOUT;
     open(REALSTDOUT, ">&STDOUT");
     $real_stdout = *REALSTDOUT;
 }
