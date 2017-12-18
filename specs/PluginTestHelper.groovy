@@ -28,7 +28,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         createResource(resourceName, hostName, port);
     }
 
-    def createResource(String resourceName, String hostName, Integer port) {
+    def createResource(String resourceName, String hostName, String port) {
         dsl """
             createResource(
                 resourceName: '$resourceName',
