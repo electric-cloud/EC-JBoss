@@ -7,12 +7,13 @@ class PluginTestHelper extends PluginSpockTestSupport {
         def username = System.getenv('JBOSS_USERNAME') ?: 'admin'
         def password = System.getenv('JBOSS_PASSWORD') ?: 'changeme'
         def jboss_url = System.getenv('JBOSS_CONTROLLER_URL') ?: 'jboss:9990'
+        def jboss_cli_path = System.getenv('JBOSS_CLI_PATH') ?: '/opt/jboss/bin/jboss-cli.sh'
 
         createPluginConfiguration(
                 'EC-JBoss',
                 configName,
                 [jboss_url: jboss_url,
-                 scriptphysicalpath: '',
+                 scriptphysicalpath: jboss_cli_path,
                  java_opts: '',
                  log_level: 'INFO'],
                 username,
@@ -99,7 +100,6 @@ class PluginTestHelper extends PluginSpockTestSupport {
         }
         return name =~ /$ignoreVar/ ? false : true
     }
-
 
     def runProcedureDsl(dslString) {
         redirectLogs()

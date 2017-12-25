@@ -13,7 +13,7 @@ class StartServers extends PluginTestHelper {
     @Shared
     def defaultConfigName = 'specConfig'
     @Shared
-    def defaultCliPath = '/opt/jboss/bin/jboss-cli.sh'
+    def defaultCliPath = ''
     @Shared
     def defaultWaitTime = '300'
 
@@ -32,7 +32,7 @@ class StartServers extends PluginTestHelper {
     }
 
     def runProcedure(def parameters) {
-        def code = """
+        def prcedureDsl = """
                 runProcedure(
                     projectName: '$projectName',
                     procedureName: '$testProcedureName',
@@ -44,33 +44,100 @@ class StartServers extends PluginTestHelper {
                     ]
                 )
         """
-        return dsl(code)
+        def result = runProcedureDsl prcedureDsl
+        return result
+    }
 
+    @Unroll
+    def "start server group which is stopped"() {
+        given:
+        def testServerGroup = 'other-server-group'
+
+        when:
+        def runParams = [
+                configName : defaultConfigName,
+                cliPath    : defaultCliPath,
+                serverGroup: testServerGroup,
+                waitTime   : defaultWaitTime
+        ]
+        def result = runProcedure(runParams)
+
+        then:
+        assert result.outcome == 'success'
     }
 
     @Unroll
     def "start server group which is already started"() {
-        when: 'run StartServers procedure for the server group which is already started'
+        given:
+        def testServerGroup = 'main-server-group'
+
+        when:
         def runParams = [
-                configName : testConfigName,
-                cliPath    : testCliPath,
+                configName : defaultConfigName,
+                cliPath    : defaultCliPath,
                 serverGroup: testServerGroup,
-                waitTime   : 300
+                waitTime   : defaultWaitTime
         ]
         def result = runProcedure(runParams)
-        then: 'wait until procedure finishes'
-        assert result?.jobId
-        waitUntil {
-            jobCompleted result.jobId
-        }
-        def logs = getJobProperty("/myJob/debug_logs", result.jobId)
-        SpockTestSupport.logger.debug(logs)
-        assert jobStatus(result.jobId).outcome == expectedOutcome
-        def properties = getJobProperties(result.jobId)
-        where:
-        testNumber | testConfigName    | testCliPath    | testServerGroup      | testWaitTime    | expectedOutcome
-        '1'        | defaultConfigName | defaultCliPath | 'main-server-group'  | defaultWaitTime | 'success'
-        '2'        | defaultConfigName | defaultCliPath | 'other-server-group' | defaultWaitTime | 'success'
+
+        then:
+        assert result.outcome == 'warning'
     }
+
+    @Unroll
+    def "negative: start not existing server group"() {
+        given:
+        def testServerGroup = 'not-existing-server-group'
+
+        when:
+        def runParams = [
+                configName : defaultConfigName,
+                cliPath    : defaultCliPath,
+                serverGroup: testServerGroup,
+                waitTime   : defaultWaitTime
+        ]
+        def result = runProcedure(runParams)
+
+        then:
+        assert result.outcome == 'error'
+    }
+
+    @Unroll
+    def "negative: start empty server group"() {
+        given:
+        //todo:
+        def testServerGroup = 'empty-server-group'
+
+        when:
+        def runParams = [
+                configName : defaultConfigName,
+                cliPath    : defaultCliPath,
+                serverGroup: testServerGroup,
+                waitTime   : defaultWaitTime
+        ]
+        def result = runProcedure(runParams)
+
+        then:
+        assert result.outcome == 'error'
+    }
+
+//    @Unroll
+//    def "negative: start server group with low wait time (timeout)"() {
+//        given:
+//        def testServerGroup = 'other-server-group'
+//        def testWaitTime = '1';
+//
+//        when:
+//        def runParams = [
+//                configName : defaultConfigName,
+//                cliPath    : defaultCliPath,
+//                serverGroup: testServerGroup,
+//                waitTime   : testWaitTime
+//        ]
+//        def result = runProcedure(runParams)
+//
+//        then:
+//        assert result.outcome == 'error'
+//    }
 
 }

@@ -742,6 +742,7 @@ sub set_property {
     my ($self, $key, $value) = @_;
 
     $self->log_debug("Setting property '$key' = '$value'");
+    #todo: verify what is myCall context, it seems to be obsolete
     $self->ec()->setProperty("/myCall/$key", $value);
 }
 
