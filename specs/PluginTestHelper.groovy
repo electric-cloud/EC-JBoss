@@ -1,48 +1,62 @@
+import Utils.EnvPropertiesHelper
 import spock.lang.*
 import com.electriccloud.spec.*
 
 class PluginTestHelper extends PluginSpockTestSupport {
 
-    def createConfiguration(configName, props = [:]) {
-        def username = System.getenv('JBOSS_USERNAME') ?: 'admin'
-        def password = System.getenv('JBOSS_PASSWORD') ?: 'changeme'
-        def jboss_url = System.getenv('JBOSS_CONTROLLER_URL') ?: 'jboss:9990'
-        def jboss_cli_path = System.getenv('JBOSS_CLI_PATH') ?: '/opt/jboss/bin/jboss-cli.sh'
+    static def helperProjName = 'JBoss Helper Project'
+    static def helperProcedure = 'RunCustomCommand'
+
+    def createDefaultConfiguration(String configName, props = [:]) {
+        String pluginName = "EC-JBoss"
+
+        def username = EnvPropertiesHelper.getJbossUsername();
+        def password = EnvPropertiesHelper.getJbossPassword();
+        def jboss_url = EnvPropertiesHelper.getJbossControllerUrl();
+        def jboss_cli_path = EnvPropertiesHelper.getJbossCliPath();
+        def jboss_log_level = EnvPropertiesHelper.getJbossLogLevel();
 
         createPluginConfiguration(
                 'EC-JBoss',
                 configName,
-                [jboss_url: jboss_url,
+                [jboss_url         : jboss_url,
                  scriptphysicalpath: jboss_cli_path,
-                 java_opts: '',
-                 log_level: 'INFO'],
+                 java_opts         : '',
+                 log_level         : jboss_log_level],
                 username,
                 password,
                 props
         )
     }
 
-    def createResourceDefault(String resourceName) {
-        def hostName = System.getenv('RESOURCE_HOSTNAME') ?: 'jboss'
-        def port = System.getenv('RESOURCE_PORT') ?: 7808;
+    def createJBossResource() {
+        def hostname = EnvPropertiesHelper.getResourceHostname()
+        def port = EnvPropertiesHelper.getResourcePort()
 
-        createResource(resourceName, hostName, port);
-    }
+        def resources = dsl "getResources()"
+        logger.debug(objectToJson(resources))
 
-    def createResource(String resourceName, String hostName, String port) {
-        dsl """
+        def resource = resources.resource.find {
+            it.hostName == hostname && it.port == port
+        }
+        if (resource) {
+            logger.debug("JBoss resource already exists")
+            return resource.resourceName
+        }
+        logger.debug("Creating new JBoss resource")
+
+        def result = dsl """
             createResource(
-                resourceName: '$resourceName',
-                hostName: '$hostName',
-                port: $port,
+                resourceName: '${randomize("JBoss")}',
+                hostName: '$hostname',
+                port: '$port'
             )
         """
-    }
 
-    def deleteResource(String resourceName) {
-        dsl """
-            deleteResource(resourceName: '$resourceName')
-        """
+        logger.debug(objectToJson(result))
+        def resName = result?.resource?.resourceName
+        assert resName
+        resName
     }
 
     def deleteProject(String projectName) {
@@ -116,6 +130,34 @@ class PluginTestHelper extends PluginSpockTestSupport {
         logger.debug("Logs: $logs")
         logger.debug("Outcome: $outcome")
         [logs: logs, outcome: outcome, jobId: result.jobId]
+    }
+
+    def createHelperProject(resName, configName) {
+        dslFile 'dsl/RunProcedure.dsl', [
+                projName: helperProjName,
+                resName : resName,
+                procName: helperProcedure,
+                params  : [
+                        serverconfig      : configName,
+                        scriptphysicalpath: '',
+                        customCommand      : '',
+                ]
+        ]
+    }
+
+    def runCliCommand(command) {
+        def prcedureDsl = """
+            runProcedure(
+                projectName: '$helperProjName',
+                procedureName: '$helperProcedure',
+                actualParameter: [
+                    customCommand: '''$command'''
+                ]
+            )
+        """
+        def result = runProcedureDsl prcedureDsl
+        assert result.outcome == 'success'
+        return result
     }
 
 }
