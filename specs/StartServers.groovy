@@ -184,7 +184,7 @@ class StartServers extends PluginTestHelper {
     }
 
     @Unroll
-    def "StartServers, start with unlimited wait time - undef (C259543)"() {
+    def "StartServers, start with no wait time - undef (C259543)"() {
         setup:
         String testCaseId = "C259543"
 
@@ -219,7 +219,7 @@ class StartServers extends PluginTestHelper {
     }
 
     @Unroll
-    def "StartServers, start with unlimited wait time - 0 (C259544)"() {
+    def "StartServers, start with no wait time - 0 (C259544)"() {
         setup:
         String testCaseId = "C259544"
 
