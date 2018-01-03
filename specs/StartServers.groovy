@@ -84,6 +84,9 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server2))
 
+        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STOPPED"
+        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).jboss_result == "STOPPED"
+
         when:
         def runParams = [
                 serverconfig      : defaultConfigName,
@@ -124,6 +127,9 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server2))
         runCliCommand(CliCommandsGeneratorHelper.startServerCmd(server1))
         runCliCommand(CliCommandsGeneratorHelper.startServerCmd(server2))
+
+        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STARTED"
+        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).jboss_result == "STARTED"
 
         when:
         def runParams = [
@@ -166,6 +172,9 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server2))
         runCliCommand(CliCommandsGeneratorHelper.startServerCmd(server1))
 
+        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STARTED"
+        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).jboss_result == "STOPPED"
+
         when:
         def runParams = [
                 serverconfig      : defaultConfigName,
@@ -196,6 +205,7 @@ class StartServers extends PluginTestHelper {
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
         String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String waitTime = ''
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
         ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
@@ -203,7 +213,7 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addServerGroupCmd(serverGroup))
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
 
-        String waitTime = ''
+        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STOPPED"
 
         when:
         def runParams = [
@@ -239,6 +249,8 @@ class StartServers extends PluginTestHelper {
 
         runCliCommand(CliCommandsGeneratorHelper.addServerGroupCmd(serverGroup))
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
+
+        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STOPPED"
 
         when:
         def runParams = [
@@ -320,6 +332,8 @@ class StartServers extends PluginTestHelper {
 
         runCliCommand(CliCommandsGeneratorHelper.addServerGroupCmd(serverGroup))
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
+
+        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STOPPED"
 
         String waitTime = '-10'
 
