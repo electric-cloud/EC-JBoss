@@ -57,4 +57,13 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String getServerStatusInDomain(ServerHelper server) {
+        return getServerStatusInDomain(server.getServerName(), server.getHostName());
+    }
+
+    static String getServerStatusInDomain(String serverName, String hostName) {
+        String command = "/host=$hostName/server-config=$serverName/:read-attribute(name=status)"
+        return command
+    }
+
 }

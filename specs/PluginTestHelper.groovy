@@ -141,22 +141,33 @@ class PluginTestHelper extends PluginSpockTestSupport {
                         serverconfig      : configName,
                         scriptphysicalpath: '',
                         customCommand      : '',
+                        propertyName      : '',
+                        dumpFormat      : '',
                 ]
         ]
     }
 
-    def runCliCommand(command) {
+    def runCliCommand(String command) {
         def prcedureDsl = """
             runProcedure(
                 projectName: '$helperProjName',
                 procedureName: '$helperProcedure',
                 actualParameter: [
-                    customCommand: '''$command'''
+                    customCommand: '''$command''',
+                    propertyName: '/myJob/RunCustomCommandResult',
+                    dumpFormat: 'propertySheet',
                 ]
             )
         """
         def result = runProcedureDsl prcedureDsl
         assert result.outcome == 'success'
+
+        def props = getJobProperties(result.jobId)
+        logger.debug("runCliCommand properties: " + objectToJson(props))
+        assert props.RunCustomCommandResult.outcome == "success"
+        result.jboss_result = props.RunCustomCommandResult.result
+        logger.info("runCliCommand jboss result: " + result.jboss_result)
+
         return result
     }
 
