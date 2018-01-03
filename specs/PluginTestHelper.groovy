@@ -147,14 +147,16 @@ class PluginTestHelper extends PluginSpockTestSupport {
         ]
     }
 
-    def runCliCommand(String command) {
+    def runCliCommand(String command, boolean catchJBossReply = false) {
+        String propertyName = catchJBossReply ? "/myJob/RunCustomCommandResult" : ""
+
         def prcedureDsl = """
             runProcedure(
                 projectName: '$helperProjName',
                 procedureName: '$helperProcedure',
                 actualParameter: [
                     customCommand: '''$command''',
-                    propertyName: '/myJob/RunCustomCommandResult',
+                    propertyName: '''$propertyName''',
                     dumpFormat: 'propertySheet',
                 ]
             )
@@ -162,11 +164,17 @@ class PluginTestHelper extends PluginSpockTestSupport {
         def result = runProcedureDsl prcedureDsl
         assert result.outcome == 'success'
 
-        def props = getJobProperties(result.jobId)
-        logger.debug("runCliCommand properties: " + objectToJson(props))
-        assert props.RunCustomCommandResult.outcome == "success"
-        result.jboss_result = props.RunCustomCommandResult.result
-        logger.info("runCliCommand jboss result: " + result.jboss_result)
+        if (catchJBossReply) {
+            def props = getPropertiesRecursive(propertyName, result.jobId, { path, id ->
+                def res = dsl """
+                getProperties(path: '$path', jobId: '$id')
+            """
+                res?.propertySheet?.property
+            })
+            logger.debug("RunCustomCommandResult properties: " + objectToJson(props))
+            result.jbossReply = props
+            assert result.jbossReply.outcome == "success"
+        }
 
         return result
     }

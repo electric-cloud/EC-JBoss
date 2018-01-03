@@ -84,8 +84,8 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server2))
 
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STOPPED"
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).jboss_result == "STOPPED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STOPPED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STOPPED"
 
         when:
         def runParams = [
@@ -97,8 +97,51 @@ class StartServers extends PluginTestHelper {
         def result = runProcedure(runParams)
         then:
         assert result.outcome == 'success'
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STARTED"
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).jboss_result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STARTED"
+
+        cleanup:
+        runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server2))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerCmd(server2))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
+    }
+
+    @Unroll
+    def "StartServers, group with all servers stopped (different auto-start options on each - check DISABLED status) (C259557)"() {
+        setup:
+        String testCaseId = "C259557"
+
+        String serverGroupName = "server-group-$testCaseId"
+        String serverName1 = "server-1-$testCaseId"
+        String serverName2 = "server-2-$testCaseId"
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+
+        ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
+        ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
+        server1.setAutoStart(false)
+        ServerHelper server2 = new ServerHelper(serverName2, serverGroupName, hostName)
+
+        runCliCommand(CliCommandsGeneratorHelper.addServerGroupCmd(serverGroup))
+        runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server2))
+
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "DISABLED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STOPPED"
+
+        when:
+        def runParams = [
+                serverconfig      : defaultConfigName,
+                scriptphysicalpath: defaultCliPath,
+                serversgroup      : serverGroupName,
+                wait_time         : defaultWaitTime
+        ]
+        def result = runProcedure(runParams)
+        then:
+        assert result.outcome == 'success'
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STARTED"
 
         cleanup:
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
@@ -128,8 +171,8 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.startServerCmd(server1))
         runCliCommand(CliCommandsGeneratorHelper.startServerCmd(server2))
 
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STARTED"
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).jboss_result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STARTED"
 
         when:
         def runParams = [
@@ -142,8 +185,8 @@ class StartServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'warning'
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STARTED"
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).jboss_result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STARTED"
 
         cleanup:
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
@@ -172,8 +215,8 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server2))
         runCliCommand(CliCommandsGeneratorHelper.startServerCmd(server1))
 
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STARTED"
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).jboss_result == "STOPPED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STOPPED"
 
         when:
         def runParams = [
@@ -186,8 +229,8 @@ class StartServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'warning'
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STARTED"
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).jboss_result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STARTED"
 
         cleanup:
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
@@ -213,7 +256,7 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addServerGroupCmd(serverGroup))
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
 
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STOPPED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STOPPED"
 
         when:
         def runParams = [
@@ -226,7 +269,7 @@ class StartServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'success'
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STARTED"
 
         cleanup:
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
@@ -250,7 +293,7 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addServerGroupCmd(serverGroup))
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
 
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STOPPED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STOPPED"
 
         when:
         def runParams = [
@@ -263,7 +306,7 @@ class StartServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'success'
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STARTED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STARTED"
 
         cleanup:
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
@@ -333,7 +376,7 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addServerGroupCmd(serverGroup))
         runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
 
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STOPPED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STOPPED"
 
         String waitTime = '-10'
 
@@ -348,7 +391,7 @@ class StartServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'error'
-        runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).jboss_result == "STOPPED"
+        assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STOPPED"
 
         cleanup:
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
