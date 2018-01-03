@@ -26,6 +26,7 @@ use Data::Dumper;
 use IPC::Open3;
 use Symbol qw/gensym/;
 use IO::Select;
+#use XML::Simple qw(XMLout);
 
 our $VERSION = 0.02;
 
@@ -39,10 +40,10 @@ BEGIN {
 $| = 1;
 
 {
-    my $tec = ElectricCommander->new();
+    my $ec = ElectricCommander->new();
     my $log_property_path;
     eval {
-        $log_property_path = $tec->getProperty('/plugins/EC-JBoss/project/ec_debug_logToProperty')->findvalue('//value')->string_value();
+        $log_property_path = $ec->getProperty('/plugins/EC-JBoss/project/ec_debug_logToProperty')->findvalue('//value')->string_value();
     };
     if ($log_property_path) {
         ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::LogTrapper");
@@ -53,10 +54,10 @@ $| = 1;
                 sub {
                     my $value = '';
                     eval {
-                        $value = $tec->getProperty($log_property_path)->findvalue('//value')->string_value();
+                        $value = $ec->getProperty($log_property_path)->findvalue('//value')->string_value();
                     };
                     $value .= join '', @_;
-                    $tec->setProperty($log_property_path, $value);
+                    $ec->setProperty($log_property_path, $value);
                     print @_;
                     # print map { uc } @_;
                 }
@@ -742,7 +743,6 @@ sub set_property {
     my ($self, $key, $value) = @_;
 
     $self->log_debug("Setting property '$key' = '$value'");
-    #todo: verify what is myCall context, it seems to be obsolete
     $self->ec()->setProperty("/myCall/$key", $value);
 }
 
@@ -1505,6 +1505,74 @@ sub do_we_have_error_on_interact_support {
     }
     $self->log_debug("We don't have --error-on-interact support");
     return 0;
+}
+
+sub save_retrieved_data {
+    my ($self, %param) = @_;
+
+    my $format = $param{format};
+    my $property = $param{property};
+    my $raw = $param{raw};
+    # data may be perl data structure or decoded JSON
+    my $data = $param{data};
+
+    my $message;
+    if ($format eq 'json') {
+        my $json = JSON::encode_json($data);
+        $message = "Data has been saved as JSON under $property";
+        $self->log_info("JSON to save", JSON->new->pretty->encode($data));
+        $self->ec->setProperty($property, $json);
+    }
+#    elsif ($format eq 'xml') {
+#        my $xml_handler = $param{xml_handler};
+#        unless($xml_handler && ref $xml_handler eq 'CODE') {
+#            $self->bail_out('No xml_handler provided for XML output');
+#        }
+#        my $refined = $xml_handler->($data);
+#        my $xml = XMLout($refined, NoAttr => 1, RootName => 'data', XMLDecl => 1);
+#        $message = "Data has been saved as XML under $property";
+#        $self->log_info("XML to save", $xml);
+#        $self->ec->setProperty($property, $xml);
+#    }
+    elsif ($format eq 'propertySheet') {
+        my $flat = _flatten_map($data, $property);
+        for my $key ( sort keys %$flat ) {
+            $self->ec->setProperty($key, $flat->{$key});
+            $self->log_info("Wrote property: $key -> $flat->{$key}");
+        }
+        $message = "Data has been saved as property sheet under $property";
+    }
+    else {
+        $self->ec->setProperty($property, $raw);
+        $message = "Raw data has been saved under property $property"
+    }
+    $self->success($message);
+}
+
+sub _flatten_map {
+    my ($map, $prefix) = @_;
+
+    $prefix ||= '';
+    my %retval = ();
+    for my $key (keys %$map) {
+        my $value = $map->{$key};
+        if (ref $value eq 'ARRAY') {
+            my $counter = 1;
+            my %copy = map { my $key = ref $_ ? $counter ++ : $_; $key => $_ } @$value;
+            $value = \%copy;
+        }
+        elsif (ref $value eq 'JSON::XS::Boolean') {
+            $value = "$value";
+        }
+
+        if (ref $value) {
+            %retval = (%retval, %{_flatten_map($value, "$prefix/$key")});
+        }
+        else {
+            $retval{"$prefix/$key"} = $value ? $value : "";
+        }
+    }
+    return \%retval;
 }
 
 1;

@@ -684,6 +684,14 @@
                                     <td class='required'>Custom Command</td>
                                     <td>User-specified command or script to run on JBoss instances.</td>
                                 </tr>
+                                <tr>
+                                    <td>Property name</td>
+                                    <td>Property to write response from JBoss.</td>
+                                </tr>
+                                <tr>
+                                    <td>Dump format</td>
+                                    <td>Choose the format to represent retrieved data. Data can be represented as XML, JSON, raw (just stdout) or property sheet (hierarchy).</td>
+                                </tr>
                             </tbody>
                         </table>
                     </li>
