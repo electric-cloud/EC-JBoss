@@ -96,6 +96,8 @@ class StopServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'success'
+        assert result.logs =~ /(?s)Found server $serverName1 in state STARTED.*Found server $serverName1 in state STOPPED/
+        assert result.logs =~ /(?s)Found server $serverName2 in state STARTED.*Found server $serverName2 in state STOPPED/
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STOPPED"
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STOPPED"
 
@@ -142,6 +144,8 @@ class StopServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'success'
+        assert result.logs =~ /(?s)Found server $serverName1 in state STARTED.*Found server $serverName1 in state DISABLED/
+        assert result.logs =~ /(?s)Found server $serverName2 in state STARTED.*Found server $serverName2 in state STOPPED/
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "DISABLED"
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STOPPED"
 
@@ -185,6 +189,8 @@ class StopServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'warning'
+        assert result.logs =~ /(?s)Found server $serverName1 in state STOPPED.*Found server $serverName1 in state STOPPED/
+        assert result.logs =~ /(?s)Found server $serverName2 in state STOPPED.*Found server $serverName2 in state STOPPED/
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STOPPED"
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STOPPED"
 
@@ -226,6 +232,8 @@ class StopServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'warning'
+        assert result.logs =~ /(?s)Found server $serverName1 in state DISABLED.*Found server $serverName1 in state DISABLED/
+        assert result.logs =~ /(?s)Found server $serverName2 in state STOPPED.*Found server $serverName2 in state STOPPED/
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "DISABLED"
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STOPPED"
 
@@ -268,6 +276,8 @@ class StopServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'warning'
+        assert result.logs =~ /(?s)Found server $serverName1 in state STARTED.*Found server $serverName1 in state STOPPED/
+        assert result.logs =~ /(?s)Found server $serverName2 in state STOPPED.*Found server $serverName2 in state STOPPED/
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STOPPED"
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server2), true).jbossReply.result == "STOPPED"
 
@@ -309,6 +319,7 @@ class StopServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'success'
+        assert result.logs =~ /(?s)Found server $serverName1 in state STARTED.*Found server $serverName1 in state STOPPED/
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STOPPED"
 
         cleanup:
@@ -347,6 +358,7 @@ class StopServers extends PluginTestHelper {
 
         then:
         assert result.outcome == 'success'
+        assert result.logs =~ /(?s)Found server $serverName1 in state STARTED.*Found server $serverName1 in state STOPPED/
         assert runCliCommand(CliCommandsGeneratorHelper.getServerStatusInDomain(server1), true).jbossReply.result == "STOPPED"
 
         cleanup:
