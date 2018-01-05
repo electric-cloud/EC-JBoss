@@ -1,3 +1,4 @@
+import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 import com.electriccloud.spec.*
@@ -87,15 +88,16 @@ class PluginTestHelper extends PluginSpockTestSupport {
         propertyName
     }
 
-    def getJobLogs(def jobId) {
+    String getJobLogs(def jobId) {
         assert jobId
-        def logs
+        String property = "/myJob/debug_logs"
+        String logs
         try {
-            logs = getJobProperty("/myJob/debug_logs", jobId)
+            logs = getJobProperty(property, jobId)
         } catch (Throwable e) {
-            logs = "Possible exception in logs; check job"
+            logger.debug("cannot retrieve logs from the property '$property'")
         }
-        logs
+        return logs
     }
 
     def getPipelineLogs(flowRuntimeId) {
@@ -115,21 +117,44 @@ class PluginTestHelper extends PluginSpockTestSupport {
         return name =~ /$ignoreVar/ ? false : true
     }
 
-    def runProcedureDsl(dslString) {
+    RunProcedureJob runProcedureDsl(String projectName, String procedureName, def parameters) {
+        String parametersString = parameters.collect { k, v -> "$k: '$v'" }.join(', ')
+
+        String dslString = """
+                runProcedure(
+                    projectName: '$projectName',
+                    procedureName: '$procedureName',
+                    actualParameter: [
+                        $parametersString
+                    ]
+                )
+        """
+
         redirectLogs()
-        assert dslString
 
         def result = dsl(dslString)
-        assert result.jobId
+        String jobId = result.jobId
+        assert jobId
         waitUntil {
-            jobCompleted result.jobId
+            jobCompleted jobId
         }
-        def logs = getJobLogs(result.jobId)
-        def outcome = jobStatus(result.jobId).outcome
+
+        RunProcedureJob runProcedureJob = new RunProcedureJob(jobId, projectName, procedureName, parameters)
+        String logs = runProcedureJob.getLogs()
+        String status = runProcedureJob.getStatus()
+        String upperStepSummary = runProcedureJob.getUpperStepSummary()
+        String lowerStepSummary = runProcedureJob.getLowerStepSummary()
+
+        logger.debug("============================")
+        logger.debug("INFORMATION ABOUT JOB $jobId")
         logger.debug("DSL: $dslString")
-        logger.debug("Logs: $logs")
-        logger.debug("Outcome: $outcome")
-        [logs: logs, outcome: outcome, jobId: result.jobId]
+        logger.debug("Status: " + (status ? status : "[undef]"))
+        logger.debug("Upper step summary: " + (upperStepSummary ? upperStepSummary : "[undef]"))
+        logger.debug("Lower step summary: " + (lowerStepSummary ? lowerStepSummary : "[undef]"))
+        logger.debug("Logs: " + (logs ? logs : "[undef]"))
+        logger.debug("============================")
+
+        return runProcedureJob
     }
 
     def createHelperProject(resName, configName) {
@@ -140,43 +165,114 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 params  : [
                         serverconfig      : configName,
                         scriptphysicalpath: '',
-                        customCommand      : '',
+                        customCommand     : '',
                         propertyName      : '',
-                        dumpFormat      : '',
+                        dumpFormat        : '',
                 ]
         ]
     }
 
-    def runCliCommand(String command, boolean catchJBossReply = false) {
-        String propertyName = catchJBossReply ? "/myJob/RunCustomCommandResult" : ""
+    def runCliCommandAndGetJBossReply(String command) {
+        return runCliCommand(command, "/myJob/RunCustomCommandResult")
+                .getPropertiesUnderPropertySheet("/myJob/RunCustomCommandResult")
+    }
 
-        def prcedureDsl = """
-            runProcedure(
-                projectName: '$helperProjName',
-                procedureName: '$helperProcedure',
-                actualParameter: [
-                    customCommand: '''$command''',
-                    propertyName: '''$propertyName''',
-                    dumpFormat: 'propertySheet',
-                ]
-            )
-        """
-        def result = runProcedureDsl prcedureDsl
-        assert result.outcome == 'success'
+    RunProcedureJob runCliCommand(String command, String jbossReplyPropertyName = "") {
+        def runParams = [
+                customCommand: command,
+                propertyName : jbossReplyPropertyName,
+                dumpFormat   : 'propertySheet'
+        ]
 
-        if (catchJBossReply) {
-            def props = getPropertiesRecursive(propertyName, result.jobId, { path, id ->
+        RunProcedureJob runProcedureJob = runProcedureDsl(helperProjName, helperProcedure, runParams)
+        assert runProcedureJob.isStatusSuccess()
+
+        return runProcedureJob
+    }
+
+    class RunProcedureJob {
+        private String jobId
+        private String projectName
+        private String procedureName
+        private def runParams
+
+        RunProcedureJob(String jobId, String projectName, String procedureName, def runParams) {
+            this.jobId = jobId
+            this.projectName = projectName
+            this.procedureName = procedureName
+            this.runParams = runParams
+        }
+
+        String getJobId() {
+            return jobId
+        }
+
+        String getProjectName() {
+            return projectName
+        }
+
+        String getProcedureName() {
+            return procedureName
+        }
+
+        def getRunParams() {
+            return runParams
+        }
+
+        String getLogs() {
+            return getJobLogs(jobId)
+        }
+
+        String getStatus() {
+            return jobStatus(jobId).outcome
+        }
+
+        String getUpperStepSummary() {
+            String property = "/myJob/jobSteps/$procedureName/summary"
+            String summary
+            try {
+                summary = getJobProperty(property, jobId)
+            } catch (Throwable e) {
+                logger.debug("cannot retrieve upper step summary from the property '$property'")
+            }
+            return summary
+        }
+
+        String getLowerStepSummary() {
+            String property = "/myJob/jobSteps/$procedureName/jobSteps/$procedureName/summary"
+            String summary
+            try {
+                summary = getJobProperty(property, jobId)
+            } catch (Throwable e) {
+                logger.debug("cannot retrieve lower step summary from the property '$property'")
+            }
+            return summary
+        }
+
+        Boolean isStatusSuccess() {
+            return this.getStatus() == 'success'
+        }
+
+        Boolean isStatusWarning() {
+            return this.getStatus() == 'warning'
+        }
+
+        Boolean isStatusError() {
+            return this.getStatus() == 'error'
+        }
+
+        def getPropertiesUnderPropertySheet(String propertySheetName) {
+            def props = getPropertiesRecursive(propertySheetName, this.getJobId(), { path, id ->
                 def res = dsl """
                 getProperties(path: '$path', jobId: '$id')
             """
                 res?.propertySheet?.property
             })
-            logger.debug("RunCustomCommandResult properties: " + objectToJson(props))
-            result.jbossReply = props
-            assert result.jbossReply.outcome == "success"
+            return props
         }
-
-        return result
     }
 
+    class JBossCliWrapper {
+
+    }
 }

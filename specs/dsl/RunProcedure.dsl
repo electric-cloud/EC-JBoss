@@ -9,7 +9,7 @@ project projName, {
     procedure procName, {
         resourceName = resName
 
-        step 'Run JBoss procedure', {
+        step procName, {
             description = ''
             subprocedure = procName
             subproject = '/plugins/EC-JBoss/project'
