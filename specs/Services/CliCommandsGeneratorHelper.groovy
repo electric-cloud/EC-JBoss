@@ -77,7 +77,7 @@ class CliCommandsGeneratorHelper {
     }
 
     static String getDeploymentInfoOnContentRepo(String appName) {
-        String command = "/deployment=$appName/:read-resource(recursive=false)"
+        String command = "/deployment=$appName/:read-resource(recursive=false,include-runtime=true)"
         return command
     }
 
@@ -86,8 +86,18 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String undeployFromStandalone(String appName) {
+        String command = "undeploy $appName"
+        return command
+    }
+
     static String undeployFromAllRelevantServerGroups(String appName) {
         String command = "undeploy $appName --all-relevant-server-groups"
+        return command
+    }
+
+    static String deployToStandalone(String pathToSourceFile, String name = "", String runtimeName = "") {
+        String command = "deploy $pathToSourceFile" + (name.isEmpty() ? "" : " --name=$name") + (runtimeName.isEmpty() ? "" : " --runtime-name=$runtimeName")
         return command
     }
 

@@ -394,6 +394,7 @@ class StartServers extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == 'error'
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STOPPED"
+        //todo: check runProcedureJob.getUpperStepSummary()
 
         cleanup:
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
@@ -419,5 +420,10 @@ class StartServers extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == 'error'
+        //todo: check runProcedureJob.getUpperStepSummary()
     }
+
+    /*
+    todo: test common cases (config/pathToCli/wrongCreds)
+     */
 }

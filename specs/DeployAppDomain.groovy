@@ -5,7 +5,7 @@ import Utils.EnvPropertiesHelper
 import spock.lang.*
 
 @IgnoreIf({ env.JBOSS_MODE == 'standalone' })
-class DeployApp extends PluginTestHelper {
+class DeployAppDomain extends PluginTestHelper {
 
     @Shared
     String procName = 'DeployApp'
@@ -435,7 +435,7 @@ class DeployApp extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, app already deployed, force flag, minimum params (sdfsdfdddss)"() {
+    def "DeployApp, app already deployed, force flag (sdfsdfdddss)"() {
         String testCaseId = "sdfsdfdddss"
 
         def runParams = [
@@ -477,7 +477,7 @@ class DeployApp extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 2nd time, app already deployed, server groups ignored (sdjfnjsdnfnna)"() {
+    def "DeployApp, app already deployed, server groups ignored (sdjfnjsdnfnna)"() {
         String testCaseId = "sdjfnjsdnfnna"
 
         def runParams = [
@@ -611,11 +611,11 @@ class DeployApp extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app with whitespace.war",
+                warphysicalpath      : "/tmp/$testCaseId-app with whitespace.war", // whitespaces in path
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "",
-                assignservergroups   : "$serverGroup1", // deploy to one server group
+                assignservergroups   : "$serverGroup1",
                 assignallservergroups: "0",
                 additional_options   : ""
         ]
@@ -641,6 +641,61 @@ class DeployApp extends PluginTestHelper {
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
+
+    @Unroll
+    def "Negative. DeployApp, incorrect param, undef required param, path to app (sdfnsdfnss)"() {
+        String testCaseId = "sdfnsdfnss"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "", // required param not provided
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app.war",
+                force                : "",
+                assignservergroups   : "$serverGroup1",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        //todo: check runProcedureJob.getUpperStepSummary()
+    }
+
+    @Unroll
+    def "Negative. DeployApp, non existing filepath (sdfnsdfnss)"() {
+        String testCaseId = "sdfnsdfnss"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/non-existing-file.war", // non existing file
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app.war",
+                force                : "",
+                assignservergroups   : "$serverGroup1",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        //todo: check runProcedureJob.getUpperStepSummary()
+    }
+
+    /*
+    todo: test common cases (config/pathToCli/wrongCreds)
+    todo: test additional_options
+    todo: test deploy of txt files instead of jars
+    todo: test incorrect runtimeName/appName/serverGroup values, e.g. too long or spec chars
+     */
 
     void checkAppDeployedToServerGroupsCli(String appName, String runtimeName, def serverGroups) {
         for (String serverGroup : serverGroups) {
