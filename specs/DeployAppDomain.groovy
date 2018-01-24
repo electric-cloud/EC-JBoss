@@ -690,9 +690,177 @@ class DeployAppDomain extends PluginTestHelper {
         //todo: check runProcedureJob.getUpperStepSummary()
     }
 
+    @Unroll
+    def "DeployApp, 1st time, 1 server group in additional options (asss)"() {
+        String testCaseId = "asss"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "",
+                force                : "",
+                assignservergroups   : "",
+                assignallservergroups: "0",
+                additional_options   : " --server-groups=$serverGroup1" // deploy to one server group
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*${runParams.additional_options}"
+
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+        String[] expectedServerGroupsWithApp = [serverGroup1]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "DeployApp, 1st time, disabled flag in additional options (aaaaaa)"() {
+        String testCaseId = "aaaaaa"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "",
+                force                : "",
+                assignservergroups   : "",
+                assignallservergroups: "0",
+                additional_options   : " --disabled" // disabled flag (upload to content repo)
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*${runParams.additional_options}"
+
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "DeployApp, app already deployed, force flag in additional options (sdfsdfdddss)"() {
+        String testCaseId = "sdfsdfdddss"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app-new-runtimename.war",
+                force                : "0",
+                assignservergroups   : "",
+                assignallservergroups: "0",
+                additional_options   : " --force" // force flag
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        String existingAppName = "$testCaseId-app.war"
+        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*${runParams.additional_options}"
+
+        // let's check that app was upgraded and runtime name was changed
+        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
+        String newContextRoot = "$testCaseId-app-new-runtimename"
+        checkAppDeployedToServerGroupsCli(existingAppName, newRuntimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(newContextRoot, oldServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "Negative. DeployApp, additional options conflicts with defined params (sdfsdfsdfdssdf)"() {
+        String testCaseId = "sdfsdfsdfdssdf"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app.war",
+                force                : "",
+                assignservergroups   : "$serverGroup1", // this one
+                assignallservergroups: "0",
+                additional_options   : "--all-server-groups" // vs this one
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        //todo: runProcedureJob.getUpperStepSummary()
+    }
+
+    @Unroll
+    def "Negative. DeployApp, wrong additional options (sdfsdfsdfdssdf)"() {
+        String testCaseId = "sdfsdfsdfdssdf"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app.war",
+                force                : "",
+                assignservergroups   : "$serverGroup1",
+                assignallservergroups: "0",
+                additional_options   : "--some-wrong-param" // wrong param
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        //todo: runProcedureJob.getUpperStepSummary()
+    }
+
     /*
     todo: test common cases (config/pathToCli/wrongCreds)
-    todo: test additional_options
     todo: test deploy of txt files instead of jars
     todo: test incorrect runtimeName/appName/serverGroup values, e.g. too long or spec chars
      */

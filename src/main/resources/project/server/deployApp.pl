@@ -59,6 +59,7 @@ sub main {
             $command .= qq/ --server-groups=$params->{assignservergroups}/;
         }
         else {
+            #todo: possible option is disabled flag, this one cab be provided by extra ooptions, so here we need to ckeck extra options before failing
             $jboss->bail_out("When JBoss mode is domain checkbox 'Apply to all servers' should be checked or 'Server groups to apply' should be provided.");
         }
     }
