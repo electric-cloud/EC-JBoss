@@ -2,7 +2,6 @@ import Models.JBoss.Domain.ServerGroupHelper
 import Models.JBoss.Domain.ServerHelper
 import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
-import Utils.UtilsHelper
 import spock.lang.*
 
 @IgnoreIf({ env.JBOSS_MODE == 'standalone' })
@@ -78,233 +77,616 @@ class DeployApp extends PluginTestHelper {
     }
 
     @Unroll
-    def "TestCase #id: #name"(
-            String id,
-            String name,
-            // procedure params
-            String warphysicalpath,
-            String appname,
-            String runtimename,
-            String force,
-            String assignservergroups,
-            String assignallservergroups,
-            String additional_options,
-            // setup
-            LinkedList<SetupService> setupServices,
-            // check
-            String expectedStatus,
-            String expectedUpperStepSummaryRegex,
-            String[] expectedLogRegexes,
-            String expectedAppName,
-            String expectedRuntimeName,
-            String expectedContextRoot,
-            LinkedList<CheckService> checkServices,
-            // cleanup
-            LinkedList<CleanupService> cleanupServices) {
-        setup:
-        for (SetupService setupService : setupServices) {
-            setupService.setup()
-        }
+    def "DeployApp, 1st time, 1 server group, minimum params (C84582)"() {
+        String testCaseId = "C84582"
 
-        when:
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : warphysicalpath,
-                appname              : appname,
-                runtimename          : runtimename,
-                force                : force,
-                assignservergroups   : assignservergroups,
-                assignallservergroups: assignallservergroups,
-                additional_options   : additional_options
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "",
+                force                : "",
+                assignservergroups   : "$serverGroup1", // deploy to one server group
+                assignallservergroups: "0",
+                additional_options   : ""
         ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == expectedStatus
-        assert runProcedureJob.getUpperStepSummary() =~ expectedUpperStepSummaryRegex
-        for (String expectedLogRegex : expectedLogRegexes) {
-            assert runProcedureJob.getLogs() =~ expectedLogRegex
-        }
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}"
 
-        for (CheckService checkService : checkServices) {
-            checkService.check()
-        }
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+        String[] expectedServerGroupsWithApp = [serverGroup1]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
 
         cleanup:
-        for (CleanupService cleanupService : cleanupServices) {
-            cleanupService.cleanup()
-        }
-
-        where:
-        id           | name                                                                                  | warphysicalpath         | appname           | runtimename       | force | assignservergroups                          | assignallservergroups | additional_options | setupServices                                                                                                                                                                            | expectedStatus | expectedUpperStepSummaryRegex                                                 | expectedLogRegexes                                                                                     | expectedAppName                      | expectedRuntimeName                          | expectedContextRoot                 | checkServices                                                                                                                                                                                         | cleanupServices
-        "C84582"     | "Domain, DeployApp, 1st time, 1 server group, minimum params"                         | "/tmp/$id-app.war"      | ""                | ""                | ""    | "$serverGroup1"                             | "0"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath)]                                                                                                                      | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*--server-groups=.*$assignservergroups"]            | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1])]                             | [new UndeployAppService(expectedAppName)]
-        "C84612"     | "Domain, DeployApp, 1st time, 2 server groups, minimum params"                        | "/tmp/$id-app.war"      | ""                | ""                | ""    | "$serverGroup1,$serverGroup2"               | "0"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath)]                                                                                                                      | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*--server-groups=.*$assignservergroups"]            | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1, serverGroup2]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1, serverGroup2])] | [new UndeployAppService(expectedAppName)]
-        "C111810"    | "Domain, DeployApp, 1st time, all server groups, minimum params"                      | "/tmp/$id-app.war"      | ""                | ""                | ""    | ""                                          | "1"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath)]                                                                                                                      | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*--all-server-groups"]                              | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1, serverGroup2]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1, serverGroup2])] | [new UndeployAppService(expectedAppName)]
-        "Csdjf"      | "Domain, DeployApp, 1st time, custom app name"                                        | "/tmp/$id-app.war"      | "$id-app-ABC.war" | ""                | ""    | "$serverGroup1"                             | "0"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath)]                                                                                                                      | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*--name=.*$appname"]                                | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1])]                             | [new UndeployAppService(expectedAppName)]
-        "Casnnnf"    | "Domain, DeployApp, 1st time, custom runtime name"                                    | "/tmp/$id-app.war"      | ""                | "$id-app-XYZ.war" | ""    | "$serverGroup1,$serverGroup2"               | "0"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath)]                                                                                                                      | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*--runtime-name=.*$runtimename"]                    | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1, serverGroup2]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1, serverGroup2])] | [new UndeployAppService(expectedAppName)]
-        "Cqwewew"    | "Domain, DeployApp, 1st time, custom app name, custom runtime name"                   | "/tmp/$id-app.war"      | "$id-app-ABC.war" | "$id-app-XYZ.war" | ""    | ""                                          | "1"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath)]                                                                                                                      | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*--name=.*$appname.*--runtime-name=.*$runtimename"] | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1, serverGroup2]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1, serverGroup2])] | [new UndeployAppService(expectedAppName)]
-        "Cmmmw"      | "Domain, DeployApp, 1st time, custom app name without extension, custom runtime name" | "/tmp/$id-app.war"      | "$id-app-ABC"     | "$id-app-XYZ.war" | ""    | "$serverGroup1"                             | "0"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath)]                                                                                                                      | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | []                                                                                                     | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1])]                             | [new UndeployAppService(expectedAppName)]
-        "Cxxx"       | "Domain, DeployApp, 1st time, both server groups and all server groups are specified" | "/tmp/$id-app.war"      | "$id-app.war"     | "$id-app-XYZ.war" | ""    | "$serverGroup1"                             | "1"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath)]                                                                                                                      | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*--all-server-groups"]                              | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1, serverGroup2]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1, serverGroup2])] | [new UndeployAppService(expectedAppName)]
-        "qj1"        | "Domain, Negative. DeployApp, 1st time, duplicated server groups"                     | "/tmp/$id-app.war"      | "$id-app.war"     | "$id-app.war"     | ""    | "$serverGroup1,$serverGroup2,$serverGroup1" | "0"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath)]                                                                                                                      | "error"        | "Duplicate resource"                                                          | []                                                                                                     | null                                 | null                                         | null                                | []                                                                                                                                                                                                    | []
-        "qj1as"      | "Domain, Negative. DeployApp, 1st time, non existing server group"                    | "/tmp/$id-app.war"      | "$id-app.war"     | "$id-app.war"     | ""    | "non-existing-server-group"                 | "0"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath)]                                                                                                                      | "error"        | "does not exist"                                                              | []                                                                                                     | null                                 | null                                         | null                                | []                                                                                                                                                                                                    | []
-        "wlfjwe"     | "Domain, DeployApp, app already deployed, force flag, minimum params"                 | "/tmp/$id-app.war"      | ""                | ""                | "1"   | ""                                          | "0"                   | ""                 | [new DownloadArtifactService(linkToSampleWarFile, warphysicalpath), new DeployDomainService(warphysicalpath, expectedAppName, "$id-old-runtime-name.war", [serverGroup1, serverGroup2])] | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*--force"]                                          | getAppName(appname, warphysicalpath) | "$id-old-runtime-name.war"                   | "$id-old-runtime-name"              | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1, serverGroup2]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1, serverGroup2])] | [new UndeployAppService(expectedAppName)]
-//        "wlsdffjwe"  | "Domain, DeployApp, app already deployed, force flag, server groups ignored"          | "/tmp/$id-app.war"      | ""                | ""                | "1"   | "$serverGroup1"                             | "0"                   | ""                 | []                                                                                                                                                                                       | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*--force"]                                          | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1])]                             | [new UndeployAppService(expectedAppName)]
-//        "wlfsdfsjwe" | "Domain, DeployApp, 1st time, force flag, all server groups ignored - just upload"    | "/tmp/$id-app.war"      | ""                | ""                | "1"   | ""                                          | "1"                   | ""                 | []                                                                                                                                                                                       | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*--force"]                                          | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1])]                             | [new UndeployAppService(expectedAppName)]
-//        "sdfkksdmf"  | "Domain, Negative. DeployApp, app already deployed, no force flag"                    | "/tmp/$id-app.war"      | ""                | ""                | ""    | ""                                          | "1"                   | ""                 | []                                                                                                                                                                                       | "error"        | "already exists in the deployment repository"                                 | []                                                                                                     | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1])]                             | [new UndeployAppService(expectedAppName)]
-//        "sdfln"      | "Domain, DeployApp, 1st time, whitespace in path"                                     | "/tmp/$id-app name.war" | ""                | ""                | ""    | "$serverGroup1"                             | "0"                   | ""                 | []                                                                                                                                                                                       | "success"      | "Application $appname \\($warphysicalpath\\) has been successfully deployed." | ["jboss-cli.*--command=.*deploy .*$warphysicalpath.*"]                                                 | getAppName(appname, warphysicalpath) | getRuntimeName(runtimename, expectedAppName) | getContextRoot(expectedRuntimeName) | [new AppDeployedToServerGroupsCliCheck(expectedAppName, expectedRuntimeName, [serverGroup1]), new AppDeployedToServerGroupsUrlCheck(expectedContextRoot, [serverGroup1])]                             | [new UndeployAppService(expectedAppName)]
-        //todo: migrate othe test cases for Standalone to this format
-
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
-    ///////////////////////
-    // setup services
-    ///////////////////////
-    interface SetupService {
-        void setup()
+    @Unroll
+    def "DeployApp, 1st time, 2 server groups, minimum params (C84612)"() {
+        String testCaseId = "C84612"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "",
+                force                : "",
+                assignservergroups   : "$serverGroup1,$serverGroup2", // deploy to two server groups
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}"
+
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+        String[] expectedServerGroupsWithApp = [serverGroup1, serverGroup2]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
-    class DownloadArtifactService implements SetupService {
-        String url
-        String path
+    @Unroll
+    def "DeployApp, 1st time, all server groups, minimum params (C111810)"() {
+        String testCaseId = "C111810"
 
-        DownloadArtifactService(String url, String path) {
-            this.url = url
-            this.path = path
-        }
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "",
+                force                : "",
+                assignservergroups   : "",
+                assignallservergroups: "1", // deploy to all server groups
+                additional_options   : ""
+        ]
 
-        @Override
-        void setup() {
-            downloadArtifact(url, path)
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--all-server-groups"
+
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+        String[] expectedServerGroupsWithApp = [serverGroup1, serverGroup2]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "DeployApp, 1st time, custom app name (xxx123123123)"() {
+        String testCaseId = "xxx123123123"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app-custom-appname.war", // custom app name
+                runtimename          : "",
+                force                : "",
+                assignservergroups   : "$serverGroup1",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}"
+
+        String expectedAppName = "$testCaseId-app-custom-appname.war"
+        String expectedRuntimeName = "$testCaseId-app-custom-appname.war"
+        String expectedContextRoot = "$testCaseId-app-custom-appname"
+        String[] expectedServerGroupsWithApp = [serverGroup1]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app-custom-appname.war")
+    }
+
+    @Unroll
+    def "DeployApp, 1st time, custom runtime name (sklfklsnfd)"() {
+        String testCaseId = "sklfklsnfd"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "$testCaseId-app-custom-runtimename.war", // custom runtime name
+                force                : "",
+                assignservergroups   : "$serverGroup1,$serverGroup2",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--runtime-name=.*${runParams.runtimename}"
+
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app-custom-runtimename.war"
+        String expectedContextRoot = "$testCaseId-app-custom-runtimename"
+        String[] expectedServerGroupsWithApp = [serverGroup1, serverGroup2]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "DeployApp, 1st time, custom app name, custom runtime name (kwejfiojscd)"() {
+        String testCaseId = "kwejfiojscd"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app-custom-appname.war", // custom app name
+                runtimename          : "$testCaseId-app-custom-runtimename.war", // and custom runtime name
+                force                : "",
+                assignservergroups   : "",
+                assignallservergroups: "1",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
+
+        String expectedAppName = "$testCaseId-app-custom-appname.war"
+        String expectedRuntimeName = "$testCaseId-app-custom-runtimename.war"
+        String expectedContextRoot = "$testCaseId-app-custom-runtimename"
+        String[] expectedServerGroupsWithApp = [serverGroup1, serverGroup2]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app-custom-appname.war")
+    }
+
+    @Unroll
+    def "DeployApp, 1st time, custom app name without extension, custom runtime name (sdfnsdfnsdf)"() {
+        String testCaseId = "sdfnsdfnsdf"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app-custom-appname", // no extension here
+                runtimename          : "$testCaseId-app-custom-runtimename.war", // here we have usual extension .war
+                force                : "",
+                assignservergroups   : "$serverGroup1",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
+
+        String expectedAppName = "$testCaseId-app-custom-appname"
+        String expectedRuntimeName = "$testCaseId-app-custom-runtimename.war"
+        String expectedContextRoot = "$testCaseId-app-custom-runtimename"
+        String[] expectedServerGroupsWithApp = [serverGroup1]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app-custom-appname")
+    }
+
+    @Unroll
+    def "DeployApp, 1st time, both server groups and all server groups are specified (nfjsdnf)"() {
+        String testCaseId = "nfjsdnf"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app-custom-runtimename.war",
+                force                : "",
+                assignservergroups   : "$serverGroup1", // this param to be ignored
+                assignallservergroups: "1", // when this one is specified (so deploy to all server groups will be performed)
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--all-server-groups"
+
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app-custom-runtimename.war"
+        String expectedContextRoot = "$testCaseId-app-custom-runtimename"
+        String[] expectedServerGroupsWithApp = [serverGroup1, serverGroup2]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "Negative. DeployApp, 1st time, duplicated server groups (sdfnsdfnss)"() {
+        String testCaseId = "sdfnsdfnss"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app.war",
+                force                : "",
+                assignservergroups   : "$serverGroup1,$serverGroup2,$serverGroup1", // duplicated server groups here
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Duplicate resource"
+    }
+
+    @Unroll
+    def "Negative. DeployApp, non existing server group (sdfsdfsdfdssdf)"() {
+        String testCaseId = "sdfsdfsdfdssdf"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app.war",
+                force                : "",
+                assignservergroups   : "non-existing-server-group", // non existing server group
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "does not exist"
+    }
+
+    @Unroll
+    def "DeployApp, app already deployed, force flag, minimum params (sdfsdfdddss)"() {
+        String testCaseId = "sdfsdfdddss"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app-new-runtimename.war",
+                force                : "1", // force flag
+                assignservergroups   : "",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        String existingAppName = "$testCaseId-app.war"
+        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
+
+        // let's check that app was upgraded and runtime name was changed
+        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
+        String newContextRoot = "$testCaseId-app-new-runtimename"
+        checkAppDeployedToServerGroupsCli(existingAppName, newRuntimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(newContextRoot, oldServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "DeployApp, 2nd time, app already deployed, server groups ignored (sdjfnjsdnfnna)"() {
+        String testCaseId = "sdjfnjsdnfnna"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app-new-runtimename.war",
+                force                : "1", // when force is set
+                assignservergroups   : "$serverGroup1", // this param to be ignored
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        String existingAppName = "$testCaseId-app.war"
+        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String[] oldServerGroupsWithApp = [serverGroup2]
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
+
+        // let's check that app was upgraded and runtime name was changed
+        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
+        String newContextRoot = "$testCaseId-app-new-runtimename"
+        checkAppDeployedToServerGroupsCli(existingAppName, newRuntimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(newContextRoot, oldServerGroupsWithApp)
+
+        // let's verify that assignservergroups was ignored
+        String[] expectedServerGroupsWithoutApp = [serverGroup1]
+        checkAppNotDeployedToServerGroups(existingAppName, expectedServerGroupsWithoutApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    def "DeployApp, 1st time, force flag, all server groups ignored - just upload (snwejjejjejj)"() {
+        String testCaseId = "snwejjejjejj"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "",
+                force                : "1", // when force is set
+                assignservergroups   : "",
+                assignallservergroups: "1", // this param to be ignored
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
+
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+
+        // let's verify that assignallservergroups was ignored
+        String[] expectedServerGroupsWithoutApp = [serverGroup1, serverGroup2]
+        checkAppNotDeployedToServerGroups(expectedAppName, expectedServerGroupsWithoutApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    def "Negative. DeployApp, app already deployed, no force flag (kkk)"() {
+        String testCaseId = "kkk"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "",
+                force                : "0", // when force is not set, but app exists
+                assignservergroups   : "",
+                assignallservergroups: "1", // this will not help
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        String existingAppName = "$testCaseId-app.war"
+        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String oldContextRoot = "$testCaseId-app-old-runtimename"
+        String[] oldServerGroupsWithApp = [serverGroup2]
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "'$existingAppName' already exists in the deployment repository"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*"
+
+        // let's check that app was not upgraded and runtime name was not changed
+        checkAppDeployedToServerGroupsCli(existingAppName, oldRuntimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(oldContextRoot, oldServerGroupsWithApp)
+
+        // let's verify that assignallservergroups was not applied
+        String[] expectedServerGroupsWithoutApp = [serverGroup1]
+        checkAppNotDeployedToServerGroups(existingAppName, expectedServerGroupsWithoutApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "DeployApp, 1st time, whitespace in path (lldlld)"() {
+        String testCaseId = "lldlld"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app with whitespace.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app.war",
+                force                : "",
+                assignservergroups   : "$serverGroup1", // deploy to one server group
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}"
+
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+        String[] expectedServerGroupsWithApp = [serverGroup1]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    void checkAppDeployedToServerGroupsCli(String appName, String runtimeName, def serverGroups) {
+        for (String serverGroup : serverGroups) {
+            checkAppDeployedToServerGroupCli(appName, runtimeName, serverGroup)
         }
     }
 
-    class DeployDomainService implements SetupService {
-        String pathToFile
-        String appName
-        String runtimeName
-        String[] serverGroups
+    void checkAppDeployedToServerGroupCli(String appName, String runtimeName, String serverGroup) {
+        def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getDeploymentInfoOnServerGroup(serverGroup, appName)).result
+        assert result.'name' == appName
+        assert result.'runtime-name' == runtimeName
+    }
 
-        DeployDomainService(String pathToFile, String appName, String runtimeName, def serverGroups) {
-            this.pathToFile = pathToFile
-            this.appName = appName
-            this.runtimeName = runtimeName
-            this.serverGroups = serverGroups
-        }
-
-        @Override
-        void setup() {
-            runCliCommand(CliCommandsGeneratorHelper.deployToServerGroups(serverGroups, pathToFile, appName, runtimeName))
+    void checkAppNotDeployedToServerGroups(String appName, String[] serverGroups) {
+        for (String serverGroup : serverGroups) {
+            checkAppNotDeployedToServerGroup(appName, serverGroup)
         }
     }
 
-    ///////////////////////
-    // check services
-    ///////////////////////
-    interface CheckService {
-        void check()
+    void checkAppNotDeployedToServerGroup(String appName, String serverGroup) {
+        def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerGroupInfo(serverGroup)).result
+        assert result.containsKey('deployment') && (!result.'deployment' || !result.'deployment'.keySet().contains(appName))
     }
 
-    class AppUploadedToContentRepoCliCheck implements CheckService {
-        String appName
-        String runtimeName
+    void checkAppUploadedToContentRepo(String appName, String runtimeName) {
+        def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getDeploymentInfoOnContentRepo(appName)).result
+        assert result.'name' == appName
+        assert result.'runtime-name' == runtimeName
+    }
 
-        AppUploadedToContentRepoCliCheck(String appName, String runtimeName) {
-            this.appName = appName
-            this.runtimeName = runtimeName
-        }
-
-        @Override
-        void check() {
-            def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getDeploymentInfoOnContentRepo(appName)).result
-            assert result.'name' == appName
-            assert result.'runtime-name' == runtimeName
+    void checkAppDeployedToServerGroupsUrl(String contextRoot, def serverGroups) {
+        for (String rootUrls : getExpectedRootUrls(serverGroups)) {
+            String url = "$rootUrls/$contextRoot"
+            assert isUrlAvailable(url)
         }
     }
 
-    class AppDeployedToServerGroupsCliCheck implements CheckService {
-        String appName
-        String runtimeName
-        String[] serverGroups
-
-        AppDeployedToServerGroupsCliCheck(String appName, String runtimeName, def serverGroups) {
-            this.appName = appName
-            this.runtimeName = runtimeName
-            this.serverGroups = serverGroups
-        }
-
-        @Override
-        void check() {
-            for (String serverGroup : serverGroups) {
-                def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getDeploymentInfoOnServerGroup(serverGroup, appName)).result
-                assert result.'name' == appName
-                assert result.'runtime-name' == runtimeName
-            }
-        }
+    void undeployFromAllRelevantServerGroups(String appName) {
+        runCliCommand(CliCommandsGeneratorHelper.undeployFromAllRelevantServerGroups(appName))
     }
 
-    class AppDeployedToServerGroupsUrlCheck implements CheckService {
-        String contextRoot
-        String[] serverGroups
-
-        AppDeployedToServerGroupsUrlCheck(String contextRoot, def serverGroups) {
-            this.contextRoot = contextRoot
-            this.serverGroups = serverGroups
-        }
-
-        @Override
-        void check() {
-            for (String rootUrl : getExpectedRootUrls(serverGroups)) {
-                String expectedUrl = "$rootUrl/$contextRoot"
-                assert isUrlAvailable(expectedUrl)
-            }
-        }
+    void deployToServerGroups(String[] serverGroups, String filePath, String appName, String runtimeName) {
+        runCliCommand(CliCommandsGeneratorHelper.deployToServerGroups(serverGroups, filePath, appName, runtimeName))
     }
 
-    class AppNotDeployedToServerGroupsCliCheck implements CheckService {
-        String appName
-        String runtimeName
-        String[] serverGroups
-
-        AppNotDeployedToServerGroupsCliCheck(String appName, String runtimeName, String[] serverGroups) {
-            this.appName = appName
-            this.runtimeName = runtimeName
-            this.serverGroups = serverGroups
-        }
-
-        @Override
-        void check() {
-            for (String serverGroup : serverGroups) {
-                def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerGroupInfo(serverGroup)).result
-                assert result.containsKey('deployment') && (!result.'deployment' || !result.'deployment'.keySet().contains(appName))
-            }
-        }
-    }
-
-    ///////////////////////
-    // cleanup services
-    ///////////////////////
-    interface CleanupService {
-        void cleanup()
-    }
-
-    class UndeployAppService implements CleanupService {
-        String appName
-
-        UndeployAppService(String appName) {
-            this.appName = appName
-        }
-
-        @Override
-        void cleanup() {
-            runCliCommand(CliCommandsGeneratorHelper.undeployFromAllRelevantServerGroups(appName))
-        }
-    }
-
-    ///////////////////////
-    // other utils
-    ///////////////////////
-    Set<String> getExpectedRootUrls(String[] serverGroupsWithApp) {
+    Set<String> getExpectedRootUrls(def serverGroupsWithApp) {
         Set<String> expectedRootUrls = new HashSet<String>();
         for (String serverGroup : serverGroupsWithApp) {
             for (ServerHelper server : getServerGroupModel(serverGroup).getServers()) {
@@ -337,17 +719,5 @@ class DeployApp extends PluginTestHelper {
             case serverGroup2: return serverGroup2Model
             default: throw new Exception("Unknown server group")
         }
-    }
-
-    static String getAppName(String appName, String pathToApp) {
-        return (appName ? appName : new File(pathToApp).getName())
-    }
-
-    static String getRuntimeName(String runtimeName, String appName) {
-        return (runtimeName ? runtimeName : appName)
-    }
-
-    static String getContextRoot(String runtimeName) {
-        return UtilsHelper.stripExtension(runtimeName)
     }
 }

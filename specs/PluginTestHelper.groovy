@@ -201,7 +201,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         return runProcedureJob
     }
 
-    def downloadArtifact(sourceUrl, targetPath) {
+    def downloadArtifact(String sourceUrl, String targetPath) {
         def res = dsl """
             runProcedure(
                 projectName: '$helperProjName',
