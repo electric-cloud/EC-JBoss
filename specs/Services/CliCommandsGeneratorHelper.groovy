@@ -66,4 +66,47 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String getDeploymentRuntimeName(String appName) {
+        String command = "/deployment=$appName/:read-attribute(name=runtime-name)"
+        return command
+    }
+
+    static String getDeploymentInfoOnServerGroup(String serverGroup, String appName) {
+        String command = "/server-group=$serverGroup/deployment=$appName/:read-resource(recursive=false)"
+        return command
+    }
+
+    static String getDeploymentInfoOnContentRepo(String appName) {
+        String command = "/deployment=$appName/:read-resource(recursive=false)"
+        return command
+    }
+
+    static String getDeploymentEnabledTimeOnServer(String host, String server, String appName) {
+        String command = "/host=$host/server=$server/deployment=$appName/:read-attribute(name=enabled-time)"
+        return command
+    }
+
+    static String undeployFromAllRelevantServerGroups(String appName) {
+        String command = "undeploy $appName --all-relevant-server-groups"
+        return command
+    }
+
+    static String deployToAllServerGroup(String pathToSourceFile, String name = "", String runtimeName = "") {
+        String command = "deploy $pathToSourceFile" + (name.isEmpty() ? "" : " --name=$name") + (runtimeName.isEmpty() ? "" : " --runtime-name=$runtimeName") + " --all-server-groups"
+        return command
+    }
+
+    static String deployToServerGroups(String[] serverGroups, String pathToSourceFile, String name = "", String runtimeName = "") {
+        if (!serverGroups) {
+            throw new Exception("serverGroups should be non empty array")
+        }
+        String serverGroupsStr = Arrays.toString(serverGroups).replaceAll(", ", ",");
+        String command = "deploy $pathToSourceFile" + (name.isEmpty() ? "" : " --name=$name") + (runtimeName.isEmpty() ? "" : " --runtime-name=$runtimeName") + " --server-groups=$serverGroupsStr"
+        return command
+    }
+
+    static String getServerGroupInfo(String serverGroup) {
+        String command = "/server-group=$serverGroup/:read-resource(recursive=false)"
+        return command
+    }
 }

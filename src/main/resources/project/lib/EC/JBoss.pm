@@ -538,10 +538,13 @@ Converts JBoss response to json.
 sub convert_response_to_json {
     my ($self, $response) = @_;
 
+    # converts jboss DMR "Long" vaslues into string e.g. ["result" => 1516113387336L,] changed into ["result" => "1516113387336L",]
+    $response =~ s/(\s=>\s)(\d+L)(,?)$/$1"$2"$3/gms;
+#    $response =~ s/("hash"\s=>\s)(bytes\s\{.*?\})(,?)/$1"SKIPPED BY PLUGIN"$3/gs;
+    # converts jboss DMR key/value delimiter into json style: ["someKey" => "someValue"] changed into ["someKey":"someValue"]
     $response =~ s/\s=>\s/:/gs;
     $response =~ s/undefined/null/gs;
     $response =~ s/\n/ /gs;
-    # $response =~ s/"\n"/"\\n"/gs;
     $response =~ s/:expression\s/: /gs;
 
     return $response;

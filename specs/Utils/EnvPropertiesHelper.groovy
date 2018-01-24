@@ -21,6 +21,15 @@ class EnvPropertiesHelper {
         return System.getenv('JBOSS_LOG_LEVEL') ?: 'DEBUG'
     }
 
+    public static String getJbossLogLevelValue() {
+        switch (getJbossLogLevel()) {
+            case "INFO": return 1;
+            case "WARNING": return 2;
+            case "ERROR": return 3;
+            case "DEBUG": return 4;
+        }
+    }
+
     public static String getJbossDomainMasterHostname() {
         return System.getenv('JBOSS_DOMAIN_MASTER_HOSTNAME') ?: 'master'
     }
@@ -31,5 +40,17 @@ class EnvPropertiesHelper {
 
     public static String getResourcePort() {
         return System.getenv('RESOURCE_PORT') ?: 7808;
+    }
+
+    public static String getOS() {
+        return System.getenv('OS') ?: 'UNIX'
+    }
+
+    public static String isUnix() {
+        return getOS() == "UNIX"
+    }
+
+    public static String isWindows() {
+        return getOS() == "WINDOWS"
     }
 }

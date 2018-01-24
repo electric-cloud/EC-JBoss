@@ -6,7 +6,9 @@ import com.electriccloud.spec.*
 class PluginTestHelper extends PluginSpockTestSupport {
 
     static def helperProjName = 'JBoss Helper Project'
-    static def helperProcedure = 'RunCustomCommand'
+    static def helperProcedureRunCustomCommand = 'RunCustomCommand'
+    static def helperProcedureDownloadArtifact = 'DownloadArtifact'
+    static def helperProcedureCheckUrl = 'CheckUrl'
 
     def createDefaultConfiguration(String configName, props = [:]) {
         String pluginName = "EC-JBoss"
@@ -15,7 +17,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         def password = EnvPropertiesHelper.getJbossPassword();
         def jboss_url = EnvPropertiesHelper.getJbossControllerUrl();
         def jboss_cli_path = EnvPropertiesHelper.getJbossCliPath();
-        def jboss_log_level = EnvPropertiesHelper.getJbossLogLevel();
+        def jboss_log_level = EnvPropertiesHelper.getJbossLogLevelValue();
 
         createPluginConfiguration(
                 'EC-JBoss',
@@ -136,7 +138,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         String jobId = result.jobId
         assert jobId
         waitUntil {
-            jobCompleted jobId
+            jobCompleted result
         }
 
         RunProcedureJob runProcedureJob = new RunProcedureJob(jobId, projectName, procedureName, parameters)
@@ -161,7 +163,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         dslFile 'dsl/RunProcedure.dsl', [
                 projName: helperProjName,
                 resName : resName,
-                procName: helperProcedure,
+                procName: helperProcedureRunCustomCommand,
                 params  : [
                         serverconfig      : configName,
                         scriptphysicalpath: '',
@@ -169,6 +171,13 @@ class PluginTestHelper extends PluginSpockTestSupport {
                         propertyName      : '',
                         dumpFormat        : '',
                 ]
+        ]
+
+        dslFile 'dsl/UtilProcedures.dsl', [
+                projName: helperProjName,
+                resName: resName,
+                procNameDownloadArtifact: helperProcedureDownloadArtifact,
+                procNameCheckUrl: helperProcedureCheckUrl
         ]
     }
 
@@ -184,10 +193,49 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 dumpFormat   : 'propertySheet'
         ]
 
-        RunProcedureJob runProcedureJob = runProcedureDsl(helperProjName, helperProcedure, runParams)
-        assert runProcedureJob.isStatusSuccess()
+        RunProcedureJob runProcedureJob = runProcedureDsl(helperProjName, helperProcedureRunCustomCommand, runParams)
+        if (!runProcedureJob.isStatusSuccess()) {
+            throw new Exception("Run CLI Command failed");
+        }
 
         return runProcedureJob
+    }
+
+    def downloadArtifact(sourceUrl, targetPath) {
+        def res = dsl """
+            runProcedure(
+                projectName: '$helperProjName',
+                procedureName: '$helperProcedureDownloadArtifact',
+                actualParameter: [
+                    url: '$sourceUrl',
+                    artifactPath: '$targetPath'
+                ]
+            )
+        """
+        assert res.jobId
+        waitUntil {
+            jobCompleted res
+        }
+
+        assert jobStatus(res.jobId).outcome == 'success'
+    }
+
+    boolean isUrlAvailable(String url) {
+        def res = dsl """
+            runProcedure(
+                projectName: '$helperProjName',
+                procedureName: '$helperProcedureCheckUrl',
+                actualParameter: [
+                    url: '$url'
+                ]
+            )
+        """
+        assert res.jobId
+        waitUntil {
+            jobCompleted res
+        }
+
+        return jobStatus(res.jobId).outcome == 'success'
     }
 
     class RunProcedureJob {
@@ -272,7 +320,5 @@ class PluginTestHelper extends PluginSpockTestSupport {
         }
     }
 
-    class JBossCliWrapper {
 
-    }
 }
