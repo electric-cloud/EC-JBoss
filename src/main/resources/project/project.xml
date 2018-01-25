@@ -2219,7 +2219,7 @@
             </formalParameter>
             <formalParameter>
                 <formalParameterName>propertyName</formalParameterName>
-                <defaultValue></defaultValue>
+                <defaultValue/>
                 <description>Property to write response from JBoss. Example: "/myJob/RunCustomCommandResult"</description>
                 <required>0</required>
                 <type>entry</type>

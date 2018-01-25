@@ -29,7 +29,6 @@
         <label>Property name:</label>
         <property>propertyName</property>
         <required>0</required>
-        <value></value>
         <documentation>Property to write response from JBoss. Example: "/myJob/RunCustomCommandResult"</documentation>
     </formElement>
     <formElement>
