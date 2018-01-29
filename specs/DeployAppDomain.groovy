@@ -64,6 +64,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         createHelperProject(resName, defaultConfigName)
         createServerGroupModels()
+        runCliCommand(CliCommandsGeneratorHelper.startServerCmd(serverGroup2Server1, hostNameMaster))
     }
 
     def doCleanupSpec() {
