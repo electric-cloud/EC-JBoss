@@ -53,8 +53,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, minimum params (dmdmmdd)"() {
-        String testCaseId = "dmdmmdd"
+    def "DeployApp, 1st time, minimum params (C111844)"() {
+        String testCaseId = "C111844"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -90,8 +90,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, server groups ignored (dsdd)"() {
-        String testCaseId = "dsdd"
+    def "DeployApp, 1st time, server groups ignored (C277822)"() {
+        String testCaseId = "C277822"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -127,8 +127,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, all server groups ignored (aaa)"() {
-        String testCaseId = "aaa"
+    def "DeployApp, 1st time, all server groups ignored (C277823)"() {
+        String testCaseId = "C277823"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -164,8 +164,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, custom app name (xxx123123123)"() {
-        String testCaseId = "xxx123123123"
+    def "DeployApp, 1st time, custom app name (C277824)"() {
+        String testCaseId = "C277824"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -201,8 +201,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, custom runtime name (sklfklsnfd)"() {
-        String testCaseId = "sklfklsnfd"
+    def "DeployApp, 1st time, custom runtime name (C277825)"() {
+        String testCaseId = "C277825"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -238,8 +238,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, custom app name, custom runtime name (kwejfiojscd)"() {
-        String testCaseId = "kwejfiojscd"
+    def "DeployApp, 1st time, custom app name, custom runtime name (C277826)"() {
+        String testCaseId = "C277826"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -275,8 +275,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, custom app name without extension, custom runtime name (sdfnsdfnsdf)"() {
-        String testCaseId = "sdfnsdfnsdf"
+    def "DeployApp, 1st time, custom app name without extension, custom runtime name (C277827)"() {
+        String testCaseId = "C277827"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -312,8 +312,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, both server groups and all server groups ignored (nfjsdnf)"() {
-        String testCaseId = "nfjsdnf"
+    def "DeployApp, 1st time, both server groups and all server groups ignored (C277828)"() {
+        String testCaseId = "C277828"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -349,8 +349,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, app already deployed, force flag (sdfsdfdddss)"() {
-        String testCaseId = "sdfsdfdddss"
+    def "DeployApp, app already deployed, force flag, change runtime-name (C277829)"() {
+        String testCaseId = "C277829"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -390,8 +390,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, app already deployed, server groups and all server groups ignored (sdjfnjsdnfnna)"() {
-        String testCaseId = "sdjfnjsdnfnna"
+    def "DeployApp, app already deployed, force flag, change runtime-name, server groups and all server groups ignored (C277831)"() {
+        String testCaseId = "C277831"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -430,8 +430,8 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
-    def "DeployApp, app already deployed, no force flag (kkk)"() {
-        String testCaseId = "kkk"
+    def "DeployApp, app already deployed, deploy without force flag of the same app with runtime-name changed (C277833)"() {
+        String testCaseId = "C277833"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -439,7 +439,7 @@ class DeployAppStandalone extends PluginTestHelper {
                 warphysicalpath      : "/tmp/$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
-                force                : "0", // when force is not set, but app exists - it's Ok fo standalone
+                force                : "0", // when force is not set, but app exists
                 assignservergroups   : "",
                 assignallservergroups: "0",
                 additional_options   : ""
@@ -457,23 +457,21 @@ class DeployAppStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "'$existingAppName' already exists in the deployment repository"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}"
 
-        // let's check that app was upgraded and runtime name was changed
-        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String newContextRoot = "$testCaseId-app-new-runtimename"
-        checkAppDeployedToStandaloneCli(existingAppName, newRuntimeName)
-        checkAppDeployedToStandaloneUrl(newContextRoot)
+        // let's check that app was not upgraded and runtime name was not changed
+        checkAppDeployedToStandaloneCli(existingAppName, oldRuntimeName)
+        checkAppDeployedToStandaloneUrl(oldContextRoot)
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
     @Unroll
-    def "DeployApp, 1st time, whitespace in path (lldlld)"() {
-        String testCaseId = "lldlld"
+    def "DeployApp, 1st time, whitespace in path (C277834)"() {
+        String testCaseId = "C277834"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -509,8 +507,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "Negative. DeployApp, incorrect param, undef required param, path to app (sdfnsdfnss)"() {
-        String testCaseId = "sdfnsdfnss"
+    def "Negative. DeployApp, incorrect param, undef required param, path to app (C277835)"() {
+        String testCaseId = "C277835"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -533,8 +531,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "Negative. DeployApp, non existing filepath (sdfnsdfnss)"() {
-        String testCaseId = "sdfnsdfnss"
+    def "Negative. DeployApp, non existing filepath (C277836)"() {
+        String testCaseId = "C277836"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -557,8 +555,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, disabled flag in additional options (aaaaaa)"() {
-        String testCaseId = "aaaaaa"
+    def "DeployApp, 1st time, disabled flag in additional options (C277837)"() {
+        String testCaseId = "C277837"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -569,7 +567,7 @@ class DeployAppStandalone extends PluginTestHelper {
                 force                : "",
                 assignservergroups   : "",
                 assignallservergroups: "0",
-                additional_options   : " --disabled" // disabled flag
+                additional_options   : "--disabled" // disabled flag
         ]
 
         setup:
@@ -586,15 +584,15 @@ class DeployAppStandalone extends PluginTestHelper {
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
-        //todo: check app is uploaded but not enabled
+        //todo: check app is uploaded but not enabled (cli and url checks)
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
     @Unroll
-    def "DeployApp, app already deployed, force flag in additional options (sdfsdfdddss)"() {
-        String testCaseId = "sdfsdfdddss"
+    def "DeployApp, app already deployed, force flag (in additional options), change runtime-name (C277838)"() {
+        String testCaseId = "C277838"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -605,7 +603,7 @@ class DeployAppStandalone extends PluginTestHelper {
                 force                : "0",
                 assignservergroups   : "",
                 assignallservergroups: "0",
-                additional_options   : " --force" // force flag
+                additional_options   : "--force" // force flag
         ]
 
         setup:
@@ -630,12 +628,12 @@ class DeployAppStandalone extends PluginTestHelper {
         checkAppDeployedToStandaloneUrl(newContextRoot)
 
         cleanup:
-        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+        undeployAppFromStandalone("$testCaseId-app.war")
     }
 
     @Unroll
-    def "Negative. DeployApp, additional options conflicts with defined params (sdfsdfsdfdssdf)"() {
-        String testCaseId = "sdfsdfsdfdssdf"
+    def "Negative. DeployApp, additional options conflicts with defined params (C277839)"() {
+        String testCaseId = "C277839"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -661,8 +659,8 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "Negative. DeployApp, wrong additional options (sdfsdfsdfdssdf)"() {
-        String testCaseId = "sdfsdfsdfdssdf"
+    def "Negative. DeployApp, wrong additional options (C277840)"() {
+        String testCaseId = "C277840"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
