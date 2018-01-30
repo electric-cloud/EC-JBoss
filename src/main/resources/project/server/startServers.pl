@@ -39,7 +39,7 @@ sub main {
     if (defined $params->{wait_time} && $params->{wait_time} ne '') {
         $wait_time = $params->{wait_time};
         if ($wait_time !~ m/^\d+$/s) {
-            $jboss->bail_out("Wait time should be a positive integer.");
+            $jboss->bail_out("Wait time expected to be positive integer (wait time in seconds), 0 (unlimited) or undefined (one time check).");
         }
     }
 
@@ -78,12 +78,19 @@ sub main {
         msg => ''
     };
 
-    while (defined $wait_time && !$done) {
+    while (!$done) {
         my $time_diff = time() - $time_start;
-        if ($wait_time && $time_diff >= $wait_time) {
+
+        if (!defined $wait_time) {
+            # if wait time is undefined then we perform check only once
+            $done = 1;
+        }
+        elsif ($wait_time && $time_diff >= $wait_time) {
             $done = 1;
             last;
         }
+        # otherwise (wait time is 0 = unlimited wait time)
+
         my ($servers, $states_ref) = $jboss->get_servergroup_status($params->{serversgroup});
         my %seen = ();
         @$states_ref = grep {!$seen{$_}++} @$states_ref;
