@@ -5,6 +5,8 @@ my $PROJECT_NAME = '$[/myProject/projectName]';
 my $PLUGIN_NAME = '@PLUGIN_NAME@';
 my $PLUGIN_KEY = '@PLUGIN_KEY@';
 use Data::Dumper;
+use URI;
+use File::Basename;
 
 $|=1;
 
@@ -88,7 +90,25 @@ sub main {
 
     my %result = $jboss->run_command($command);
 
-    $jboss->{success_message} = sprintf 'Application %s (%s) has been successfully deployed.', $params->{appname}, $params->{warphysicalpath};
+    # expected source
+    my $expected_source = $params->{warphysicalpath};
+    if ($source_is_url) {
+        $expected_source =~ s/^(--url=)(.*)$/$2/;
+    }
+
+    # expected name of the deployment
+    my $expected_appname;
+    if ($params->{appname}) {
+        $expected_appname = $params->{appname};
+    }
+    elsif ($source_is_url) {
+        $expected_appname = (URI->new($expected_source)->path_segments)[-1];
+    }
+    else {
+        $expected_appname = fileparse($expected_source);
+    }
+
+    $jboss->{success_message} = "Application '$expected_appname' has been successfully deployed from '$expected_source'";
     if ($result{stdout}) {
         $jboss->out("Command output: $result{stdout}");
     }
