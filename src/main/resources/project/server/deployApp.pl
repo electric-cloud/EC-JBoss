@@ -30,14 +30,32 @@ sub main {
         additional_options
     /);
 
+    my $source_is_url = 0;
+    # e.g. the following format we accept: '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'
+    if ( $params->{warphysicalpath} =~ /^--url=/ ) {
+        $jboss->log_info("Source with deployment is URL (such option available for EAP 7 and later versions): '$params->{warphysicalpath}'");
+        $source_is_url = 1;
+    }
+    else {
+        $jboss->log_info("Source with deployment is filepath: '$params->{warphysicalpath}'");
+    }
+
     my $is_domain = 0;
     my $launch_type = $jboss->get_launch_type();
     $is_domain = 1 if $launch_type eq 'domain';
-    if (!$jboss->{dryrun} && !-e $params->{warphysicalpath}) {
-        $jboss->bail_out("File: $params->{warphysicalpath} doesn't exists");
+
+    if (!$jboss->{dryrun} && !$source_is_url && !-e $params->{warphysicalpath}) {
+        $jboss->bail_out("File '$params->{warphysicalpath}' doesn't exists");
     }
 
-    my $command = qq/deploy "$params->{warphysicalpath}"/;
+    my $command = qq/deploy /;
+
+    if ($source_is_url) {
+        $command .= qq/ $params->{warphysicalpath} /;
+    }
+    else {
+        $command .= qq/ "$params->{warphysicalpath}" /;
+    }
 
     if ($params->{appname}) {
         $command .= qq/ --name=$params->{appname} /;
@@ -56,7 +74,7 @@ sub main {
             $command .= ' --all-server-groups ';
         }
         elsif ($params->{assignservergroups}) {
-            $command .= qq/ --server-groups=$params->{assignservergroups}/;
+            $command .= qq/ --server-groups=$params->{assignservergroups} /;
         }
         else {
             $jboss->bail_out("When JBoss mode is domain checkbox 'Apply to all servers' should be checked or 'Server groups to apply' should be provided.");
