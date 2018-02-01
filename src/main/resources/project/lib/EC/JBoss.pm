@@ -792,6 +792,7 @@ Postprocessor for JBoss responses.
 
 =cut
 
+#todo: here is recommendation to refactor the run_command & process_response approach into other approach according to single-responsiblity principle
 sub process_response {
     my ($self, %params) = @_;
 
