@@ -33,7 +33,8 @@ sub main {
     /);
 
     my $source_is_url = 0;
-    # e.g. the following format we accept: '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'
+    # e.g. the following format we accept the following:
+    # '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'
     if ( $params->{warphysicalpath} =~ /^--url=/ ) {
         $jboss->log_info("Source with deployment is URL (such option available for EAP 7 and later versions): '$params->{warphysicalpath}'");
         $source_is_url = 1;
@@ -78,9 +79,6 @@ sub main {
         elsif ($params->{assignservergroups}) {
             $command .= qq/ --server-groups=$params->{assignservergroups} /;
         }
-        else {
-            $jboss->bail_out("When JBoss mode is domain checkbox 'Apply to all servers' should be checked or 'Server groups to apply' should be provided.");
-        }
     }
 
     if ($params->{additional_options}) {
@@ -90,12 +88,11 @@ sub main {
 
     my %result = $jboss->run_command($command);
 
-    # expected source
+    # expected source - filepath or url (url without '--url=' anchor)
     my $expected_source = $params->{warphysicalpath};
     if ($source_is_url) {
         $expected_source =~ s/^(--url=)(.*)$/$2/;
     }
-
     # expected name of the deployment
     my $expected_appname;
     if ($params->{appname}) {
