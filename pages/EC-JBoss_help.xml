@@ -474,25 +474,26 @@
             </div>
             <div id="DeployApp"> <a name='DeployApp' id="DeployApp"></a>
                 <h2>DeployApp (Standalone/Domain)</h2>
-				The DeployApp procedure deploys an application (mainly EAR or WAR) from the specified source (usually from filepath) to standalone server (for Standalone JBoss) or to content repository and specified server groups (for Domain JBoss) based on provided parameters.
+				The DeployApp procedure deploys an application (mainly WAR or EAR) from the specified source (usually from filepath) to standalone server (for Standalone JBoss) or to content repository and specified server groups (for Domain JBoss) based on provided parameters.
 				<br/><br/>
 				This procedure is build around jboss-cli command 'deploy' and most parameters are corresponding.
 				<br/><br/>
 				For Standalone server: if the application was already deployed to the server and has to be replaced then deploy should be performed with force flag.
-				Or it is possible to undeploy the application (see UndeployApp procedure) before deploying a new version.
+				Or it is possible to undeploy the application (see UndeployApp procedure) before deploying a new version (then force flag is not required).
 				<br/><br/>
-				For Domain JBoss: deployments are associated with server groups - the deployment to be provided to all servers within the server group (it is handled by Domain JBoss).
 				For Domain JBoss with help of this procedure it is possible to do the following: 
 				<ol>
                     <li>upload the deployment to content repository (when deployment does not exist there)</li>
 					<li>upload the deployment to content repository (when deployment does not exist there) and assign it to specified server groups</li>
-					<li>replace the deployment in content repository - force deploy (those server groups which are already assigned to the deployment now will use upgraded version). NOTE: it is not possible to assign deployment to specified server groups when it is upgrade (force deploy). It is limitation of jboss-cli 'deploy' command</li>
+					<li>replace the deployment in content repository - force deploy (those server groups which are already assigned to the deployment now will use upgraded version).
+					<br/>
+					NOTE: it is not possible to assign deployment to specified server groups when it is upgrade (force deploy). It is limitation of jboss-cli 'deploy' command</li>
 				</ol>
 				NOTE: This procedure does not support assigning of the deployment which already exists in repository to specified server groups (just because "Source with application for deploy" is required parameter in this procedure - it is limitation of the procedure).
 				<br/><br/>
-				NOTE: For JBoss Domain it is possible to consider the following flow without using force flag:
+				For JBoss Domain it is also possible to consider the following flow without using force flag:
 				<ol>
-                    <li>UndeployApp - undeploy app from all relevant server groups and remove from content repository</li>
+                    <li>UndeployApp - undeploy app from all relevant server groups and remove from content repository (see UndeployApp procedure)</li>
 					<li>DeployApp - upload the deployment to content repository (when deployment does not exist there) and assign it to specified server groups</li>
 				</ol>
 				
@@ -511,16 +512,24 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>
+										Required parameter.
+										<br/>
+										A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+										To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+									</td>
                                 </tr>
                                 <tr>
                                     <td>Physical location of the jboss client script</td>
-                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
+                                    <td>
+										Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.
+										If omitted, script location from configuration will be used.
+									</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Source with application for deploy</td>
                                     <td>
-										The parameter is Required.
+										Required parameter.
 										<br/>
 										Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions.						
 										<ol>
@@ -549,7 +558,7 @@
 										<br/>
 										The runtime name for the deployment.
 										<br/>
-										NOTE: the file extension (.war, .jar, .ear etc.) need to be included into runtime name so server can distinguish type of deployment somehow.
+										NOTE: the file extension (.war, .jar, .ear etc.) needs to be included into runtime name so server can distinguish type of deployment somehow.
 										<br/>			
 										This would typically be the same as --name (see 'Deployment name' parameter), and if not specified the value used for --name will be used.
 										In some cases users may wish to have two deployments with the same 'runtime-name' (e.g. two versions of "example.war") both available in the management configuration,
@@ -594,21 +603,21 @@
 										<br/>
 										Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Source with application for deploy' parameter.
 										<br/>
-										If the deployment with the specified deployment name (see 'Deployment name' parameter) already exists, by default, deploy will be aborted and the corresponding message will printed.
+										If the deployment with the specified deployment name (see 'Deployment name' parameter) already exists, by default, deploy will fail and the corresponding message will printed.
 									</td>
                                 </tr>
                                 <tr>
                                     <td>Additional options</td>
                                     <td>
-										Additional options jboss-cli 'deploy' command.
+										Additional options for jboss-cli 'deploy' command.
 										<br/>
 										The 'Additional options' string will be concatenated to already generated command line from the parameters above.
 										<br/>
-										E.g. if only required parameter 'Source with application for deploy' is provided by '/tmp/hello-world.war' and 'Additional options' is '--disabled' the the following jboss-cli command will be called:
+										E.g. if 'Source with application for deploy' is '/tmp/hello-world.war' and 'Additional options' is '--disabled' the the following jboss-cli command will be called:
 										<br/>
 										'deploy "/tmp/hello-world.war" --disabled'
 										<br/>
-										NOTE: it is recommended to not use duplicating or conflicting options, e.g. no need to specify '--all-server-groups' because we have 'Apply to all servers' parameter for this.
+										NOTE: it is recommended to not use duplicating options, e.g. no need to specify '--all-server-groups' because we have 'Apply to all servers' parameter for this.
 										<br/>
 										NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Source with application for deploy' parameter.
 									</td>
