@@ -626,14 +626,25 @@
                         </table>
                     </li>
                     <br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployApp2.png" />
+					For Example:
+					<br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppForm1.png" />
                     <br />
+					<img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppForm2.png" />
+					<br />
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results, including the following job details, which show that the application was deployed:</p>
+                <p>After the job runs, you can view the results, including the following job details, which show that the application was deployed, what its expected deployment name and from where it was deployed, for example:</p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployApp3.png" />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus1.png" />
                 <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus2.png" />
+				<br />
+				<br />
+				<p>And here is an example of run with errors, when JBoss did not accept parameters provided and replied with corresponding message. This message is in the job step summary:</p>
+                <br />
+				<img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus3.png" />
+				<br />
             </div>
 
             <div id="DisableDeploy"><a name='DisableDeploy' id="DisableDeploy"></a>
