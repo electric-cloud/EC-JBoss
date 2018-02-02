@@ -479,7 +479,7 @@
 				This procedure is build around jboss-cli command 'deploy' and most parameters are corresponding.
 				<br/><br/>
 				For Standalone server: if the application was already deployed to the server and has to be replaced then deploy should be performed with force flag.
-				Or it is possible to undeploy the application (see UndeployApp procedure) before deploying a new version (then force flag is not required).
+				Or it is possible to undeploy the application (see <a href="#UndeployApp">UndeployApp</a> procedure) before deploying a new version (then force flag is not required).
 				<br/><br/>
 				For Domain JBoss with help of this procedure it is possible to do the following: 
 				<ol>
@@ -493,7 +493,7 @@
 				<br/><br/>
 				For JBoss Domain it is also possible to consider the following flow without using force flag:
 				<ol>
-                    <li>UndeployApp - undeploy app from all relevant server groups and remove from content repository (see UndeployApp procedure)</li>
+                    <li>UndeployApp - undeploy app from all relevant server groups and remove from content repository (see <a href="#UndeployApp">UndeployApp</a> procedure)</li>
 					<li>DeployApp - upload the deployment to content repository (when deployment does not exist there) and assign it to specified server groups</li>
 				</ol>
 				
