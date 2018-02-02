@@ -52,7 +52,7 @@ sub main {
     $jboss->{silent} = 1;
     my $servers_with_terminal_status = $jboss->is_servergroup_has_status(
         $params->{serversgroup},
-        ['STOPPED']
+        [$STATUS_STOPPED, $STATUS_DISABLED]
     );
     $jboss->{silent} = 0;
     if (@$servers_with_terminal_status) {
