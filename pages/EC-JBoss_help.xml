@@ -548,7 +548,7 @@
 										Stands for '--name' parameter for jboss-cli 'deploy' command.
 										<br/>
 										The unique name of the deployment.
-										If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url', see required 'Source with application for deploy' parameter
+										If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url', see required 'Source with application for deploy' parameter.
 									</td>
                                 </tr>
                                 <tr>
@@ -560,7 +560,7 @@
 										<br/>
 										NOTE: the file extension (.war, .jar, .ear etc.) needs to be included into runtime name so server can distinguish type of deployment somehow.
 										<br/>			
-										This would typically be the same as --name (see 'Deployment name' parameter), and if not specified the value used for --name will be used.
+										This would typically be the same as '--name' (see 'Deployment name' parameter), and if not specified the value used for '--name' will be used.
 										In some cases users may wish to have two deployments with the same 'runtime-name' (e.g. two versions of "example.war") both available in the management configuration,
 										in which case the deployments would need to have distinct 'name' values but would have the same 'runtime-name'.
 										Within an individual server, only one deployment with a given 'runtime-name' can deployed.
@@ -570,7 +570,7 @@
                                 <tr>
                                     <td>Apply to all servers (Domain only)</td>
                                     <td>
-										For Domain only (will be ignored in case of Standalone)
+										For Domain only (will be ignored in case of Standalone).
 										<br/>
 										Stands for '--all-server-groups' parameter for jboss-cli 'deploy' command.
 										<br/>
@@ -585,11 +585,11 @@
                                 <tr>
                                     <td>Server groups to apply (Domain only)</td>
                                     <td>
-										For Domain only (will be ignored in case of Standalone)
+										For Domain only (will be ignored in case of Standalone).
 										<br/>
 										Stands for '--server-groups' parameter for jboss-cli 'deploy' command.
 										<br/>
-										NOTE: this parameter will be ignored if 'Apply to all servers' or 'Force deployment' is chosen
+										NOTE: this parameter will be ignored if 'Apply to all servers' or 'Force deployment' is chosen.
 										<br/>
                                         Provide comma separated list of server group names the deploy command should apply to.
                                     </td>
@@ -599,11 +599,11 @@
                                     <td>
 										Stands for '--force' parameter for jboss-cli 'deploy' command.
 										<br/>
-										NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored
+										NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored.
 										<br/>
 										Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Source with application for deploy' parameter.
 										<br/>
-										If the deployment with the specified deployment name (see 'Deployment name' parameter) already exists, by default, deploy will fail and the corresponding message will printed.
+										If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.
 									</td>
                                 </tr>
                                 <tr>
@@ -634,13 +634,6 @@
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployApp3.png" />
                 <br />
-                <!--
-                <p>In the <b>DeployApp</b> step, click the Log icon to see the diagnostic information. The output is similar to the following
-                    diagnostic report:</p>
-                <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployApp4.png" />
-                <br />
-                -->
             </div>
 
             <div id="DisableDeploy"><a name='DisableDeploy' id="DisableDeploy"></a>

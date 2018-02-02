@@ -680,7 +680,7 @@
         </procedure>
         <procedure>
             <procedureName>DeployApp</procedureName>
-            <description>Deploys the application designated by the war file path or enables an already existing but disabled in the repository deployment designated by the name argument.</description>
+            <description>For Standalone and Domain. The DeployApp procedure deploys an application (mainly WAR or EAR) from the specified source (usually from filepath) to standalone server (for Standalone JBoss) or to content repository and specified server groups (for Domain JBoss) based on provided parameters. This procedure is build around jboss-cli command 'deploy' and most parameters are corresponding.</description>
             <jobNameTemplate>jboss-deployapp-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -715,7 +715,6 @@
                                         </property>
                                     </propertySheet>
                                 </property>
-
                                 <property>
                                     <propertyName>scriptphysicalpath</propertyName>
                                     <propertySheet>
@@ -824,63 +823,63 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>warphysicalpath</formalParameterName>
                 <defaultValue/>
-                <description>Path to the application to deploy. Required in case the deployment doesn't exist in the repository.</description>
+                <description>Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions. In case of 'file_path' - filesystem path to the application to deploy, e.g. '/tmp/hello-world.war'. In case of '--url' (for EAP 7 and later) - URL at which the deployment content is available (in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war').</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <description>Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>appname</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Unique name of the deployment. If the file path argument is specified, the name argument is optional with the file name been the default value. If the file path argument isn't specified then the command is supposed to enable an already existing but disabled deployment, and in this case the name argument is required.</description>
+                <description>Stands for '--name' parameter for jboss-cli 'deploy' command. The unique name of the deployment. If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url'.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>runtimename</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the runtime name for the deployment.</description>
+                <description>Stands for '--runtime-name' parameter for jboss-cli 'deploy' command. The runtime name for the deployment. NOTE: the file extension (.war, .jar, .ear etc.) needs to be included into runtime name so server can distinguish type of deployment somehow. This would typically be the same as '--name', and if not specified the value used for '--name' will be used.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>force</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Select this option to force deployment. If the deployment with the specified name already exists, by default, deployment is aborted and a corresponding message is printed. Switch --force (or -f) forces the replacement of the existing deployment with the one specified in the command arguments.</description>
+                <description>Stands for '--force' parameter for jboss-cli 'deploy' command. NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored. Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Source with application for deploy' parameter. If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.</description>
                 <required>0</required>
                 <type>checkbox</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>assignallservergroups</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Select this option to deploy to all available servers. This indicates that deployment applies to all available server groups. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode.</description>
+                <description>For Domain only (will be ignored in case of Standalone). Stands for '--all-server-groups' parameter for jboss-cli 'deploy' command. NOTE: this parameter will be ignored if 'Force deployment' is chosen; 'Server groups to apply' will be ignored if this parameter is chosen. This parameter indicates that deploy should apply to all the available server groups.</description>
                 <required>0</required>
                 <type>checkbox</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>assignservergroups</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the comma-separated list of server group names the deploy command applies to. Either server-groups or all-server-groups is required in domain mode. This argument is not applicable in standalone mode.</description>
+                <description>For Domain only (will be ignored in case of Standalone). Stands for '--server-groups' parameter for jboss-cli 'deploy' command. NOTE: this parameter will be ignored if 'Apply to all servers' or 'Force deployment' is chosen. Provide comma separated list of server group names the deploy command should apply to.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>additional_options</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Additional options for deploy command.</description>
+                <description>Additional options for jboss-cli 'deploy' command. The 'Additional options' string will be concatenated to already generated command line from the parameters above. NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Source with application for deploy' parameter.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
