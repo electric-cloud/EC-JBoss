@@ -70,26 +70,26 @@ sub main {
     my $command = sprintf '/server-group=%s:stop-servers', $params->{serversgroup};
     $jboss->out("Stopping serversgroup: $params->{serversgroup}");
     my %result = $jboss->run_command($command);
-    my $done = 0;
-    my $time_start = time();
 
     my $res = {
         error => 0,
         msg => ''
     };
 
+    my $done = 0;
+    my $time_start = time();
     while (!$done) {
         my $time_diff = time() - $time_start;
 
-        if (!defined $wait_time) {
-            # if wait time is undefined then we perform check only once
+        if (!$wait_time) {
+            # if wait time is undefined or 0 then we perform check only once
             $done = 1;
         }
-        if ($wait_time && $time_diff >= $wait_time) {
+        elsif ($wait_time && $time_diff >= $wait_time) {
+            # if wait time is already passed we do not perform more checks
             $done = 1;
             last;
         }
-        # otherwise (wait time is 0 = unlimited wait time)
 
         my ($servers, $all_states_ref) = $jboss->get_servergroup_status($params->{serversgroup});
 
