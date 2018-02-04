@@ -2228,7 +2228,7 @@
         </procedure>
         <procedure>
             <procedureName>StartServers</procedureName>
-            <description>Starts servers.</description>
+            <description>For Domain only. The StartServers procedure starts the servers in the specified server group and checks if these servers are started successfully. This procedure is build around jboss-cli command 'start-servers' for the server groups, e.g. '/server-group=some-group-name:start-servers'. Check of servers statuses is done also with help of cli - basically the procedure checks 'status' attributes of needed servers on needed hosts (within specified server group), e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'. Expected value for started servers is 'STARTED'.</description>
             <jobNameTemplate>jboss-startservers-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -2291,28 +2291,28 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <description>Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>serversgroup</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Specifies the command to run.</description>
+                <description>The name of the server group to start. The following cli command will be called: e.g. if 'some-group-name' is specified then '/server-group=some-group-name:start-servers' is called.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>wait_time</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Wait time.</description>
+                <description>After start-servers command for the server group is called the procedure starts performing recurring check of servers if they are started ('status' attribute is 'STARTED', see procedure description). Delay between each check is 5 seconds (hard coded value). Check will be performed only one time if the timeout is not specified or it is less than 5 seconds. Default is 300 seconds.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
@@ -2354,7 +2354,7 @@
         </procedure>
         <procedure>
             <procedureName>StopServers</procedureName>
-            <description>Stops servers.</description>
+            <description>For Domain only. The StopServers procedure stops the servers in the specified server group and checks if these servers are stopped successfully. This procedure is build around jboss-cli command 'stop-servers' for the server groups, e.g. '/server-group=some-group-name:stop-servers'. Check of servers statuses is done also with help of cli - basically the procedure checks 'status' attributes of needed servers on needed hosts (within specified server group), e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'. Expected value for stopped servers is 'STOPPED' or 'DISABLED' (similar statuses which indicate that servers are stopped, the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).</description>
             <jobNameTemplate>jboss-stopservers-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -2417,28 +2417,28 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <description>Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>serversgroup</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Specifies the command to run.</description>
+                <description>The name of the server group to stop. The following cli command will be called: e.g. if 'some-group-name' is specified then '/server-group=some-group-name:stop-servers' is called.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>wait_time</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Wait time.</description>
+                <description>After stop-servers command for the server group is called the procedure starts performing recurring check of servers if they are started ('status' attribute is 'STOPPED' or 'DISABLED', see procedure description). Delay between each check is 5 seconds (hard coded value). Check will be performed only one time if the timeout is not specified or it is less than 5 seconds. Default is 300 seconds.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
