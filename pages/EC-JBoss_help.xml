@@ -527,15 +527,15 @@
 									</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Source with application for deploy</td>
+                                    <td class='required'>Application Content Source Path</td>
                                     <td>
 										Required parameter.
 										<br/>
 										Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions.						
 										<ol>
-											<li>in case of 'file_path' - filesystem path to the application to deploy. E.g. '/tmp/hello-world.war'</li>
+											<li>in case of 'file_path' - pass full filesystem path to the application to deploy. E.g. '/tmp/hello-world.war'</li>
 											<li>
-												in case of '--url' (for EAP 7 and later) - URL at which the deployment content is available.
+												in case of '--url' (for EAP 7 and later) - pass URL at which the deployment content is available.
 												NOTE: The expected format in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war'.
 												Note that the URL must be accessible from the target of the operation (i.e. the Domain Controller or standalone server).
 											</li>
@@ -628,22 +628,22 @@
                     <br />
 					For Example:
 					<br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppForm1.png" />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppForm1.PNG" />
                     <br />
-					<img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppForm2.png" />
+					<img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppForm2.PNG" />
 					<br />
                 </ol>
                 <h3>Output</h3>
                 <p>After the job runs, you can view the results, including the following job details, which show that the application was deployed, what its expected deployment name and from where it was deployed, for example:</p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus1.png" />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus1.PNG" />
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus2.png" />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus2.PNG" />
 				<br />
 				<br />
 				<p>And here is an example of run with errors, when JBoss did not accept parameters provided and replied with corresponding message. This message is in the job step summary:</p>
                 <br />
-				<img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus3.png" />
+				<img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus3.PNG" />
 				<br />
             </div>
 
