@@ -19,10 +19,10 @@
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Application Content Source Path:</label>
+        <label>Source with application for deploy:</label>
         <property>warphysicalpath</property>
         <required>1</required>
-        <documentation>Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions. In case of 'file_path' - pass full filesystem path to the application to deploy, e.g. '/tmp/hello-world.war'. In case of '--url' (for EAP 7 and later) - pass URL at which the deployment content is available (in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war').</documentation>
+        <documentation>Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions. In case of 'file_path' - filesystem path to the application to deploy, e.g. '/tmp/hello-world.war'. In case of '--url' (for EAP 7 and later) - URL at which the deployment content is available (in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war').</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
