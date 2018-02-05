@@ -28,22 +28,22 @@
                 <a href="#setupconfig">Setting Up the Plugin Configuration</a><br />
                 <a href="#procedures">Plugin Procedures</a><br />
                 <ul>
-                    <li><a href="#CheckDeployStatus">CheckDeployStatus</a></li>
-                    <li><a href="#CheckHostControllerStatus">CheckHostControllerStatus</a></li>
-                    <li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a></li>
-                    <li><a href="#CheckServerStatus">CheckServerStatus</a></li>
-                    <li><a href="#CreateDatasource">CreateDatasource</a></li>
-                    <li><a href="#DeleteDatasource">DeleteDatasource</a></li>
-                    <li><a href="#DeployApp">DeployApp</a></li>
-                    <li><a href="#DisableDeploy">DisableDeploy</a></li>
-                    <li><a href="#EnableDeploy">EnableDeploy</a></li>
-                    <li><a href="#RunCustomCommand">RunCustomCommand</a></li>
-                    <li><a href="#ShutdownStandaloneServer">ShutdownStandaloneServer</a></li>
-                    <li><a href="#StartDomainServer">StartDomainServer</a></li>
-                    <li><a href="#StartServers">StartServers</a></li>
-                    <li><a href="#StartStandaloneServer">StartStandaloneServer</a></li>
-                    <li><a href="#StopServers">StopServers</a></li>
-                    <li><a href="#UndeployApp">UndeployApp</a></li>
+                    <li><a href="#CheckDeployStatus">CheckDeployStatus</a> (Standalone/Domain)</li>
+                    <li><a href="#CheckHostControllerStatus">CheckHostControllerStatus</a> (Domain)</li>
+                    <li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a> (Domain)</li>
+                    <li><a href="#CheckServerStatus">CheckServerStatus</a> (Standalone/Domain)</li>
+                    <li><a href="#CreateDatasource">CreateDatasource</a> (Standalone/Domain)</li>
+                    <li><a href="#DeleteDatasource">DeleteDatasource</a> (Standalone/Domain)</li>
+                    <li><a href="#DeployApp">DeployApp</a> (Standalone/Domain)</li>
+                    <li><a href="#DisableDeploy">DisableDeploy</a> (Standalone/Domain)</li>
+                    <li><a href="#EnableDeploy">EnableDeploy</a> (Standalone/Domain)</li>
+                    <li><a href="#RunCustomCommand">RunCustomCommand</a> (Standalone/Domain)</li>
+                    <li><a href="#ShutdownStandaloneServer">ShutdownStandaloneServer</a> (Standalone)</li>
+                    <li><a href="#StartDomainServer">StartDomainServer</a> (Domain)</li>
+                    <li><a href="#StartServers">StartServers</a> (Domain)</li>
+                    <li><a href="#StartStandaloneServer">StartStandaloneServer</a> (Standalone)</li>
+                    <li><a href="#StopServers">StopServers</a> (Domain)</li>
+                    <li><a href="#UndeployApp">UndeployApp</a> (Standalone/Domain)</li>
                 </ul>
                 <a href="#known-issues">Known Issues</a><br />
                 <a href="#rns">Release Notes</a>
@@ -473,10 +473,30 @@
                 -->
             </div>
             <div id="DeployApp"> <a name='DeployApp' id="DeployApp"></a>
-                <h2>DeployApp</h2>
-                <p>
-                    The DeployApp procedure deploys the application designated by the war file path, or it enables the specified application in the deployment repository.
-                </p>
+                <h2>DeployApp (Standalone/Domain)</h2>
+				The DeployApp procedure deploys an application (mainly WAR or EAR) from the specified source (usually from filepath) to standalone server (for Standalone JBoss) or to content repository and specified server groups (for Domain JBoss) based on provided parameters.
+				<br/><br/>
+				This procedure is build around jboss-cli command 'deploy' and most parameters are corresponding.
+				<br/><br/>
+				For Standalone server: if the application was already deployed to the server and has to be replaced then deploy should be performed with force flag.
+				Or it is possible to undeploy the application (see <a href="#UndeployApp">UndeployApp</a> procedure) before deploying a new version (then force flag is not required).
+				<br/><br/>
+				For Domain JBoss with help of this procedure it is possible to do the following: 
+				<ol>
+                    <li>upload the deployment to content repository (when deployment does not exist there)</li>
+					<li>upload the deployment to content repository (when deployment does not exist there) and assign it to specified server groups</li>
+					<li>replace the deployment in content repository - force deploy (those server groups which are already assigned to the deployment now will use upgraded version).
+					<br/>
+					NOTE: it is not possible to assign deployment to specified server groups when it is upgrade (force deploy). It is limitation of jboss-cli 'deploy' command</li>
+				</ol>
+				NOTE: This procedure does not support assigning of the deployment which already exists in repository to specified server groups (just because "Source with application for deploy" is required parameter in this procedure - it is limitation of the procedure).
+				<br/><br/>
+				For JBoss Domain it is also possible to consider the following flow without using force flag:
+				<ol>
+                    <li>UndeployApp - undeploy app from all relevant server groups and remove from content repository (see <a href="#UndeployApp">UndeployApp</a> procedure)</li>
+					<li>DeployApp - upload the deployment to content repository (when deployment does not exist there) and assign it to specified server groups</li>
+				</ol>
+				
                 <h3>Input</h3>
 
                 <ol>
@@ -492,70 +512,139 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>
+										Required parameter.
+										<br/>
+										A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+										To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+									</td>
                                 </tr>
                                 <tr>
                                     <td>Physical location of the jboss client script</td>
-                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
+                                    <td>
+										Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.
+										If omitted, script location from configuration will be used.
+									</td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Path to the application to deploy</td>
-                                    <td>Path to the application to deploy. Required in case the deployment doesn't exist in the repository.</td>
+                                    <td class='required'>Application Content Source Path</td>
+                                    <td>
+										Required parameter.
+										<br/>
+										Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions.						
+										<ol>
+											<li>in case of 'file_path' - pass full filesystem path to the application to deploy. E.g. '/tmp/hello-world.war'</li>
+											<li>
+												in case of '--url' (for EAP 7 and later) - pass URL at which the deployment content is available.
+												NOTE: The expected format in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war'.
+												Note that the URL must be accessible from the target of the operation (i.e. the Domain Controller or standalone server).
+											</li>
+										</ol>
+									</td>
                                 </tr>
                                 <tr>
                                     <td>Deployment name</td>
-                                    <td>Unique name of the deployment. If the file path argument is specified, the name argument is optional with the file name been the default value. If the file path argument isn't specified then the command is supposed to enable an already existing but disabled deployment, and in this case the name argument is required.</td>
+                                    <td>
+										Stands for '--name' parameter for jboss-cli 'deploy' command.
+										<br/>
+										The unique name of the deployment.
+										If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url', see required 'Source with application for deploy' parameter.
+									</td>
                                 </tr>
                                 <tr>
                                     <td>Runtime name for deployment</td>
-                                    <td>Provide the runtime name for the deployment. In Jboss the runtime name must end with the extension of the file being deployed. So if you deploy example.war the runtime name must end with .war.</td>
+                                    <td>
+										Stands for '--runtime-name' parameter for jboss-cli 'deploy' command.
+										<br/>
+										The runtime name for the deployment.
+										<br/>
+										NOTE: the file extension (.war, .jar, .ear etc.) needs to be included into runtime name so server can distinguish type of deployment somehow.
+										<br/>			
+										This would typically be the same as '--name' (see 'Deployment name' parameter), and if not specified the value used for '--name' will be used.
+										In some cases users may wish to have two deployments with the same 'runtime-name' (e.g. two versions of "example.war") both available in the management configuration,
+										in which case the deployments would need to have distinct 'name' values but would have the same 'runtime-name'.
+										Within an individual server, only one deployment with a given 'runtime-name' can deployed.
+										However, multiple deployments with the same 'runtime-name' can exist in the configuration, so long as only one is enabled.
+									</td>
                                 </tr>
                                 <tr>
-                                    <td>Apply to all servers</td>
+                                    <td>Apply to all servers (Domain only)</td>
                                     <td>
-                                        Select this option to deploy to all available servers. This indicates that deployment applies to all available server groups.
-                                        Either server-groups or all-server-groups is required in domain mode.
-                                        This argument is not applicable in standalone mode or when force deployment is enabled and will be ignored.
+										For Domain only (will be ignored in case of Standalone).
+										<br/>
+										Stands for '--all-server-groups' parameter for jboss-cli 'deploy' command.
+										<br/>
+										NOTE:
+										<ol>
+											<li>this parameter will be ignored if 'Force deployment' is chosen</li>
+											<li>'Server groups to apply' will be ignored if this parameter is chosen</li>
+										</ol>
+                                        This parameter indicates that deploy should apply to all the available server groups.
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Server groups to apply</td>
+                                    <td>Server groups to apply (Domain only)</td>
                                     <td>
-                                        Provide the comma-separated list of server group names the deploy command applies to. Either server-groups or all-server-groups is required in domain mode.
-                                        This argument is not applicable in standalone mode or when force deployment is enabled and will be ignored.
+										For Domain only (will be ignored in case of Standalone).
+										<br/>
+										Stands for '--server-groups' parameter for jboss-cli 'deploy' command.
+										<br/>
+										NOTE: this parameter will be ignored if 'Apply to all servers' or 'Force deployment' is chosen.
+										<br/>
+                                        Provide comma separated list of server group names the deploy command should apply to.
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Force deployment</td>
-                                    <td>Select this parameter to force the deployment application to run.<br />
-                                        By default, if the deployment application with the specified name already exists,
-                                        the deployment is aborted and a message appears.<br />
-                                        Use Switch --force (or -f) to force the replacement of the existing deployment with the one
-                                        specified in the command arguments.</td>
+                                    <td>
+										Stands for '--force' parameter for jboss-cli 'deploy' command.
+										<br/>
+										NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored.
+										<br/>
+										Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Source with application for deploy' parameter.
+										<br/>
+										If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.
+									</td>
                                 </tr>
                                 <tr>
                                     <td>Additional options</td>
-                                    <td>Additional options for deploy command.</td>
+                                    <td>
+										Additional options for jboss-cli 'deploy' command.
+										<br/>
+										The 'Additional options' string will be concatenated to already generated command line from the parameters above.
+										<br/>
+										E.g. if 'Source with application for deploy' is '/tmp/hello-world.war' and 'Additional options' is '--disabled' the the following jboss-cli command will be called:
+										<br/>
+										'deploy "/tmp/hello-world.war" --disabled'
+										<br/>
+										NOTE: it is recommended to not use duplicating options, e.g. no need to specify '--all-server-groups' because we have 'Apply to all servers' parameter for this.
+										<br/>
+										NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Source with application for deploy' parameter.
+									</td>
                                 </tr>
                             </tbody>
                         </table>
                     </li>
                     <br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployApp2.png" />
+					For Example:
+					<br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppForm1.PNG" />
                     <br />
+					<img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppForm2.PNG" />
+					<br />
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results, including the following job details, which show that the application was deployed:</p>
+                <p>After the job runs, you can view the results, including the following job details, which show that the application was deployed, what its expected deployment name and from where it was deployed, for example:</p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployApp3.png" />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus1.PNG" />
                 <br />
-                <!--
-                <p>In the <b>DeployApp</b> step, click the Log icon to see the diagnostic information. The output is similar to the following
-                    diagnostic report:</p>
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus2.PNG" />
+				<br />
+				<br />
+				<p>And here is an example of run with errors, when JBoss did not accept parameters provided and replied with corresponding message. This message is in the job step summary:</p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployApp4.png" />
-                <br />
-                -->
+				<img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus3.PNG" />
+				<br />
             </div>
 
             <div id="DisableDeploy"><a name='DisableDeploy' id="DisableDeploy"></a>
@@ -787,8 +876,28 @@
                 <br />
             </div>
             <div id="StartServers"> <a name='StartServers' id="StartServers"></a>
-                <h2>StartServers</h2>
-                <p>The StartServers procedure starts the servers in the specified server groups.</p>
+                <h2>StartServers (Domain)</h2>
+                The StartServers procedure starts the servers in the specified server group and checks if these servers are started successfully.
+				<br/><br/>
+				This procedure is build around jboss-cli command 'start-servers' for the server groups, e.g. '/server-group=some-group-name:start-servers'.
+				Check of servers statuses is done also with help of cli - basically the procedure checks 'status' attributes of needed servers on needed hosts (within specified server group), e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'.
+				Expected value for started servers is 'STARTED'.
+				<ol>
+					<li>The procedure will be completed with success if all servers within server group are 'STARTED' and there were no 'STARTED' servers within the group before start-servers was called.</li>
+					<li>The procedure will be completed with warning if all servers within server group are 'STARTED' and there were some 'STARTED' servers within the group before start-servers was called.</li>
+					<li>The procedure will be completed with error if timeout for recurring check of servers is reached and not all servers are 'STARTED'.</li>
+				</ol>
+				List of all possible values of cli server statuses is the following (according to some WildFly open source code):
+				<ol>
+                    <li>STARTED - The server is started</li>
+					<li>STOPPED - The server is stopped and configured to start automatically</li>
+					<li>DISABLED - The server is stopped and configured not to start automatically</li>
+					<li>STARTING - The server is starting</li>
+					<li>STOPPING - The server is stopping</li>
+					<li>FAILED - The server failed to start</li>
+					<li>UNKNOWN - The status of the server is currently unknown. This is the status of any server whose host controller is currently unreachable</li>
+					<li>DOES_NOT_EXIST - Status indicating the host controller does not recognize the server name</li>
+				</ol>
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the StartServers procedure.</li>
@@ -803,36 +912,53 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>
+										Required parameter.
+										<br/>
+										A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+										To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+									</td>
                                 </tr>
                                 <tr>
                                     <td>Physical location of the jboss client script</td>
-                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
+                                    <td>
+										Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.
+										If omitted, script location from configuration will be used.
+									</td>
                                 </tr>
                                 <tr>
                                     <td class="required">Server group</td>
-                                    <td>The name of the server group to start.</td>
+                                    <td>
+										Required parameter.
+										<br/>
+										The name of the server group to start. The following cli command will be called: e.g. if 'some-group-name' is specified then '/server-group=some-group-name:start-servers' is called.
+										</td>
                                 </tr>
                                 <tr>
-                                    <td>Wait time</td>
-                                    <td>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
+                                    <td>Timeout for recurring check of servers (seconds)</td>
+                                    <td>
+										After start-servers command for the server group is called the procedure starts performing recurring check of servers if they are started ('status' attribute is 'STARTED', see procedure description).
+										Delay between each check is 5 seconds (hard coded value). Check will be performed only one time if the timeout is not specified or it is less than 5 seconds. Default is 300 seconds.
+										<ol>
+											<li>The procedure will be completed with success if all servers within server group are 'STARTED' and there were no 'STARTED' servers within the group before start-servers was called.</li>
+											<li>The procedure will be completed with warning if all servers within server group are 'STARTED' and there were some 'STARTED' servers within the group before start-servers was called.</li>
+											<li>The procedure will be completed with error if timeout is reached and not all servers are 'STARTED'.</li>
+										</ol>
+									</td>
                                 </tr>
                             </tbody>
                         </table>
                     </li>
                     <br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers2.png" />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServersForm1.PNG" />
                     <br />
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results in the Job Details page. In the <b>StartServers</b> step, click the Log icon to see the diagnostic information.</p>
+                <p>After the job runs, you can view the results in the Job Details page. In the <b>StartServers</b> step, click the Log icon to see the diagnostic information. For example</p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers3.png" />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServersStatus1.PNG" />
                 <br />
-                <p>In the <b>StartServers</b> step, click the Log icon to see the diagnostic information. The output is
-                    similar to the following diagnostic report:</p>
-                <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers4.png" />
+				<img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServersStatus2.PNG" />
                 <br />
             </div>
             <div id="StartStandaloneServer"> <a name="StartStandaloneServer" id="StartStandaloneServer"></a>
@@ -882,7 +1008,27 @@
             </div>
             <div id="StopServers"> <a name='StopServers' id="StopServers"></a>
                 <h2>StopServers</h2>
-                <p>The StopServers procedure stops the servers in the specified server groups.</p>
+				The StopServers procedure stops the servers in the specified server group and checks if these servers are stopped successfully.
+				<br/><br/>
+				This procedure is build around jboss-cli command 'stop-servers' for the server groups, e.g. '/server-group=some-group-name:stop-servers'.
+				Check of servers statuses is done also with help of cli - basically the procedure checks 'status' attributes of needed servers on needed hosts (within specified server group), e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'.
+				Expected value for stopped servers is 'STOPPED' or 'DISABLED' (similar statuses which indicate that servers are stopped, the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).
+				<ol>
+					<li>The procedure will be completed with success if all servers within server group are 'STOPPED' or 'DISABLED' and there were no 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.</li>
+					<li>The procedure will be completed with warning if all servers within server group are 'STOPPED' or 'DISABLED' and there were some 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.</li>
+					<li>The procedure will be completed with error if timeout for recurring check of servers is reached and not all servers are 'STOPPED' or 'DISABLED'.</li>
+				</ol>
+				List of all possible values of cli server statuses is the following (according to some WildFly open source code):
+				<ol>
+                    <li>STARTED - The server is started</li>
+					<li>STOPPED - The server is stopped and configured to start automatically</li>
+					<li>DISABLED - The server is stopped and configured not to start automatically</li>
+					<li>STARTING - The server is starting</li>
+					<li>STOPPING - The server is stopping</li>
+					<li>FAILED - The server failed to start</li>
+					<li>UNKNOWN - The status of the server is currently unknown. This is the status of any server whose host controller is currently unreachable</li>
+					<li>DOES_NOT_EXIST - Status indicating the host controller does not recognize the server name</li>
+				</ol>
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the StopServers procedure.</li>
@@ -897,34 +1043,49 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>
+										A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+										To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+									</td>
                                 </tr>
                                 <tr>
                                     <td>Physical location of the jboss client script</td>
-                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
+                                    <td>
+										Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.
+										If omitted, script location from configuration will be used.
+									</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Servers group</td>
-                                    <td>The name of the server group to stop.</td>
+                                    <td>
+										Required parameter.
+										<br/>
+										The name of the server group to stop. The following cli command will be called: e.g. if 'some-group-name' is specified then '/server-group=some-group-name:stop-servers' is called.
+									</td>
                                 </tr>
                                 <tr>
-                                    <td>Wait time</td>
-                                    <td>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
+                                    <td>Timeout for recurring check of servers (seconds)</td>
+                                    <td>
+										After stop-servers command for the server group is called the procedure starts performing recurring check of servers if they are started ('status' attribute is 'STOPPED' or 'DISABLED', see procedure description).
+										Delay between each check is 5 seconds (hard coded value). Check will be performed only one time if the timeout is not specified or it is less than 5 seconds. Default is 300 seconds.
+										<ol>
+											<li>The procedure will be completed with success if all servers within server group are 'STOPPED' or 'DISABLED' and there were no 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.</li>
+											<li>The procedure will be completed with warning if all servers within server group are 'STOPPED' or 'DISABLED' and there were some 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.</li>
+											<li>The procedure will be completed with error if timeout for recurring check of servers is reached and not all servers are 'STOPPED' or 'DISABLED'.</li>
+										</ol>
+									</td>
                                 </tr>
                             </tbody>
                         </table>
                     </li>
-                    <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServers2.png" />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServersForm1.PNG" />
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results in the Job Details page. In the <b>StopServers</b> step, click the Log icon to see the diagnostic information.</p>
+                <p>After the job runs, you can view the results in the Job Details page. In the <b>StopServers</b> step, click the Log icon to see the diagnostic information. For example:</p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServers3.png" />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServersStatus1.PNG" />
                 <br />
-                <p>In the <b>StopServers</b> step, click the Log icon to see the diagnostic information. The output is
-                    similar to the following diagnostic report:</p>
-                <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServers4.png" />
+				<img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServersStatus2.PNG" />
                 <br />
             </div>
             <div id="UndeployApp"> <a name='UndeployApp' id="UndeployApp"></a>
