@@ -35,7 +35,7 @@ sub main {
     my $source_is_url = 0;
     # e.g. the following format we accept the following:
     # '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'
-    if ( $params->{warphysicalpath} =~ /^--url=/ ) {
+    if ($params->{warphysicalpath} =~ /^--url=/) {
         $jboss->log_info("Source with deployment is URL (such option available for EAP 7 and later versions): '$params->{warphysicalpath}'");
         $source_is_url = 1;
     }
