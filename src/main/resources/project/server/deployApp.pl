@@ -97,7 +97,7 @@ sub main {
     # expected source - filepath or url (url without '--url=' anchor)
     my $expected_source = $params->{warphysicalpath};
     if ($source_is_url) {
-        $expected_source =~ s/^(--url=)(.*)$/$2/;
+        $expected_source =~ s/^--url=//;
     }
     # expected name of the deployment
     my $expected_appname;
