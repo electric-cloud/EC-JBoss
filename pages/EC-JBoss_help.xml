@@ -28,22 +28,22 @@
                 <a href="#setupconfig">Setting Up the Plugin Configuration</a><br />
                 <a href="#procedures">Plugin Procedures</a><br />
                 <ul>
-                    <li><a href="#CheckDeployStatus">CheckDeployStatus</a></li>
-                    <li><a href="#CheckHostControllerStatus">CheckHostControllerStatus</a></li>
-                    <li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a></li>
-                    <li><a href="#CheckServerStatus">CheckServerStatus</a></li>
-                    <li><a href="#CreateDatasource">CreateDatasource</a></li>
-                    <li><a href="#DeleteDatasource">DeleteDatasource</a></li>
-                    <li><a href="#DeployApp">DeployApp</a></li>
-                    <li><a href="#DisableDeploy">DisableDeploy</a></li>
-                    <li><a href="#EnableDeploy">EnableDeploy</a></li>
-                    <li><a href="#RunCustomCommand">RunCustomCommand</a></li>
-                    <li><a href="#ShutdownStandaloneServer">ShutdownStandaloneServer</a></li>
-                    <li><a href="#StartDomainServer">StartDomainServer</a></li>
-                    <li><a href="#StartServers">StartServers</a></li>
-                    <li><a href="#StartStandaloneServer">StartStandaloneServer</a></li>
-                    <li><a href="#StopServers">StopServers</a></li>
-                    <li><a href="#UndeployApp">UndeployApp</a></li>
+                    <li><a href="#CheckDeployStatus">CheckDeployStatus</a> (Standalone/Domain)</li>
+                    <li><a href="#CheckHostControllerStatus">CheckHostControllerStatus</a> (Domain)</li>
+                    <li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a> (Domain)</li>
+                    <li><a href="#CheckServerStatus">CheckServerStatus</a> (Standalone/Domain)</li>
+                    <li><a href="#CreateDatasource">CreateDatasource</a> (Standalone/Domain)</li>
+                    <li><a href="#DeleteDatasource">DeleteDatasource</a> (Standalone/Domain)</li>
+                    <li><a href="#DeployApp">DeployApp</a> (Standalone/Domain)</li>
+                    <li><a href="#DisableDeploy">DisableDeploy</a> (Standalone/Domain)</li>
+                    <li><a href="#EnableDeploy">EnableDeploy</a> (Standalone/Domain)</li>
+                    <li><a href="#RunCustomCommand">RunCustomCommand</a> (Standalone/Domain)</li>
+                    <li><a href="#ShutdownStandaloneServer">ShutdownStandaloneServer</a> (Standalone)</li>
+                    <li><a href="#StartDomainServer">StartDomainServer</a> (Domain)</li>
+                    <li><a href="#StartServers">StartServers</a> (Domain)</li>
+                    <li><a href="#StartStandaloneServer">StartStandaloneServer</a> (Standalone)</li>
+                    <li><a href="#StopServers">StopServers</a> (Domain)</li>
+                    <li><a href="#UndeployApp">UndeployApp</a> (Standalone/Domain)</li>
                 </ul>
                 <a href="#known-issues">Known Issues</a><br />
                 <a href="#rns">Release Notes</a>
@@ -779,8 +779,28 @@
                 <br />
             </div>
             <div id="StartServers"> <a name='StartServers' id="StartServers"></a>
-                <h2>StartServers</h2>
-                <p>The StartServers procedure starts the servers in the specified server groups.</p>
+                <h2>StartServers (Domain)</h2>
+                The StartServers procedure starts the servers in the specified server group and checks if these servers are started successfully.
+				<br/><br/>
+				This procedure is build around jboss-cli command 'start-servers' for the server groups, e.g. '/server-group=some-group-name:start-servers'.
+				Check of servers statuses is done also with help of cli - basically the procedure checks 'status' attributes of needed servers on needed hosts (within specified server group), e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'.
+				Expected value for started servers is 'STARTED'.
+				<ol>
+					<li>The procedure will be completed with success if all servers within server group are 'STARTED' and there were no 'STARTED' servers within the group before start-servers was called.</li>
+					<li>The procedure will be completed with warning if all servers within server group are 'STARTED' and there were some 'STARTED' servers within the group before start-servers was called.</li>
+					<li>The procedure will be completed with error if timeout for recurring check of servers is reached and not all servers are 'STARTED'.</li>
+				</ol>
+				List of all possible values of cli server statuses is the following (according to some WildFly open source code):
+				<ol>
+                    <li>STARTED - The server is started</li>
+					<li>STOPPED - The server is stopped and configured to start automatically</li>
+					<li>DISABLED - The server is stopped and configured not to start automatically</li>
+					<li>STARTING - The server is starting</li>
+					<li>STOPPING - The server is stopping</li>
+					<li>FAILED - The server failed to start</li>
+					<li>UNKNOWN - The status of the server is currently unknown. This is the status of any server whose host controller is currently unreachable</li>
+					<li>DOES_NOT_EXIST - Status indicating the host controller does not recognize the server name</li>
+				</ol>
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the StartServers procedure.</li>
@@ -795,36 +815,53 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>
+										Required parameter.
+										<br/>
+										A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+										To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+									</td>
                                 </tr>
                                 <tr>
                                     <td>Physical location of the jboss client script</td>
-                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
+                                    <td>
+										Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.
+										If omitted, script location from configuration will be used.
+									</td>
                                 </tr>
                                 <tr>
                                     <td class="required">Server group</td>
-                                    <td>The name of the server group to start.</td>
+                                    <td>
+										Required parameter.
+										<br/>
+										The name of the server group to start. The following cli command will be called: e.g. if 'some-group-name' is specified then '/server-group=some-group-name:start-servers' is called.
+										</td>
                                 </tr>
                                 <tr>
-                                    <td>Wait time</td>
-                                    <td>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
+                                    <td>Timeout for recurring check of servers (seconds)</td>
+                                    <td>
+										After start-servers command for the server group is called the procedure starts performing recurring check of servers if they are started ('status' attribute is 'STARTED', see procedure description).
+										Delay between each check is 5 seconds (hard coded value). Check will be performed only one time if the timeout is not specified or it is less than 5 seconds. Default is 300 seconds.
+										<ol>
+											<li>The procedure will be completed with success if all servers within server group are 'STARTED' and there were no 'STARTED' servers within the group before start-servers was called.</li>
+											<li>The procedure will be completed with warning if all servers within server group are 'STARTED' and there were some 'STARTED' servers within the group before start-servers was called.</li>
+											<li>The procedure will be completed with error if timeout is reached and not all servers are 'STARTED'.</li>
+										</ol>
+									</td>
                                 </tr>
                             </tbody>
                         </table>
                     </li>
                     <br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers2.png" />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServersForm1.PNG" />
                     <br />
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results in the Job Details page. In the <b>StartServers</b> step, click the Log icon to see the diagnostic information.</p>
+                <p>After the job runs, you can view the results in the Job Details page. In the <b>StartServers</b> step, click the Log icon to see the diagnostic information. For example</p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers3.png" />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServersStatus1.PNG" />
                 <br />
-                <p>In the <b>StartServers</b> step, click the Log icon to see the diagnostic information. The output is
-                    similar to the following diagnostic report:</p>
-                <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServers4.png" />
+				<img src="../../plugins/@PLUGIN_NAME@/images/StartServers/ECJBossStartServersStatus2.PNG" />
                 <br />
             </div>
             <div id="StartStandaloneServer"> <a name="StartStandaloneServer" id="StartStandaloneServer"></a>
@@ -874,7 +911,27 @@
             </div>
             <div id="StopServers"> <a name='StopServers' id="StopServers"></a>
                 <h2>StopServers</h2>
-                <p>The StopServers procedure stops the servers in the specified server groups.</p>
+				The StopServers procedure stops the servers in the specified server group and checks if these servers are stopped successfully.
+				<br/><br/>
+				This procedure is build around jboss-cli command 'stop-servers' for the server groups, e.g. '/server-group=some-group-name:stop-servers'.
+				Check of servers statuses is done also with help of cli - basically the procedure checks 'status' attributes of needed servers on needed hosts (within specified server group), e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'.
+				Expected value for stopped servers is 'STOPPED' or 'DISABLED' (similar statuses which indicate that servers are stopped, the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).
+				<ol>
+					<li>The procedure will be completed with success if all servers within server group are 'STOPPED' or 'DISABLED' and there were no 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.</li>
+					<li>The procedure will be completed with warning if all servers within server group are 'STOPPED' or 'DISABLED' and there were some 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.</li>
+					<li>The procedure will be completed with error if timeout for recurring check of servers is reached and not all servers are 'STOPPED' or 'DISABLED'.</li>
+				</ol>
+				List of all possible values of cli server statuses is the following (according to some WildFly open source code):
+				<ol>
+                    <li>STARTED - The server is started</li>
+					<li>STOPPED - The server is stopped and configured to start automatically</li>
+					<li>DISABLED - The server is stopped and configured not to start automatically</li>
+					<li>STARTING - The server is starting</li>
+					<li>STOPPING - The server is stopping</li>
+					<li>FAILED - The server failed to start</li>
+					<li>UNKNOWN - The status of the server is currently unknown. This is the status of any server whose host controller is currently unreachable</li>
+					<li>DOES_NOT_EXIST - Status indicating the host controller does not recognize the server name</li>
+				</ol>
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the StopServers procedure.</li>
@@ -889,34 +946,49 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>
+										A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+										To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+									</td>
                                 </tr>
                                 <tr>
                                     <td>Physical location of the jboss client script</td>
-                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
+                                    <td>
+										Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'.
+										If omitted, script location from configuration will be used.
+									</td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Servers group</td>
-                                    <td>The name of the server group to stop.</td>
+                                    <td>
+										Required parameter.
+										<br/>
+										The name of the server group to stop. The following cli command will be called: e.g. if 'some-group-name' is specified then '/server-group=some-group-name:stop-servers' is called.
+									</td>
                                 </tr>
                                 <tr>
-                                    <td>Wait time</td>
-                                    <td>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
+                                    <td>Timeout for recurring check of servers (seconds)</td>
+                                    <td>
+										After stop-servers command for the server group is called the procedure starts performing recurring check of servers if they are started ('status' attribute is 'STOPPED' or 'DISABLED', see procedure description).
+										Delay between each check is 5 seconds (hard coded value). Check will be performed only one time if the timeout is not specified or it is less than 5 seconds. Default is 300 seconds.
+										<ol>
+											<li>The procedure will be completed with success if all servers within server group are 'STOPPED' or 'DISABLED' and there were no 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.</li>
+											<li>The procedure will be completed with warning if all servers within server group are 'STOPPED' or 'DISABLED' and there were some 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.</li>
+											<li>The procedure will be completed with error if timeout for recurring check of servers is reached and not all servers are 'STOPPED' or 'DISABLED'.</li>
+										</ol>
+									</td>
                                 </tr>
                             </tbody>
                         </table>
                     </li>
-                    <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServers2.png" />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServersForm1.PNG" />
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results in the Job Details page. In the <b>StopServers</b> step, click the Log icon to see the diagnostic information.</p>
+                <p>After the job runs, you can view the results in the Job Details page. In the <b>StopServers</b> step, click the Log icon to see the diagnostic information. For example:</p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServers3.png" />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServersStatus1.PNG" />
                 <br />
-                <p>In the <b>StopServers</b> step, click the Log icon to see the diagnostic information. The output is
-                    similar to the following diagnostic report:</p>
-                <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServers4.png" />
+				<img src="../../plugins/@PLUGIN_NAME@/images/StopServers/ECJBossStopServersStatus2.PNG" />
                 <br />
             </div>
             <div id="UndeployApp"> <a name='UndeployApp' id="UndeployApp"></a>
