@@ -542,6 +542,8 @@ sub convert_response_to_json {
     $response =~ s/(\s=>\s)(\d+L)(,?)$/$1"$2"$3/gms;
     # converts jboss DMR bytes value to some string e.g. ["hash" => bytes { 0x80, ... 0xb7 }] => ["hash" => "SKIPPED BY PLUGIN"]
     $response =~ s/("hash"\s=>\s)(bytes\s\{.*?\})(,?)/$1"SKIPPED BY PLUGIN"$3/gs;
+    #todo: roll back this change
+    $response =~ s/("owner")(\s=>\s)/"_owner"$2/gs;
     # converts jboss DMR key/value delimiter into json style: ["someKey" => "someValue"] changed into ["someKey":"someValue"]
     $response =~ s/\s=>\s/:/gs;
     $response =~ s/undefined/null/gs;
