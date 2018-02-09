@@ -29,9 +29,21 @@ sub main {
         plugin_key      =>  $PLUGIN_KEY,
     );
 
-    my $params = $jboss->get_params_as_hashref('customCommand', 'serverconfig', 'scriptphysicalpath');
+    my $params = $jboss->get_params_as_hashref('customCommand', 'serverconfig', 'scriptphysicalpath', 'propertyName', 'dumpFormat');
     $jboss->out("Custom command: $params->{customCommand}");
     my %result = $jboss->run_command($params->{customCommand});
+
+    if ($params->{propertyName}) {
+        my $stdout = $result{stdout};
+        my $json = $jboss->decode_answer($stdout);
+
+        $jboss->save_retrieved_data(
+            data => $json,
+            property => $params->{propertyName},
+            format => $params->{dumpFormat},
+            raw => $stdout,
+        );
+    }
 
     $jboss->out("Command result:\n", $result{stdout});
     $jboss->process_response(%result);
