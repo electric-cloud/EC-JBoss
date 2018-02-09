@@ -110,7 +110,7 @@ class CliCommandsGeneratorHelper {
         if (!serverGroups) {
             throw new Exception("serverGroups should be non empty array")
         }
-        String serverGroupsStr = Arrays.toString(serverGroups).replaceAll(", ", ",");
+        String serverGroupsStr = Arrays.toString(serverGroups).replaceAll(", ", ",").replaceAll("[\\[\\]]", "");
         String command = "deploy $pathToSourceFile" + (name.isEmpty() ? "" : " --name=$name") + (runtimeName.isEmpty() ? "" : " --runtime-name=$runtimeName") + " --server-groups=$serverGroupsStr"
         return command
     }
