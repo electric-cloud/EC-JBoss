@@ -516,7 +516,6 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
     }
 
-
     @Unroll
     def "Negative. StartServers, incorrect param, undef required param, server group (C259524)"() {
         setup:
@@ -538,7 +537,36 @@ class StartServers extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Server group parameter is mandatory"
     }
 
+    @Unroll
+    def "Negative. Controller is not available (C278096)"() { //shutdown host. After test need start server
+        setup:
+        String testCaseId = "C278096"
+
+        String serverGroupName = "server-group-$testCaseId"
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        shutdownHost(hostName)
+
+        when:
+        def runParams = [
+                serverconfig      : defaultConfigName,
+                scriptphysicalpath: defaultCliPath,
+                serversgroup      : serverGroupName,
+                wait_time         : defaultWaitTime
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == 'error'
+        assert runProcedureJob.getUpperStepSummary() =~ "Failed to connect to the controller"
+    }
+
+
+
     /*
     todo: test common cases (config/pathToCli/wrongCreds)
      */
+
+    void shutdownHost(String hostName) {
+        runCliCommand(CliCommandsGeneratorHelper.shutdownHostDomain(hostName))
+    }
 }

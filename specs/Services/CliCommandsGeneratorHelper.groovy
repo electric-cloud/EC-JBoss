@@ -119,4 +119,9 @@ class CliCommandsGeneratorHelper {
         String command = "/server-group=$serverGroup/:read-resource(recursive=false)"
         return command
     }
+
+    static String shutdownHostDomain(String hostName) {
+        String command = "/host=$hostName:shutdown"
+        return command
+    }
 }
