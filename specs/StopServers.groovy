@@ -96,8 +96,10 @@ class StopServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
     }
 
+    //todo: docker env with different hosts
     @Unroll
-    def "StopServers, group with all servers started on a different hosts (C277751)"() {    //shutdown host. After test need start server
+    @IgnoreIf({ env.JBOSS_MODE == 'domain' })
+    def "StopServers, group with all servers started on a different hosts (C277751)"() {
         setup:
         String testCaseId = "C277751"
 
@@ -562,7 +564,7 @@ class StopServers extends PluginTestHelper {
     }
 
     @Unroll
-    def "Negative. Controller is not available (C278097)"() {
+    def "Negative. Controller is not available (C278097)"() {   //shutdown host. After test need start server
         setup:
         String testCaseId = "C278097"
 

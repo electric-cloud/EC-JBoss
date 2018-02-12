@@ -240,7 +240,9 @@ class StartServers extends PluginTestHelper {
            runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
        }
 
+    //todo: docker env with different hosts
     @Unroll
+    @IgnoreIf({ env.JBOSS_MODE == 'domain' })
     def "StartServers, group with all servers stopped on different hosts (C277750)"() {
         setup:
         String testCaseId = "C277750"
