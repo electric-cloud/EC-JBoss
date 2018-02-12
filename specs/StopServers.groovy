@@ -97,6 +97,55 @@ class StopServers extends PluginTestHelper {
     }
 
     @Unroll
+    def "StopServers, group with all servers started on a different hosts (C277751)"() {    //shutdown host. After test need start server
+        setup:
+        String testCaseId = "C277751"
+
+        String serverGroupName = "server-group-$testCaseId"
+        String serverName1 = "server-1-$testCaseId"
+        String serverName2 = "server-2-$testCaseId"
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName2 = EnvPropertiesHelper.getJbossDomainSlaveHostname();
+
+        ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
+        ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
+        ServerHelper server2 = new ServerHelper(serverName2, serverGroupName, hostName2)
+
+        runCliCommand(CliCommandsGeneratorHelper.addServerGroupCmd(serverGroup))
+        runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server2))
+        runCliCommand(CliCommandsGeneratorHelper.startServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.startServerCmd(server2))
+
+        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
+        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).result == "STARTED"
+
+        when:
+        def runParams = [
+                serverconfig      : defaultConfigName,
+                scriptphysicalpath: defaultCliPath,
+                serversgroup      : serverGroupName,
+                wait_time         : defaultWaitTime
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == 'success'
+        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 in state STARTED.*Found server $serverName1 in state STOPPED/
+        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName2 in state STARTED.*Found server $serverName2 in state STOPPED/
+        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STOPPED"
+        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).result == "STOPPED"
+
+        cleanup:
+        runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server2))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerCmd(server2))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
+    }
+
+
+    @Unroll
     def "StopServers, group with all servers started (different auto-start options on each - check DISABLED status) (C259542)"() {
         setup:
         String testCaseId = "C259542"
@@ -443,7 +492,47 @@ class StopServers extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == 'error'
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
-        //todo: check runProcedureJob.getUpperStepSummary()
+        assert  runProcedureJob.getUpperStepSummary() =~ "Wait time expected to be positive integer \\(wait time in seconds\\), 0 \\(unlimited\\) or undefined \\(one time check\\)"
+
+        cleanup:
+        runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
+    }
+
+    @Unroll
+    def "Negative. StopServers, incorrect param, wait time - decimal value (C277844)"() {
+        setup:
+        String testCaseId = "C277844"
+
+        String serverGroupName = "server-group-$testCaseId"
+        String serverName1 = "server-1-$testCaseId"
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+
+        ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
+        ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
+
+        runCliCommand(CliCommandsGeneratorHelper.addServerGroupCmd(serverGroup))
+        runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.startServerCmd(server1))
+
+        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
+
+        String waitTime = '0.1'
+
+        when:
+        def runParams = [
+                serverconfig      : defaultConfigName,
+                scriptphysicalpath: defaultCliPath,
+                serversgroup      : serverGroupName,
+                wait_time         : waitTime
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == 'error'
+        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
+        assert  runProcedureJob.getUpperStepSummary() =~ "Wait time expected to be positive integer \\(wait time in seconds\\), 0 \\(unlimited\\) or undefined \\(one time check\\)"
 
         cleanup:
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
@@ -469,7 +558,34 @@ class StopServers extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == 'error'
-        //todo: check runProcedureJob.getUpperStepSummary()
+        assert runProcedureJob.getUpperStepSummary() =~ "Server group parameter is mandatory"
+    }
+
+    @Unroll
+    def "Negative. Controller is not available (C278097)"() {
+        setup:
+        String testCaseId = "C278097"
+
+        String serverGroupName = "server-group-$testCaseId"
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        shutdownHost(hostName)
+
+        when:
+        def runParams = [
+                serverconfig      : defaultConfigName,
+                scriptphysicalpath: defaultCliPath,
+                serversgroup      : serverGroupName,
+                wait_time         : defaultWaitTime
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == 'error'
+        assert runProcedureJob.getUpperStepSummary() =~ "Failed to connect to the controller"
+    }
+
+    void shutdownHost(String hostName) {
+        runCliCommand(CliCommandsGeneratorHelper.shutdownHostDomain(hostName))
     }
 
     /*
