@@ -36,7 +36,7 @@ class DeployAppDomain extends PluginTestHelper {
     ServerGroupHelper serverGroup2Model
 
     @Shared
-    String hostNameMaster = EnvPropertiesHelper.getJbossDomainMasterHostname();
+    String hostNameMaster = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
 
     def doSetupSpec() {
@@ -100,13 +100,14 @@ class DeployAppDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}"
-
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
         String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}"
+
         String[] expectedServerGroupsWithApp = [serverGroup1]
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
         checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
@@ -138,13 +139,14 @@ class DeployAppDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}"
-
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
         String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}"
+
         String[] expectedServerGroupsWithApp = [serverGroup1, serverGroup2]
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
         checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
@@ -176,13 +178,14 @@ class DeployAppDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--all-server-groups"
-
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
         String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--all-server-groups"
+
         String[] expectedServerGroupsWithApp = [serverGroup1, serverGroup2]
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
         checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
@@ -192,8 +195,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, custom app name (xxx123123123)"() {
-        String testCaseId = "xxx123123123"
+    def "DeployApp, 1st time, custom app name (C277888)"() {
+        String testCaseId = "C277888"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -215,7 +218,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}"
 
         String expectedAppName = "$testCaseId-app-custom-appname.war"
@@ -230,8 +233,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, custom runtime name (sklfklsnfd)"() {
-        String testCaseId = "sklfklsnfd"
+    def "DeployApp, 1st time, custom runtime name (C277889)"() {
+        String testCaseId = "C277889"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -252,13 +255,14 @@ class DeployAppDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--runtime-name=.*${runParams.runtimename}"
-
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app-custom-runtimename.war"
         String expectedContextRoot = "$testCaseId-app-custom-runtimename"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--runtime-name=.*${runParams.runtimename}"
+
         String[] expectedServerGroupsWithApp = [serverGroup1, serverGroup2]
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
         checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
@@ -268,8 +272,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, custom app name, custom runtime name (kwejfiojscd)"() {
-        String testCaseId = "kwejfiojscd"
+    def "DeployApp, 1st time, custom app name, custom runtime name (C111895)"() {
+        String testCaseId = "C111895"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -291,7 +295,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
 
         String expectedAppName = "$testCaseId-app-custom-appname.war"
@@ -306,8 +310,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, custom app name without extension, custom runtime name (sdfnsdfnsdf)"() {
-        String testCaseId = "sdfnsdfnsdf"
+    def "DeployApp, 1st time, custom app name without extension, custom runtime name (C277892)"() {
+        String testCaseId = "C277892"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -329,7 +333,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
 
         String expectedAppName = "$testCaseId-app-custom-appname"
@@ -344,8 +348,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, both server groups and all server groups are specified (nfjsdnf)"() {
-        String testCaseId = "nfjsdnf"
+    def "DeployApp, 1st time, both server groups and all server groups are specified (C277930)"() {
+        String testCaseId = "C277930"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -367,7 +371,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--all-server-groups"
 
         String expectedAppName = "$testCaseId-app.war"
@@ -382,8 +386,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "Negative. DeployApp, 1st time, duplicated server groups (sdfnsdfnss)"() {
-        String testCaseId = "sdfnsdfnss"
+    def "Negative. DeployApp, 1st time, duplicated server groups (C258992)"() {
+        String testCaseId = "C258992"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -409,8 +413,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "Negative. DeployApp, non existing server group (sdfsdfsdfdssdf)"() {
-        String testCaseId = "sdfsdfsdfdssdf"
+    def "Negative. DeployApp, non existing server group (C258987)"() {
+        String testCaseId = "C258987"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -436,8 +440,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, app already deployed, force flag (sdfsdfdddss)"() {
-        String testCaseId = "sdfsdfdddss"
+    def "DeployApp, app already deployed, force flag (C277905)"() {
+        String testCaseId = "C277905"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -455,7 +459,7 @@ class DeployAppDomain extends PluginTestHelper {
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String oldRuntimeName = "$testCaseId-app-runtimename.war"
         String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
         deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
 
@@ -464,7 +468,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
 
         // let's check that app was upgraded and runtime name was changed
@@ -478,8 +482,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, app already deployed, server groups ignored (sdjfnjsdnfnna)"() {
-        String testCaseId = "sdjfnjsdnfnna"
+    def "DeployApp, app already deployed, force flag, server groups ignored, change runtime-name (C277890)"() {
+        String testCaseId = "C277890"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -497,7 +501,7 @@ class DeployAppDomain extends PluginTestHelper {
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String oldRuntimeName = "$testCaseId-app-runtimename.war"
         String[] oldServerGroupsWithApp = [serverGroup2]
         deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
 
@@ -506,7 +510,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
 
         // let's check that app was upgraded and runtime name was changed
@@ -523,8 +527,8 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
-    def "DeployApp, 1st time, force flag, all server groups ignored - just upload (snwejjejjejj)"() {
-        String testCaseId = "snwejjejjejj"
+    def "DeployApp, 1st time, force flag, all server groups ignored - just upload (C277906)"() {
+        String testCaseId = "C277906"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -545,12 +549,13 @@ class DeployAppDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
-
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
+
         checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
 
         // let's verify that assignallservergroups was ignored
@@ -561,8 +566,52 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
-    def "Negative. DeployApp, app already deployed, no force flag (kkk)"() {
-        String testCaseId = "kkk"
+    def "DeployApp, app already deployed, force flag, all server groups ignored (C84613)"() {
+        String testCaseId = "C84613"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "$testCaseId-app-new-runtimename.war",
+                force                : "1", // when force is set
+                assignservergroups   : "",
+                assignallservergroups: "1", // this param to be ignored
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        String existingAppName = "$testCaseId-app.war"
+        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String[] oldServerGroupsWithApp = [serverGroup2]
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app-new-runtimename.war"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
+
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+
+        // let's verify that assignallservergroups was ignored
+        String[] expectedServerGroupsWithoutApp = [serverGroup1]
+        checkAppNotDeployedToServerGroups(expectedAppName, expectedServerGroupsWithoutApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    def "Negative. DeployApp, app already deployed, no force flag (C111812)"() {
+        String testCaseId = "C111812"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -605,9 +654,63 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    def "Negative. DeployApp with no specified server groups and with no apply to all server group options (C259002)"() {
+        String testCaseId = "C259002"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app.war",
+                force                : "0",
+                assignservergroups   : "",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "One of --disabled, --all-server-groups or --server-groups is missing."
+    }
+
+    def "Negative. DeployApp with specified file without extension (C259004)"() {
+        String testCaseId = "C259004"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "/tmp/$testCaseId-app",
+                appname              : "",
+                runtimename          : "",
+                force                : "0",
+                assignservergroups   : "",
+                assignallservergroups: "1",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "File: \\(${runParams.warphysicalpath}\\ doesn't exists"
+    }
+
     @Unroll
-    def "DeployApp, 1st time, whitespace in path (lldlld)"() {
-        String testCaseId = "lldlld"
+    def "DeployApp, 1st time, whitespace in path (C277891)"() {
+        String testCaseId = "C277891"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -616,8 +719,8 @@ class DeployAppDomain extends PluginTestHelper {
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "",
-                assignservergroups   : "$serverGroup1",
-                assignallservergroups: "0",
+                assignservergroups   : "",
+                assignallservergroups: "1",
                 additional_options   : ""
         ]
 
@@ -629,13 +732,13 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*"
 
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
         String expectedContextRoot = "$testCaseId-app"
-        String[] expectedServerGroupsWithApp = [serverGroup1]
+        String[] expectedServerGroupsWithApp = [serverGroup1,serverGroup2]
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
         checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
 
@@ -644,8 +747,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "Negative. DeployApp, incorrect param, undef required param, path to app (sdfnsdfnss)"() {
-        String testCaseId = "sdfnsdfnss"
+    def "Negative. DeployApp, incorrect param, undef required param, path to app (C277934)"() {
+        String testCaseId = "C277934"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -664,12 +767,12 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        //todo: check runProcedureJob.getUpperStepSummary()
+        assert runProcedureJob.getUpperStepSummary() =~ "File '' doesn't exists"
     }
 
     @Unroll
-    def "Negative. DeployApp, non existing filepath (sdfnsdfnss)"() {
-        String testCaseId = "sdfnsdfnss"
+    def "Negative. DeployApp, non existing filepath (C84591)"() {
+        String testCaseId = "C84591"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -688,12 +791,12 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        //todo: check runProcedureJob.getUpperStepSummary()
+        assert runProcedureJob.getUpperStepSummary() =~ "File '/tmp/non-existing-file.war' doesn't exists"
     }
 
     @Unroll
-    def "DeployApp, 1st time, 1 server group in additional options (asss)"() {
-        String testCaseId = "asss"
+    def "DeployApp, 1st time, 1 server group in additional options (C277931)"() {
+        String testCaseId = "C277931"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -714,13 +817,14 @@ class DeployAppDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*${runParams.additional_options}"
-
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
         String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*${runParams.additional_options}"
+
         String[] expectedServerGroupsWithApp = [serverGroup1]
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
         checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
@@ -730,8 +834,8 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, 1st time, disabled flag in additional options (aaaaaa)"() {
-        String testCaseId = "aaaaaa"
+    def "DeployApp, 1st time, disabled flag in additional options (C277893)"() {
+        String testCaseId = "C277893"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -752,21 +856,25 @@ class DeployAppDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*${runParams.additional_options}"
-
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*${runParams.additional_options}"
+
         checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+
+        String[] expectedServerGroupsWithoutApp = [serverGroup1, serverGroup2]
+        checkAppNotDeployedToServerGroups(expectedAppName, expectedServerGroupsWithoutApp)
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
     @Unroll
-    def "DeployApp, app already deployed, force flag in additional options (sdfsdfdddss)"() {
-        String testCaseId = "sdfsdfdddss"
+    def "DeployApp, app already deployed, force flag in additional options (C277932)"() {
+        String testCaseId = "C277932"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -793,7 +901,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application ${runParams.appname} \\(${runParams.warphysicalpath}\\) has been successfully deployed."
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*${runParams.additional_options}"
 
         // let's check that app was upgraded and runtime name was changed
@@ -806,9 +914,10 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+
     @Unroll
-    def "Negative. DeployApp, additional options conflicts with defined params (sdfsdfsdfdssdf)"() {
-        String testCaseId = "sdfsdfsdfdssdf"
+    def "Negative. DeployApp, additional options conflicts with defined params (C277933)"() {
+        String testCaseId = "C277933"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -830,12 +939,12 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        //todo: runProcedureJob.getUpperStepSummary()
+        assert runProcedureJob.getUpperStepSummary() =~ "--server-groups can't appear in the same command with --all-server-groups"
     }
 
     @Unroll
-    def "Negative. DeployApp, wrong additional options (sdfsdfsdfdssdf)"() {
-        String testCaseId = "sdfsdfsdfdssdf"
+    def "Negative. DeployApp, wrong additional options (C259006)"() {
+        String testCaseId = "C259006"
 
         def runParams = [
                 serverconfig         : defaultConfigName,
@@ -857,16 +966,160 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        //todo: runProcedureJob.getUpperStepSummary()
+        assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized arguments: [--some-wrong-param]"
+    }
+
+    @Unroll
+    def "DeployApp, 1st time, application content source path --url(C278052)"() {
+        String testCaseId = "C278052"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "--url=$linkToSampleWarFile",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app.war",
+                force                : "",
+                assignservergroups   : "$serverGroup1",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
+        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'"
+
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+
+        String[] expectedServerGroupsWithApp = [serverGroup1]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "DeployApp, app already deployed, force flag, application content source path --url(C278053)"() {
+        String testCaseId = "C278053"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "--url=$linkToSampleWarFile",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app-new-runtimename.war",
+                force                : "1",
+                assignservergroups   : "$serverGroup2",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+        setup:
+        String existingAppName = "$testCaseId-app.war"
+        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String oldContextRoot = "$testCaseId-app-old-runtimename"
+        String[] oldServerGroupsWithApp = [serverGroup1]
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
+        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'"
+
+        // let's check that app was upgraded and runtime name was changed
+        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
+        String newContextRoot = "$testCaseId-app-new-runtimename"
+        checkAppDeployedToServerGroupsCli(existingAppName, newRuntimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(newContextRoot, oldServerGroupsWithApp)
+
+        // let's verify that assignservergroups was ignored
+        String[] expectedServerGroupsWithoutApp = [serverGroup2]
+        checkAppNotDeployedToServerGroups(existingAppName, expectedServerGroupsWithoutApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "DeployApp, app already deployed, force flag (in additional options), application content source path --url (C278054)"() {
+        String testCaseId = "C278054"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "--url=$linkToSampleWarFile",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app-new-runtimename.war",
+                force                : "",
+                assignservergroups   : "",
+                assignallservergroups: "1",
+                additional_options   : "--force"
+        ]
+        setup:
+        String existingAppName = "$testCaseId-app.war"
+        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String oldContextRoot = "$testCaseId-app-old-runtimename"
+        String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
+        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'"
+
+        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
+        String newContextRoot = "$testCaseId-app-new-runtimename"
+        checkAppDeployedToServerGroupsCli(existingAppName, newRuntimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(newContextRoot, oldServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "Negative. DeployApp, 1st time, application content source path --url incorrect value (C278055)"() {
+        String testCaseId = "C278055"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : "--url=https://github.com/electric-cloud/incorrect-path/hello-world.war",
+                appname              : "$testCaseId-app.war",
+                runtimename          : "$testCaseId-app.war",
+                force                : "",
+                assignservergroups   : "1",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Cannot create input stream from URL 'https://github.com/electric-cloud/incorrect-path/hello-world.war'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}"
+
     }
 
     /*
     todo: test common cases (config/pathToCli/wrongCreds)
     todo: test deploy of txt files instead of jars
-    todo: test incorrect runtimeName/appName/serverGroup values, e.g. too long or spec chars
      */
 
-    void checkAppDeployedToServerGroupsCli(String appName, String runtimeName, def serverGroups) {
+    void checkAppDeployedToServerGroupsCli(String appName, String runtimeName, def serverGroups) { //not working for JBoss 6.4
         for (String serverGroup : serverGroups) {
             checkAppDeployedToServerGroupCli(appName, runtimeName, serverGroup)
         }
@@ -911,10 +1164,10 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     Set<String> getExpectedRootUrls(def serverGroupsWithApp) {
-        Set<String> expectedRootUrls = new HashSet<String>();
+        Set<String> expectedRootUrls = new HashSet<String>()
         for (String serverGroup : serverGroupsWithApp) {
             for (ServerHelper server : getServerGroupModel(serverGroup).getServers()) {
-                String hostname = "jboss"; // todo: change to EnvPropertiesHelper.getResourceHostname()
+                String hostname = EnvPropertiesHelper.getResourceHostname()
                 String port = 8080 + server.getSocketBindingPortOffset()
                 String expectedRootUrl = "http://$hostname:$port"
                 expectedRootUrls.add(expectedRootUrl)

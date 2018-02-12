@@ -238,6 +238,24 @@ class PluginTestHelper extends PluginSpockTestSupport {
         return jobStatus(res.jobId).outcome == 'success'
     }
 
+    boolean isNotUrlAvailable(String url) {
+        def res = dsl """
+            runProcedure(
+                projectName: '$helperProjName',
+                procedureName: '$helperProcedureCheckUrl',
+                actualParameter: [
+                    url: '$url'
+                ]
+            )
+        """
+        assert res.jobId
+        waitUntil {
+            jobCompleted res
+        }
+
+        return jobStatus(res.jobId).outcome == 'error'
+    }
+
     class RunProcedureJob {
         private String jobId
         private String projectName
