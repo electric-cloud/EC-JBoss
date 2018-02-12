@@ -5,7 +5,7 @@ import Utils.EnvPropertiesHelper
 import spock.lang.*
 
 @IgnoreIf({ env.JBOSS_MODE == 'standalone' })
-class DeployAppDomain extends PluginTestHelper {
+class OLD_DeployAppDomain extends PluginTestHelper {
 
     @Shared
     String procName = 'DeployApp'
