@@ -13,7 +13,10 @@ Copyright (c) 2014 Electric Cloud, Inc.
 =cut
 
 $[/myProject/procedure_helpers/preamble]
+
+use EC::JBoss;
 use Data::Dumper;
+
 my $PROJECT_NAME = '$[/myProject/projectName]';
 my $DESIRED_STATUS = 'STARTED';
 my $SLEEP_TIME = 5;

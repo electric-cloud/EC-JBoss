@@ -13,6 +13,8 @@ Copyright (c) 2014 Electric Cloud, Inc.
 =cut
 $[/myProject/procedure_helpers/preamble]
 
+use EC::JBoss;
+
 my $PROJECT_NAME = '$[/myProject/projectName]';
 my $STATUS_STOPPED = 'STOPPED'; # stopped status for servers with auto-start true
 my $STATUS_DISABLED = 'DISABLED'; # stopped status for servers with auto-start false

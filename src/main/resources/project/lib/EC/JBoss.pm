@@ -19,13 +19,14 @@ use subs qw/is_win is_positive_int/;
 use Carp;
 use JSON;
 
-use ElectricCommander;
 use ElectricCommander::PropDB;
 use ElectricCommander::PropMod;
 use Data::Dumper;
 use IPC::Open3;
 use Symbol qw/gensym/;
 use IO::Select;
+
+use EC::Utils::CommanderUtils qw( get_commander );
 
 our $VERSION = 0.02;
 
@@ -420,13 +421,16 @@ sub ec {
     my ($self) = @_;
 
     if (!$self->{_ec}) {
-        $self->{_ec} = ElectricCommander->new();
+        $self->{_ec} = get_commander();
     }
     return $self->{_ec};
 }
 
 
 =item B<get_param>
+
+OBSOLETE: recommendation to use get_param_value from EC::Utils::CommanderUtils.
+Justification: it is more utility function than method of EC::JBoss class (single purpose of EC::JBoss is not defined).
 
 Returns request params from step configuration.
 
@@ -453,6 +457,9 @@ sub get_param {
 
 
 =item B<get_params_as_hashref>
+
+OBSOLETE: recommendation to use get_params_hashref from EC::Utils::CommanderUtils.
+Justification: it is more utility function than method of EC::JBoss class (single purpose of EC::JBoss is not defined).
 
 Returns request params as hashref by list of param names.
 
@@ -554,6 +561,7 @@ So, when we able to use _syscall, we'll use _syscall. If not, we will use _sysca
 
 =cut
 
+#todo: move this fucntion to Utilities (no need to have such method, $self is used only for logging)
 sub _syscall_win32 {
     my ($self, @command) = @_;
 
@@ -632,6 +640,7 @@ stdout and stderr is a output of standard streams.
 
 =cut
 
+#todo: move this fucntion to Utilities (no need to have such method, $self is not used)
 sub _syscall {
     my ($self, @command) = @_;
 

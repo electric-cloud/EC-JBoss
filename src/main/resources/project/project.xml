@@ -17,6 +17,42 @@
                         <value/>
                     </property>
                     <property>
+                        <propertyName>EC::Models::RunCommandResult</propertyName>
+                        <description/>
+                        <expandable>0</expandable>
+                        <value/>
+                    </property>
+                    <property>
+                        <propertyName>EC::Utils::JBossUtils</propertyName>
+                        <description/>
+                        <expandable>0</expandable>
+                        <value/>
+                    </property>
+                    <property>
+                        <propertyName>EC::Utils::CommanderUtils</propertyName>
+                        <description/>
+                        <expandable>0</expandable>
+                        <value/>
+                    </property>
+                    <property>
+                        <propertyName>EC::Procedures::Constants::ProcedureParameters</propertyName>
+                        <description/>
+                        <expandable>0</expandable>
+                        <value/>
+                    </property>
+                    <property>
+                        <propertyName>EC::Procedures::DAO::DeployAppFromPropertiesDAO</propertyName>
+                        <description/>
+                        <expandable>0</expandable>
+                        <value/>
+                    </property>
+                    <property>
+                        <propertyName>EC::Procedures::Models::DeployAppProcedure</propertyName>
+                        <description/>
+                        <expandable>0</expandable>
+                        <value/>
+                    </property>
+                    <property>
                         <propertyName>File::Path</propertyName>
                         <description>Newest File::Path.</description>
                         <expandable>0</expandable>
@@ -729,24 +765,9 @@
                                     <propertyName>force</propertyName>
                                     <propertySheet>
                                         <property>
-                                            <propertyName>checkedValue</propertyName>
-                                            <expandable>1</expandable>
-                                            <value>1</value>
-                                        </property>
-                                        <property>
                                             <propertyName>formType</propertyName>
                                             <expandable>1</expandable>
                                             <value>standard</value>
-                                        </property>
-                                        <property>
-                                            <propertyName>initiallyChecked</propertyName>
-                                            <expandable>1</expandable>
-                                            <value>0</value>
-                                        </property>
-                                        <property>
-                                            <propertyName>uncheckedValue</propertyName>
-                                            <expandable>1</expandable>
-                                            <value>0</value>
                                         </property>
                                     </propertySheet>
                                 </property>

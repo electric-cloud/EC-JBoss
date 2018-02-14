@@ -16,6 +16,8 @@ $[/myProject/procedure_helpers/preamble]
 
 use warnings;
 use strict;
+
+use EC::JBoss;
 use Data::Dumper;
 
 my $PROJECT_NAME = '$[/myProject/projectName]';

@@ -55,13 +55,24 @@
         <documentation>For Domain only (will be ignored in case of Standalone). Stands for '--server-groups' parameter for jboss-cli 'deploy' command. NOTE: this parameter will be ignored if 'Apply to all servers' or 'Force deployment' is chosen. Provide comma separated list of server group names the deploy command should apply to.</documentation>
     </formElement>
     <formElement>
-        <type>checkbox</type>
-        <label>Force deployment:</label>
+        <type>select</type>
+        <label>Action Type:</label>
         <property>force</property>
-        <checkedValue>1</checkedValue>
-        <uncheckedValue>0</uncheckedValue>
-        <initiallyChecked>0</initiallyChecked>
-        <documentation>Stands for '--force' parameter for jboss-cli 'deploy' command. NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored. Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Source with application for deploy' parameter. If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.</documentation>
+        <required>1</required>
+        <documentation>Action type - todo description</documentation>
+        <option>
+            <name>Blank</name>
+            <value>0</value>
+        </option>
+        <option>
+            <name>Upgrade Repo only (Force)</name>
+            <value>1</value>
+        </option>
+        <option>
+            <name>Upgrade Repo and Deploy</name>
+            <value>2</value>
+        </option>
+        <value>2</value>
     </formElement>
     <formElement>
         <type>entry</type>

@@ -5,6 +5,30 @@
         <xpath>//property[propertyName=&quot;EC::JBoss&quot;]/value</xpath>
     </file>
     <file>
+        <path>lib/EC/Models/RunCommandResult.pm</path>
+        <xpath>//property[propertyName=&quot;EC::Models::RunCommandResult&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>lib/EC/Utils/JBossUtils.pm</path>
+        <xpath>//property[propertyName=&quot;EC::Utils::JBossUtils&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>lib/EC/Utils/CommanderUtils.pm</path>
+        <xpath>//property[propertyName=&quot;EC::Utils::CommanderUtils&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>lib/EC/Procedures/Constants/ProcedureParameters.pm</path>
+        <xpath>//property[propertyName=&quot;EC::Procedures::Constants::ProcedureParameters&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>lib/EC/Procedures/DAO/DeployAppFromPropertiesDAO.pm</path>
+        <xpath>//property[propertyName=&quot;EC::Procedures::DAO::DeployAppFromPropertiesDAO&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>lib/EC/Procedures/Models/DeployAppProcedure.pm</path>
+        <xpath>//property[propertyName=&quot;EC::Procedures::Models::DeployAppProcedure&quot;]/value</xpath>
+    </file>
+    <file>
         <path>JBossCreateConfigForm.xml</path>
         <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;JBossCreateConfigForm&quot;]/value</xpath>
     </file>

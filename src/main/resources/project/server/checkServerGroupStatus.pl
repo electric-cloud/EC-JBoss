@@ -14,6 +14,8 @@ Copyright (c) 2016 Electric Cloud, Inc.
 
 $[/myProject/procedure_helpers/preamble]
 
+use EC::JBoss;
+
 my $PROJECT_NAME = '$[/myProject/projectName]';
 my $PLUGIN_NAME = '@PLUGIN_NAME@';
 my $PLUGIN_KEY = '@PLUGIN_KEY@';
