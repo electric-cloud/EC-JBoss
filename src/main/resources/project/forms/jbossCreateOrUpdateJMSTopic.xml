@@ -1,0 +1,40 @@
+<editor>
+    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#CreateOrUpdateJMSTopic</help>
+    <formElement>
+        <type>entry</type>
+        <label>Configuration name:</label>
+        <property>serverconfig</property>
+        <required>1</required>
+        <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <propertyReference>/plugins/@PLUGIN_NAME@/project/jboss_cfgs</propertyReference>
+        <htmlDocumentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Topic Name:</label>
+        <property>topicName</property>
+        <required>1</required>
+        <documentation>Name of the Topic.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>JNDI Names:</label>
+        <property>jndiNames</property>
+        <required>1</required>
+        <documentation>Comma Separated JNDI Names.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Profile:</label>
+        <property>profile</property>
+        <required>0</required>
+        <documentation>Subsystem profile if applicable. Required for Domain.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Additional Options:</label>
+        <property>additionalOptions</property>
+        <required>0</required>
+        <documentation>Currently a pass through. Let us certify at least one use case.</documentation>
+    </formElement>
+</editor>

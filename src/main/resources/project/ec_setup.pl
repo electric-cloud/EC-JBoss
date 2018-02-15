@@ -100,6 +100,34 @@ my %checkHostControllerStatus = (
     category    => "Application Server"
 );
 
+my %createOrUpdateJMSQueue = (
+    label       => "JBoss - Create or Update JMS Queue",
+    procedure   => "CreateOrUpdateJMSQueue",
+    description => "Create or update JMS queue",
+    category    => "Application Server"
+);
+
+my %createOrUpdateJMSTopic = (
+    label       => "JBoss - Create or Update JMS Topic",
+    procedure   => "CreateOrUpdateJMSTopic",
+    description => "Create or update JMS topic",
+    category    => "Application Server"
+);
+
+my %removeJMSQueue = (
+    label       => "JBoss - Remove JMS Queue",
+    procedure   => "RemoveJMSQueue",
+    description => "Remove JMS queue",
+    category    => "Application Server"
+);
+
+my %removeJMSTopic = (
+    label       => "JBoss - Remove JMS Topic",
+    procedure   => "RemoveJMSTopic",
+    description => "Remove JMS topic",
+    category    => "Application Server"
+);
+
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
@@ -138,7 +166,11 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - CheckHostCon
     \%startServers,
     \%stopServers,
     \%checkServerGroupStatus,
-    \%checkHostControllerStatus
+    \%checkHostControllerStatus,
+    \%createOrUpdateJMSQueue,
+    \%createOrUpdateJMSTopic,
+    \%removeJMSQueue,
+    \%removeJMSTopic
 );
 
 
@@ -283,6 +315,26 @@ if ($upgradeAction eq "upgrade") {
                 procedureName => 'CheckHostControllerStatus',
                 stepName => 'CheckHostControllerStatus'
             });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'CreateOrUpdateJMSQueue',
+                    stepName => 'CreateOrUpdateJMSQueue'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'CreateOrUpdateJMSTopic',
+                    stepName => 'CreateOrUpdateJMSTopic'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'RemoveJMSQueue',
+                    stepName => 'RemoveJMSQueue'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'RemoveJMSTopic',
+                    stepName => 'RemoveJMSTopic'
+                });
         }
     }
 }

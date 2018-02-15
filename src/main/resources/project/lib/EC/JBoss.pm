@@ -1077,6 +1077,7 @@ sub get_servergroup_status {
 
     for my $host_name (@{$hosts_json->{result}}) {
         my $command = sprintf '/host=%s:read-children-resources(child-type=server-config,include-runtime=true)', $host_name;
+        #todo: possibile issue here - what if command fail for one host, then we ignore it and will provide consolidated status of servers on other hosts
         my %response = $self->run_command($command);
         my $children_json = $self->decode_answer($response{stdout});
 
@@ -1475,6 +1476,13 @@ sub do_we_have_error_on_interact_support {
     }
     $self->log_debug("We don't have --error-on-interact support");
     return 0;
+}
+
+sub store_commands_history_in_property {
+    my ($self) = @_;
+    my $commands_history = $self->{history} ? encode_json($self->{history}) : "";
+
+    $self->set_property('commands_history', $commands_history);
 }
 
 1;
