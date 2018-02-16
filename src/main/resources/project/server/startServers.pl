@@ -39,7 +39,7 @@ sub main {
     if (defined $params->{wait_time} && $params->{wait_time} ne '') {
         $wait_time = $params->{wait_time};
         if ($wait_time !~ m/^\d+$/s) {
-            $jboss->bail_out("Wait time should be a positive integer.");
+            $jboss->bail_out("Wait time expected to be positive integer (wait time in seconds), 0 (unlimited) or undefined (one time check).");
         }
     }
 
@@ -52,7 +52,7 @@ sub main {
     $jboss->{silent} = 1;
     my $servers_with_terminal_status = $jboss->is_servergroup_has_status(
         $params->{serversgroup},
-        ['STARTED']
+        [$DESIRED_STATUS]
     );
     $jboss->{silent} = 0;
     if (@$servers_with_terminal_status) {
@@ -70,20 +70,27 @@ sub main {
     my $command = sprintf '/server-group=%s:start-servers', $params->{serversgroup};
     $jboss->out("Starting serversgroup: $params->{serversgroup}");
     my %result = $jboss->run_command($command);
-    my $done = 0;
-    my $time_start = time();
 
     my $res = {
         error => 0,
         msg => ''
     };
 
-    while (defined $wait_time && !$done) {
+    my $done = 0;
+    my $time_start = time();
+    while (!$done) {
         my $time_diff = time() - $time_start;
-        if ($wait_time && $time_diff >= $wait_time) {
+
+        if (!$wait_time) {
+            # if wait time is undefined or 0 then we perform check only once
+            $done = 1;
+        }
+        elsif ($wait_time && $time_diff >= $wait_time) {
+            # if wait time is already passed we do not perform more checks
             $done = 1;
             last;
         }
+
         my ($servers, $states_ref) = $jboss->get_servergroup_status($params->{serversgroup});
         my %seen = ();
         @$states_ref = grep {!$seen{$_}++} @$states_ref;
