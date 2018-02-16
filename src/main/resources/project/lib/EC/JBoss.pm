@@ -115,8 +115,10 @@ sub new {
         if ($creds->{scriptphysicalpath}) {
             $params{script_path} = $creds->{scriptphysicalpath};
         }
-        if ($self->get_param('scriptphysicalpath')) {
-            $params{script_path} = $self->get_param('scriptphysicalpath');
+        if (!$params{no_cli_path_in_procedure_params}) {
+            if ($self->get_param('scriptphysicalpath')) {
+                $params{script_path} = $self->get_param('scriptphysicalpath');
+            }
         }
     }
     unless ($params{script_path}) {

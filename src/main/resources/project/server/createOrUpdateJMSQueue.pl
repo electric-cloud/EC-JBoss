@@ -13,9 +13,10 @@ main();
 
 sub main {
     my $jboss = EC::JBoss->new(
-        project_name => $PROJECT_NAME,
-        plugin_name  => $PLUGIN_NAME,
-        plugin_key   => $PLUGIN_KEY,
+        project_name                    => $PROJECT_NAME,
+        plugin_name                     => $PLUGIN_NAME,
+        plugin_key                      => $PLUGIN_KEY,
+        no_cli_path_in_procedure_params => 1
     );
 
     my $params = $jboss->get_params_as_hashref(qw/
@@ -35,8 +36,6 @@ sub main {
     my $param_additional_options = $params->{additionalOptions};
 
     my $cli_command;
-    my $summary_on_error;
-    my %result;
     my $json;
 
     ########
@@ -59,12 +58,25 @@ sub main {
     ########
     # check jboss version
     ########
-    #todo
+    my $subsystem_part = "subsystem=messaging-activemq";
+    my $provider_part = "server=default";
+
+    my $version = $jboss->get_jboss_server_version();
+    my $product_version = $version->{product_version};
+    if ($product_version =~ /^6/) {
+        $subsystem_part = "subsystem=messaging";
+        $provider_part = "hornetq-server=default";
+    }
 
     ########
     # check if jms queue with specified name exists
     ########
-    $cli_command = '/subsystem=messaging-activemq/server=default:read-children-resources(child-type=jms-queue)';
+    if ($jboss_is_domain) {
+        $cli_command = "/profile=$param_profile/$subsystem_part/$provider_part:read-children-resources(child-type=jms-queue)";
+    }
+    else {
+        $cli_command = "/$subsystem_part/$provider_part:read-children-resources(child-type=jms-queue)";
+    }
 
     $json = run_command_and_get_json_with_exiting_on_error(
         command => $cli_command,
@@ -78,16 +90,55 @@ sub main {
         ########
         # update logic
         ########
+        $jboss->log_info("JMS queue '$param_queue_name' exists");
 
+        my $existing_jndi_names = $jms_queue_resources->{$param_queue_name}->{entries};
+        my @specified_jndi_names = split /,/, $param_jndi_names;
+
+        my @sorted_existing_jndi_names = sort @$existing_jndi_names;
+        my @sorted_specified_jndi_names = sort @specified_jndi_names;
+
+        if ("@sorted_existing_jndi_names" ne "@sorted_specified_jndi_names") {
+            ########
+            # jndi names differ
+            ########
+            $jboss->log_info("JNDI names differ and to be updated: current [@sorted_existing_jndi_names] (sorted) VS specified in parameters [@sorted_specified_jndi_names] (sorted)");
+
+            if ($jboss_is_domain) {
+                $cli_command = "/profile=$param_profile/$subsystem_part/$provider_part/jms-queue=$param_queue_name/:write-attribute(name=entries,value=[$param_jndi_names])";
+            }
+            else {
+                $cli_command = "/$subsystem_part/$provider_part/jms-queue=$param_queue_name/:write-attribute(name=entries,value=[$param_jndi_names])";
+            }
+
+            run_command_with_exiting_on_error(
+                command => $cli_command,
+                jboss   => $jboss
+            );
+
+            $jboss->set_property(summary =>
+                "JMS queue '$param_queue_name' has been updated successfully by new jndi names");
+            return;
+        }
+        else {
+            ########
+            # jndi names match
+            ########
+            $jboss->log_info("JNDI names match - no updates will be performed");
+            $jboss->set_property(summary => "JMS queue '$param_queue_name' is up-to-date");
+            return;
+        }
     }
     else {
         ########
         # create logic
         ########
+        $jboss->log_info("JMS queue '$param_queue_name' does not exist - to be created");
+
         $cli_command = qq/jms-queue add /;
 
         if ($jboss_is_domain) {
-            $cli_command .= qq/ --profile="$param_profile" /;
+            $cli_command .= qq/ --profile=$param_profile /;
         }
 
         $cli_command .= qq/ --queue-address=$param_queue_name --entries=$param_jndi_names /;
@@ -113,7 +164,7 @@ sub main {
             jboss   => $jboss
         );
 
-        $jboss->set_property(summary => "JMS queue $param_queue_name has been added successfully");
+        $jboss->set_property(summary => "JMS queue '$param_queue_name' has been added successfully");
         return;
     }
 }
