@@ -1478,13 +1478,6 @@ sub do_we_have_error_on_interact_support {
     return 0;
 }
 
-sub store_commands_history_in_property {
-    my ($self) = @_;
-    my $commands_history = $self->{history} ? encode_json($self->{history}) : "";
-
-    $self->set_property('commands_history', $commands_history);
-}
-
 1;
 
 =back
