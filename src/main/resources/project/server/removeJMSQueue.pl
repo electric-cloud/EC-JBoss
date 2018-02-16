@@ -23,9 +23,6 @@ sub main {
         queueName
         jndiNames
         profile
-        durable
-        messageSelector
-        additionalOptions
         /);
 
     my $param_queue_name = $params->{queueName};

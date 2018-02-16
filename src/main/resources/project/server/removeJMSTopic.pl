@@ -23,9 +23,6 @@ sub main {
         topicName
         jndiNames
         profile
-        durable
-        messageSelector
-        additionalOptions
         /);
 
     my $param_topic_name = $params->{topicName};
