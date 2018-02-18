@@ -124,4 +124,19 @@ class CliCommandsGeneratorHelper {
         String command = "/host=$hostName:shutdown"
         return command
     }
+
+    static String getJMSQueueInfo(String queueName) {
+        String command = "/subsystem=messaging-activemq/server=default/jms-queue=$queueName"
+        return command
+    }
+
+    static String removeJMSQueue(String queueName) {
+        String command = "jms-queue remove --queue-address=$queueName"
+        return command
+    }
+
+    static String reloadStandalone() {
+        String command = "reload"
+        return command
+    }
 }
