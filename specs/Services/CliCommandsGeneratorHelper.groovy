@@ -126,7 +126,7 @@ class CliCommandsGeneratorHelper {
     }
 
     static String getJMSQueueInfo(String queueName) {
-        String command = "/subsystem=messaging-activemq/server=default/jms-queue=$queueName"
+        String command = "jms-queue read-resource --queue-address=$queueName"
         return command
     }
 
