@@ -148,6 +148,10 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Run Start Se
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Run Stop Servers");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Group Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - CheckHostControllerStatus");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update JMS Queue");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update JMS Topic");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS Queue");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS Topic");
 
 
 @::createStepPickerSteps = (
