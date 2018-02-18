@@ -15,9 +15,11 @@ class CreateOrUpdateJMSQueue extends PluginTestHelper {
     @Shared
     String defaultCliPath = ''
     @Shared
-    String defaultDurable = '0'
+    String defaultDurable = 'false'
     @Shared
-    String defaultJndiNames = 'queue/test java:jboss/exported/jms/queue/test'
+    String defaultJndiNames = 'queue/test,java:jboss/exported/jms/queue/test'
+    @Shared
+    String defaultMessageSelector = 'undefined'
 
 
     def doSetupSpec() {
@@ -76,7 +78,7 @@ class CreateOrUpdateJMSQueue extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        checkCreateOrUpdateJMSQueue(queueName)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, defaultJndiNames)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -103,12 +105,19 @@ class CreateOrUpdateJMSQueue extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
-        // todo:  assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*jms-queue add  --queue-address=${runParams.queueName}.*--entries=${runParams.jndiNames}.*--durable=true.*"
+
+        String queueName = "testQueue-$testCaseId"
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, defaultJndiNames)
+
+        cleanup:
+        queueName = "testQueue-$testCaseId"
+        removeJMSQueue(queueName)
+        reloadStandalone()
     }
 
-    void checkCreateOrUpdateJMSQueue(String queueName) {
-        def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSQueueInfo(queueName)).result
-        assert result
+    void checkCreateOrUpdateJMSQueue(String queueName, String durable, String messageSelector, String jndiNames) {
+        RunProcedureJob runProcedureJob = runCliCommandAndGetJbossReply(CliCommandsGeneratorHelper.getJMSQueueInfo(queueName)).result
+        assert runProcedureJob.getLogs()  =~ ".*$queueName.*"
     }
 
     void removeJMSQueue(String queueName) {
