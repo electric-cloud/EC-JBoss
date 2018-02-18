@@ -61,6 +61,10 @@
         <xpath>//procedure[procedureName=&quot;DeployApp&quot;]/step[stepName=&quot;DeployApp&quot;]/command</xpath>
     </file>
     <file>
+        <path>server/deployApplication.pl</path>
+        <xpath>//procedure[procedureName=&quot;DeployApplication&quot;]/step[stepName=&quot;DeployApplication&quot;]/command</xpath>
+    </file>
+    <file>
         <path>server/undeployApp.pl</path>
         <xpath>//procedure[procedureName=&quot;UndeployApp&quot;]/step[stepName=&quot;UndeployApp&quot;]/command</xpath>
     </file>
@@ -137,6 +141,10 @@
         <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;DeployApp&quot;]/value</xpath>
     </file>
     <file>
+        <path>forms/jbossDeployApplicationForm.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;DeployApplication&quot;]/value</xpath>
+    </file>
+    <file>
         <path>forms/jbossShutdownStandaloneServerForm.xml</path>
         <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;ShutdownStandaloneServer&quot;]/value</xpath>
     </file>
@@ -195,6 +203,10 @@
     <file>
         <path>forms/jbossDeployAppForm.xml</path>
         <xpath>//procedure[procedureName=&quot;DeployApp&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossDeployApplicationForm.xml</path>
+        <xpath>//procedure[procedureName=&quot;DeployApplication&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
     </file>
     <file>
         <path>forms/jbossShutdownStandaloneServerForm.xml</path>
