@@ -124,4 +124,47 @@ class CliCommandsGeneratorHelper {
         String command = "/host=$hostName:shutdown"
         return command
     }
+
+    static String getJMSQueueInfoStandalone(String queueName) {
+        String command = "/subsystem=messaging-activemq/server=default/jms-queue=$queueName:read-resource()"
+        return command
+    }
+
+    static String getJMSQueueInfoDomain(String queueName, String profile) {
+        String command = "/profile=$profile/subsystem=messaging-activemq/server=default/jms-queue=$queueName:read-resource()"
+        return command
+    }
+
+    static String removeJMSQueueStandalone(String queueName) {
+        String command = "jms-queue remove --queue-address=$queueName"
+        return command
+    }
+
+    static String removeJMSQueueDomain(String queueName, String profile) {
+        String command = "jms-queue remove --queue-address=$queueName --profile=$profile"
+        return command
+    }
+
+    static String reloadStandalone() {
+        String command = "reload"
+        return command
+    }
+
+    static String reloadServerGroupDomain(String serverGroup) {
+        String command = "/server-group=$serverGroup:restart-servers"
+        return command
+    }
+
+    static String addJMSQueueDefaultStandalone(String queueName, String jndiName) {
+        addJMSQueue(queueName, jndiName, "--durable=false", "", "")
+    }
+
+    static String addJMSQueueDefaultDomain(String queueName, String jndiName, String profile) {
+        addJMSQueue(queueName, jndiName, "--durable=false", "", " --profile=$profile")
+    }
+
+    static String addJMSQueue(String queueName, String jndiName, String durable, String messageSelector, String profile) {
+        String command = "jms-queue add --queue-address=$queueName --entries=[$jndiName] " + durable + messageSelector + profile
+        return command
+    }
 }
