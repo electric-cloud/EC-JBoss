@@ -134,7 +134,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
     }
 
     void addJMSTopicDefaultDomain(String topicName, String jndiName, String profile) {
-        runCliCommand(CliCommandsGeneratorHelper.addJMSTopicDomain(topicName, jndiName, profile))
+        runCliCommand(CliCommandsGeneratorHelper.addJMSTopicDomain(topicName, jndiName, "--profile=$profile"))
     }
 
 }
