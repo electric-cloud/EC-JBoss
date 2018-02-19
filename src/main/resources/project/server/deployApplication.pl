@@ -442,4 +442,5 @@ sub get_json_server_groups_discovery {
     if (!defined $json->{result}) {
         $jboss->bail_out("JBoss replied with undefined result when expectation was to verify the result: " . (encode_json $json));
     }
+    return $json;
 }
