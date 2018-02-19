@@ -135,6 +135,16 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String getJMSTopicInfoStandalone(String topicName) {
+        String command = "/subsystem=messaging-activemq/server=default/jms-topic=$topicName:read-resource()"
+        return command
+    }
+
+    static String getJMSTopicInfoDomain(String topicName, String profile) {
+        String command = "/profile=$profile/subsystem=messaging-activemq/server=default/jms-topic=$topicName:read-resource()"
+        return command
+    }
+
     static String removeJMSQueueStandalone(String queueName) {
         String command = "jms-queue remove --queue-address=$queueName"
         return command
@@ -142,6 +152,16 @@ class CliCommandsGeneratorHelper {
 
     static String removeJMSQueueDomain(String queueName, String profile) {
         String command = "jms-queue remove --queue-address=$queueName --profile=$profile"
+        return command
+    }
+
+    static String removeJMSTopicStandalone(String topicName) {
+        String command = "jms-topic remove --topic-address=$topicName"
+        return command
+    }
+
+    static String removeJMSTopicDomain(String topicName, String profile) {
+        String command = "jms-topic remove --topic-address=$topicName --profile=$profile"
         return command
     }
 
@@ -165,6 +185,15 @@ class CliCommandsGeneratorHelper {
 
     static String addJMSQueue(String queueName, String jndiName, String durable, String messageSelector, String profile) {
         String command = "jms-queue add --queue-address=$queueName --entries=[$jndiName] " + durable + messageSelector + profile
+        return command
+    }
+
+    static String addJMSTopicStandalone(String topicName, String jndiName) {
+        return addJMSTopicDomain(topicName, jndiName, "")
+    }
+
+    static String addJMSTopicDomain(String topicName, String jndiName, String profile) {
+        String command = "jms-topic add --topic-address=$topicName --entries=[$jndiName]  $profile"
         return command
     }
 }
