@@ -115,8 +115,10 @@ sub new {
         if ($creds->{scriptphysicalpath}) {
             $params{script_path} = $creds->{scriptphysicalpath};
         }
-        if ($self->get_param('scriptphysicalpath')) {
-            $params{script_path} = $self->get_param('scriptphysicalpath');
+        if (!$params{no_cli_path_in_procedure_params}) {
+            if ($self->get_param('scriptphysicalpath')) {
+                $params{script_path} = $self->get_param('scriptphysicalpath');
+            }
         }
     }
     unless ($params{script_path}) {
@@ -1077,6 +1079,7 @@ sub get_servergroup_status {
 
     for my $host_name (@{$hosts_json->{result}}) {
         my $command = sprintf '/host=%s:read-children-resources(child-type=server-config,include-runtime=true)', $host_name;
+        #todo: possibile issue here - what if command fail for one host, then we ignore it and will provide consolidated status of servers on other hosts
         my %response = $self->run_command($command);
         my $children_json = $self->decode_answer($response{stdout});
 

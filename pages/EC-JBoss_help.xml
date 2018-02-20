@@ -33,10 +33,14 @@
                     <li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a> (Domain)</li>
                     <li><a href="#CheckServerStatus">CheckServerStatus</a> (Standalone/Domain)</li>
                     <li><a href="#CreateDatasource">CreateDatasource</a> (Standalone/Domain)</li>
+                    <li><a href="#CreateOrUpdateJMSQueue">CreateOrUpdateJMSQueue</a> (Standalone/Domain)</li>
+                    <li><a href="#CreateOrUpdateJMSTopic">CreateOrUpdateJMSTopic</a> (Standalone/Domain)</li>
                     <li><a href="#DeleteDatasource">DeleteDatasource</a> (Standalone/Domain)</li>
                     <li><a href="#DeployApp">DeployApp</a> (Standalone/Domain)</li>
                     <li><a href="#DisableDeploy">DisableDeploy</a> (Standalone/Domain)</li>
                     <li><a href="#EnableDeploy">EnableDeploy</a> (Standalone/Domain)</li>
+                    <li><a href="#RemoveJMSQueue">RemoveJMSQueue</a> (Standalone/Domain)</li>
+                    <li><a href="#RemoveJMSTopic">RemoveJMSTopic</a> (Standalone/Domain)</li>
                     <li><a href="#RunCustomCommand">RunCustomCommand</a> (Standalone/Domain)</li>
                     <li><a href="#ShutdownStandaloneServer">ShutdownStandaloneServer</a> (Standalone)</li>
                     <li><a href="#StartDomainServer">StartDomainServer</a> (Domain)</li>
@@ -414,6 +418,114 @@
                 <br />
                 -->
             </div>
+            <div id="CreateOrUpdateJMSQueue">
+                <a name='CreateOrUpdateJMSQueue' id="CreateOrUpdateJMSQueue"></a>
+                <h2>CreateOrUpdateJMSQueue</h2>
+                <p>This procedure creates or updates jms queue in JBoss. jms-queue command - manage JMS queues in the messaging-activemq subsystem.</p>
+                <h3>Input</h3>
+
+                <ol>
+                    <li>Go to the CreateOrUpdateJMSQueue procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>Queue Name</td>
+                                    <td>Name of the Queue.</td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>JNDI Names</td>
+                                    <td>Comma Separated JNDI Names.</td>
+                                </tr>
+                                <tr>
+                                    <td>Profile</td>
+                                    <td>Subsystem profile if applicable. Required for Domain.</td>
+                                </tr>
+                                <tr>
+                                    <td>Durable</td>
+                                    <td>Is Queue Durable (True/False).  Default is False, i.e., not durable.</td>
+                                </tr>
+                                <tr>
+                                    <td>Message Selector</td>
+                                    <td>Selector for Message.</td>
+                                </tr>
+                                <tr>
+                                    <td>Additional Options</td>
+                                    <td>Currently a pass through. Let us certify at least one use case.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSQueue/CreateOrUpdateJMSQueueForm1.png" />
+                    <br />
+                </ol>
+                <h3>Output</h3>
+                <p>
+                    After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CreateOrUpdateJMSQueue</b> step,
+                    click the Log icon to see the diagnostic information.
+                </p>
+            </div>
+            <div id="CreateOrUpdateJMSTopic">
+                <a name='CreateOrUpdateJMSTopic' id="CreateOrUpdateJMSTopic"></a>
+                <h2>CreateOrUpdateJMSTopic</h2>
+                <p>This procedure creates or updates jms topic in JBoss.</p>
+                <h3>Input</h3>
+
+                <ol>
+                    <li>Go to the CreateOrUpdateJMSTopic procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>Topic Name</td>
+                                    <td>Name of the Topic.</td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>JNDI Names</td>
+                                    <td>Comma Separated JNDI Names.</td>
+                                </tr>
+                                <tr>
+                                    <td>Profile</td>
+                                    <td>Subsystem profile if applicable. Required for Domain.</td>
+                                </tr>
+                                <tr>
+                                    <td>Additional Options</td>
+                                    <td>Currently a pass through. Let us certify at least one use case.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSTopic/CreateOrUpdateJMSTopicForm1.png" />
+                    <br />
+                </ol>
+                <h3>Output</h3>
+                <p>
+                    After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CreateOrUpdateJMSTopic</b> step,
+                    click the Log icon to see the diagnostic information.
+                </p>
+            </div>
             <div id="DeleteDatasource"> <a name='DeleteDatasource' id="DeleteDatasource"></a>
                 <h2>DeleteDatasource</h2>
                 <p>This procedure deletes a datasource in JBoss.</p>
@@ -745,6 +857,90 @@
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/EnableDeploy/ECJBossEnableDeploy4.png" />
                 <br />
+            </div>
+            <div id="RemoveJMSQueue">
+                <a name='RemoveJMSQueue' id="RemoveJMSQueue"></a>
+                <h2>RemoveJMSQueue</h2>
+                <p>This procedure removes jms queue in JBoss.</p>
+                <h3>Input</h3>
+
+                <ol>
+                    <li>Go to the RemoveJMSQueue procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>Queue Name</td>
+                                    <td>Name of the Queue.</td>
+                                </tr>
+                                <tr>
+                                    <td>Profile</td>
+                                    <td>Subsystem profile if applicable. Required for Domain.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/RemoveJMSQueue/RemoveJMSQueueForm1.png" />
+                    <br />
+                </ol>
+                <h3>Output</h3>
+                <p>
+                    After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>RemoveJMSQueue</b> step,
+                    click the Log icon to see the diagnostic information.
+                </p>
+            </div>
+            <div id="RemoveJMSTopic">
+                <a name='RemoveJMSTopic' id="RemoveJMSTopic"></a>
+                <h2>RemoveJMSTopic</h2>
+                <p>This procedure removes jms queue in JBoss.</p>
+                <h3>Input</h3>
+
+                <ol>
+                    <li>Go to the RemoveJMSTopic procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class='required'>Configuration name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>Topic Name</td>
+                                    <td>Name of the Topic.</td>
+                                </tr>
+                                <tr>
+                                    <td>Profile</td>
+                                    <td>Subsystem profile if applicable. Required for Domain.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/RemoveJMSTopic/RemoveJMSTopicForm1.png" />
+                    <br />
+                </ol>
+                <h3>Output</h3>
+                <p>
+                    After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>RemoveJMSTopic</b> step,
+                    click the Log icon to see the diagnostic information.
+                </p>
             </div>
             <div id="RunCustomCommand"> <a name='RunCustomCommand' id="RunCustomCommand"></a>
                 <h2>RunCustomCommand</h2>

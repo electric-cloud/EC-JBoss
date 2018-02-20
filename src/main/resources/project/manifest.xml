@@ -97,6 +97,22 @@
         <xpath>//procedure[procedureName=&quot;CheckHostControllerStatus&quot;]/step[stepName=&quot;CheckHostControllerStatus&quot;]/command</xpath>
     </file>
     <file>
+        <path>server/createOrUpdateJMSQueue.pl</path>
+        <xpath>//procedure[procedureName=&quot;CreateOrUpdateJMSQueue&quot;]/step[stepName=&quot;CreateOrUpdateJMSQueue&quot;]/command</xpath>
+    </file>
+    <file>
+        <path>server/createOrUpdateJMSTopic.pl</path>
+        <xpath>//procedure[procedureName=&quot;CreateOrUpdateJMSTopic&quot;]/step[stepName=&quot;CreateOrUpdateJMSTopic&quot;]/command</xpath>
+    </file>
+    <file>
+        <path>server/removeJMSQueue.pl</path>
+        <xpath>//procedure[procedureName=&quot;RemoveJMSQueue&quot;]/step[stepName=&quot;RemoveJMSQueue&quot;]/command</xpath>
+    </file>
+    <file>
+        <path>server/removeJMSTopic.pl</path>
+        <xpath>//procedure[procedureName=&quot;RemoveJMSTopic&quot;]/step[stepName=&quot;RemoveJMSTopic&quot;]/command</xpath>
+    </file>
+    <file>
         <path>conf/createcfg.pl</path>
         <xpath>//procedure[procedureName=&quot;CreateConfiguration&quot;]/step[stepName=&quot;CreateConfiguration&quot;]/command</xpath>
     </file>
@@ -177,6 +193,22 @@
         <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;CheckServerGroupStatus&quot;]/value</xpath>
     </file>
     <file>
+        <path>forms/jbossCreateOrUpdateJMSQueue.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;CreateOrUpdateJMSQueue&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossCreateOrUpdateJMSTopic.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;CreateOrUpdateJMSTopic&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossRemoveJMSQueue.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;RemoveJMSQueue&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossRemoveJMSTopic.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;RemoveJMSTopic&quot;]/value</xpath>
+    </file>
+    <file>
         <path>forms/jbossEnableDeployForm.xml</path>
         <xpath>//procedure[procedureName=&quot;EnableDeploy&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
     </file>
@@ -239,5 +271,21 @@
     <file>
         <path>forms/jbossCheckHostControllerStatusForm.xml</path>
         <xpath>//procedure[procedureName=&quot;CheckHostControllerStatus&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossCreateOrUpdateJMSQueue.xml</path>
+        <xpath>//procedure[procedureName=&quot;CreateOrUpdateJMSQueue&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossCreateOrUpdateJMSTopic.xml</path>
+        <xpath>//procedure[procedureName=&quot;CreateOrUpdateJMSTopic&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossRemoveJMSQueue.xml</path>
+        <xpath>//procedure[procedureName=&quot;RemoveJMSQueue&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossRemoveJMSTopic.xml</path>
+        <xpath>//procedure[procedureName=&quot;RemoveJMSTopic&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
     </file>
 </fileset>
