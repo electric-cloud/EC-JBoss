@@ -4,7 +4,7 @@ import spock.lang.*
 
 
 @IgnoreIf({ env.JBOSS_MODE == 'standalone' })
-class RemoveJMSQueueStandalone extends PluginTestHelper {
+class RemoveJMSQueueDomain extends PluginTestHelper {
 
     @Shared
     String procName = 'RemoveJMSQueue'

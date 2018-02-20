@@ -339,7 +339,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def " Update JMS Queue, ignored change 'profile' (C278409)"() {
+    def "Update JMS Queue, on other profile with the same parameters (C278409)"() {
         String testCaseId = "C278409"
 
         def runParams = [
@@ -360,15 +360,17 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' is up-to-date"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
         String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
         checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, "full-ha")
 
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName, defaultProfile)
+        removeJMSQueue(queueName, "full-ha")
         reloadServerGroupDomain()
     }
 
@@ -504,8 +506,8 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "Create JMS Queue, with 'Durable=true' and --durable=true in additional options (C278374)"() {
-        String testCaseId = "C278374"
+    def "Create JMS Queue, with 'Durable=true' and --durable=true in additional options (C278401)"() {
+        String testCaseId = "C278401"
 
         def runParams = [
                 additionalOptions    : '--durable=true',
