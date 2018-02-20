@@ -304,17 +304,17 @@ sub main {
 
             if (@new_enabled_server_groups) {
                 $jboss->log_info("Summary: deployment '$expected_deployment_name' is assigned and enabled on the server group(s): @new_enabled_server_groups.");
-                $summary .= " Enabled on: @new_enabled_server_groups server groups.";
+                $summary .= "\nEnabled on: " . join(",", @new_enabled_server_groups) . " server groups.";
             }
 
-            my @new_disaled_server_groups = grep {
+            my @new_disabled_server_groups = grep {
                 $new_json_server_groups_discovery->{result}->{$_}->{deployment}
                     && $new_json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}
                     && !$new_json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}->{enabled}
             } @new_all_server_groups;
-            if (@new_disaled_server_groups) {
-                $jboss->log_info("Summary: deployment '$expected_deployment_name' is assigned and disabled on the server group(s): @new_disaled_server_groups.");
-                $summary .= " Disabled on: @new_disaled_server_groups server groups.";
+            if (@new_disabled_server_groups) {
+                $jboss->log_info("Summary: deployment '$expected_deployment_name' is assigned and disabled on the server group(s): @new_disabled_server_groups.");
+                $summary .= "\nDisabled on: " . join(",", @new_disabled_server_groups) . " server groups.";
             }
         };
         if ($@) {
