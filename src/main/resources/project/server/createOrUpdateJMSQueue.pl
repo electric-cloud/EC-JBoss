@@ -73,7 +73,7 @@ sub main {
 
     my $version = $jboss->get_jboss_server_version();
     my $product_version = $version->{product_version};
-    if ($product_version =~ /^6/) {
+    if ($product_version =~ m/^6/) {
         $subsystem_part = "subsystem=messaging";
         $provider_part = "hornetq-server=default";
     }
