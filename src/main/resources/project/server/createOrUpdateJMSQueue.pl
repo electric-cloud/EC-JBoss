@@ -121,13 +121,15 @@ sub main {
                 $cli_command = "/$subsystem_part/$provider_part/jms-queue=$param_queue_name/:write-attribute(name=entries,value=[$param_jndi_names])";
             }
 
-            run_command_with_exiting_on_error(
+            my %result = run_command_with_exiting_on_error(
                 command => $cli_command,
                 jboss   => $jboss
             );
 
-            $jboss->set_property(summary =>
-                "JMS queue '$param_queue_name' has been updated successfully by new jndi names");
+            my $summary = "JMS queue '$param_queue_name' has been updated successfully by new jndi names.";
+            $summary .= "\nJBoss reply: " . $result{stdout} if $result{stdout};
+
+            $jboss->set_property(summary => $summary);
             return;
         }
         else {

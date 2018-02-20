@@ -117,13 +117,15 @@ sub main {
                 $cli_command = "/$subsystem_part/$provider_part/jms-topic=$param_topic_name/:write-attribute(name=entries,value=[$param_jndi_names])";
             }
 
-            run_command_with_exiting_on_error(
+            my %result = run_command_with_exiting_on_error(
                 command => $cli_command,
                 jboss   => $jboss
             );
 
-            $jboss->set_property(summary =>
-                "JMS topic '$param_topic_name' has been updated successfully by new jndi names");
+            my $summary = "JMS topic '$param_topic_name' has been updated successfully by new jndi names";
+            $summary .= "\nJBoss reply: " . $result{stdout} if $result{stdout};
+
+            $jboss->set_property(summary => $summary);
             return;
         }
         else {
