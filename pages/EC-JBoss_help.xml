@@ -37,6 +37,7 @@
                     <li><a href="#CreateOrUpdateJMSTopic">CreateOrUpdateJMSTopic</a> (Standalone/Domain)</li>
                     <li><a href="#DeleteDatasource">DeleteDatasource</a> (Standalone/Domain)</li>
                     <li><a href="#DeployApp">DeployApp</a> (Standalone/Domain)</li>
+                    <li><a href="#DeployApplication">DeployApplication</a> (Standalone/Domain)</li>
                     <li><a href="#DisableDeploy">DisableDeploy</a> (Standalone/Domain)</li>
                     <li><a href="#EnableDeploy">EnableDeploy</a> (Standalone/Domain)</li>
                     <li><a href="#RemoveJMSQueue">RemoveJMSQueue</a> (Standalone/Domain)</li>
@@ -757,6 +758,119 @@
                 <br />
 				<img src="../../plugins/@PLUGIN_NAME@/images/DeployApp/ECJBossDeployAppStatus3.PNG" />
 				<br />
+            </div>
+
+            <div id="DeployApplication"> <a name='DeployApplication' id="DeployApplication"></a>
+                <h2>DeployApplication (Standalone/Domain)</h2>
+                The DeployApplication procedure deploys an application (mainly WAR or EAR) from the specified source (usually from filepath) to standalone server (for Standalone JBoss) or to content repository and specified server groups (for Domain JBoss) based on provided parameters.
+                <br/><br/>
+                This procedure is build around jboss-cli command 'deploy'.
+
+                <h3>Input</h3>
+
+                <ol>
+                    <li>Go to the DeployApplication procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class='required'>Configuration Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+                                        To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>Application Content Source Path</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions.
+                                        <ol>
+                                            <li>in case of 'file_path' - pass full filesystem path to the application to deploy. E.g. '/tmp/hello-world.war'</li>
+                                            <li>
+                                                in case of '--url' (for EAP 7 and later) - pass URL at which the deployment content is available.
+                                                NOTE: The expected format in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war'.
+                                                Note that the URL must be accessible from the target of the operation (i.e. the Domain Controller or standalone server).
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Deployment Name</td>
+                                    <td>
+                                        Stands for '--name' parameter for jboss-cli 'deploy' command.
+                                        <br/>
+                                        The unique name of the deployment.
+                                        If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url', see required 'Source with application for deploy' parameter.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Runtime Name</td>
+                                    <td>
+                                        Stands for '--runtime-name' parameter for jboss-cli 'deploy' command.
+                                        <br/>
+                                        The runtime name for the deployment.
+                                        <br/>
+                                        NOTE: the file extension (.war, .jar, .ear etc.) needs to be included into runtime name so server can distinguish type of deployment somehow.
+                                        <br/>
+                                        This would typically be the same as '--name' (see 'Deployment name' parameter), and if not specified the value used for '--name' will be used.
+                                        In some cases users may wish to have two deployments with the same 'runtime-name' (e.g. two versions of "example.war") both available in the management configuration,
+                                        in which case the deployments would need to have distinct 'name' values but would have the same 'runtime-name'.
+                                        Within an individual server, only one deployment with a given 'runtime-name' can deployed.
+                                        However, multiple deployments with the same 'runtime-name' can exist in the configuration, so long as only one is enabled.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Enabled Server Groups</td>
+                                    <td>
+                                        For Domain only (will be ignored in case of Standalone).
+                                        <br/>
+                                        The deployment will be assigned to the server groups specified by this parameter and will be enabled to these server groups.
+                                        <br/>
+                                        Format: comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.
+                                        <br/>
+                                        If '--all-server-groups' is specified then deployment will be assigned and enabled on all server groups.
+                                        <br/>
+                                        By default value is set to '--all-server-groups'. If not provided - special assignment with enabling of the deployment will not be performed.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Disabled Server Groups</td>
+                                    <td>
+                                        For Domain only (will be ignored in case of Standalone).
+                                        <br/>
+                                        The deployment will be assigned to the server groups specified by this parameter and will be disabled to these server groups.
+                                        <br/>
+                                        Format: comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.
+                                        <br/>
+                                        If '--all-server-groups' is specified then deployment will be assigned and disabled on all server groups.
+                                        <br/>
+                                        If not provided - special assignment with disabling of the deployment will not be performed.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Additional options</td>
+                                    <td>
+                                        For Standalone only (will be ignored in case of Domain).
+                                        <br/>
+                                        Currently supported option is '--disabled' for Standalone.
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ol>
+                <h3>Output</h3>
+                <p>After the job runs, you can view the results, including the following job details, which show that the application was deployed, what its expected deployment name and from where it was deployed, for example:</p>
             </div>
 
             <div id="DisableDeploy"><a name='DisableDeploy' id="DisableDeploy"></a>

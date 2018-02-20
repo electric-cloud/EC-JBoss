@@ -11,6 +11,12 @@ my %deployApp = (
     description => "Deploy an application into JBoss server",
     category    => "Application Server"
 );
+my %deployApplication = (
+    label       => "JBoss - Deploy Application (new)",
+    procedure   => "DeployApplication",
+    description => "Deploy an application (mainly WAR or EAR) from the specified source (usually from filepath) to standalone server (for Standalone JBoss) or to content repository and specified server groups (for Domain JBoss)",
+    category    => "Application Server"
+);
 my %shutdownStandaloneServer = (
     label       => "JBoss - Shutdown Standalone Server",
     procedure   => "ShutdownStandaloneServer",
@@ -136,6 +142,7 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Start Standa
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Undeploy App");
 
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy Application");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy Application (new)");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Undeploy Application");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Deploy Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Enable Deploy");
@@ -157,6 +164,7 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS T
 @::createStepPickerSteps = (
     \%checkServerStatus,
     \%deployApp,
+    \%deployApplication,
     \%shutdownStandaloneServer,
     \%startDomainServer,
     \%startStandaloneServer,
@@ -274,6 +282,11 @@ if ($upgradeAction eq "upgrade") {
                 procedureName => 'DeployApp',
                 stepName => 'DeployApp'
             });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'DeployApplication',
+                    stepName => 'DeployApplication'
+                });
 
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                 procedureName => 'UndeployApp',
