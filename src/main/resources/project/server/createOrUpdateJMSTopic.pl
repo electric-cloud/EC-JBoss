@@ -34,6 +34,13 @@ sub main {
     my $cli_command;
     my $json;
 
+    if (!$param_topic_name) {
+        $jboss->bail_out("Required parameter 'topicName' is not provided");
+    }
+    if (!$param_jndi_names) {
+        $jboss->bail_out("Required parameter 'jndiNames' is not provided");
+    }
+
     ########
     # check jboss launch type
     ########
@@ -46,10 +53,13 @@ sub main {
 
     my $launch_type = lc $json->{result};
     if (!$launch_type || ($launch_type ne "standalone" && $launch_type ne "domain")) {
-        $jboss->error("Unknown JBoss launch type: '$launch_type'");
-        return;
+        $jboss->bail_out("Unknown JBoss launch type: '$launch_type'");
     }
     my $jboss_is_domain = 1 if $launch_type eq "domain";
+
+    if ($jboss_is_domain && !$param_profile) {
+        $jboss->bail_out("Required parameter 'profile' is not provided (parameter required for JBoss domain)");
+    }
 
     ########
     # check jboss version
