@@ -239,7 +239,7 @@ sub main {
 
         run_command_with_exiting_on_error(
             command => $cli_command_upgrade_content,
-            jboss => $jboss
+            jboss   => $jboss
         );
         $jboss->log_info("=======Finished: upgrading (or uploading) of content in repository=======");
 
@@ -249,9 +249,9 @@ sub main {
         if (@specified_server_groups_where_deployment_was_missing) {
             $jboss->log_info("=======Started: assigning deployment to needed server groups=======");
             assign_deployment_to_server_groups_or_fail(
-                jboss => $jboss,
+                jboss           => $jboss,
                 deployment_name => $expected_deployment_name,
-                server_groups => \@specified_server_groups_where_deployment_was_missing
+                server_groups   => \@specified_server_groups_where_deployment_was_missing
             );
             $jboss->log_info("=======Finished: assigning deployment to needed server groups=======");
         }
@@ -262,19 +262,19 @@ sub main {
         if (@specified_enabled_server_groups) {
             $jboss->log_info("=======Started: enabling deployment on server groups which are in enabled list=======");
             enable_deployment_on_server_groups_or_fail(
-                jboss => $jboss,
+                jboss           => $jboss,
                 deployment_name => $expected_deployment_name,
-                server_groups => \@specified_enabled_server_groups
+                server_groups   => \@specified_enabled_server_groups
             );
             $jboss->log_info("=======Finished: enabling deployment on server groups which are in enabled list=======");
         }
 
         if (@specified_disabled_server_groups) {
             $jboss->log_info("=======Started: disabling deployment on server groups which are in disabled list=======");
-            enable_deployment_on_server_groups_or_fail(
-                jboss => $jboss,
+            disable_deployment_on_server_groups_or_fail(
+                jboss           => $jboss,
                 deployment_name => $expected_deployment_name,
-                server_groups => \@specified_disabled_server_groups
+                server_groups   => \@specified_disabled_server_groups
             );
             $jboss->log_info("=======Finished: disabling deployment on server groups which are in disabled list=======");
         }
@@ -283,16 +283,16 @@ sub main {
         if (@missing_disabled_server_groups) {
             $jboss->log_info("=======Started: WFCORE-2939 workaround - disabling deployment on server groups which are not in enabled/disabled list, but has disabled depoyment before=======");
             enable_deployment_on_server_groups_or_fail(
-                jboss => $jboss,
+                jboss           => $jboss,
                 deployment_name => $expected_deployment_name,
-                server_groups => @missing_disabled_server_groups
+                server_groups   => @missing_disabled_server_groups
             );
             $jboss->log_info("=======Finished: WFCORE-2939 workaround - disabling deployment on server groups which are not in enabled/disabled list, but has disabled depoyment before=======");
         }
 
         $jboss->log_info("=======Started: composing summary=======");
         my $summary = "Application '$expected_deployment_name' has been successfully deployed from '$expected_source_for_summary'.";
-        eval{
+        eval {
             my $new_json_server_groups_discovery = get_json_server_groups_discovery(jboss => $jboss);
             my @new_all_server_groups = keys %{$json_server_groups_discovery->{result}};
 
@@ -339,7 +339,7 @@ sub main {
 
         run_command_with_exiting_on_error(
             command => $cli_command_deploy_to_standalone,
-            jboss => $jboss
+            jboss   => $jboss
         );
         $jboss->log_info("=======Finished: deploying to standalone=======");
 
