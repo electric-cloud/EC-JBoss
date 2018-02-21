@@ -696,36 +696,6 @@ class DeployApplicationDomain extends PluginTestHelper {
 
           }
 
-
-          @Unroll
-          def "Negative. DeployApplication, 1st time, file, duplicated server groups in enabled server group (C278223)"() {
-              String testCaseId = "C278223"
-
-              def runParams = [
-                      additionalOptions              : '',
-                      applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
-                      deploymentName                 : "$testCaseId-app.war",
-                      disabledServerGroups           : '',
-                      enabledServerGroups            : "$serverGroup1,$serverGroup1",
-                      runtimeName                    : "$testCaseId-app.war",
-                      serverconfig                   : defaultConfigName,
-              ]
-
-              setup:
-              downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
-
-              when:
-              RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-
-              then:
-              String expectedAppName = "$testCaseId-app.war"
-
-              assert runProcedureJob.getStatus() == "error"
-              assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on: $serverGroup1 server groups.\nDisabled on: $serverGroup2 server groups."
-
-          }
-
-
              @Unroll
              def "DeployApplication, 1st time, file, with not choose server group (C278224)"() {
                  String testCaseId = "C278224"
