@@ -17,6 +17,12 @@
                         <value/>
                     </property>
                     <property>
+                        <propertyName>EC::LogTrapper</propertyName>
+                        <description>LogTrapper.pm</description>
+                        <expandable>0</expandable>
+                        <value></value>
+                    </property>
+                    <property>
                         <propertyName>File::Path</propertyName>
                         <description>Newest File::Path.</description>
                         <expandable>0</expandable>
@@ -2340,6 +2346,26 @@
                                         </property>
                                     </propertySheet>
                                 </property>
+                                <property>
+                                    <propertyName>propertyName</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>dumpFormat</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -2362,9 +2388,23 @@
             <formalParameter>
                 <formalParameterName>customCommand</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Specifies the command to run.</description>
+                <description>Custom command to run.</description>
                 <required>1</required>
                 <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>propertyName</formalParameterName>
+                <defaultValue/>
+                <description>Property to write response from JBoss. Example: "/myJob/RunCustomCommandResult"</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>dumpFormat</formalParameterName>
+                <defaultValue/>
+                <description>Choose the format to represent retrieved data. Data can be represented as XML, JSON, raw (just stdout) or property sheet (hierarchy).</description>
+                <required>0</required>
+                <type>select</type>
             </formalParameter>
             <step>
                 <stepName>RunCustomCommand</stepName>

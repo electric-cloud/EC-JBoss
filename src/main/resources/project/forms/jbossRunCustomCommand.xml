@@ -23,5 +23,32 @@
         <property>customCommand</property>
         <required>1</required>
         <documentation>Custom command to run.</documentation>
-    </formElement>              
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Property name:</label>
+        <property>propertyName</property>
+        <required>0</required>
+        <documentation>Property to write response from JBoss. Example: "/myJob/RunCustomCommandResult"</documentation>
+    </formElement>
+    <formElement>
+        <type>select</type>
+        <label>Dump format:</label>
+        <property>dumpFormat</property>
+        <required>0</required>
+        <option>
+            <value>json</value>
+            <name>JSON</name>
+        </option>
+        <option>
+            <value>propertySheet</value>
+            <name>Property sheet</name>
+        </option>
+        <option>
+            <value>raw</value>
+            <name>Raw</name>
+        </option>
+        <value>propertySheet</value>
+        <documentation>Choose the format to represent retrieved data. Data can be represented as XML, JSON, raw (just stdout) or property sheet (hierarchy).</documentation>
+    </formElement>
 </editor>
