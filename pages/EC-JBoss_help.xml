@@ -578,6 +578,8 @@
                     After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CreateOrUpdateJMSQueue</b> step,
                     click the Log icon to see the diagnostic information.
                 </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSQueue/CreateOrUpdateJMSQueueRunScenarios.PNG" />
             </div>
             <div id="CreateOrUpdateJMSTopic">
                 <a name='CreateOrUpdateJMSTopic' id="CreateOrUpdateJMSTopic"></a>
@@ -720,6 +722,8 @@
                     After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CreateOrUpdateJMSTopic</b> step,
                     click the Log icon to see the diagnostic information.
                 </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSTopic/CreateOrUpdateJMSTopicRunScenarios.PNG" />
             </div>
             <div id="DeleteDatasource"> <a name='DeleteDatasource' id="DeleteDatasource"></a>
                 <h2>DeleteDatasource</h2>
@@ -1069,6 +1073,8 @@
                     <li>for Standalone JBoss: 'Queue Name'</li>
                     <li>for Domain JBoss: 'Queue Name' and 'Profile'</li>
                 </ol>
+                If specified queue does not exist - job status will be warning.
+                <br/>
                 At this moment we are using the following cli command for removing a queue: 'jms-queue remove'
                 <br/>
                 For example: 'jms-queue --profile=full remove --queue-address=someQueue'
@@ -1142,6 +1148,8 @@
                     <li>for Standalone JBoss: 'Topic Name'</li>
                     <li>for Domain JBoss: 'Topic Name' and 'Profile'</li>
                 </ol>
+                If specified topic does not exist - job status will be warning.
+                <br/>
                 At this moment we are using the following cli command for removing a topic: 'jms-topic remove'
                 <br/>
                 For example: 'jms-topic --profile=full remove --topic-address=someTopic'

@@ -127,7 +127,18 @@ sub main {
             );
 
             my $summary = "JMS queue '$param_queue_name' has been updated successfully by new jndi names.";
-            $summary .= "\nJBoss reply: " . $result{stdout} if $result{stdout};
+            if ($result{stdout}) {
+                my $reload_or_restart_required;
+                if ($result{stdout} =~ m/"process-state"\s=>\s"reload-required"/gs
+                    || $result{stdout} =~ m/"process-state"\s=>\s"restart-required"/gs) {
+                    $reload_or_restart_required = 1;
+                }
+                if ($reload_or_restart_required) {
+                    $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
+                    $jboss->warning();
+                }
+                $summary .= "\nJBoss reply: " . $result{stdout} if $result{stdout};
+            }
 
             $jboss->set_property(summary => $summary);
             return;
