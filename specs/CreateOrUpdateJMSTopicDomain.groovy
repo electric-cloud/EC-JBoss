@@ -356,10 +356,45 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
 
     }
 
+    @Unroll
+    def "Create JMS Topic with additional option --legacy-entries (C278556)"() {
+        String testCaseId = "C278556"
+
+        def runParams = [
+                additionalOptions: '--legacy-entries=java:/test,java:/test2',
+                jndiNames        : defaultJndiNames,
+                profile          : defaultProfile,
+                serverconfig     : defaultConfigName,
+                topicName        : "testTopic-$testCaseId",
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
+
+        String topicName = "testTopic-$testCaseId"
+        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
+        checkCreateOrUpdateJMSTopic(topicName, jndiName, defaultProfile, "test=java:/test, test2=java:/test2")
+
+        cleanup:
+        topicName = "testTopic-$testCaseId"
+        removeJMSTopic(topicName, defaultProfile)
+    }
+
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoDomain(topicName, profile)).result
         String entries = result.'entries'
         assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
+    }
+
+    void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile, String legacy) {
+        def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoDomain(topicName, profile)).result
+        String entries = result.'entries'
+        assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        String legacyActual = result.'legacy-entries'
+        assert legacyActual.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ legacy
     }
 
     void removeJMSTopic(String topicName, String profile) {

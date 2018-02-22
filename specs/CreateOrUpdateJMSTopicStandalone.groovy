@@ -175,7 +175,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "entries may not be null"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
     }
 
     @Unroll
@@ -195,7 +195,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Failed to handle 'jms-topic add  --topic-address=${runParams.topicName} --entries= ': newValue is null"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'jndiNames' is not provided"
 
     }
 
@@ -241,6 +241,33 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     }
 
+    @Unroll
+    def "Create JMS Topic with additional option --legacy-entries (C278556)"() {
+        String testCaseId = "C278556"
+
+        def runParams = [
+                additionalOptions: '--legacy-entries=java:/test,java:/test2',
+                jndiNames        : defaultJndiNames,
+                profile          : '',
+                serverconfig     : defaultConfigName,
+                topicName        : "testTopic-$testCaseId",
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
+
+        String topicName = "testTopic-$testCaseId"
+        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
+        checkCreateOrUpdateJMSTopic(topicName, jndiName, "test=java:/test, test2=java:/test2")
+
+        cleanup:
+        topicName = "testTopic-$testCaseId"
+        removeJMSTopic(topicName)
+    }
+
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
 //        deleteProject(projectName)
@@ -251,6 +278,13 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String legacy) {
+        def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoStandalone(topicName)).result
+        String entries = result.'entries'
+        assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        String legacyActual = result.'legacy-entries'
+        assert legacyActual.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ legacy
+    }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoStandalone(topicName)).result

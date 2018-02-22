@@ -373,7 +373,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 additionalOptions    : '',
                 durable              : '0',
                 jndiNames            : defaultJndiNames,
-                messageSelector      : "\"Any whitespace filter\"",
+                messageSelector      : "Any whitespace filter",
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
                 serverconfig         : defaultConfigName
@@ -388,7 +388,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
 
         String queueName = "testQueue-$testCaseId"
         String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "\"Any whitespace filter\"", jndiName)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "Any whitespace filter", jndiName)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -547,6 +547,46 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized argument ${runParams.additionalOptions} for command 'add'."
     }
 
+    @Unroll
+    def "Create JMS Queue with additional option --legacy-entries (C278550)"() {
+        String testCaseId = "C278550"
+
+        def runParams = [
+                additionalOptions: '--legacy-entries=java:/test,java:/test2',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : '',
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
+        ]
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
+
+        String queueName = "testQueue-$testCaseId"
+        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, "test=java:/test, test2=java:/test2")
+
+        cleanup:
+        queueName = "testQueue-$testCaseId"
+        removeJMSQueue(queueName)
+        reloadStandalone()
+    }
+
+    void checkCreateOrUpdateJMSQueue(String queueName, String durable, String messageSelector, String jndiNames, String legacy) { //check with legacy
+        def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSQueueInfoStandalone(queueName)).result
+        String entries = result.'entries'
+        assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'durable' == durable
+        assert result.'selector' == messageSelector
+        String legacyActual = result.'legacy-entries'
+        assert legacyActual.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ legacy
+    }
 
     void checkCreateOrUpdateJMSQueue(String queueName, String durable, String messageSelector, String jndiNames) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSQueueInfoStandalone(queueName)).result
