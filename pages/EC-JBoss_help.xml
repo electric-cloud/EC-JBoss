@@ -422,9 +422,64 @@
             <div id="CreateOrUpdateJMSQueue">
                 <a name='CreateOrUpdateJMSQueue' id="CreateOrUpdateJMSQueue"></a>
                 <h2>CreateOrUpdateJMSQueue</h2>
-                <p>This procedure creates or updates jms queue in JBoss. jms-queue command - manage JMS queues in the messaging-activemq subsystem.</p>
+                This procedure creates a new jms queue or updates JNDI names for existing queue in default messaging provider within JBoss EAP messaging subsystem.
+				Default provider for the messaging is included when starting the JBoss EAP server with the full or full-ha configuration.
+                <br/><br/>
+                Based on version of JBoss EAP there is different messaging brokers are used:
+                <ol>
+                    <li>in EAP 6 messaging subsystem is based on HornetQ messaging broker</li>
+                    <li>in EAP 7 messaging subsystem is based on ActiveMQ Artemis messaging broker</li>
+                </ol>
+                Unique identifier for the JMS queue is the following
+                <ol>
+                    <li>for Standalone JBoss: 'Queue Name'</li>
+                    <li>for Domain JBoss: 'Queue Name' and 'Profile'</li>
+                </ol>
+                Within this procedure a few success scenarios are possible based on the facts if queue already exists and what JNDI names are bound to this queue.
+                <ol>
+                    <li>
+                        Create scenario:
+                        <br/>
+                        if queue does not exist (based on unique identifier)
+                        then it will be created within default messaging provider (and in case of Domain within specified 'Profile')
+                        with specified 'Queue Name' and list of JNDI names.
+                        Furthermore it is possible to specify is queue to be created durable or not ('Durable') and specify 'Message Selector'.
+                        <br/>
+                        At this moment we are using the following cli command for creating new queue: 'jms-queue add'
+                        <br/>
+                        For example: 'jms-queue --profile=full add --queue-address=newQueueName --entries=java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2 --durable=false'
+                    </li>
+                    <li>
+                        Update scenario:
+                        <br/>
+                        if queue exists (based on unique identifier) and specified list of JNDI names differs from actual list of JNDI name for the queue
+                        then JNDI name will be updated for this queue.
+                        <br/>
+                        NOTE: difference between specified and actual 'Durable' and 'Message Selector' will be ignored. Any 'Additional Options' will be ignored.
+                        <br/>
+                        NOTE: it is possible that some JBoss servers will require restart (in case of EAP 6) or reload (in case of EAP 7) after queue is updated by new list of jndi names.
+                        At this moment we are not handling any extra reloading or restarting of servers.
+                        If JMS queue is updated you can find JBoss response included into step summary - this response may help to understand is there any reload or restart of servers is required.
+                        Furthermore we will parse the JBoss response and try to figure out if restart or reload required in order to set Warning status if reload or restart is required.
+                        <br/>
+                        At this moment we are using the following cli command for updating JNDI names for existing queue: ':write-attribute(name=entries,value=[list_of_jndi_names])' in needed context
+                        <br/>
+                        For example:
+                        <br/>
+                        for queue 'myQueue' in 'full' profile within Domain (EAP 7 example) '/profile=full/subsystem=messaging-activemq/server=default/jms-queue=myQueue/:write-attribute(name=entries,value=[java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2])'
+                        <br/>
+                        for queue 'myQueue' within Standalone (EAP 6 example) '/profile=full/subsystem=messaging/hornetq-server=default/jms-queue=myQueue/:write-attribute(name=entries,value=[java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2])'
+                    </li>
+                    <li>
+                        Everything up-to-date scenario:
+                        <br/>
+                        if queue exists (based on unique identifier) and specified list of JNDI names matches actual list of JNDI name
+                        then no changes to be done.
+                        <br/>
+                        NOTE: difference between specified and actual 'Durable' and 'Message Selector' will be ignored. Any 'Additional Options' will be ignored.
+                    </li>
+                </ol>
                 <h3>Input</h3>
-
                 <ol>
                     <li>Go to the CreateOrUpdateJMSQueue procedure.</li>
                     <li>Enter the following parameters:<br />
@@ -437,50 +492,155 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td class='required'>Configuration Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+                                        To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Queue Name</td>
-                                    <td>Name of the Queue.</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        Name of the Queue.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class='required'>JNDI Names</td>
-                                    <td>Comma Separated JNDI Names.</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        Format: comma separated JNDI names (do not use whitespaces).
+                                        <br/>
+                                        The list of JNDI names the queue will be bound to.
+                                        <br/>
+                                        For example: 'java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2'
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Profile</td>
-                                    <td>Subsystem profile if applicable. Required for Domain.</td>
+                                    <td>Profile (Domain only)</td>
+                                    <td>
+                                        Required for Domain, will be ignored for Standalone
+                                        <br/>
+                                        Name of profile in Domain where queue should be created or updated (in case of need).
+                                        <br/>
+                                        For example: 'full', 'full-ha'
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Durable</td>
-                                    <td>Is Queue Durable (True/False).  Default is False, i.e., not durable.</td>
+                                    <td>
+                                        NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario.
+                                        <br/>
+                                        Whether the queue to be created is durable or not.
+                                        Default is false (unchecked) - non durable.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Message Selector</td>
-                                    <td>Selector for Message.</td>
+                                    <td>
+                                        NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario.
+                                        <br/>
+                                        JMS message selector the queue will have.
+                                        Only messages that match the selector will be added to the queue.
+                                        For example: color='red'
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Additional Options</td>
-                                    <td>Currently a pass through. Let us certify at least one use case.</td>
+                                    <td>
+                                        NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario.
+                                        <br/>
+                                        The 'Additional options' string will be concatenated to already generated command line for creating queue.
+                                        <br/>
+                                        For example:
+                                        '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'
+                                        <br/> i.e.
+                                        if 'Queue Name' is 'myQueue', 'JNDI Names' is 'java:jboss/exported/jms/queue/test', durable is unchecked
+                                        and 'Additional options' is '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'
+                                        the the following jboss-cli command will be called:
+                                        <br/>
+                                        'jms-queue add --queue-address=myQueue --entries=java:jboss/exported/jms/queue/test --durable=false --legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSQueue/CreateOrUpdateJMSQueueForm1.PNG" />
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSQueue/CreateOrUpdateJMSQueueForm2.PNG" />
                     </li>
-                    <br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSQueue/CreateOrUpdateJMSQueueForm1.png" />
-                    <br />
                 </ol>
                 <h3>Output</h3>
                 <p>
                     After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CreateOrUpdateJMSQueue</b> step,
                     click the Log icon to see the diagnostic information.
                 </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSQueue/CreateOrUpdateJMSQueueRunScenarios.PNG" />
             </div>
             <div id="CreateOrUpdateJMSTopic">
                 <a name='CreateOrUpdateJMSTopic' id="CreateOrUpdateJMSTopic"></a>
                 <h2>CreateOrUpdateJMSTopic</h2>
-                <p>This procedure creates or updates jms topic in JBoss.</p>
+                This procedure creates a new jms topic or updates JNDI names for existing topic in default messaging provider within JBoss EAP messaging subsystem.
+                Default provider for the messaging is included when starting the JBoss EAP server with the full or full-ha configuration.
+                <br/><br/>
+                Based on version of JBoss EAP there is different messaging brokers are used:
+                <ol>
+                    <li>in EAP 6 messaging subsystem is based on HornetQ messaging broker</li>
+                    <li>in EAP 7 messaging subsystem is based on ActiveMQ Artemis messaging broker</li>
+                </ol>
+                Unique identifier for the JMS topic is the following
+                <ol>
+                    <li>for Standalone JBoss: 'Topic Name'</li>
+                    <li>for Domain JBoss: 'Topic Name' and 'Profile'</li>
+                </ol>
+                Within this procedure a few success scenarios are possible based on the facts if topic already exists and what JNDI names are bound to this topic.
+                <ol>
+                    <li>
+                        Create scenario:
+                        <br/>
+                        if topic does not exist (based on unique identifier)
+                        then it will be created within default messaging provider (and in case of Domain within specified 'Profile')
+                        with specified 'Topic Name' and list of JNDI names.
+                        <br/>
+                        At this moment we are using the following cli command for creating new topic: 'jms-topic add'
+                        <br/>
+                        For example: 'jms-topic --profile=full add --topic-address=newTopicName --entries=java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2'
+                    </li>
+                    <li>
+                        Update scenario:
+                        <br/>
+                        if topic exists (based on unique identifier) and specified list of JNDI names differs from actual list of JNDI name for the topic
+                        then JNDI name will be updated for this topic.
+                        <br/>
+                        NOTE: Any 'Additional Options' will be ignored.
+                        <br/>
+                        NOTE: it is possible that some JBoss servers will require restart (in case of EAP 6) or reload (in case of EAP 7) after topic is updated by new list of jndi names.
+                        At this moment we are not handling any extra reloading or restarting of servers.
+                        If JMS topic is updated you can find JBoss response included into step summary - this response may help to understand is there any reload or restart of servers is required.
+                        Furthermore we will parse the JBoss response and try to figure out if restart or reload required in order to set Warning status if reload or restart is required.
+                        <br/>
+                        At this moment we are using the following cli command for updating JNDI names for existing topic: ':write-attribute(name=entries,value=[list_of_jndi_names])' in needed context
+                        <br/>
+                        For example:
+                        <br/>
+                        for topic 'myTopic' in 'full' profile within Domain (EAP 7 example) '/profile=full/subsystem=messaging-activemq/server=default/jms-topic=myTopic/:write-attribute(name=entries,value=[java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2])'
+                        <br/>
+                        for topic 'myTopic' within Standalone (EAP 6 example) '/profile=full/subsystem=messaging/hornetq-server=default/jms-topic=myTopic/:write-attribute(name=entries,value=[java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2])'
+                    </li>
+                    <li>
+                        Everything up-to-date scenario:
+                        <br/>
+                        if topic exists (based on unique identifier) and specified list of JNDI names matches actual list of JNDI name
+                        then no changes to be done.
+                        <br/>
+                        NOTE: Any 'Additional Options' will be ignored.
+                    </li>
+                </ol>
                 <h3>Input</h3>
 
                 <ol>
@@ -495,37 +655,76 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td class='required'>Configuration Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+                                        To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Topic Name</td>
-                                    <td>Name of the Topic.</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        Name of the Topic.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class='required'>JNDI Names</td>
-                                    <td>Comma Separated JNDI Names.</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        Format: comma separated JNDI names (do not use whitespaces).
+                                        <br/>
+                                        The list of JNDI names the topic will be bound to.
+                                        <br/>
+                                        For example: 'java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2'
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Profile</td>
-                                    <td>Subsystem profile if applicable. Required for Domain.</td>
+                                    <td>Profile (Domain only)</td>
+                                    <td>
+                                        Required for Domain, will be ignored for Standalone
+                                        <br/>
+                                        Name of profile in Domain where topic should be created or updated (in case of need).
+                                        <br/>
+                                        For example: 'full', 'full-ha'
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Additional Options</td>
-                                    <td>Currently a pass through. Let us certify at least one use case.</td>
+                                    <td>
+                                        NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario.
+                                        <br/>
+                                        The 'Additional options' string will be concatenated to already generated command line for creating topic.
+                                        <br/>
+                                        For example:
+                                        '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'
+                                        <br/> i.e.
+                                        if 'Topic Name' is 'myTopic', 'JNDI Names' is 'java:jboss/exported/jms/topic/test', durable is unchecked
+                                        and 'Additional options' is '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'
+                                        the the following jboss-cli command will be called:
+                                        <br/>
+                                        'jms-topic add --topic-address=myTopic --entries=java:jboss/exported/jms/topic/test --durable=false --legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSTopic/CreateOrUpdateJMSTopicForm1.PNG" />
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSTopic/CreateOrUpdateJMSTopicForm1.PNG" />
                     </li>
-                    <br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSTopic/CreateOrUpdateJMSTopicForm1.png" />
-                    <br />
                 </ol>
                 <h3>Output</h3>
                 <p>
                     After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CreateOrUpdateJMSTopic</b> step,
                     click the Log icon to see the diagnostic information.
                 </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSTopic/CreateOrUpdateJMSTopicRunScenarios.PNG" />
             </div>
             <div id="DeleteDatasource"> <a name='DeleteDatasource' id="DeleteDatasource"></a>
                 <h2>DeleteDatasource</h2>
@@ -975,7 +1174,24 @@
             <div id="RemoveJMSQueue">
                 <a name='RemoveJMSQueue' id="RemoveJMSQueue"></a>
                 <h2>RemoveJMSQueue</h2>
-                <p>This procedure removes jms queue in JBoss.</p>
+                This procedure removes specified jms queue in default messaging provider within JBoss EAP messaging subsystem.
+                Default provider for the messaging is included when starting the JBoss EAP server with the full or full-ha configuration.
+                <br/><br/>
+                Based on version of JBoss EAP there is different messaging brokers are used:
+                <ol>
+                    <li>in EAP 6 messaging subsystem is based on HornetQ messaging broker</li>
+                    <li>in EAP 7 messaging subsystem is based on ActiveMQ Artemis messaging broker</li>
+                </ol>
+                Unique identifier for the JMS queue is the following
+                <ol>
+                    <li>for Standalone JBoss: 'Queue Name'</li>
+                    <li>for Domain JBoss: 'Queue Name' and 'Profile'</li>
+                </ol>
+                If specified queue does not exist - job status will be warning.
+                <br/>
+                At this moment we are using the following cli command for removing a queue: 'jms-queue remove'
+                <br/>
+                For example: 'jms-queue --profile=full remove --queue-address=someQueue'
                 <h3>Input</h3>
 
                 <ol>
@@ -990,23 +1206,39 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td class='required'>Configuration Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+                                        To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Queue Name</td>
-                                    <td>Name of the Queue.</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        Name of the Queue.
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Profile</td>
-                                    <td>Subsystem profile if applicable. Required for Domain.</td>
+                                    <td>Profile (Domain only)</td>
+                                    <td>
+                                        Required for Domain, will be ignored for Standalone
+                                        <br/>
+                                        Name of profile in Domain where queue should be removed.
+                                        <br/>
+                                        For example: 'full', 'full-ha'
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/RemoveJMSQueue/RemoveJMSQueueForm1.PNG" />
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/RemoveJMSQueue/RemoveJMSQueueForm2.PNG" />
                     </li>
-                    <br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/RemoveJMSQueue/RemoveJMSQueueForm1.png" />
-                    <br />
                 </ol>
                 <h3>Output</h3>
                 <p>
@@ -1017,7 +1249,24 @@
             <div id="RemoveJMSTopic">
                 <a name='RemoveJMSTopic' id="RemoveJMSTopic"></a>
                 <h2>RemoveJMSTopic</h2>
-                <p>This procedure removes jms queue in JBoss.</p>
+                This procedure removes specified jms topic in default messaging provider within JBoss EAP messaging subsystem.
+                Default provider for the messaging is included when starting the JBoss EAP server with the full or full-ha configuration.
+                <br/><br/>
+                Based on version of JBoss EAP there is different messaging brokers are used:
+                <ol>
+                    <li>in EAP 6 messaging subsystem is based on HornetQ messaging broker</li>
+                    <li>in EAP 7 messaging subsystem is based on ActiveMQ Artemis messaging broker</li>
+                </ol>
+                Unique identifier for the JMS topic is the following
+                <ol>
+                    <li>for Standalone JBoss: 'Topic Name'</li>
+                    <li>for Domain JBoss: 'Topic Name' and 'Profile'</li>
+                </ol>
+                If specified topic does not exist - job status will be warning.
+                <br/>
+                At this moment we are using the following cli command for removing a topic: 'jms-topic remove'
+                <br/>
+                For example: 'jms-topic --profile=full remove --topic-address=someTopic'
                 <h3>Input</h3>
 
                 <ol>
@@ -1032,23 +1281,39 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td class='required'>Configuration Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration.
+                                        To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Topic Name</td>
-                                    <td>Name of the Topic.</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        Name of the Topic.
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Profile</td>
-                                    <td>Subsystem profile if applicable. Required for Domain.</td>
+                                    <td>Profile (Domain only)</td>
+                                    <td>
+                                        Required for Domain, will be ignored for Standalone
+                                        <br/>
+                                        Name of profile in Domain where topic should be removed.
+                                        <br/>
+                                        For example: 'full', 'full-ha'
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/RemoveJMSTopic/RemoveJMSTopicForm1.PNG" />
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/RemoveJMSTopic/RemoveJMSTopicForm2.PNG" />
                     </li>
-                    <br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/RemoveJMSTopic/RemoveJMSTopicForm1.png" />
-                    <br />
                 </ol>
                 <h3>Output</h3>
                 <p>
