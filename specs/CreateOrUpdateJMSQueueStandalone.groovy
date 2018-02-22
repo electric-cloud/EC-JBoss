@@ -49,7 +49,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-//        deleteProject(projectName)
+        deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -232,37 +232,36 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "Update JMS Queue, change 'JNDI Names' (C278362)"() { //need manual check with app
-        String testCaseId = "C278362"
+    def "Create JMS Queue with 'message selector' with whitespace (C278435)"() {
+        String testCaseId = "C278435"
 
         def runParams = [
                 additionalOptions    : '',
                 durable              : '0',
                 jndiNames            : defaultJndiNames,
-                messageSelector      : '',
+                messageSelector      : "Any whitespace filter",
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
                 serverconfig         : defaultConfigName
         ]
-        setup:
-        addJMSQueueDefaultStandalone(runParams.queueName, "queue/test, java:jboss/exported/jms/queue/test2") //wrong jndi name
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
         String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "Any whitespace filter", jndiName)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName)
-        reloadStandalone()
     }
+
+
 
     @Unroll
     def "Update JMS Queue, ignored change 'Durable' (C278363)"() {
@@ -294,7 +293,6 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName)
-        reloadStandalone()
     }
 
     @Unroll
@@ -323,72 +321,6 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         String queueName = "testQueue-$testCaseId"
         String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
         checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName)
-
-        cleanup:
-        queueName = "testQueue-$testCaseId"
-        removeJMSQueue(queueName)
-        reloadStandalone()
-    }
-
-
-    @Unroll
-    def "Update JMS Queue with all completed field, change JNDI, ignored other fileds (C278377)"() {
-        String testCaseId = "C278377"
-
-        def runParams = [
-                additionalOptions    : '',
-                durable              : '1', //durable=true
-                jndiNames            : defaultJndiNames,
-                messageSelector      : 'FILTER_EXPRESSION',
-                profile              : '',
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
-        ]
-        setup:
-        addJMSQueueDefaultStandalone(runParams.queueName, "queue/test, java:jboss/exported/jms/queue/test2") //without message selector, durable=false and wrong jndi
-
-        when:
-        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-
-        then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names"
-
-        String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName)
-
-        cleanup:
-        queueName = "testQueue-$testCaseId"
-        removeJMSQueue(queueName)
-        reloadStandalone()
-    }
-
-
-    @Unroll
-    def "Create JMS Queue with 'message selector' with whitespace (C278435)"() {
-        String testCaseId = "C278435"
-
-        def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : "Any whitespace filter",
-                profile              : '',
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
-        ]
-
-        when:
-        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-
-        then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
-
-        String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "Any whitespace filter", jndiName)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -426,7 +358,6 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName)
-        reloadStandalone()
     }
 
     @Unroll
@@ -448,7 +379,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "entries may not be null"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'queueName' is not provided"
     }
 
     @Unroll
@@ -470,7 +401,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Wrong type for entries. Expected \\[EXPRESSION, STRING\\] but was PROPERTY"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'jndiNames' is not provided"
     }
 
     @Unroll
@@ -575,7 +506,70 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName)
-        reloadStandalone()
+    }
+
+    @Unroll
+    def "Update JMS Queue, change 'JNDI Names' (C278362)"() { //need manual check with app
+        String testCaseId = "C278362"
+
+        def runParams = [
+                additionalOptions    : '',
+                durable              : '0',
+                jndiNames            : defaultJndiNames,
+                messageSelector      : '',
+                profile              : '',
+                queueName            : "testQueue-$testCaseId",
+                serverconfig         : defaultConfigName
+        ]
+        setup:
+        addJMSQueueDefaultStandalone(runParams.queueName, "queue/test3, java:jboss/exported/jms/queue/test3") //wrong jndi name
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "warning"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*" //for check need reload
+
+        String queueName = "testQueue-$testCaseId"
+        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName)
+
+        cleanup:
+        queueName = "testQueue-$testCaseId"
+        removeJMSQueue(queueName)
+    }
+
+    @Unroll
+    def "Update JMS Queue with all completed field, change JNDI, ignored other fields (C278377)"() {
+        String testCaseId = "C278377"
+
+        def runParams = [
+                additionalOptions    : '',
+                durable              : '1', //durable=true
+                jndiNames            : defaultJndiNames,
+                messageSelector      : 'FILTER_EXPRESSION',
+                profile              : '',
+                queueName            : "testQueue-$testCaseId",
+                serverconfig         : defaultConfigName
+        ]
+        setup:
+        addJMSQueueDefaultStandalone(runParams.queueName, "queue/test2, java:jboss/exported/jms/queue/test2") //without message selector, durable=false and wrong jndi
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "warning"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
+
+        String queueName = "testQueue-$testCaseId"
+        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName)
+
+        cleanup:
+        queueName = "testQueue-$testCaseId"
+        removeJMSQueue(queueName)
     }
 
     void checkCreateOrUpdateJMSQueue(String queueName, String durable, String messageSelector, String jndiNames, String legacy) { //check with legacy
@@ -598,10 +592,6 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
 
     void removeJMSQueue(String queueName) {
         runCliCommand(CliCommandsGeneratorHelper.removeJMSQueueStandalone(queueName))
-    }
-
-    void reloadStandalone() {
-        runCliCommand(CliCommandsGeneratorHelper.reloadStandalone())
     }
 
     void addJMSQueueDefaultStandalone(String queueName, String jndiName) {
