@@ -2192,7 +2192,7 @@
             <formalParameter>
                 <formalParameterName>customCommand</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>>Specifies the command to run.</description>
+                <description>Specifies the command to run.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
