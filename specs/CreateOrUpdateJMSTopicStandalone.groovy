@@ -39,6 +39,15 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     }
 
+    def doCleanupSpec() {
+        logger.info("Hello World! doCleanupSpec")
+        deleteProject(projectName)
+        deleteConfiguration("EC-JBoss", defaultConfigName)
+    }
+
+    RunProcedureJob runProcedureUnderTest(def parameters) {
+        return runProcedureDsl(projectName, procName, parameters)
+    }
 
     @Unroll
     def "Create JMS Topic with minimum parameters (C278441)"() {
@@ -94,37 +103,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         removeJMSTopic(topicName)
     }
 
-    @Unroll
-    def "Update JMS Topic, change 'JNDI Names' (C278443)"() {
-        String testCaseId = "C278443"
 
-        def runParams = [
-                additionalOptions: "",
-                jndiNames        : defaultJndiNames,
-                profile          : '',
-                serverconfig     : defaultConfigName,
-                topicName        : "testTopic-$testCaseId",
-        ]
-
-        setup:
-        addJMSTopicDefaultDomain(runParams.topicName, "topic/test2,java:jboss/exported/jms/topic/test2")
-
-        when:
-        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-
-        then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been updated successfully by new jndi names"
-
-        String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName)
-
-        cleanup:
-        topicName = "testTopic-$testCaseId"
-        removeJMSTopic(topicName)
-        reloadStandalone()
-    }
 
     @Unroll
     def "Update JMS Topic with the same parameters (C278501)"() {
@@ -155,7 +134,6 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         cleanup:
         topicName = "testTopic-$testCaseId"
         removeJMSTopic(topicName)
-        reloadStandalone()
     }
 
     @Unroll
@@ -175,7 +153,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "entries may not be null"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
     }
 
     @Unroll
@@ -195,7 +173,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Failed to handle 'jms-topic add  --topic-address=${runParams.topicName} --entries= ': newValue is null"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'jndiNames' is not provided"
 
     }
 
@@ -241,16 +219,71 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     }
 
-    def doCleanupSpec() {
-        logger.info("Hello World! doCleanupSpec")
-//        deleteProject(projectName)
-        deleteConfiguration("EC-JBoss", defaultConfigName)
+    @Unroll
+    def "Create JMS Topic with additional option --legacy-entries (C278556)"() {
+        String testCaseId = "C278556"
+
+        def runParams = [
+                additionalOptions: '--legacy-entries=java:/test,java:/test2',
+                jndiNames        : defaultJndiNames,
+                profile          : '',
+                serverconfig     : defaultConfigName,
+                topicName        : "testTopic-$testCaseId",
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
+
+        String topicName = "testTopic-$testCaseId"
+        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
+        checkCreateOrUpdateJMSTopic(topicName, jndiName, "test=java:/test, test2=java:/test2")
+
+        cleanup:
+        topicName = "testTopic-$testCaseId"
+        removeJMSTopic(topicName)
     }
 
-    RunProcedureJob runProcedureUnderTest(def parameters) {
-        return runProcedureDsl(projectName, procName, parameters)
+    @Unroll
+    def "Update JMS Topic, change 'JNDI Names' (C278443)"() {
+        String testCaseId = "C278443"
+
+        def runParams = [
+                additionalOptions: "",
+                jndiNames        : defaultJndiNames,
+                profile          : '',
+                serverconfig     : defaultConfigName,
+                topicName        : "testTopic-$testCaseId",
+        ]
+
+        setup:
+        addJMSTopicDefaultDomain(runParams.topicName, "topic/test2,java:jboss/exported/jms/topic/test2")
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "warning"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been updated successfully by new jndi names*(reload-required|restart)*"
+
+        String topicName = "testTopic-$testCaseId"
+        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
+        checkCreateOrUpdateJMSTopic(topicName, jndiName)
+
+        cleanup:
+        topicName = "testTopic-$testCaseId"
+        removeJMSTopic(topicName)
     }
 
+    void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String legacy) {
+        def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoStandalone(topicName)).result
+        String entries = result.'entries'
+        assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        String legacyActual = result.'legacy-entries'
+        assert legacyActual.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ legacy
+    }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoStandalone(topicName)).result
@@ -260,10 +293,6 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     void removeJMSTopic(String topicName) {
         runCliCommand(CliCommandsGeneratorHelper.removeJMSTopicStandalone(topicName))
-    }
-
-    void reloadStandalone() {
-        runCliCommand(CliCommandsGeneratorHelper.reloadStandalone())
     }
 
     void addJMSTopicDefaultDomain(String topicName, String jndiName) {
