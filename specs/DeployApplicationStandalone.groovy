@@ -3,7 +3,7 @@ import spock.lang.*
 import Utils.EnvPropertiesHelper
 
 @IgnoreIf({ env.JBOSS_MODE == 'domain' })
-class DeployAppStandalone extends PluginTestHelper {
+class DeployApplicationStandalone extends PluginTestHelper {
 
     @Shared
     String procName = 'DeployApplication'

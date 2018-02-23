@@ -3,7 +3,7 @@ import Utils.EnvPropertiesHelper
 import spock.lang.*
 
 @IgnoreIf({ env.JBOSS_MODE == 'domain' })
-class RemoveJMSTopicDomain extends PluginTestHelper {
+class RemoveJMSTopicStandalone extends PluginTestHelper {
 
     @Shared
     String procName = 'RemoveJMSTopic'
