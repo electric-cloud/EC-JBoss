@@ -11,6 +11,12 @@ my %deployApp = (
     description => "Deploy an application into JBoss server",
     category    => "Application Server"
 );
+my %deployApplication = (
+    label       => "JBoss - Deploy Application (new)",
+    procedure   => "DeployApplication",
+    description => "Deploy an application (mainly WAR or EAR) from the specified source (usually from filepath) to standalone server (for Standalone JBoss) or to content repository and specified server groups (for Domain JBoss)",
+    category    => "Application Server"
+);
 my %shutdownStandaloneServer = (
     label       => "JBoss - Shutdown Standalone Server",
     procedure   => "ShutdownStandaloneServer",
@@ -100,6 +106,34 @@ my %checkHostControllerStatus = (
     category    => "Application Server"
 );
 
+my %createOrUpdateJMSQueue = (
+    label       => "JBoss - Create or Update JMS Queue",
+    procedure   => "CreateOrUpdateJMSQueue",
+    description => "Create or update JMS queue",
+    category    => "Application Server"
+);
+
+my %createOrUpdateJMSTopic = (
+    label       => "JBoss - Create or Update JMS Topic",
+    procedure   => "CreateOrUpdateJMSTopic",
+    description => "Create or update JMS topic",
+    category    => "Application Server"
+);
+
+my %removeJMSQueue = (
+    label       => "JBoss - Remove JMS Queue",
+    procedure   => "RemoveJMSQueue",
+    description => "Remove JMS queue",
+    category    => "Application Server"
+);
+
+my %removeJMSTopic = (
+    label       => "JBoss - Remove JMS Topic",
+    procedure   => "RemoveJMSTopic",
+    description => "Remove JMS topic",
+    category    => "Application Server"
+);
+
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
@@ -108,6 +142,7 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Start Standa
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Undeploy App");
 
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy Application");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy Application (new)");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Undeploy Application");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Deploy Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Enable Deploy");
@@ -120,11 +155,16 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Run Start Se
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Run Stop Servers");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Group Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - CheckHostControllerStatus");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update JMS Queue");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update JMS Topic");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS Queue");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS Topic");
 
 
 @::createStepPickerSteps = (
     \%checkServerStatus,
     \%deployApp,
+    \%deployApplication,
     \%shutdownStandaloneServer,
     \%startDomainServer,
     \%startStandaloneServer,
@@ -138,7 +178,11 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - CheckHostCon
     \%startServers,
     \%stopServers,
     \%checkServerGroupStatus,
-    \%checkHostControllerStatus
+    \%checkHostControllerStatus,
+    \%createOrUpdateJMSQueue,
+    \%createOrUpdateJMSTopic,
+    \%removeJMSQueue,
+    \%removeJMSTopic
 );
 
 
@@ -240,6 +284,11 @@ if ($upgradeAction eq "upgrade") {
             });
 
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'DeployApplication',
+                    stepName => 'DeployApplication'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                 procedureName => 'UndeployApp',
                 stepName => 'UndeployApp'
             });
@@ -283,6 +332,26 @@ if ($upgradeAction eq "upgrade") {
                 procedureName => 'CheckHostControllerStatus',
                 stepName => 'CheckHostControllerStatus'
             });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'CreateOrUpdateJMSQueue',
+                    stepName => 'CreateOrUpdateJMSQueue'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'CreateOrUpdateJMSTopic',
+                    stepName => 'CreateOrUpdateJMSTopic'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'RemoveJMSQueue',
+                    stepName => 'RemoveJMSQueue'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'RemoveJMSTopic',
+                    stepName => 'RemoveJMSTopic'
+                });
         }
     }
 }

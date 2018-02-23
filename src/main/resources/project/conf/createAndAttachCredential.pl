@@ -90,6 +90,13 @@ $xpath = $ec->attachCredential($projName, $credName, {
 );
 $errors .= $ec->checkAllErrors($xpath);
 
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'DeployApplication',
+        stepName => 'DeployApplication'
+    }
+);
+$errors .= $ec->checkAllErrors($xpath);
+
 
 $xpath = $ec->attachCredential($projName, $credName, {
         procedureName => 'UndeployApp',
@@ -149,6 +156,34 @@ $errors .= $ec->checkAllErrors($xpath);
 $xpath = $ec->attachCredential($projName, $credName, {
         procedureName => 'CheckHostControllerStatus',
         stepName => 'CheckHostControllerStatus'
+    }
+);
+$errors .= $ec->checkAllErrors($xpath);
+
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'CreateOrUpdateJMSQueue',
+        stepName => 'CreateOrUpdateJMSQueue'
+    }
+);
+$errors .= $ec->checkAllErrors($xpath);
+
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'CreateOrUpdateJMSTopic',
+        stepName => 'CreateOrUpdateJMSTopic'
+    }
+);
+$errors .= $ec->checkAllErrors($xpath);
+
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'RemoveJMSQueue',
+        stepName => 'RemoveJMSQueue'
+    }
+);
+$errors .= $ec->checkAllErrors($xpath);
+
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'RemoveJMSTopic',
+        stepName => 'RemoveJMSTopic'
     }
 );
 $errors .= $ec->checkAllErrors($xpath);
