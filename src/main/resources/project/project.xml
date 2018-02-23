@@ -17,6 +17,12 @@
                         <value/>
                     </property>
                     <property>
+                        <propertyName>EC::LogTrapper</propertyName>
+                        <description>LogTrapper.pm</description>
+                        <expandable>0</expandable>
+                        <value></value>
+                    </property>
+                    <property>
                         <propertyName>File::Path</propertyName>
                         <description>Newest File::Path.</description>
                         <expandable>0</expandable>
