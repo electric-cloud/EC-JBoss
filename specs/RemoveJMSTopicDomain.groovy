@@ -67,8 +67,8 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "warning"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' not found"
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -121,8 +121,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Profile - required field"
-        // todo: runProcedureJob.getUpperStepSummary() - need change expected
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'profile' is not provided \\(parameter required for JBoss domain\\)"
 
         cleanup:
         topicName = "testTopic-$testCaseId"

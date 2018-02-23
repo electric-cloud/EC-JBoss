@@ -65,8 +65,8 @@ class RemoveJMSQueueStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "warning"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' not found"
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'queueName' is not provided"
 
         cleanup:
         queueName = "testQueue-$testCaseId"

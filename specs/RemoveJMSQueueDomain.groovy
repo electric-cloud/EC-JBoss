@@ -66,8 +66,8 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "warning"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' not found"
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'queueName' is not provided"
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -111,8 +111,7 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Profile - required field"
-        // todo: runProcedureJob.getUpperStepSummary() - need change expected
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'profile' is not provided \\(parameter required for JBoss domain\\)"
 
         cleanup:
         queueName = "testQueue-$testCaseId"

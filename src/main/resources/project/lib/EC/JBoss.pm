@@ -26,7 +26,6 @@ use Data::Dumper;
 use IPC::Open3;
 use Symbol qw/gensym/;
 use IO::Select;
-#use XML::Simple qw(XMLout);
 
 our $VERSION = 0.02;
 
@@ -179,8 +178,7 @@ sub new {
 
     if ($params{script_path}) {
         if (!$self->{dryrun} && (!-e $params{script_path} || !-s $params{script_path})) {
-            print "(test print) File $params{script_path} doesn't exist or empty";
-            croak "(test croak) File $params{script_path} doesn't exist or empty";
+            croak "File $params{script_path} doesn't exist or empty";
         }
         if (-d $params{script_path}) {
             croak "$params{script_path} is a directory";
@@ -540,16 +538,10 @@ Converts JBoss response to json.
 sub convert_response_to_json {
     my ($self, $response) = @_;
 
-    # converts jboss DMR "Long" vaslues into string e.g. ["result" => 1516113387336L,] changed into ["result" => "1516113387336L",]
-    $response =~ s/(\s=>\s)(\d+L)(,?)$/$1"$2"$3/gms;
-    # converts jboss DMR bytes value to some string e.g. ["hash" => bytes { 0x80, ... 0xb7 }] => ["hash" => "SKIPPED BY PLUGIN"]
-    $response =~ s/("hash"\s=>\s)(bytes\s\{.*?\})(,?)/$1"SKIPPED BY PLUGIN"$3/gs;
-    #todo: roll back this change
-    $response =~ s/("owner")(\s=>\s)/"_owner"$2/gs;
-    # converts jboss DMR key/value delimiter into json style: ["someKey" => "someValue"] changed into ["someKey":"someValue"]
     $response =~ s/\s=>\s/:/gs;
     $response =~ s/undefined/null/gs;
     $response =~ s/\n/ /gs;
+    # $response =~ s/"\n"/"\\n"/gs;
     $response =~ s/:expression\s/: /gs;
 
     return $response;
@@ -1515,74 +1507,6 @@ sub do_we_have_error_on_interact_support {
     }
     $self->log_debug("We don't have --error-on-interact support");
     return 0;
-}
-
-sub save_retrieved_data {
-    my ($self, %param) = @_;
-
-    my $format = $param{format};
-    my $property = $param{property};
-    my $raw = $param{raw};
-    # data may be perl data structure or decoded JSON
-    my $data = $param{data};
-
-    my $message;
-    if ($format eq 'json') {
-        my $json = JSON::encode_json($data);
-        $message = "Data has been saved as JSON under $property";
-        $self->log_info("JSON to save", JSON->new->pretty->encode($data));
-        $self->ec->setProperty($property, $json);
-    }
-#    elsif ($format eq 'xml') {
-#        my $xml_handler = $param{xml_handler};
-#        unless($xml_handler && ref $xml_handler eq 'CODE') {
-#            $self->bail_out('No xml_handler provided for XML output');
-#        }
-#        my $refined = $xml_handler->($data);
-#        my $xml = XMLout($refined, NoAttr => 1, RootName => 'data', XMLDecl => 1);
-#        $message = "Data has been saved as XML under $property";
-#        $self->log_info("XML to save", $xml);
-#        $self->ec->setProperty($property, $xml);
-#    }
-    elsif ($format eq 'propertySheet') {
-        my $flat = _flatten_map($data, $property);
-        for my $key ( sort keys %$flat ) {
-            $self->ec->setProperty($key, $flat->{$key});
-            $self->log_info("Wrote property: $key -> $flat->{$key}");
-        }
-        $message = "Data has been saved as property sheet under $property";
-    }
-    else {
-        $self->ec->setProperty($property, $raw);
-        $message = "Raw data has been saved under property $property"
-    }
-    $self->success($message);
-}
-
-sub _flatten_map {
-    my ($map, $prefix) = @_;
-
-    $prefix ||= '';
-    my %retval = ();
-    for my $key (keys %$map) {
-        my $value = $map->{$key};
-        if (ref $value eq 'ARRAY') {
-            my $counter = 1;
-            my %copy = map { my $key = ref $_ ? $counter ++ : $_; $key => $_ } @$value;
-            $value = \%copy;
-        }
-        elsif (ref $value eq 'JSON::XS::Boolean') {
-            $value = "$value";
-        }
-
-        if (ref $value) {
-            %retval = (%retval, %{_flatten_map($value, "$prefix/$key")});
-        }
-        else {
-            $retval{"$prefix/$key"} = $value ? $value : "";
-        }
-    }
-    return \%retval;
 }
 
 1;
