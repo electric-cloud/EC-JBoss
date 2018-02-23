@@ -681,33 +681,6 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "One of --disabled, --all-server-groups or --server-groups is missing."
     }
 
-    def "Negative. DeployApp with specified file without extension (C259004)"() {
-        String testCaseId = "C259004"
-
-        def runParams = [
-                serverconfig         : defaultConfigName,
-                scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app",
-                appname              : "",
-                runtimename          : "",
-                force                : "0",
-                assignservergroups   : "",
-                assignallservergroups: "1",
-                additional_options   : ""
-        ]
-
-        setup:
-        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
-
-
-        when:
-        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-
-        then:
-        assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "File: \\(${runParams.warphysicalpath}\\ doesn't exists"
-    }
-
     @Unroll
     def "DeployApp, 1st time, whitespace in path (C277891)"() {
         String testCaseId = "C277891"
@@ -1061,7 +1034,7 @@ class DeployAppDomain extends PluginTestHelper {
                 runtimename          : "$testCaseId-app-new-runtimename.war",
                 force                : "",
                 assignservergroups   : "",
-                assignallservergroups: "1",
+                assignallservergroups: "",
                 additional_options   : "--force"
         ]
         setup:
@@ -1109,7 +1082,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Cannot create input stream from URL 'https://github.com/electric-cloud/incorrect-path/hello-world.war'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Invalid url stream"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}"
 
     }
