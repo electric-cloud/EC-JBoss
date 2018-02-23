@@ -2,6 +2,7 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 import com.electriccloud.spec.*
+import groovy.json.JsonSlurper
 
 class PluginTestHelper extends PluginSpockTestSupport {
 
@@ -168,8 +169,6 @@ class PluginTestHelper extends PluginSpockTestSupport {
                         serverconfig      : configName,
                         scriptphysicalpath: '',
                         customCommand     : '',
-                        propertyName      : '',
-                        dumpFormat        : '',
                 ]
         ]
 
@@ -182,15 +181,33 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     def runCliCommandAndGetJBossReply(String command) {
-        return runCliCommand(command, "/myJob/RunCustomCommandResult")
-                .getPropertiesUnderPropertySheet("/myJob/RunCustomCommandResult")
+        RunProcedureJob runProcedureJob =  runCliCommand(command)
+
+        def commandsHistoryString = getJobProperty('/myJob/jobSteps/RunCustomCommand/commands_history', runProcedureJob.getJobId());
+        logger.info("RunCustomCommand commands_history: $commandsHistoryString")
+
+        def jsonSlurper = new JsonSlurper()
+
+        def commandsHistoryObject = jsonSlurper.parseText(commandsHistoryString)
+        assert commandsHistoryObject instanceof List
+
+        def stdoutObject;
+        for (def element: commandsHistoryObject) {
+            def stdoutString = element.result.stdout
+            logger.info("RunCustomCommand commands_history result stdout before replacing: $stdoutString")
+            stdoutString = stdoutString.replaceAll(/(?s)"hash" => bytes \{.*?}/, /"hash" => "skipped by system test"/)
+            stdoutString = stdoutString.replace(" => undefined", " => null")
+            stdoutString = stdoutString.replace(" => ", ":")
+            logger.info("RunCustomCommand commands_history result stdout after replacing: $stdoutString")
+            stdoutObject = jsonSlurper.parseText(stdoutString)
+            assert stdoutObject instanceof Map
+        }
+        return stdoutObject
     }
 
-    RunProcedureJob runCliCommand(String command, String jbossReplyPropertyName = "") {
+    RunProcedureJob runCliCommand(String command) {
         def runParams = [
-                customCommand: command,
-                propertyName : jbossReplyPropertyName,
-                dumpFormat   : 'propertySheet'
+                customCommand: command
         ]
 
         RunProcedureJob runProcedureJob = runProcedureDsl(helperProjName, helperProcedureRunCustomCommand, runParams)
