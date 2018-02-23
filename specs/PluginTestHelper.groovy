@@ -194,8 +194,13 @@ class PluginTestHelper extends PluginSpockTestSupport {
         def stdoutObject;
         for (def element: commandsHistoryObject) {
             def stdoutString = element.result.stdout
+            logger.info("RunCustomCommand commands_history result stdout before replacing: $stdoutString")
+            stdoutString = stdoutString.replaceAll(/(?s)"hash" => bytes \{.*?}/, /"hash" => "skipped by system test"/)
+            stdoutString = stdoutString.replace(" => undefined", " => null")
             stdoutString = stdoutString.replace(" => ", ":")
+            logger.info("RunCustomCommand commands_history result stdout after replacing: $stdoutString")
             stdoutObject = jsonSlurper.parseText(stdoutString)
+            assert stdoutObject instanceof Map
         }
         return stdoutObject
     }
