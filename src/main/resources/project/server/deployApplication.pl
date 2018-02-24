@@ -322,9 +322,9 @@ sub main {
             $jboss->warning();
         }
         if (@duplicated_server_groups_in_enabled_and_disabled_lists) {
-            $summary .= "\nDuplicated server groups in enabled and disabled lists: "
+            $summary .= "\nDuplicated server groups in enabled and disabled lists (please check provided parameters): "
                 . join(",", @duplicated_server_groups_in_enabled_and_disabled_lists);
-            $jboss->log_warning("Duplicated server groups in enabled and disabled lists: @duplicated_server_groups_in_enabled_and_disabled_lists");
+            $jboss->log_warning("Duplicated server groups in enabled and disabled lists (please check provided parameters): @duplicated_server_groups_in_enabled_and_disabled_lists");
             $jboss->warning();
         }
         $jboss->set_property(summary => $summary);
