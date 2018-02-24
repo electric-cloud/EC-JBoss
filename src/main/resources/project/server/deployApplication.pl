@@ -42,8 +42,7 @@ sub main {
     ########
     $jboss->log_info("=======Started: initial analyzing of parametes=======");
     if (!$param_application_content_source_path) {
-        $jboss->error("Required parameter 'applicationContentSourcePath' is not provided");
-        return;
+        $jboss->bail_out("Required parameter 'applicationContentSourcePath' is not provided");
     }
 
     my $source_is_url = 0;
@@ -82,8 +81,7 @@ sub main {
 
     # if application content source path is filepath - check if file exists
     if (!$source_is_url && !-e $param_application_content_source_path) {
-        $jboss->error("File '$param_application_content_source_path' doesn't exists");
-        return;
+        $jboss->bail_out("File '$param_application_content_source_path' doesn't exists");
     }
     $jboss->log_info("=======Finished: initial analyzing of parametes=======");
 
@@ -135,16 +133,14 @@ sub main {
         if ($param_enabled_server_groups eq "--all-server-groups") {
             $enabled_server_groups_is_all = 1;
             if ($param_disabled_server_groups) {
-                $jboss->error("'disabledServerGroups' should be empty if 'enabledServerGroups' is '--all-server-groups'");
-                return;
+                $jboss->bail_out("'disabledServerGroups' should be empty if 'enabledServerGroups' is '--all-server-groups'");
             }
         }
         my $disabled_server_groups_is_all;
         if ($param_disabled_server_groups eq "--all-server-groups") {
             $disabled_server_groups_is_all = 1;
             if ($param_enabled_server_groups) {
-                $jboss->error("'enabledServerGroups' should be empty if 'disabledServerGroups' is '--all-server-groups'");
-                return;
+                $jboss->bail_out("'enabledServerGroups' should be empty if 'disabledServerGroups' is '--all-server-groups'");
             }
         }
 
