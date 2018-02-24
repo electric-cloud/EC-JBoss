@@ -282,10 +282,10 @@ sub main {
         # needed for WFCORE-2939 workaround
         if (@missing_disabled_server_groups) {
             $jboss->log_info("=======Started: WFCORE-2939 workaround - disabling deployment on server groups which are not in enabled/disabled list, but has disabled depoyment before=======");
-            enable_deployment_on_server_groups_or_fail(
+            disable_deployment_on_server_groups_or_fail(
                 jboss           => $jboss,
                 deployment_name => $expected_deployment_name,
-                server_groups   => @missing_disabled_server_groups
+                server_groups   => \@missing_disabled_server_groups
             );
             $jboss->log_info("=======Finished: WFCORE-2939 workaround - disabling deployment on server groups which are not in enabled/disabled list, but has disabled depoyment before=======");
         }
