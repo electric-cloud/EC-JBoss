@@ -173,6 +173,9 @@ sub main {
         $jboss->log_info("Requested to assign (in case of need) and disable deployment '$expected_deployment_name' on the following server group(s): @specified_disabled_server_groups.")
             if @specified_disabled_server_groups;
 
+        my %specified_disabled_server_groups_hash = map {$_ => 1} @specified_disabled_server_groups;
+        my @duplicated_server_groups_in_enabled_and_disabled_lists = grep {$specified_disabled_server_groups_hash{$_}} @specified_enabled_server_groups;
+
         my %all_specified_server_groups_hash = map {$_ => 1} (@specified_enabled_server_groups,
             @specified_disabled_server_groups);
 
@@ -318,8 +321,14 @@ sub main {
             }
         };
         if ($@) {
-            $summary .= " Error occured when composing summary: $@";
+            $summary .= "\nError occured when composing summary: $@";
             $jboss->log_warning("Error occured when composing summary: $@");
+            $jboss->warning();
+        }
+        if (@duplicated_server_groups_in_enabled_and_disabled_lists) {
+            $summary .= "\nDuplicated server groups in enabled and disabled lists: "
+                . join(",", @duplicated_server_groups_in_enabled_and_disabled_lists);
+            $jboss->log_warning("Duplicated server groups in enabled and disabled lists: @duplicated_server_groups_in_enabled_and_disabled_lists");
             $jboss->warning();
         }
         $jboss->set_property(summary => $summary);
