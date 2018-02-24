@@ -293,7 +293,7 @@ sub main {
         my $summary = "Application '$expected_deployment_name' has been successfully deployed from '$expected_source_for_summary'.";
         eval {
             my $new_json_server_groups_discovery = get_json_server_groups_discovery(jboss => $jboss);
-            my @new_all_server_groups = keys %{$json_server_groups_discovery->{result}};
+            my @new_all_server_groups = keys %{$new_json_server_groups_discovery->{result}};
 
             my @new_enabled_server_groups = grep {
                 $new_json_server_groups_discovery->{result}->{$_}->{deployment}
