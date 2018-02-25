@@ -126,6 +126,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
         cleanup:
         topicName = "testTopic-$testCaseId"
         removeJMSTopic(topicName, defaultProfile)
+        shutdownHost("master") //for right next suit
     }
 
     void removeJMSTopic(String topicName, String profile) {
@@ -134,6 +135,10 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
 
     void addJMSTopicDefaultDomain(String topicName, String jndiName, String profile) {
         runCliCommand(CliCommandsGeneratorHelper.addJMSTopicDomain(topicName, jndiName, "--profile=$profile"))
+    }
+
+    void shutdownHost(String hostName) {
+        runCliCommand(CliCommandsGeneratorHelper.reloadHostDomain(hostName))
     }
 
 }
