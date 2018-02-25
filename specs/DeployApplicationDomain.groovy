@@ -550,7 +550,6 @@ class DeployApplicationDomain extends PluginTestHelper {
         then:
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
-        String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nDisabled on: $serverGroup2 server groups."
@@ -558,7 +557,7 @@ class DeployApplicationDomain extends PluginTestHelper {
         String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
 
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
-        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
 
         cleanup:
         undeployFromAllRelevantServerGroups(expectedAppName)
@@ -590,8 +589,8 @@ class DeployApplicationDomain extends PluginTestHelper {
            assert runProcedureJob.getStatus() == "success"
            assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on: $serverGroup1 server groups.\nDisabled on: $serverGroup2 server groups."
 
-           String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
-           String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
+           String[] expectedServerGroupsWithAppEnabled = [serverGroup1]
+           String[] expectedServerGroupsWithAppDisabled = [serverGroup2]
 
            checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
            checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)

@@ -587,7 +587,7 @@ class StopServers extends PluginTestHelper {
     }
 
     void shutdownHost(String hostName) {
-        runCliCommand(CliCommandsGeneratorHelper.shutdownHostDomain(hostName))
+        runCliCommand(CliCommandsGeneratorHelper.reloadHostDomain(hostName))
     }
 
     /*
