@@ -42,8 +42,7 @@ sub main {
     ########
     $jboss->log_info("=======Started: initial analyzing of parametes=======");
     if (!$param_application_content_source_path) {
-        $jboss->error("Required parameter 'applicationContentSourcePath' is not provided");
-        return;
+        $jboss->bail_out("Required parameter 'applicationContentSourcePath' is not provided");
     }
 
     my $source_is_url = 0;
@@ -82,8 +81,7 @@ sub main {
 
     # if application content source path is filepath - check if file exists
     if (!$source_is_url && !-e $param_application_content_source_path) {
-        $jboss->error("File '$param_application_content_source_path' doesn't exists");
-        return;
+        $jboss->bail_out("File '$param_application_content_source_path' doesn't exists");
     }
     $jboss->log_info("=======Finished: initial analyzing of parametes=======");
 
@@ -135,25 +133,21 @@ sub main {
         if ($param_enabled_server_groups eq "--all-server-groups") {
             $enabled_server_groups_is_all = 1;
             if ($param_disabled_server_groups) {
-                $jboss->error("'disabledServerGroups' should be empty if 'enabledServerGroups' is '--all-server-groups'");
-                return;
+                $jboss->bail_out("'disabledServerGroups' should be empty if 'enabledServerGroups' is '--all-server-groups'");
             }
         }
         my $disabled_server_groups_is_all;
         if ($param_disabled_server_groups eq "--all-server-groups") {
             $disabled_server_groups_is_all = 1;
             if ($param_enabled_server_groups) {
-                $jboss->error("'enabledServerGroups' should be empty if 'disabledServerGroups' is '--all-server-groups'");
-                return;
+                $jboss->bail_out("'enabledServerGroups' should be empty if 'disabledServerGroups' is '--all-server-groups'");
             }
         }
 
-        $jboss->log_info("=======Started: retrieving of information about server groups and deployments=======");
-        my $json_server_groups_discovery = get_json_server_groups_discovery(jboss => $jboss);
-        $jboss->log_info("=======Finished: retrieving of information about server groups and deployments=======");
+        $jboss->log_info("=======Started: analyzing of information about the deployment on server groups=======");
+        my @all_server_groups = @{ get_all_server_groups(jboss => $jboss) };
+        my %all_server_groups_hash = map {$_ => 1} @all_server_groups;
 
-        $jboss->log_info("=======Started: analyzing of information about server groups and deployments=======");
-        my @all_server_groups = keys %{$json_server_groups_discovery->{result}};
         if (@all_server_groups) {
             $jboss->log_debug("List of all server groups: @all_server_groups");
         }
@@ -173,60 +167,53 @@ sub main {
         $jboss->log_info("Requested to assign (in case of need) and disable deployment '$expected_deployment_name' on the following server group(s): @specified_disabled_server_groups.")
             if @specified_disabled_server_groups;
 
-        my %all_specified_server_groups_hash = map {$_ => 1} (@specified_enabled_server_groups,
-            @specified_disabled_server_groups);
+        my %specified_disabled_server_groups_hash = map {$_ => 1} @specified_disabled_server_groups;
+        my @duplicated_server_groups_in_enabled_and_disabled_lists = grep {$specified_disabled_server_groups_hash{$_}} @specified_enabled_server_groups;
+        if (@duplicated_server_groups_in_enabled_and_disabled_lists) {
+            $jboss->bail_out("Duplicated server group(s) in enabled and disabled lists (please check provided parameters): " . join(
+                ",", @duplicated_server_groups_in_enabled_and_disabled_lists));
+        }
+
+        my @all_specified_server_groups = (@specified_enabled_server_groups, @specified_disabled_server_groups);
+        my %all_specified_server_groups_hash = map {$_ => 1} @all_specified_server_groups;
 
         my @non_existing_server_groups = grep {
-            !$json_server_groups_discovery->{result}->{$_}
-        } (@specified_enabled_server_groups, @specified_disabled_server_groups);
+            !$all_server_groups_hash{$_}
+        } @all_specified_server_groups;
         $jboss->bail_out("Specified non existing server group(s): @non_existing_server_groups. Please add server groups before deploying to them.")
             if @non_existing_server_groups;
 
         my @missing_server_groups = grep {!$all_specified_server_groups_hash{$_}} @all_server_groups;
 
-        my @missing_enabled_server_groups = grep {
-            $json_server_groups_discovery->{result}->{$_}->{deployment}
-                && $json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}
-                && $json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}->{enabled}
-        } @missing_server_groups;
+        my $missing_server_groups_sets_based_on_deployment = get_server_groups_sets_based_on_deployment(
+            jboss         => $jboss,
+            deployment    => $expected_deployment_name,
+            server_groups => \@missing_server_groups
+        );
+        my @missing_enabled_server_groups = @{$missing_server_groups_sets_based_on_deployment->{server_groups_with_deployment_enabled}};
         $jboss->log_info("Deployment '$expected_deployment_name' is assigned and enabled on the server group(s) which are not in enabled/disabled list: @missing_enabled_server_groups. Leave the deployment enabled on this server group(s).")
             if @missing_enabled_server_groups;
-
         # needed for WFCORE-2939 workaround
-        my @missing_disabled_server_groups = grep {
-            $json_server_groups_discovery->{result}->{$_}->{deployment}
-                && $json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}
-                && !$json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}->{enabled}
-        } @missing_server_groups;
+        my @missing_disabled_server_groups = @{$missing_server_groups_sets_based_on_deployment->{server_groups_with_deployment_disabled}};
         $jboss->log_info("Deployment '$expected_deployment_name' is assigned and disabled on the server group(s) which are not in enabled/disabled list: @missing_disabled_server_groups. WFCORE-2939 workaround to be applied to make sure that we leave the deployment disabled on this server group(s).")
             if @missing_disabled_server_groups;
 
-        my @specified_server_groups_where_deployment_was_enabled = grep {
-            $all_specified_server_groups_hash{$_}
-                && $json_server_groups_discovery->{result}->{$_}->{deployment}
-                && $json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}
-                && $json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}->{enabled}
-        } @all_server_groups;
+        my $specified_server_groups_sets_based_on_deployment = get_server_groups_sets_based_on_deployment(
+            jboss         => $jboss,
+            deployment    => $expected_deployment_name,
+            server_groups => \@all_specified_server_groups
+        );
+        my @specified_server_groups_where_deployment_was_enabled = @{$specified_server_groups_sets_based_on_deployment->{server_groups_with_deployment_enabled}};
         $jboss->log_info("FYI.. Deployment '$expected_deployment_name' is assigned and enabled on the server group(s) which are in enabled/disabled list: @specified_server_groups_where_deployment_was_enabled")
             if @specified_server_groups_where_deployment_was_enabled;
-
-        my @specified_server_groups_where_deployment_was_disabled = grep {
-            $all_specified_server_groups_hash{$_}
-                && $json_server_groups_discovery->{result}->{$_}->{deployment}
-                && $json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}
-                && !$json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}->{enabled}
-        } @all_server_groups;
+        my @specified_server_groups_where_deployment_was_disabled = @{$specified_server_groups_sets_based_on_deployment->{server_groups_with_deployment_disabled}};
         $jboss->log_info("FYI.. Deployment '$expected_deployment_name' is assigned and disabled on the server group(s) which are in enabled/disabled list: @specified_server_groups_where_deployment_was_disabled")
             if @specified_server_groups_where_deployment_was_disabled;
-
-        my @specified_server_groups_where_deployment_was_missing = grep {
-            $all_specified_server_groups_hash{$_}
-                && (!$json_server_groups_discovery->{result}->{$_}->{deployment}
-                || !$json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name})
-        } @all_server_groups;
+        my @specified_server_groups_where_deployment_was_missing = @{$specified_server_groups_sets_based_on_deployment->{server_groups_without_deployment}};
         $jboss->log_info("Deployment '$expected_deployment_name' is not assigned the server group(s) which are in enabled/disabled list: @specified_server_groups_where_deployment_was_missing. Assigning will be performed for this server group(s)")
             if @specified_server_groups_where_deployment_was_missing;
-        $jboss->log_info("=======Finished: analyzing of information about server groups and deployments=======");
+
+        $jboss->log_info("=======Finished: analyzing of information about the deployment on server groups=======");
 
 
         #######
@@ -282,10 +269,10 @@ sub main {
         # needed for WFCORE-2939 workaround
         if (@missing_disabled_server_groups) {
             $jboss->log_info("=======Started: WFCORE-2939 workaround - disabling deployment on server groups which are not in enabled/disabled list, but has disabled depoyment before=======");
-            enable_deployment_on_server_groups_or_fail(
+            disable_deployment_on_server_groups_or_fail(
                 jboss           => $jboss,
                 deployment_name => $expected_deployment_name,
-                server_groups   => @missing_disabled_server_groups
+                server_groups   => \@missing_disabled_server_groups
             );
             $jboss->log_info("=======Finished: WFCORE-2939 workaround - disabling deployment on server groups which are not in enabled/disabled list, but has disabled depoyment before=======");
         }
@@ -293,32 +280,26 @@ sub main {
         $jboss->log_info("=======Started: composing summary=======");
         my $summary = "Application '$expected_deployment_name' has been successfully deployed from '$expected_source_for_summary'.";
         eval {
-            my $new_json_server_groups_discovery = get_json_server_groups_discovery(jboss => $jboss);
-            my @new_all_server_groups = keys %{$json_server_groups_discovery->{result}};
+            my $new_server_groups_sets_based_on_deployment = get_server_groups_sets_based_on_deployment(
+                jboss         => $jboss,
+                deployment    => $expected_deployment_name,
+                server_groups => \@all_server_groups
+            );
 
-            my @new_enabled_server_groups = grep {
-                $new_json_server_groups_discovery->{result}->{$_}->{deployment}
-                    && $new_json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}
-                    && $new_json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}->{enabled}
-            } @new_all_server_groups;
-
+            my @new_enabled_server_groups = @{$new_server_groups_sets_based_on_deployment->{server_groups_with_deployment_enabled}};
             if (@new_enabled_server_groups) {
                 $jboss->log_info("Summary: deployment '$expected_deployment_name' is assigned and enabled on the server group(s): @new_enabled_server_groups.");
                 $summary .= "\nEnabled on: " . join(",", @new_enabled_server_groups) . " server groups.";
             }
 
-            my @new_disabled_server_groups = grep {
-                $new_json_server_groups_discovery->{result}->{$_}->{deployment}
-                    && $new_json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}
-                    && !$new_json_server_groups_discovery->{result}->{$_}->{deployment}->{$expected_deployment_name}->{enabled}
-            } @new_all_server_groups;
+            my @new_disabled_server_groups = @{$new_server_groups_sets_based_on_deployment->{server_groups_with_deployment_disabled}};
             if (@new_disabled_server_groups) {
                 $jboss->log_info("Summary: deployment '$expected_deployment_name' is assigned and disabled on the server group(s): @new_disabled_server_groups.");
                 $summary .= "\nDisabled on: " . join(",", @new_disabled_server_groups) . " server groups.";
             }
         };
         if ($@) {
-            $summary .= " Error occured when composing summary: $@";
+            $summary .= "\nError occured when composing summary: $@";
             $jboss->log_warning("Error occured when composing summary: $@");
             $jboss->warning();
         }
@@ -428,12 +409,12 @@ sub assign_deployment_to_server_groups_or_fail {
     }
 }
 
-sub get_json_server_groups_discovery {
+sub get_all_server_groups {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
 
     my $json = run_command_and_get_json_with_exiting_on_error(
-        command => ':read-children-resources(child-type=server-group,recursive=true,recursive-depth=1)',
+        command => ':read-children-names(child-type=server-group)',
         jboss   => $jboss
     );
     if ($json->{outcome} ne "success") {
@@ -442,5 +423,92 @@ sub get_json_server_groups_discovery {
     if (!defined $json->{result}) {
         $jboss->bail_out("JBoss replied with undefined result when expectation was to verify the result: " . (encode_json $json));
     }
-    return $json;
+
+    my $all_server_groups = $json->{result};
+    return $all_server_groups;
 }
+
+sub get_all_deployments_on_server_group {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $server_group = $args{server_group} || croak "'server_group' is required param";
+
+    my $json = run_command_and_get_json_with_exiting_on_error(
+        command => "/server-group=$server_group:read-children-names(child-type=deployment)",
+        jboss   => $jboss
+    );
+    if ($json->{outcome} ne "success") {
+        $jboss->bail_out("JBoss replied with outcome other than success: " . (encode_json $json));
+    }
+    if (!defined $json->{result}) {
+        $jboss->bail_out("JBoss replied with undefined result when expectation was to verify the result: " . (encode_json $json));
+    }
+
+    my $all_deployments = $json->{result};
+    return $all_deployments;
+}
+
+sub is_deployment_assigned_to_server_group {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $server_group = $args{server_group} || croak "'server_group' is required param";
+    my $deployment = $args{deployment} || croak "'deployment' is required param";
+
+    my $all_deployments = get_all_deployments_on_server_group(
+        jboss        => $jboss,
+        server_group => $server_group
+    );
+    my %all_deployments_hash = map {$_ => 1} @$all_deployments;
+
+    if ($all_deployments_hash{$deployment}) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+sub get_server_groups_sets_based_on_deployment {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $deployment = $args{deployment} || croak "'deployment' is required param";
+    my $server_groups = $args{server_groups} || croak "'server_groups' is required param";
+
+    my @server_groups_with_deployment_enabled;
+    my @server_groups_with_deployment_disabled;
+    my @server_groups_without_deployment;
+    my %server_groups_sets_based_on_deployment;
+
+    foreach my $server_group (@$server_groups) {
+        if (is_deployment_assigned_to_server_group(jboss => $jboss, server_group => $server_group, deployment =>
+            $deployment)) {
+            my $json = run_command_and_get_json_with_exiting_on_error(
+                command => "/server-group=$server_group/deployment=$deployment:read-resource",
+                jboss   => $jboss
+            );
+            if ($json->{outcome} ne "success") {
+                $jboss->bail_out("JBoss replied with outcome other than success: " . (encode_json $json));
+            }
+            if (!defined $json->{result}) {
+                $jboss->bail_out("JBoss replied with undefined result when expectation was to verify the result: " . (encode_json $json));
+            }
+
+            if ($json->{result}->{enabled}) {
+                push @server_groups_with_deployment_enabled, $server_group;
+            }
+            else {
+                push @server_groups_with_deployment_disabled, $server_group;
+            }
+        }
+        else {
+            push @server_groups_without_deployment, $server_group;
+        }
+    }
+
+    $server_groups_sets_based_on_deployment{server_groups_with_deployment_enabled} = \@server_groups_with_deployment_enabled;
+    $server_groups_sets_based_on_deployment{server_groups_with_deployment_disabled} = \@server_groups_with_deployment_disabled;
+    $server_groups_sets_based_on_deployment{server_groups_without_deployment} = \@server_groups_without_deployment;
+
+    return \%server_groups_sets_based_on_deployment;
+}
+
