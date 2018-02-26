@@ -15,11 +15,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     @Shared
     String defaultCliPath = ''
     @Shared
-    String defaultDurable = 'false'
+    def defaultDurable = false              //for check boolean value
     @Shared
     String defaultJndiNames = 'queue/test,java:jboss/exported/jms/queue/test'
     @Shared
-    String defaultMessageSelector = ''
+    String expectedJndiNames = 'queue/test, java:jboss/exported/jms/queue/test'
+    @Shared
+    String defaultMessageSelector = null
     @Shared
     String defaultProfile = 'full'
     @Shared
@@ -52,7 +54,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-//        deleteProject(projectName)
+        deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -61,8 +63,8 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "Create JMS Queue with minimum parameters (C278381)"() {
-        String testCaseId = "C278381"
+    def "Create JMS Queue with minimum parameters (C278706)"() {
+        String testCaseId = "C278706"
 
         def runParams = [
                 additionalOptions    : '',
@@ -81,8 +83,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -110,8 +111,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, "true", defaultMessageSelector, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, true, defaultMessageSelector, expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -139,8 +139,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "FILTER_EXPRESSION", jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "FILTER_EXPRESSION", expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -168,8 +167,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, "true", defaultMessageSelector, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, true, defaultMessageSelector, expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -197,8 +195,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, "true", "FILTER_EXPRESSION", jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, true, "FILTER_EXPRESSION", expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -231,8 +228,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' is up-to-date"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -263,8 +259,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' is up-to-date"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -287,7 +282,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         ]
 
         setup:
-        addJMSQueueDefaultDomain(runParams.queueName, "queue/test, java:jboss/exported/jms/queue/test", defaultProfile) //without message selector, durable=false and wrong jndi
+        addJMSQueueDefaultDomain(runParams.queueName, defaultJndiNames, defaultProfile) //without message selector, durable=false and wrong jndi
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -297,9 +292,8 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, defaultProfile)
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, "full-ha")
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, "full-ha")
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -329,8 +323,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "Any whitespace filter", jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "Any whitespace filter", expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -362,8 +355,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' is up-to-date"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "filterOne", jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "filterOne", expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -459,8 +451,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, "true", defaultMessageSelector, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, true, defaultMessageSelector, expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -561,8 +552,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, defaultProfile,"test=java:/test, test2=java:/test2")
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile,"java:/test, java:/test2")
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -594,8 +584,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -627,8 +616,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
 
         String queueName = "testQueue-$testCaseId"
-        String jndiName = "java:jboss/exported/jms/queue/test, queue/test"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -637,30 +625,23 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
 
 
 
-    void checkCreateOrUpdateJMSQueue(String queueName, String durable, String messageSelector, String jndiNames, String profile, String legacy) { //check with legacy
+    void checkCreateOrUpdateJMSQueue(String queueName, def durable, String messageSelector, String jndiNames, String profile, String legacy) { //check with legacy
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSQueueInfoDomain(queueName, profile)).result
-        String entries = result.'entries'
-        assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'entries' =~ jndiNames
         assert result.'durable' == durable
         assert result.'selector' == messageSelector
-        String legacyActual = result.'legacy-entries'
-        assert legacyActual.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ legacy
+        assert result.'legacy-entries' =~ legacy
     }
 
-    void checkCreateOrUpdateJMSQueue(String queueName, String durable, String messageSelector, String jndiNames, String profile) {
+    void checkCreateOrUpdateJMSQueue(String queueName, def durable, String messageSelector, String jndiNames, String profile) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSQueueInfoDomain(queueName, profile)).result
-        String entries = result.'entries'
-        assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'entries' =~ jndiNames
         assert result.'durable' == durable
         assert result.'selector' == messageSelector
     }
 
     void removeJMSQueue(String queueName, String profile) {
         runCliCommand(CliCommandsGeneratorHelper.removeJMSQueueDomain(queueName, profile))
-    }
-
-    void reloadServerGroupDomain() {
-        runCliCommand(CliCommandsGeneratorHelper.reloadServerGroupDomain(defaultServerGroup))
     }
 
     void addJMSQueueDefaultDomain(String queueName, String jndiName, String domain) {

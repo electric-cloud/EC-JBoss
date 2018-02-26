@@ -41,7 +41,7 @@ class StopServers extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-//        deleteProject(projectName)
+        deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -587,7 +587,7 @@ class StopServers extends PluginTestHelper {
     }
 
     void shutdownHost(String hostName) {
-        runCliCommand(CliCommandsGeneratorHelper.shutdownHostDomain(hostName))
+        runCliCommand(CliCommandsGeneratorHelper.reloadHostDomain(hostName))
     }
 
     /*

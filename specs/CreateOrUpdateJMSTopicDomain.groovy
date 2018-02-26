@@ -15,6 +15,8 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
     @Shared
     String defaultJndiNames = 'topic/test,java:jboss/exported/jms/topic/test'
     @Shared
+    String expectedJndiNames = 'topic/test, java:jboss/exported/jms/topic/test'
+    @Shared
     String defaultProfile = 'full'
     @Shared
     String defaultServerGroup = 'main-server-group'
@@ -46,7 +48,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-//        deleteProject(projectName)
+        deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -73,8 +75,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames, defaultProfile)
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -100,8 +101,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames, defaultProfile)
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -132,9 +132,8 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName, defaultProfile)
-        checkCreateOrUpdateJMSTopic(topicName, jndiName, "full-ha")
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames, defaultProfile)
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames, "full-ha")
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -167,8 +166,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' is up-to-date"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames, defaultProfile)
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -347,8 +345,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName, defaultProfile, "test=java:/test, test2=java:/test2")
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames, defaultProfile, "java:/test, java:/test2")
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -378,8 +375,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been updated successfully by new jndi names*(reload-required|restart)*"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName, defaultProfile)
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames, defaultProfile)
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -388,24 +384,17 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoDomain(topicName, profile)).result
-        String entries = result.'entries'
-        assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
     }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile, String legacy) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoDomain(topicName, profile)).result
-        String entries = result.'entries'
-        assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
-        String legacyActual = result.'legacy-entries'
-        assert legacyActual.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ legacy
+        assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'legacy-entries' =~ legacy
     }
 
     void removeJMSTopic(String topicName, String profile) {
         runCliCommand(CliCommandsGeneratorHelper.removeJMSTopicDomain(topicName, profile))
-    }
-
-    void reloadServerGroupDomain() {
-        runCliCommand(CliCommandsGeneratorHelper.reloadServerGroupDomain(defaultServerGroup))
     }
 
     void addJMSTopicDefaultDomain(String topicName, String jndiName, String profile) {

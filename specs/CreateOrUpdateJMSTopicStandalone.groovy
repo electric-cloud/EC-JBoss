@@ -14,6 +14,8 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
     String defaultConfigName = 'specConfig'
     @Shared
     String defaultJndiNames = 'topic/test,java:jboss/exported/jms/topic/test'
+    @Shared
+    String expectedJndiNames = 'topic/test, java:jboss/exported/jms/topic/test'
 
 
     def doSetupSpec() {
@@ -68,8 +70,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName)
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames)
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -95,8 +96,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName)
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames)
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -128,8 +128,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' is up-to-date"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName)
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames)
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -238,8 +237,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName, "test=java:/test, test2=java:/test2")
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames, "java:/test, java:/test2")
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -269,8 +267,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been updated successfully by new jndi names*(reload-required|restart)*"
 
         String topicName = "testTopic-$testCaseId"
-        String jndiName = 'java:jboss/exported/jms/topic/test, topic/test'
-        checkCreateOrUpdateJMSTopic(topicName, jndiName)
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames)
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -279,16 +276,13 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String legacy) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoStandalone(topicName)).result
-        String entries = result.'entries'
-        assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
-        String legacyActual = result.'legacy-entries'
-        assert legacyActual.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ legacy
+        assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'legacy-entries' =~ legacy
     }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoStandalone(topicName)).result
-        String entries = result.'entries'
-        assert entries.replaceAll("=\\{", "/").replaceAll("\\}", "") =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
     }
 
     void removeJMSTopic(String topicName) {

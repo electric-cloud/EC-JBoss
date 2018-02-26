@@ -120,8 +120,8 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
-    static String shutdownHostDomain(String hostName) {
-        String command = "/host=$hostName:shutdown"
+    static String reloadHostDomain(String hostName) {
+        String command = "/host=$hostName:reload"
         return command
     }
 
@@ -196,4 +196,6 @@ class CliCommandsGeneratorHelper {
         String command = "jms-topic add --topic-address=$topicName --entries=[$jndiName]  $profile"
         return command
     }
+
+
 }
