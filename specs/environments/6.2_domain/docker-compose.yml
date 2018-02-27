@@ -19,11 +19,12 @@ services:
       - "7808:7808"
       - "8080:8080"
       - "9990:9990"
+      - "9999:9999"
       - "8230:8230"
       - "8330:8330"
     networks:
       - internal
-    container_name: jboss
+    container_name: jboss6.2
     tty: true
 networks:
   internal:
