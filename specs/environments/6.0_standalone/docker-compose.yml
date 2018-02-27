@@ -14,6 +14,7 @@ services:
   jboss:
     image: electricflow/jboss6:v6.0
     environment:
+      - SERVER_CONFIG=standalone-full.xml
       - JBOSS_MODE=standalone
     ports:
       - "7808:7808"
