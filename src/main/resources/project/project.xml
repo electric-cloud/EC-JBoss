@@ -2945,7 +2945,7 @@
         </procedure>
         <procedure>
             <procedureName>CreateOrUpdateJMSQueue</procedureName>
-            <description>Creates or updates JMS queue.</description>
+            <description>This procedure creates a new jms queue or updates JNDI names for existing queue in default messaging provider within JBoss EAP messaging subsystem.</description>
             <jobNameTemplate>jboss-create-or-update-jms-queue-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3053,7 +3053,7 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -3067,35 +3067,35 @@
             <formalParameter>
                 <formalParameterName>jndiNames</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Comma Separated JNDI Names.</description>
+                <description>Format: comma separated JNDI names (do not use whitespaces). The list of JNDI names the queue will be bound to. For example: 'java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2'</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>profile</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Subsystem profile if applicable. Required for Domain.</description>
+                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain where queue should be created or updated (in case of need). For example: 'full', 'full-ha'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>durable</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Is Queue Durable (True/False).  Default is False, i.e., not durable.</description>
+                <description>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. Whether the queue to be created is durable or not. Default is false (unchecked) - non durable.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>messageSelector</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Selector for Message.</description>
+                <description>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. JMS message selector the queue will have. Only messages that match the selector will be added to the queue. For example: color='red'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Currently a pass through. Let us certify at least one use case.</description>
+                <description>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. The 'Additional options' string will be concatenated to already generated command line for creating queue. For example: '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
@@ -3136,7 +3136,7 @@
         </procedure>
         <procedure>
             <procedureName>CreateOrUpdateJMSTopic</procedureName>
-            <description>Creates or updates JMS topic.</description>
+            <description>This procedure creates a new jms topic or updates JNDI names for existing topic in default messaging provider within JBoss EAP messaging subsystem.</description>
             <jobNameTemplate>jboss-create-or-update-jms-topic-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3209,7 +3209,7 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -3223,21 +3223,21 @@
             <formalParameter>
                 <formalParameterName>jndiNames</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Comma Separated JNDI Names.</description>
+                <description>Format: comma separated JNDI names (do not use whitespaces). The list of JNDI names the topic will be bound to. For example: 'java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2'</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>profile</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Subsystem profile if applicable. Required for Domain.</description>
+                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain where topic should be created or updated (in case of need). For example: 'full', 'full-ha'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Currently a pass through. Let us certify at least one use case.</description>
+                <description>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. The 'Additional options' string will be concatenated to already generated command line for creating topic. For example: '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
@@ -3278,7 +3278,7 @@
         </procedure>
         <procedure>
             <procedureName>RemoveJMSQueue</procedureName>
-            <description>Removes JMS queue.</description>
+            <description>This procedure removes specified jms queue in default messaging provider within JBoss EAP messaging subsystem.</description>
             <jobNameTemplate>jboss-remove-jms-queue-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3331,7 +3331,7 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -3345,7 +3345,7 @@
             <formalParameter>
                 <formalParameterName>profile</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Subsystem profile if applicable. Required for Domain.</description>
+                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain where queue should be removed. For example: 'full', 'full-ha'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
@@ -3386,7 +3386,7 @@
         </procedure>
         <procedure>
             <procedureName>RemoveJMSTopic</procedureName>
-            <description>Removes JMS topic.</description>
+            <description>This procedure removes specified jms topic in default messaging provider within JBoss EAP messaging subsystem.</description>
             <jobNameTemplate>jboss-remove-jms-topic-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3439,7 +3439,7 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -3453,7 +3453,7 @@
             <formalParameter>
                 <formalParameterName>profile</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Subsystem profile if applicable. Required for Domain.</description>
+                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain where topic should be removed. For example: 'full', 'full-ha'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>

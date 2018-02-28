@@ -21,20 +21,20 @@
         <label>JNDI Names:</label>
         <property>jndiNames</property>
         <required>1</required>
-        <documentation>Comma Separated JNDI Names.</documentation>
+        <documentation>Format: comma separated JNDI names (do not use whitespaces). The list of JNDI names the topic will be bound to. For example: 'java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2'</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Profile:</label>
         <property>profile</property>
         <required>0</required>
-        <documentation>Subsystem profile if applicable. Required for Domain.</documentation>
+        <documentation>Required for Domain, will be ignored for Standalone. Name of profile in Domain where topic should be created or updated (in case of need). For example: 'full', 'full-ha'</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Additional Options:</label>
         <property>additionalOptions</property>
         <required>0</required>
-        <documentation>Currently a pass through. Let us certify at least one use case.</documentation>
+        <documentation>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. The 'Additional options' string will be concatenated to already generated command line for creating topic. For example: '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'</documentation>
     </formElement>
 </editor>
