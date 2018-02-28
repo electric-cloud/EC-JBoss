@@ -879,7 +879,7 @@ class DeployApplicationDomain extends PluginTestHelper {
            String expectedAppName = "$testCaseId-app"
 
            assert runProcedureJob.getStatus() == "error"
-           assert runProcedureJob.getUpperStepSummary() =~ "Duplicated server group(s) in enabled and disabled lists (please check provided parameters): $serverGroup2"
+           assert runProcedureJob.getUpperStepSummary() =~ "Duplicated server group\\(s\\) in enabled and disabled lists \\(please check provided parameters\\): $serverGroup2"
 
        }
 
