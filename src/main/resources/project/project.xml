@@ -3053,7 +3053,7 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -3209,7 +3209,7 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -3331,7 +3331,7 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -3439,7 +3439,7 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
