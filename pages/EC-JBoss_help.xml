@@ -1094,15 +1094,38 @@
                                         For Standalone only (will be ignored in case of Domain).
                                         <br/>
                                         Currently supported and tested additional option is '--disabled' for Standalone Server:
-                                        if '--disabled' is specified then the DeployApplication procedure will disable the deployment on standalone server after upgrade (or upload) of the deployment is done.
+                                        if '--disabled' is specified then the DeployApplication procedure will disable the deployment on standalone server after upgrade (or upload) of the <deployment></deployment> is done.
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </li>
+                    <br />
+                    For Example:
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationForm1.PNG" />
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationForm2.PNG" />
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationForm3.PNG" />
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationForm4.PNG" />
+                    <br />
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results, including the following job details, which show that the application was deployed, what its expected deployment name and from where it was deployed, for example:</p>
+                <p>
+                    After the job runs, you can view the results, including the following job details
+                    which show that the application was deployed, what its deployment name and from where it was deployed.
+                    For Managed Domain there will be also information about the deployment state (enabled/disabled) on server groups (if the deployment was assigned to any).
+                    For example:
+                </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationStatus1.PNG" />
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationStatus2.PNG" />
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationStatus3.PNG" />
+                <br />
             </div>
 
             <div id="DisableDeploy"><a name='DisableDeploy' id="DisableDeploy"></a>
