@@ -801,7 +801,7 @@
 					<br/>
 					NOTE: it is not possible to assign deployment to specified server groups when it is upgrade (force deploy). It is limitation of jboss-cli 'deploy' command</li>
 				</ol>
-				NOTE: This procedure does not support assigning of the deployment which already exists in repository to specified server groups (just because "Source with application for deploy" is required parameter in this procedure - it is limitation of the procedure).
+				NOTE: This procedure does not support assigning of the deployment which already exists in repository to specified server groups (just because "Application Content Source Path" is required parameter in this procedure - it is limitation of the procedure).
 				<br/><br/>
 				For JBoss Domain it is also possible to consider the following flow without using force flag:
 				<ol>
@@ -860,7 +860,7 @@
 										Stands for '--name' parameter for jboss-cli 'deploy' command.
 										<br/>
 										The unique name of the deployment.
-										If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url', see required 'Source with application for deploy' parameter.
+										If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url', see required 'Application Content Source Path' parameter.
 									</td>
                                 </tr>
                                 <tr>
@@ -913,7 +913,7 @@
 										<br/>
 										NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored.
 										<br/>
-										Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Source with application for deploy' parameter.
+										Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Application Content Source Path' parameter.
 										<br/>
 										If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.
 									</td>
@@ -925,13 +925,13 @@
 										<br/>
 										The 'Additional options' string will be concatenated to already generated command line from the parameters above.
 										<br/>
-										E.g. if 'Source with application for deploy' is '/tmp/hello-world.war' and 'Additional options' is '--disabled' the the following jboss-cli command will be called:
+										E.g. if 'Application Content Source Path' is '/tmp/hello-world.war' and 'Additional options' is '--disabled' the the following jboss-cli command will be called:
 										<br/>
 										'deploy "/tmp/hello-world.war" --disabled'
 										<br/>
 										NOTE: it is recommended to not use duplicating options, e.g. no need to specify '--all-server-groups' because we have 'Apply to all servers' parameter for this.
 										<br/>
-										NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Source with application for deploy' parameter.
+										NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Application Content Source Path' parameter.
 									</td>
                                 </tr>
                             </tbody>
@@ -966,6 +966,7 @@
                 <br/><br/>
                 Unlike DeployApp procedure, the DeployApplication procedure is newer, more laconic
                 and, what is the most important, it can be used for deploying an application within Managed Domain for the first time deploy and all subsequent deploys with success without need to change configuration of the procedure etc.
+                Furthermore, it is also possible to specify whether the deployment should be enabled or disabled on standalone server or needed server groups.
                 <br/><br/>
                 For JBoss Standalone Server: the DeployApplication procedure will upgrade an existing deployment by a new one specified in 'Application Content Source Path' parameter.
                 If the deployment does not exist yet - it will be uploaded to standalone server. Unique identifier for the deployment is deployment name,
@@ -1043,7 +1044,8 @@
                                     <td>Deployment Name</td>
                                     <td>
                                         The unique name of the deployment.
-                                        If this parameter is not provided then JBoss (for Standalone) or the procedure (for Domain) will retrieve the deployment name from the file name of filepath or URL, see required 'Source with application for deploy' parameter.
+                                        <br/>
+                                        If this parameter is not provided then JBoss (for Standalone) or the procedure (for Domain) will retrieve the deployment name from the file name of filepath or URL, see required 'Application Content Source Path' parameter.
                                     </td>
                                 </tr>
                                 <tr>
@@ -1094,7 +1096,7 @@
                                         For Standalone only (will be ignored in case of Domain).
                                         <br/>
                                         Currently supported and tested additional option is '--disabled' for Standalone Server:
-                                        if '--disabled' is specified then the DeployApplication procedure will disable the deployment on standalone server after upgrade (or upload) of the <deployment></deployment> is done.
+                                        if '--disabled' is specified then the DeployApplication procedure will disable the deployment on standalone server after upgrade (or upload) of the deployment is done.
                                     </td>
                                 </tr>
                             </tbody>

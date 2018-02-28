@@ -14,21 +14,21 @@
         <label>Application Content Source Path:</label>
         <property>applicationContentSourcePath</property>
         <required>1</required>
-        <documentation>Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions. In case of 'file_path' - pass full filesystem path to the application to deploy, e.g. '/tmp/hello-world.war'. In case of '--url' (for EAP 7 and later) - pass URL at which the deployment content is available (in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war').</documentation>
+        <documentation>Usually filepath should be specified here, but it is also possible to provide URL (with special format) from where deployment can be downloaded by JBoss (this URL option will work only for JBoss EAP 7 and later). In case of filepath - pass full filesystem path to the application to deploy. E.g. '/tmp/hello-world.war'. In case of URL (for EAP 7 and later only) - pass URL at which the deployment content is available (NOTE: The expected format in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war').</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Deployment Name:</label>
         <property>deploymentName</property>
         <required>0</required>
-        <documentation>Stands for '--name' parameter for jboss-cli 'deploy' command. The unique name of the deployment. If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url'.</documentation>
+        <documentation>The unique name of the deployment. If this parameter is not provided then JBoss (for Standalone) or the procedure (for Domain) will retrieve the deployment name from the file name of filepath or URL, see required 'Application Content Source Path' parameter.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Runtime Name:</label>
         <property>runtimeName</property>
         <required>0</required>
-        <documentation>Stands for '--runtime-name' parameter for jboss-cli 'deploy' command. The runtime name for the deployment. NOTE: the file extension (.war, .jar, .ear etc.) needs to be included into runtime name so server can distinguish type of deployment somehow. This would typically be the same as '--name', and if not specified the value used for '--name' will be used.</documentation>
+        <documentation>The runtime name for the deployment. NOTE: the file extension (.war, .jar, .ear etc.) needs to be included into runtime name so server can distinguish type of deployment somehow. This would typically be the same as deployment name (see 'Deployment name' parameter), and if not specified the value used for deployment name will be used.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
@@ -36,20 +36,20 @@
         <property>enabledServerGroups</property>
         <required>0</required>
         <value>--all-server-groups</value>
-        <documentation>For Domain only (will be ignored in case of Standalone). The deployment will be assigned to the server groups specified by this parameter and will be enabled to these server groups. Format: comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'. If '--all-server-groups' is specified then deployment will be assigned and enabled on all server groups. By default value is set to '--all-server-groups'. If not provided - special assignment with enabling of the deployment will not be performed.</documentation>
+        <documentation>For Domain only (will be ignored in case of Standalone). The deployment will be assigned (if not assigned yet) to the server groups specified by this parameter and will be enabled on these server groups. Format: comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'. If '--all-server-groups' is specified then deployment will be assigned (if not assigned yet) and enabled on all server groups. By default value is set to '--all-server-groups'. If not provided - special assignment with enabling of the deployment will not be performed.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Disabled Server Groups:</label>
         <property>disabledServerGroups</property>
         <required>0</required>
-        <documentation>For Domain only (will be ignored in case of Standalone). The deployment will be assigned to the server groups specified by this parameter and will be disabled to these server groups. Format: comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'. If '--all-server-groups' is specified then deployment will be assigned and disabled on all server groups. If not provided - special assignment with disabling of the deployment will not be performed.</documentation>
+        <documentation>For Domain only (will be ignored in case of Standalone). The deployment will be assigned (if not assigned yet) to the server groups specified by this parameter and will be disabled on these server groups. Format: comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'. If '--all-server-groups' is specified then deployment will be assigned (if not assigned yet) and disabled on all server groups. If not provided - special assignment with disabling of the deployment will not be performed.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Additional Options:</label>
         <property>additionalOptions</property>
         <required>0</required>
-        <documentation>For Standalone only (will be ignored in case of Domain). Currently supported option is '--disabled' for Standalone.</documentation>
+        <documentation>For Standalone only (will be ignored in case of Domain). Currently supported and tested additional option is '--disabled' for Standalone Server: if '--disabled' is specified then the DeployApplication procedure will disable the deployment on standalone server after upgrade (or upload) of the deployment is done.</documentation>
     </formElement>
 </editor>

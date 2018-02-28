@@ -61,13 +61,13 @@
         <checkedValue>1</checkedValue>
         <uncheckedValue>0</uncheckedValue>
         <initiallyChecked>0</initiallyChecked>
-        <documentation>Stands for '--force' parameter for jboss-cli 'deploy' command. NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored. Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Source with application for deploy' parameter. If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.</documentation>
+        <documentation>Stands for '--force' parameter for jboss-cli 'deploy' command. NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored. Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Application Content Source Path' parameter. If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Additional options:</label>
         <property>additional_options</property>
         <required>0</required>
-        <documentation>Additional options for jboss-cli 'deploy' command. The 'Additional options' string will be concatenated to already generated command line from the parameters above. NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Source with application for deploy' parameter.</documentation>
+        <documentation>Additional options for jboss-cli 'deploy' command. The 'Additional options' string will be concatenated to already generated command line from the parameters above. NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Application Content Source Path' parameter.</documentation>
     </formElement>
 </editor>
