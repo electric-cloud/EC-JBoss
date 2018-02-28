@@ -46,6 +46,10 @@ class EnvPropertiesHelper {
         return System.getenv('RESOURCE_PORT') ?: 7808;
     }
 
+    public static String getServerConfigStandalone() {
+        return System.getenv('SERVER_CONFIG') ?: 'standalone-full.xml';
+    }
+
     public static String getOS() {
         return System.getenv('OS') ?: 'UNIX'
     }
