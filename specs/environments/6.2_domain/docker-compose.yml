@@ -15,7 +15,7 @@ services:
     image: electricflow/jboss6:v6.2
     environment:
       - JBOSS_MODE=domain
-      - JBOSS_PASSWORD=ecloud1!
+      - JBOSS_PASSWORD=changeme1!
     ports:
       - "7808:7808"
       - "8080:8080"
