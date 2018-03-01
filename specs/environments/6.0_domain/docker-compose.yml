@@ -12,7 +12,7 @@ services:
     container_name: electricflow
     tty: true
   jboss:
-    image: electricflow/jboss7:v7.0
+    image: electricflow/jboss6:v6.0
     environment:
       - JBOSS_MODE=domain
     ports:
@@ -24,7 +24,7 @@ services:
       - "8330:8330"
     networks:
       - internal
-    container_name: jboss7.0
+    container_name: jboss6.0
     tty: true
 networks:
   internal:
