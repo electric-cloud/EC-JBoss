@@ -21,14 +21,14 @@
         <label>JNDI Names:</label>
         <property>jndiNames</property>
         <required>1</required>
-        <documentation>Comma Separated JNDI Names.</documentation>
+        <documentation>Format: comma separated JNDI names (do not use whitespaces). The list of JNDI names the queue will be bound to. For example: 'java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2'</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Profile:</label>
         <property>profile</property>
         <required>0</required>
-        <documentation>Subsystem profile if applicable. Required for Domain.</documentation>
+        <documentation>Required for Domain, will be ignored for Standalone. Name of profile in Domain where queue should be created or updated (in case of need). For example: 'full', 'full-ha'</documentation>
     </formElement>
     <formElement>
         <type>checkbox</type>
@@ -37,20 +37,20 @@
         <checkedValue>1</checkedValue>
         <uncheckedValue>0</uncheckedValue>
         <initiallyChecked>0</initiallyChecked>
-        <documentation>Is Queue Durable (True/False).  Default is False, i.e., not durable.</documentation>
+        <documentation>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. Whether the queue to be created is durable or not. Default is false (unchecked) - non durable.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Message Selector:</label>
         <property>messageSelector</property>
         <required>0</required>
-        <documentation>Selector for Message.</documentation>
+        <documentation>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. JMS message selector the queue will have. Only messages that match the selector will be added to the queue. For example: color='red'</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Additional Options:</label>
         <property>additionalOptions</property>
         <required>0</required>
-        <documentation>Currently a pass through. Let us certify at least one use case.</documentation>
+        <documentation>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. The 'Additional options' string will be concatenated to already generated command line for creating queue. For example: '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'</documentation>
     </formElement>
 </editor>

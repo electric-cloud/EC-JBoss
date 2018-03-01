@@ -20,7 +20,7 @@
                  ideas, examples, and so on. It is OK to copy them word-for-word only if it is appropriate, such as FOSS.
                  However, do not do this with commercial software. -->
 
-            <p>Revised on March 7, 2017</p>
+            <p>Revised on February 28, 2018</p>
 
             <h1>Contents</h1>
             <p>
@@ -801,7 +801,7 @@
 					<br/>
 					NOTE: it is not possible to assign deployment to specified server groups when it is upgrade (force deploy). It is limitation of jboss-cli 'deploy' command</li>
 				</ol>
-				NOTE: This procedure does not support assigning of the deployment which already exists in repository to specified server groups (just because "Source with application for deploy" is required parameter in this procedure - it is limitation of the procedure).
+				NOTE: This procedure does not support assigning of the deployment which already exists in repository to specified server groups (just because "Application Content Source Path" is required parameter in this procedure - it is limitation of the procedure).
 				<br/><br/>
 				For JBoss Domain it is also possible to consider the following flow without using force flag:
 				<ol>
@@ -860,7 +860,7 @@
 										Stands for '--name' parameter for jboss-cli 'deploy' command.
 										<br/>
 										The unique name of the deployment.
-										If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url', see required 'Source with application for deploy' parameter.
+										If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url', see required 'Application Content Source Path' parameter.
 									</td>
                                 </tr>
                                 <tr>
@@ -913,7 +913,7 @@
 										<br/>
 										NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored.
 										<br/>
-										Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Source with application for deploy' parameter.
+										Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Application Content Source Path' parameter.
 										<br/>
 										If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.
 									</td>
@@ -925,13 +925,13 @@
 										<br/>
 										The 'Additional options' string will be concatenated to already generated command line from the parameters above.
 										<br/>
-										E.g. if 'Source with application for deploy' is '/tmp/hello-world.war' and 'Additional options' is '--disabled' the the following jboss-cli command will be called:
+										E.g. if 'Application Content Source Path' is '/tmp/hello-world.war' and 'Additional options' is '--disabled' the the following jboss-cli command will be called:
 										<br/>
 										'deploy "/tmp/hello-world.war" --disabled'
 										<br/>
 										NOTE: it is recommended to not use duplicating options, e.g. no need to specify '--all-server-groups' because we have 'Apply to all servers' parameter for this.
 										<br/>
-										NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Source with application for deploy' parameter.
+										NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Application Content Source Path' parameter.
 									</td>
                                 </tr>
                             </tbody>
@@ -961,9 +961,46 @@
 
             <div id="DeployApplication"> <a name='DeployApplication' id="DeployApplication"></a>
                 <h2>DeployApplication (Standalone/Domain)</h2>
-                The DeployApplication procedure deploys an application (mainly WAR or EAR) from the specified source (usually from filepath) to standalone server (for Standalone JBoss) or to content repository and specified server groups (for Domain JBoss) based on provided parameters.
+                The DeployApplication procedure deploys an application (mainly WAR or EAR) from the specified source (usually from filepath) to standalone server (for JBoss Standalone Server) or to content repository and specified server groups (for JBoss Managed Domain) based on provided parameters.
+                The procedure will automatically detect whether JBoss is running as Standalone Server or Managed Domain.
                 <br/><br/>
-                This procedure is build around jboss-cli command 'deploy'.
+                Unlike DeployApp procedure, the DeployApplication procedure is newer, more laconic
+                and, what is the most important, it can be used for deploying an application within Managed Domain for the first time deploy and all subsequent deploys with success without need to change configuration of the procedure etc.
+                Furthermore, it is also possible to specify whether the deployment should be enabled or disabled on standalone server or needed server groups.
+                <br/><br/>
+                For JBoss Standalone Server: the DeployApplication procedure will upgrade an existing deployment by a new one specified in 'Application Content Source Path' parameter.
+                If the deployment does not exist yet - it will be uploaded to standalone server. Unique identifier for the deployment is deployment name,
+                which may be specified in 'Deployment Name' parameter or will be retrieved by JBoss automatically based on file name of the deployment.
+                It is possible to specify that the deployment should be not only upgraded but also disabled on standalone server by specifying '--disabled' flag within 'Additional Options'.
+                NOTE: 'Enabled Server Groups' and 'Disabled Server Groups' will be ignored in case of JBoss Standalone Server.
+                <br/><br/>
+                For JBoss Managed Domain: the DeployApplication procedure will do the following:
+                <ol>
+                    <li>
+                        Upgrade an existing deployment in content repository by a new one specified in 'Application Content Source Path' parameter.
+                        If the deployment does not exist in content repository yet - it will be uploaded to it.
+                        Unique identifier for the deployment is deployment name,
+                        which may be specified in 'Deployment Name' parameter or will be retrieved by the procedure automatically based on file name of the deployment.
+                        NOTE: all server groups which were using the deployment before (to which deployment was assigned) will start to use the upgraded version of the deployment after this step.
+                    </li>
+                    <li>
+                        Assign the deployment to server groups which do not have the deployment but which are specified within 'Enabled Server Groups' and 'Disabled Server Groups' parameters.
+                    </li>
+                    <li>
+                        Enable the deployment on server groups which are specified within 'Enabled Server Groups' parameters.
+                    </li>
+                    <li>
+                        Disable the deployment on server groups which are specified within 'Disabled Server Groups' parameters.
+                    </li>
+                    <li>
+                        NOTE: The DeployApllication procedure has special handling of server groups to which the deployment is assigned but which are not specified within 'Enabled Server Groups' and 'Disabled Server Groups' parameters:
+                        the deployment will still be assigned to these server groups.
+                        Furthermore, the procedure will try to keep state of the deployment on these server groups as it was before (enabled or disabled).
+                        If the deployment was enabled  - no action required.
+                        But if the deployment was disabled there is a workaround for the JBoss issue (https://issues.jboss.org/browse/WFCORE-2939) implemented in the procedure:
+                        the procedure will iterate through each such server group and disable the deployment there.
+                    </li>
+                </ol>
 
                 <h3>Input</h3>
 
@@ -992,11 +1029,11 @@
                                     <td>
                                         Required parameter.
                                         <br/>
-                                        Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions.
+                                        Usually filepath should be specified here, but it is also possible to provide URL (with special format) from where deployment can be downloaded by JBoss (this URL option will work only for JBoss EAP 7 and later).
                                         <ol>
-                                            <li>in case of 'file_path' - pass full filesystem path to the application to deploy. E.g. '/tmp/hello-world.war'</li>
+                                            <li>in case of filepath - pass full filesystem path to the application to deploy. E.g. '/tmp/hello-world.war'</li>
                                             <li>
-                                                in case of '--url' (for EAP 7 and later) - pass URL at which the deployment content is available.
+                                                in case of URL (for EAP 7 and later only) - pass URL at which the deployment content is available.
                                                 NOTE: The expected format in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war'.
                                                 Note that the URL must be accessible from the target of the operation (i.e. the Domain Controller or standalone server).
                                             </li>
@@ -1006,24 +1043,21 @@
                                 <tr>
                                     <td>Deployment Name</td>
                                     <td>
-                                        Stands for '--name' parameter for jboss-cli 'deploy' command.
-                                        <br/>
                                         The unique name of the deployment.
-                                        If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url', see required 'Source with application for deploy' parameter.
+                                        <br/>
+                                        If this parameter is not provided then JBoss (for Standalone) or the procedure (for Domain) will retrieve the deployment name from the file name of filepath or URL, see required 'Application Content Source Path' parameter.
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Runtime Name</td>
                                     <td>
-                                        Stands for '--runtime-name' parameter for jboss-cli 'deploy' command.
-                                        <br/>
                                         The runtime name for the deployment.
                                         <br/>
                                         NOTE: the file extension (.war, .jar, .ear etc.) needs to be included into runtime name so server can distinguish type of deployment somehow.
                                         <br/>
-                                        This would typically be the same as '--name' (see 'Deployment name' parameter), and if not specified the value used for '--name' will be used.
+                                        This would typically be the same as deployment name (see 'Deployment name' parameter), and if not specified the value used for deployment name will be used.
                                         In some cases users may wish to have two deployments with the same 'runtime-name' (e.g. two versions of "example.war") both available in the management configuration,
-                                        in which case the deployments would need to have distinct 'name' values but would have the same 'runtime-name'.
+                                        in which case the deployments would need to have distinct 'name' (deployment name) values but would have the same 'runtime-name'.
                                         Within an individual server, only one deployment with a given 'runtime-name' can deployed.
                                         However, multiple deployments with the same 'runtime-name' can exist in the configuration, so long as only one is enabled.
                                     </td>
@@ -1033,11 +1067,11 @@
                                     <td>
                                         For Domain only (will be ignored in case of Standalone).
                                         <br/>
-                                        The deployment will be assigned to the server groups specified by this parameter and will be enabled to these server groups.
+                                        The deployment will be assigned (if not assigned yet) to the server groups specified by this parameter and will be enabled on these server groups.
                                         <br/>
                                         Format: comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.
                                         <br/>
-                                        If '--all-server-groups' is specified then deployment will be assigned and enabled on all server groups.
+                                        If '--all-server-groups' is specified then deployment will be assigned (if not assigned yet) and enabled on all server groups.
                                         <br/>
                                         By default value is set to '--all-server-groups'. If not provided - special assignment with enabling of the deployment will not be performed.
                                     </td>
@@ -1047,11 +1081,11 @@
                                     <td>
                                         For Domain only (will be ignored in case of Standalone).
                                         <br/>
-                                        The deployment will be assigned to the server groups specified by this parameter and will be disabled to these server groups.
+                                        The deployment will be assigned (if not assigned yet) to the server groups specified by this parameter and will be disabled on these server groups.
                                         <br/>
                                         Format: comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.
                                         <br/>
-                                        If '--all-server-groups' is specified then deployment will be assigned and disabled on all server groups.
+                                        If '--all-server-groups' is specified then deployment will be assigned (if not assigned yet) and disabled on all server groups.
                                         <br/>
                                         If not provided - special assignment with disabling of the deployment will not be performed.
                                     </td>
@@ -1061,15 +1095,39 @@
                                     <td>
                                         For Standalone only (will be ignored in case of Domain).
                                         <br/>
-                                        Currently supported option is '--disabled' for Standalone.
+                                        Currently supported and tested additional option is '--disabled' for Standalone Server:
+                                        if '--disabled' is specified then the DeployApplication procedure will disable the deployment on standalone server after upgrade (or upload) of the deployment is done.
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                     </li>
+                    <br />
+                    For Example:
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationForm1.PNG" />
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationForm2.PNG" />
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationForm3.PNG" />
+                    <br />
+                    <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationForm4.PNG" />
+                    <br />
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results, including the following job details, which show that the application was deployed, what its expected deployment name and from where it was deployed, for example:</p>
+                <p>
+                    After the job runs, you can view the results, including the following job details
+                    which show that the application was deployed, what its deployment name and from where it was deployed.
+                    For Managed Domain there will be also information about the deployment state (enabled/disabled) on server groups (if the deployment was assigned to any).
+                    For example:
+                </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationStatus1.PNG" />
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationStatus2.PNG" />
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/DeployApplication/ECJBossDeployApplicationStatus3.PNG" />
+                <br />
             </div>
 
             <div id="DisableDeploy"><a name='DisableDeploy' id="DisableDeploy"></a>
