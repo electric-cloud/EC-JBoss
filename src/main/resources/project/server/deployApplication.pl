@@ -312,11 +312,9 @@ sub main {
         # logic for standalone jboss
         ########
         $jboss->log_info("=======Started: deploying to standalone=======");
-        my $cli_command_deploy_to_standalone = qq/deploy --force /;
+        my $cli_command_deploy_to_standalone = qq/deploy --force --name=$expected_deployment_name/;
         $cli_command_deploy_to_standalone .= qq/ --runtime-name=$param_runtime_name / if $param_runtime_name;
-        $cli_command_deploy_to_standalone .= qq/ --name=$param_deployment_name / if $param_deployment_name;
         $cli_command_deploy_to_standalone .= $source_is_url ? qq/ $param_application_content_source_path / : qq/ "$param_application_content_source_path" /;
-        $cli_command_deploy_to_standalone .= qq/ $param_additional_options / if $param_additional_options;
 
         run_command_with_exiting_on_error(
             command => $cli_command_deploy_to_standalone,
@@ -324,7 +322,33 @@ sub main {
         );
         $jboss->log_info("=======Finished: deploying to standalone=======");
 
-        my $summary = "Application '$expected_deployment_name' has been successfully deployed from '$expected_source_for_summary'";
+        my $summary = "Application '$expected_deployment_name' has been successfully deployed from '$expected_source_for_summary'.";
+
+        if ($param_additional_options && $param_additional_options eq "--disabled") {
+            $jboss->log_info("=======Started: disabling deployment on standalone server=======");
+            disable_deployment_on_standalone_server_or_fail(
+                jboss           => $jboss,
+                deployment_name => $expected_deployment_name
+            );
+            $summary .= "\nDisabled on standalone server.";
+            $jboss->log_info("=======Finished: disabling deployment on standalone server=======");
+        }
+        else {
+            $jboss->log_info("=======Started: enabling deployment on standalone server=======");
+            enable_deployment_on_standalone_server_or_fail(
+                jboss           => $jboss,
+                deployment_name => $expected_deployment_name
+            );
+            $summary .= "\nEnabled on standalone server.";
+            $jboss->log_info("=======Finished: enabling deployment on standalone server=======");
+        }
+
+        if ($param_additional_options && $param_additional_options ne "--disabled") {
+            $jboss->log_warning("Additional options '$param_additional_options' are not supported, currently supported option is '--disabled'");
+            $summary .= "\nAdditional options '$param_additional_options' are not supported, currently supported option is '--disabled'";
+            $jboss->warning();
+        }
+
         $jboss->set_property(summary => $summary);
         return;
     }
@@ -512,3 +536,34 @@ sub get_server_groups_sets_based_on_deployment {
     return \%server_groups_sets_based_on_deployment;
 }
 
+sub enable_deployment_on_standalone_server_or_fail {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $deployment_name = $args{deployment_name} || croak "'deployment_name' is required param";
+
+    $jboss->log_info("Enabling deployment '$deployment_name' on standalone server");
+    my $json = run_command_and_get_json_with_exiting_on_error(
+        command => "/deployment=$deployment_name/:deploy",
+        jboss   => $jboss
+    );
+    if ($json->{outcome} ne "success") {
+        $jboss->bail_out("JBoss replied with outcome other than success: " . (encode_json $json));
+    }
+    $jboss->log_info("Enabled deployment '$deployment_name' on standalone server");
+}
+
+sub disable_deployment_on_standalone_server_or_fail {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $deployment_name = $args{deployment_name} || croak "'deployment_name' is required param";
+
+    $jboss->log_info("Disabling deployment '$deployment_name' on standalone server");
+    my $json = run_command_and_get_json_with_exiting_on_error(
+        command => "/deployment=$deployment_name/:undeploy",
+        jboss   => $jboss
+    );
+    if ($json->{outcome} ne "success") {
+        $jboss->bail_out("JBoss replied with outcome other than success: " . (encode_json $json));
+    }
+    $jboss->log_info("Disabled deployment '$deployment_name' on standalone server");
+}
