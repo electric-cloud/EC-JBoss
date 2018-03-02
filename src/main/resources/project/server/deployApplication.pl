@@ -557,7 +557,7 @@ sub disable_deployment_on_standalone_server_or_fail {
     my $jboss = $args{jboss} || croak "'jboss' is required param";
     my $deployment_name = $args{deployment_name} || croak "'deployment_name' is required param";
 
-    $jboss->log_info("Enabling deployment '$deployment_name' on standalone server");
+    $jboss->log_info("Disabling deployment '$deployment_name' on standalone server");
     my $json = run_command_and_get_json_with_exiting_on_error(
         command => "/deployment=$deployment_name/:undeploy",
         jboss   => $jboss
@@ -565,5 +565,5 @@ sub disable_deployment_on_standalone_server_or_fail {
     if ($json->{outcome} ne "success") {
         $jboss->bail_out("JBoss replied with outcome other than success: " . (encode_json $json));
     }
-    $jboss->log_info("Enabled deployment '$deployment_name' on standalone server");
+    $jboss->log_info("Disabled deployment '$deployment_name' on standalone server");
 }
