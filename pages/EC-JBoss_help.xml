@@ -970,7 +970,7 @@
                 <br/><br/>
                 For JBoss Standalone Server: the DeployApplication procedure will upgrade an existing deployment by a new one specified in 'Application Content Source Path' parameter.
                 If the deployment does not exist yet - it will be uploaded to standalone server. Unique identifier for the deployment is deployment name,
-                which may be specified in 'Deployment Name' parameter or will be retrieved by JBoss automatically based on file name of the deployment.
+                which may be specified in 'Deployment Name' parameter or will be retrieved by the procedure automatically based on 'Application Content Source Path' parameter.
                 It is possible to specify that the deployment should be not only upgraded but also disabled on standalone server by specifying '--disabled' flag within 'Additional Options'.
                 NOTE: 'Enabled Server Groups' and 'Disabled Server Groups' will be ignored in case of JBoss Standalone Server.
                 <br/><br/>
@@ -980,7 +980,7 @@
                         Upgrade an existing deployment in content repository by a new one specified in 'Application Content Source Path' parameter.
                         If the deployment does not exist in content repository yet - it will be uploaded to it.
                         Unique identifier for the deployment is deployment name,
-                        which may be specified in 'Deployment Name' parameter or will be retrieved by the procedure automatically based on file name of the deployment.
+                        which may be specified in 'Deployment Name' parameter or will be retrieved by the procedure automatically based on 'Application Content Source Path' parameter.
                         NOTE: all server groups which were using the deployment before (to which deployment was assigned) will start to use the upgraded version of the deployment after this step.
                     </li>
                     <li>
@@ -1045,7 +1045,8 @@
                                     <td>
                                         The unique name of the deployment.
                                         <br/>
-                                        If this parameter is not provided then JBoss (for Standalone) or the procedure (for Domain) will retrieve the deployment name from the file name of filepath or URL, see required 'Application Content Source Path' parameter.
+                                        If this parameter is not provided then the procedure will retrieve the deployment name based on 'Application Content Source Path' parameter
+                                        (assuming that some file name specified in 'Application Content Source Path' parameter within file path or url).
                                     </td>
                                 </tr>
                                 <tr>
@@ -1091,12 +1092,13 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Additional options</td>
+                                    <td>Additional Options</td>
                                     <td>
                                         For Standalone only (will be ignored in case of Domain).
                                         <br/>
-                                        Currently supported and tested additional option is '--disabled' for Standalone Server:
-                                        if '--disabled' is specified then the DeployApplication procedure will disable the deployment on standalone server after upgrade (or upload) of the deployment is done.
+                                        Currently supported additional option is '--disabled' for Standalone Server:
+                                        if '--disabled' is specified then the DeployApplication procedure will disable the deployment on standalone server after upgrade (or upload) of the deployment is done,
+                                        otherwise the procedure will enable the deployment.
                                     </td>
                                 </tr>
                             </tbody>

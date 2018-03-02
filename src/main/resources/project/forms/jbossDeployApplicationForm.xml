@@ -21,7 +21,7 @@
         <label>Deployment Name:</label>
         <property>deploymentName</property>
         <required>0</required>
-        <documentation>The unique name of the deployment. If this parameter is not provided then JBoss (for Standalone) or the procedure (for Domain) will retrieve the deployment name from the file name of filepath or URL, see required 'Application Content Source Path' parameter.</documentation>
+        <documentation>The unique name of the deployment. If this parameter is not provided then the procedure will retrieve the deployment name based on 'Application Content Source Path' parameter (assuming that some file name specified in 'Application Content Source Path' parameter within file path or url).</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
@@ -50,6 +50,6 @@
         <label>Additional Options:</label>
         <property>additionalOptions</property>
         <required>0</required>
-        <documentation>For Standalone only (will be ignored in case of Domain). Currently supported and tested additional option is '--disabled' for Standalone Server: if '--disabled' is specified then the DeployApplication procedure will disable the deployment on standalone server after upgrade (or upload) of the deployment is done.</documentation>
+        <documentation>For Standalone only (will be ignored in case of Domain). Currently supported additional option is '--disabled' for Standalone Server: if '--disabled' is specified then the DeployApplication procedure will disable the deployment on standalone server after upgrade (or upload) of the deployment is done, otherwise the procedure will enable the deployment.</documentation>
     </formElement>
 </editor>
