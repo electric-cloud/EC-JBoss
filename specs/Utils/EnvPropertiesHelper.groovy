@@ -61,4 +61,8 @@ class EnvPropertiesHelper {
     public static String isWindows() {
         return getOS() == "WINDOWS"
     }
+
+    public static String getVersion() {
+        return System.getenv('JBOSS_VERSION')
+    }
 }

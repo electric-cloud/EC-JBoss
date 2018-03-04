@@ -282,6 +282,7 @@ class DeployApplicationDomain extends PluginTestHelper {
            }
 
              @Unroll
+             @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
              def "DeployApplication, app already deployed, url (for EAP 7 and later), enabled server group and disabled server group, change runtime name (C278258)"() {
                  String testCaseId = "C278258"
 
@@ -496,6 +497,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
 
    @Unroll
+   @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApplication, 1st time, url (for EAP 7 and later), enabled server groups (C278256)"() {
         String testCaseId = "C278256"
 
@@ -531,6 +533,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApplication, 1st time, url (for EAP 7 and later), disabled server groups (C278265)"() {
         String testCaseId = "C278265"
 
@@ -565,6 +568,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
 
        @Unroll
+       @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
        def "DeployApplication, 1st time, url (for EAP 7 and later), disabled server groups and enabled server groups (C278266)"() {
            String testCaseId = "C278266"
 
@@ -632,6 +636,7 @@ class DeployApplicationDomain extends PluginTestHelper {
        }
 
           @Unroll
+          @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
           def "Negative. DeployApplication, app already deployed, url (for EAP 7 and later) is empty, change runtime name (C278276)"() {
               String testCaseId = "C278276"
 
@@ -829,6 +834,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
 
        @Unroll
+       @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
        def "Negative. DeployApplication,1st time, url incorrect value (for EAP 7 and later) (C278230)"() {
            String testCaseId = "C278230"
 
