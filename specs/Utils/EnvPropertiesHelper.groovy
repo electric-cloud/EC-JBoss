@@ -50,10 +50,6 @@ class EnvPropertiesHelper {
         return System.getenv('SERVER_CONFIG') ?: 'standalone-full.xml';
     }
 
-    public static String getVersion() {
-        return System.getenv('JBOSS_VERSION')
-    }
-
     public static String getOS() {
         return System.getenv('OS') ?: 'UNIX'
     }

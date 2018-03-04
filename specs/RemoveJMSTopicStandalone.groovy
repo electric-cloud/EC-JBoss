@@ -2,7 +2,7 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-@IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+@IgnoreIf({ env.JBOSS_MODE == 'domain' })
 class RemoveJMSTopicStandalone extends PluginTestHelper {
 
     @Shared

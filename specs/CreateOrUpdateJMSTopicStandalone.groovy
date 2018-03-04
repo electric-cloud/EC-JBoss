@@ -3,7 +3,7 @@ import Utils.EnvPropertiesHelper
 import spock.lang.*
 
 
-@IgnoreIf({ env.JBOSS_VERSION == '6.0' })
+@IgnoreIf({ env.JBOSS_MODE == 'domain' })
 class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     @Shared
