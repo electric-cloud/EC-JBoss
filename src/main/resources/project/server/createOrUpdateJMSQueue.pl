@@ -114,33 +114,48 @@ sub main {
             ########
             $jboss->log_info("JNDI names differ and to be updated: current [@sorted_existing_jndi_names] (sorted) VS specified in parameters [@sorted_specified_jndi_names] (sorted)");
 
+            my $jndi_names_wrapped = join ',', map {qq/"$_"/} @specified_jndi_names;
             if ($jboss_is_domain) {
-                $cli_command = "/profile=$param_profile/$subsystem_part/$provider_part/jms-queue=$param_queue_name/:write-attribute(name=entries,value=[$param_jndi_names])";
+                $cli_command = "/profile=$param_profile/$subsystem_part/$provider_part/jms-queue=$param_queue_name/:write-attribute(name=entries,value=[$jndi_names_wrapped])";
             }
             else {
-                $cli_command = "/$subsystem_part/$provider_part/jms-queue=$param_queue_name/:write-attribute(name=entries,value=[$param_jndi_names])";
+                $cli_command = "/$subsystem_part/$provider_part/jms-queue=$param_queue_name/:write-attribute(name=entries,value=[$jndi_names_wrapped])";
             }
 
-            my %result = run_command_with_exiting_on_error(
-                command => $cli_command,
-                jboss   => $jboss
-            );
+            my %result = $jboss->run_command($cli_command);
 
-            my $summary = "JMS queue '$param_queue_name' has been updated successfully by new jndi names.";
-            if ($result{stdout}) {
-                my $reload_or_restart_required;
-                if ($result{stdout} =~ m/"process-state"\s=>\s"reload-required"/gs
-                    || $result{stdout} =~ m/"process-state"\s=>\s"restart-required"/gs) {
-                    $reload_or_restart_required = 1;
+            if ($result{code}) {
+                if ($result{stdout} && $result{stdout} =~ m/Attribute entries is not writable/s) {
+                    $jboss->log_error("Update of JNDI names for JMS queue cannot be performed for this version of JBoss ($product_version) by writing JNDI names attribute (entries) directly (attribute entries is not writable)");
+                    my $summary .= "Update of JNDI names for JMS queue '$param_queue_name' cannot be performed for this version of JBoss ($product_version) by writing JNDI names attribute (entries) directly (attribute entries is not writable)";
+                    $summary .= "\nJBoss reply: " . $result{stdout} if $result{stdout};
+                    $jboss->set_property(summary => $summary);
+                    $jboss->error();
+                    exit 1;
                 }
-                if ($reload_or_restart_required) {
-                    $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
-                    $jboss->warning();
+                else {
+                    $jboss->process_response(%result);
+                    exit 1;
                 }
-                $summary .= "\nJBoss reply: " . $result{stdout} if $result{stdout};
             }
+            else {
+                $jboss->process_response(%result);
+                my $summary = "JMS queue '$param_queue_name' has been updated successfully by new jndi names.";
+                if ($result{stdout}) {
+                    my $reload_or_restart_required;
+                    if ($result{stdout} =~ m/"process-state"\s=>\s"reload-required"/gs
+                        || $result{stdout} =~ m/"process-state"\s=>\s"restart-required"/gs) {
+                        $reload_or_restart_required = 1;
+                    }
+                    if ($reload_or_restart_required) {
+                        $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
+                        $jboss->warning();
+                    }
+                    $summary .= "\nJBoss reply: " . $result{stdout} if $result{stdout};
+                }
 
-            $jboss->set_property(summary => $summary);
+                $jboss->set_property(summary => $summary);
+            }
             return;
         }
         else {

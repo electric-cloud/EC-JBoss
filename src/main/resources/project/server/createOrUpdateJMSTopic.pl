@@ -110,11 +110,12 @@ sub main {
             ########
             $jboss->log_info("JNDI names differ and to be updated: current [@sorted_existing_jndi_names] (sorted) VS specified in parameters [@sorted_specified_jndi_names] (sorted)");
 
+            my $jndi_names_wrapped = join ',', map {qq/"$_"/} @specified_jndi_names;
             if ($jboss_is_domain) {
-                $cli_command = "/profile=$param_profile/$subsystem_part/$provider_part/jms-topic=$param_topic_name/:write-attribute(name=entries,value=[$param_jndi_names])";
+                $cli_command = "/profile=$param_profile/$subsystem_part/$provider_part/jms-topic=$param_topic_name/:write-attribute(name=entries,value=[$jndi_names_wrapped])";
             }
             else {
-                $cli_command = "/$subsystem_part/$provider_part/jms-topic=$param_topic_name/:write-attribute(name=entries,value=[$param_jndi_names])";
+                $cli_command = "/$subsystem_part/$provider_part/jms-topic=$param_topic_name/:write-attribute(name=entries,value=[$jndi_names_wrapped])";
             }
 
             my %result = run_command_with_exiting_on_error(
