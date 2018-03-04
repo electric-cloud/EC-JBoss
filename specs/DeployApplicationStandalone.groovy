@@ -77,7 +77,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -112,7 +112,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -147,7 +147,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -182,7 +182,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app-custom-appname"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -218,7 +218,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app-custom-runtimename"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -253,7 +253,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app-custom-runtimename"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -289,7 +289,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app-custom-runtimename"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -325,7 +325,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -360,7 +360,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\\nDisabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot, false)
@@ -392,7 +392,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app-customname-runtime"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -425,7 +425,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nDisabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot, false)
@@ -461,7 +461,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app-new-runtime-name"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -499,7 +499,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app-new-runtime-name"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -536,7 +536,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app-new-runtime-name"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -568,7 +568,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         String expectedContextRoot = "hello-world"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -619,8 +619,20 @@ class DeployApplicationStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized arguments: \\[--some-wrong-param\\]"
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "warning"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\n" +
+                "Enabled on standalone server.\n" +
+                "Additional options '$runParams.additionalOptions' are not supported, currently supported option is '--disabled'"
+
+        checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
+        checkAppDeployedToStandaloneUrl(expectedContextRoot)
+
+        cleanup:
+        undeployAppFromStandalone(expectedAppName)
     }
 
 
