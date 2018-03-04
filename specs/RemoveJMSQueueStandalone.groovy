@@ -3,7 +3,7 @@ import Utils.EnvPropertiesHelper
 import spock.lang.*
 
 
-@IgnoreIf({ env.JBOSS_MODE == 'domain' })
+@IgnoreIf({ env.JBOSS_VERSION == '6.0' })
 class RemoveJMSQueueStandalone extends PluginTestHelper {
 
     @Shared
