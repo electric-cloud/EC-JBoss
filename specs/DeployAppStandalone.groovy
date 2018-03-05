@@ -14,7 +14,9 @@ class DeployAppStandalone extends PluginTestHelper {
     @Shared
     String defaultCliPath = ''
     @Shared
-    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war"
+    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-1.0.0.war"
+    @Shared
+    String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-2.0.0.war"
 
 
     def doSetupSpec() {
@@ -354,7 +356,7 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, app already deployed, force flag, change runtime-name (C277829)"() {
+    def "DeployApp, app already deployed, force flag, update app (C277829)"() {
         String testCaseId = "C277829"
 
         def runParams = [
@@ -362,7 +364,7 @@ class DeployAppStandalone extends PluginTestHelper {
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "/tmp/$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "1", // force flag
                 assignservergroups   : "",
                 assignallservergroups: "0",
@@ -371,10 +373,8 @@ class DeployAppStandalone extends PluginTestHelper {
 
         setup:
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
-
-        String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
-        deployAppToStandalone(runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        deployAppToStandalone(runParams.warphysicalpath, "$testCaseId-app.war", "$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile2, runParams.warphysicalpath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -384,18 +384,18 @@ class DeployAppStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
 
-        // let's check that app was upgraded and runtime name was changed
-        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String newContextRoot = "$testCaseId-app-new-runtimename"
+        String existingAppName = "$testCaseId-app.war"
+        String newRuntimeName = "$testCaseId-app.war"
+        String newContextRoot = "$testCaseId-app"
         checkAppDeployedToStandaloneCli(existingAppName, newRuntimeName)
-        checkAppDeployedToStandaloneUrl(newContextRoot)
+        checkAppDeployedToStandaloneUrl(newContextRoot, "2", true)
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
     @Unroll
-    def "DeployApp, app already deployed, force flag, change runtime-name, server groups and all server groups ignored (C277831)"() {
+    def "DeployApp, app already deployed, force flag, update app, server groups and all server groups ignored (C277831)"() {
         String testCaseId = "C277831"
 
         def runParams = [
@@ -403,7 +403,7 @@ class DeployAppStandalone extends PluginTestHelper {
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "/tmp/$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "1", // force flag
                 assignservergroups   : "some-group", // to be ignored as usual for standalone
                 assignallservergroups: "1", // to be ignored as usual for standalone
@@ -412,10 +412,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         setup:
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
-
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
-        deployAppToStandalone(runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        deployAppToStandalone(runParams.warphysicalpath, existingAppName, "$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile2, runParams.warphysicalpath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -425,17 +424,16 @@ class DeployAppStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
 
-        // let's check that app was upgraded and runtime name was changed
-        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String newContextRoot = "$testCaseId-app-new-runtimename"
+        String newRuntimeName = "$testCaseId-app.war"
+        String newContextRoot = "$testCaseId-app"
         checkAppDeployedToStandaloneCli(existingAppName, newRuntimeName)
-        checkAppDeployedToStandaloneUrl(newContextRoot)
+        checkAppDeployedToStandaloneUrl(newContextRoot, "2", true)
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
-    def "Negative. DeployApp, app already deployed, no force flag, change runtime-name failed (C277833)"() {
+    def "Negative. DeployApp, app already deployed, no force flag, update app failed (C277833)"() {
         String testCaseId = "C277833"
 
         def runParams = [
@@ -443,7 +441,7 @@ class DeployAppStandalone extends PluginTestHelper {
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "/tmp/$testCaseId-app.war",
                 appname              : "",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "0", // when force is not set, but app exists
                 assignservergroups   : "",
                 assignallservergroups: "0",
@@ -452,11 +450,11 @@ class DeployAppStandalone extends PluginTestHelper {
 
         setup:
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
-
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
-        String oldContextRoot = "$testCaseId-app-old-runtimename"
+        String oldRuntimeName = "$testCaseId-app.war"
+        String oldContextRoot = "$testCaseId-app"
         deployAppToStandalone(runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        downloadArtifact(linkToSampleWarFile2, runParams.warphysicalpath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -466,9 +464,8 @@ class DeployAppStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "'$existingAppName' already exists in the deployment repository"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}"
 
-        // let's check that app was not upgraded and runtime name was not changed
         checkAppDeployedToStandaloneCli(existingAppName, oldRuntimeName)
-        checkAppDeployedToStandaloneUrl(oldContextRoot)
+        checkAppDeployedToStandaloneUrl(oldContextRoot, "1", true)
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
@@ -563,7 +560,7 @@ class DeployAppStandalone extends PluginTestHelper {
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
-        checkAppDeployedToStandaloneUrl(expectedRuntimeName, false)
+        checkAppDeployedToStandaloneUrl(expectedRuntimeName, "", false)
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
@@ -574,7 +571,7 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, app already deployed, force flag (in additional options), change runtime-name (C277838)"() {
+    def "DeployApp, app already deployed, force flag (in additional options), update app (C277838)"() {
         String testCaseId = "C277838"
 
         def runParams = [
@@ -582,7 +579,7 @@ class DeployAppStandalone extends PluginTestHelper {
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "/tmp/$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "0",
                 assignservergroups   : "",
                 assignallservergroups: "0",
@@ -591,10 +588,11 @@ class DeployAppStandalone extends PluginTestHelper {
 
         setup:
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
-
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
-        deployAppToStandalone(runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        String runtimeName = "$testCaseId-app.war"
+        String contextRoot = "$testCaseId-app"
+        deployAppToStandalone(runParams.warphysicalpath, existingAppName, runtimeName)
+        downloadArtifact(linkToSampleWarFile2, runParams.warphysicalpath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -604,11 +602,8 @@ class DeployAppStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*${runParams.additional_options}"
 
-        // let's check that app was upgraded and runtime name was changed
-        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String newContextRoot = "$testCaseId-app-new-runtimename"
-        checkAppDeployedToStandaloneCli(existingAppName, newRuntimeName)
-        checkAppDeployedToStandaloneUrl(newContextRoot)
+        checkAppDeployedToStandaloneCli(existingAppName, runtimeName)
+        checkAppDeployedToStandaloneUrl(contextRoot, "2", true)
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
@@ -623,7 +618,7 @@ class DeployAppStandalone extends PluginTestHelper {
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "/tmp/$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "1", // this one
                 assignservergroups   : "",
                 assignallservergroups: "0",
@@ -634,8 +629,10 @@ class DeployAppStandalone extends PluginTestHelper {
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
-        deployAppToStandalone(runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        String runtimeName = "$testCaseId-app.war"
+        deployAppToStandalone(runParams.warphysicalpath, existingAppName, runtimeName)
+
+        downloadArtifact(linkToSampleWarFile2, runParams.warphysicalpath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -645,11 +642,9 @@ class DeployAppStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}.*--force"
 
-        // let's check that app was upgraded and runtime name was changed
-        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String newContextRoot = "$testCaseId-app-new-runtimename"
-        checkAppDeployedToStandaloneCli(existingAppName, newRuntimeName)
-        checkAppDeployedToStandaloneUrl(newContextRoot)
+        String contextRoot = "$testCaseId-app"
+        checkAppDeployedToStandaloneCli(existingAppName, runtimeName)
+        checkAppDeployedToStandaloneUrl(contextRoot, "2", true)
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
@@ -707,7 +702,7 @@ class DeployAppStandalone extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
-        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'"
+        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-1.0.0.war'"
 
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
@@ -728,33 +723,32 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "--url=$linkToSampleWarFile",
+                warphysicalpath      : "--url=$linkToSampleWarFile2",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "1",
                 assignservergroups   : "",
                 assignallservergroups: "0",
                 additional_options   : ""
         ]
         setup:
+        downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
-        deployAppToStandalone(runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        String runtimeName = "$testCaseId-app.war"
+        deployAppToStandalone("/tmp/$testCaseId-app.war", existingAppName, runtimeName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
-        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile2'"
+        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=$linkToSampleWarFile2'"
 
-        String expectedAppName = "$testCaseId-app.war"
-        String expectedRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String expectedContextRoot = "$testCaseId-app-new-runtimename"
+        String expectedContextRoot = "$testCaseId-app"
 
-        checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
-        checkAppDeployedToStandaloneUrl(expectedContextRoot)
+        checkAppDeployedToStandaloneCli(existingAppName, runtimeName)
+        checkAppDeployedToStandaloneUrl(expectedContextRoot, "2", true)
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
@@ -768,33 +762,32 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "--url=$linkToSampleWarFile",
+                warphysicalpath      : "--url=$linkToSampleWarFile2",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "",
                 assignservergroups   : "",
                 assignallservergroups: "0",
                 additional_options   : "--force"
         ]
         setup:
+        downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
-        deployAppToStandalone(runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        String runtimeName = "$testCaseId-app.war"
+        deployAppToStandalone("/tmp/$testCaseId-app.war", existingAppName, runtimeName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
-        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile2'"
+        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=$linkToSampleWarFile2'"
 
-        String expectedAppName = "$testCaseId-app.war"
-        String expectedRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String expectedContextRoot = "$testCaseId-app-new-runtimename"
+        String expectedContextRoot = "$testCaseId-app"
 
-        checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
-        checkAppDeployedToStandaloneUrl(expectedContextRoot)
+        checkAppDeployedToStandaloneCli(existingAppName, runtimeName)
+        checkAppDeployedToStandaloneUrl(expectedContextRoot, "2", true)
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
@@ -837,15 +830,15 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     void checkAppDeployedToStandaloneUrl(String contextRoot) {
-        checkAppDeployedToStandaloneUrl(contextRoot, true)
+        checkAppDeployedToStandaloneUrl(contextRoot, "1", true)
     }
 
-    void checkAppDeployedToStandaloneUrl(String contextRoot, boolean available) {
+    void checkAppDeployedToStandaloneUrl(String contextRoot, String version, boolean available) {
         String hostname = EnvPropertiesHelper.getResourceHostname()
         String port = 8080
         String url = "http://$hostname:$port/$contextRoot"
         if (available)
-            assert isUrlAvailable(url)
+            assert isUrlAvailable(url, version)
         else
             assert isNotUrlAvailable(url)
     }

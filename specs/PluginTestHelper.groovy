@@ -238,7 +238,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         assert jobStatus(res.jobId).outcome == 'success'
     }
 
-    boolean isUrlAvailable(String url) {
+    boolean isUrlAvailable(String url, String version) {
         def res = dsl """
             runProcedure(
                 projectName: '$helperProjName',
@@ -252,8 +252,13 @@ class PluginTestHelper extends PluginSpockTestSupport {
         waitUntil {
             jobCompleted res
         }
-
+        checkVersionApplication(url, version)
         return jobStatus(res.jobId).outcome == 'success'
+    }
+
+    def checkVersionApplication(String url, String version){
+        String data = new URL(url).getText().replaceAll("\t", "").replaceAll("\\s+", "")
+        assert data =~ "Theversionis$version.0.0"
     }
 
     boolean isNotUrlAvailable(String url) {

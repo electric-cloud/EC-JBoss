@@ -14,7 +14,9 @@ class DeployApplicationStandalone extends PluginTestHelper {
     @Shared
     String defaultCliPath = ''
     @Shared
-    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war"
+    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-1.0.0.war"
+    @Shared
+    String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-2.0.0.war"
 
 
     def doSetupSpec() {
@@ -363,7 +365,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\\nDisabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
-        checkAppDeployedToStandaloneUrl(expectedContextRoot, false)
+        checkAppDeployedToStandaloneUrl(expectedContextRoot, "",false)
 
         cleanup:
         undeployAppFromStandalone(expectedAppName)
@@ -430,7 +432,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nDisabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
-        checkAppDeployedToStandaloneUrl(expectedContextRoot, false)
+        checkAppDeployedToStandaloneUrl(expectedContextRoot, "", false)
 
         cleanup:
         undeployAppFromStandalone(expectedAppName)
@@ -438,36 +440,36 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
-    def "DeployApp, app already deployed, url (for EAP 7 and later), change runtime name (C278116)"() {
+    def "DeployApp, app already deployed, url (for EAP 7 and later), update app (C278116)"() {
         String testCaseId = "C278116"
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "--url=$linkToSampleWarFile",
+                applicationContentSourcePath   : "--url=$linkToSampleWarFile2",
                 deploymentName                 : "$testCaseId-app.war",
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
-                runtimeName                    : "$testCaseId-app-new-runtime-name.war",
+                runtimeName                    : '',
                 serverconfig                   : defaultConfigName,
         ]
 
         setup:
         downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
-        deployAppToStandalone("/tmp/$testCaseId-app.war",runParams.deploymentName,"$testCaseId-app.war")
+        deployAppToStandalone("/tmp/$testCaseId-app.war","$testCaseId-app.war","$testCaseId-app.war")
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
         String expectedAppName = "$testCaseId-app.war"
-        String expectedRuntimeName = "$testCaseId-app-new-runtime-name.war"
-        String expectedContextRoot = "$testCaseId-app-new-runtime-name"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on standalone server."
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile2'.\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
-        checkAppDeployedToStandaloneUrl(expectedContextRoot)
+        checkAppDeployedToStandaloneUrl(expectedContextRoot, "2", true)
 
         cleanup:
         expectedAppName = "$testCaseId-app.war"
@@ -476,7 +478,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
 
     @Unroll
-    def "DeployApp, app already deployed, file, change runtime-name (C278107)"() {
+    def "DeployApp, app already deployed, file, update app (C278107)"() {
         String testCaseId = "C278107"
 
         def runParams = [
@@ -485,27 +487,28 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 deploymentName                 : "$testCaseId-app.war",
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
-                runtimeName                    : "$testCaseId-app-new-runtime-name.war",
+                runtimeName                    : "$testCaseId-app.war",
                 serverconfig                   : defaultConfigName,
         ]
 
         setup:
         downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
-        deployAppToStandalone(runParams.applicationContentSourcePath,runParams.deploymentName,"$testCaseId-app.war")
+        deployAppToStandalone(runParams.applicationContentSourcePath, "$testCaseId-app.war","$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile2, runParams.applicationContentSourcePath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
         String expectedAppName = "$testCaseId-app.war"
-        String expectedRuntimeName = "$testCaseId-app-new-runtime-name.war"
-        String expectedContextRoot = "$testCaseId-app-new-runtime-name"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
-        checkAppDeployedToStandaloneUrl(expectedContextRoot)
+        checkAppDeployedToStandaloneUrl(expectedContextRoot, "2", true)
 
         cleanup:
         undeployAppFromStandalone(expectedAppName)
@@ -513,7 +516,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
 
     @Unroll
-    def "DeployApp, app already deployed, file, change runtime-name, enabled server groups and disabled server groups ignored (C278108)"() {
+    def "DeployApp, app already deployed, file, update app, enabled server groups and disabled server groups ignored (C278108)"() {
         String testCaseId = "C278108"
 
         def runParams = [
@@ -522,27 +525,28 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 deploymentName                 : "$testCaseId-app.war",
                 disabledServerGroups           : 'disabled-server-group',
                 enabledServerGroups            : 'enabled-server-group',
-                runtimeName                    : "$testCaseId-app-new-runtime-name.war",
+                runtimeName                    : "$testCaseId-app.war",
                 serverconfig                   : defaultConfigName,
         ]
 
         setup:
         downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
-        deployAppToStandalone(runParams.applicationContentSourcePath,runParams.deploymentName,"$testCaseId-app.war")
+        deployAppToStandalone(runParams.applicationContentSourcePath, "$testCaseId-app.war", "$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile2, runParams.applicationContentSourcePath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
         String expectedAppName = "$testCaseId-app.war"
-        String expectedRuntimeName = "$testCaseId-app-new-runtime-name.war"
-        String expectedContextRoot = "$testCaseId-app-new-runtime-name"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on standalone server."
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
-        checkAppDeployedToStandaloneUrl(expectedContextRoot)
+        checkAppDeployedToStandaloneUrl(expectedContextRoot, "2", true)
 
         cleanup:
         undeployAppFromStandalone(expectedAppName)
@@ -569,7 +573,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         then:
         String expectedAppName = "hello-world.war"
         String expectedRuntimeName = "hello-world.war"
-        String expectedContextRoot = "hello-world"
+        String expectedContextRoot = "hello-world-war-1.0.0"
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on standalone server."
@@ -727,15 +731,15 @@ todo: test common cases (config/pathToCli/wrongCreds)
     }
 
     void checkAppDeployedToStandaloneUrl(String contextRoot) {
-        checkAppDeployedToStandaloneUrl(contextRoot, true)
+        checkAppDeployedToStandaloneUrl(contextRoot, "1", true)
     }
 
-    void checkAppDeployedToStandaloneUrl(String contextRoot, boolean available) {
+    void checkAppDeployedToStandaloneUrl(String contextRoot, String version, boolean available) {
         String hostname = EnvPropertiesHelper.getResourceHostname()
         String port = 8080
         String url = "http://$hostname:$port/$contextRoot"
         if (available)
-            assert isUrlAvailable(url)
+            assert isUrlAvailable(url, version)
         else
             assert isNotUrlAvailable(url)
     }
