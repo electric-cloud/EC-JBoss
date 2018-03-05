@@ -452,6 +452,7 @@
                     <li> If queue exists (based on unique identifier) and the specified
                         list of JNDI names differ from existing list of JNDI name for the
                         queue, they will get updated. <br />
+                        NOTE: For JBoss EAP versions 6.2 and 6.3 updating an existing JNDI is not supported. <br />
                         NOTE: Parameters pertaining to Durability, Message Selection and
                         Additional Options will be ignored. <br />
                         NOTE: JBoss servers may require restart (in case of EAP 6) or reload
