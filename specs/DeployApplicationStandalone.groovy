@@ -370,6 +370,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, url (for EAP 7 and later), custom app name, custom runtime name (C278115)"() {
         String testCaseId = "C278115"
 
@@ -403,6 +404,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, url (for EAP 7 and later), disabled flag in additional options (C278115)"() {
         String testCaseId = "C278115"
 
@@ -435,6 +437,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, app already deployed, url (for EAP 7 and later), change runtime name (C278116)"() {
         String testCaseId = "C278116"
 
@@ -546,6 +549,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, url (for EAP 7 and later), minimum params (C278195)"() {
         String testCaseId = "C278195"
 
@@ -660,6 +664,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Negative. DeployApp, 1st time, url (for EAP 7 and later) incorrect value (C278125)"() {
         String testCaseId = "C278125"
 
@@ -682,6 +687,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Negative. DeployApp, app already deployed, url (for EAP 7 and later) is empty, change runtime name (C278196)"() {
         String testCaseId = "C278196"
 

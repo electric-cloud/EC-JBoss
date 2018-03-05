@@ -685,6 +685,7 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, application content source path --url(C278037)"() {
         String testCaseId = "C278037"
 
@@ -720,6 +721,7 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, app already deployed, force flag, application content source path --url(C278039)"() {
         String testCaseId = "C278039"
 
@@ -759,6 +761,7 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, app already deployed, force flag (in additional options), application content source path --url (C278041)"() {
         String testCaseId = "C278041"
 
@@ -798,6 +801,7 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Negative. DeployApp, 1st time, application content source path --url incorrect value (C278038)"() {
         String testCaseId = "C278038"
 
