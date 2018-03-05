@@ -1,6 +1,7 @@
 package Services
 
 import Models.JBoss.Domain.*
+import Utils.EnvPropertiesHelper
 
 class CliCommandsGeneratorHelper {
     static String addServerGroupCmd(ServerGroupHelper serverGroup) {
@@ -126,22 +127,26 @@ class CliCommandsGeneratorHelper {
     }
 
     static String getJMSQueueInfoStandalone(String queueName) {
-        String command = "/subsystem=messaging-activemq/server=default/jms-queue=$queueName:read-resource()"
+        String subsystem = getJMSsubsystem();
+        String command = "/$subsystem/jms-queue=$queueName:read-resource()"
         return command
     }
 
     static String getJMSQueueInfoDomain(String queueName, String profile) {
-        String command = "/profile=$profile/subsystem=messaging-activemq/server=default/jms-queue=$queueName:read-resource()"
+        String subsystem = getJMSsubsystem();
+        String command = "/profile=$profile/$subsystem/jms-queue=$queueName:read-resource()"
         return command
     }
 
     static String getJMSTopicInfoStandalone(String topicName) {
-        String command = "/subsystem=messaging-activemq/server=default/jms-topic=$topicName:read-resource()"
+        String subsystem = getJMSsubsystem();
+        String command = "/$subsystem/jms-topic=$topicName:read-resource()"
         return command
     }
 
     static String getJMSTopicInfoDomain(String topicName, String profile) {
-        String command = "/profile=$profile/subsystem=messaging-activemq/server=default/jms-topic=$topicName:read-resource()"
+        String subsystem = getJMSsubsystem();
+        String command = "/profile=$profile/$subsystem/jms-topic=$topicName:read-resource()"
         return command
     }
 
@@ -194,6 +199,18 @@ class CliCommandsGeneratorHelper {
 
     static String addJMSTopicDomain(String topicName, String jndiName, String profile) {
         String command = "jms-topic add --topic-address=$topicName --entries=[$jndiName]  $profile"
+        return command
+    }
+
+    static String getJMSsubsystem() {
+        String subsystem_part = "subsystem=messaging-activemq"
+        String provider_part = "server=default"
+
+        if(EnvPropertiesHelper.getVersion() =~ "6.*") {
+            subsystem_part = "subsystem=messaging"
+            provider_part = "hornetq-server=default"
+        }
+        String command = "$subsystem_part/$provider_part"
         return command
     }
 
