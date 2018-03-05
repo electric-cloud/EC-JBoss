@@ -532,6 +532,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Create JMS Queue with additional option --legacy-entries (C278381)"() {
         String testCaseId = "C278381"
 
