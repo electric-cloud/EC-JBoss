@@ -911,7 +911,7 @@
 				<br />
             </div>
 
-            <div> <a name="DeployApplication" id="DeployApplication"></a>
+            <div id="DeployApplication"> <a name="DeployApplication" id="DeployApplication"></a>
                 <h2>DeployApplication (Standalone/Domain)</h2>
                 The DeployApplication procedure deploys an application (mainly WAR or
                 EAR) to a JBoss Standalone or Managed domain. The procedure will
