@@ -126,8 +126,8 @@ sub main {
 
             if ($result{code}) {
                 if ($result{stdout} && $result{stdout} =~ m/Attribute entries is not writable/s) {
-                    $jboss->log_error("Update of JNDI names for JMS queue cannot be performed for this version of JBoss ($product_version) by writing JNDI names attribute (entries) directly (attribute entries is not writable)");
-                    my $summary .= "Update of JNDI names for JMS queue '$param_queue_name' cannot be performed for this version of JBoss ($product_version) by writing JNDI names attribute (entries) directly (attribute entries is not writable)";
+                    $jboss->log_error("Update of JNDI names for JMS queue cannot be performed for this version of JBoss ($product_version). Attribute entries (jndi names) is not writable");
+                    my $summary .= "Update of JNDI names for JMS queue '$param_queue_name' cannot be performed for this version of JBoss ($product_version).";
                     $summary .= "\nJBoss reply: " . $result{stdout} if $result{stdout};
                     $jboss->set_property(summary => $summary);
                     $jboss->error();
