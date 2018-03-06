@@ -39,7 +39,7 @@ class EnvPropertiesHelper {
     }
 
     public static String getResourceHostname() {
-        return System.getenv('RESOURCE_HOSTNAME') ?: 'jboss'
+        return System.getenv('RESOURCE_HOSTNAME')
     }
 
     public static String getResourcePort() {
