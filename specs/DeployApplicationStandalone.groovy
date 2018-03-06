@@ -88,7 +88,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
-    @Unroll
+/*    @Unroll
     def "DeployApp, 1st time, file, disabled server groups ignored (C278101)"() {
         String testCaseId = "C278101"
 
@@ -718,7 +718,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
-    }
+    }*/
 
     /*
 todo: test common cases (config/pathToCli/wrongCreds)
@@ -735,7 +735,7 @@ todo: test common cases (config/pathToCli/wrongCreds)
     }
 
     void checkAppDeployedToStandaloneUrl(String contextRoot, String version, boolean available) {
-        String hostname = EnvPropertiesHelper.getResourceHostname()
+        String hostname = System.getenv('RESOURCE_HOSTNAME')
         String port = 8080
         String url = "http://$hostname:$port/$contextRoot"
         if (available)
