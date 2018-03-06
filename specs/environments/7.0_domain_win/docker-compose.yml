@@ -11,13 +11,14 @@ services:
     hostname: "efserver"
     tty: true
   jboss:
-    image: electricflow/jboss7:v7.0-win
+    image: "electricflow/jboss7:v7.0-win"
     environment:
       - EF_SERVER_HOST=efserver
       - EF_SERVER_ADMIN_USER=admin
       - EF_SERVER_ADMIN_PASS=changeme
       - EF_RESOURCE_NAME=JBOSS
       - JBOSS_MODE=domain
+      - JBOSS_PASSWORD=changeme1!
     ports:
       - "7808:7800"
       - "8080:8080"
@@ -25,8 +26,8 @@ services:
       - "9999:9999"
       - "8230:8230"
       - "8330:8330"
-    container_name: "testjbosshostname"
-    hostname: "testjbosshostname"
+    container_name: "jboss70domain"
+    hostname: "jboss70domain"
     tty: false
 networks:
   default:

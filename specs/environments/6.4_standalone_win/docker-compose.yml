@@ -11,7 +11,7 @@ services:
     hostname: "efserver"
     tty: true
   jboss:
-    image: "electricflow/jboss7:v7.0-win"
+    image: "electricflow/jboss6:v6.4-win"
     environment:
       - EF_SERVER_HOST=efserver
       - EF_SERVER_ADMIN_USER=admin
@@ -25,8 +25,8 @@ services:
       - "8080:8080"
       - "9990:9990"
       - "9999:9999"
-    container_name: "jboss70standalone"
-    hostname: "jboss70standalone"
+    container_name: "jboss64standalone"
+    hostname: "jboss64standalone"
     tty: false
 networks:
   default:
