@@ -827,7 +827,7 @@
 									</td>
                                 </tr>
                                 <tr>
-                                    <td>Runtime Name</td>
+                                    <td>Runtime name for deployment</td>
                                     <td> Optional parameter.<br />
                                         The runtime name for the deployment. If not specified it
                                         will be the same as 'Deployment Name'.</td>

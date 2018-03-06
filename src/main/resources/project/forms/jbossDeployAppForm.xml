@@ -22,7 +22,7 @@
         <label>Application Content Source Path:</label>
         <property>warphysicalpath</property>
         <required>1</required>
-        <documentation>Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions. In case of 'file_path' - pass full filesystem path to the application to deploy, e.g. '/tmp/hello-world.war'. In case of '--url' (for EAP 7 and later) - pass URL at which the deployment content is available (in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war').</documentation>
+        <documentation>Either an absolute filepath (including the name of the WAR or EAR) or a URL that the Domain controller or the Standalone Server (as the case may be) can resolve. URL is supported only for 7.0 EAP and later versions. This parameter should be populated as follows. If using filepath, it should be the full filesystem path to the application that needs to be deployed. E.g. '/tmp/hello-world.war'. If using URL it should be preceded by a -- prefix anchor. E.g. '--url=https://my.site.com/hello-world.war'.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
@@ -36,7 +36,7 @@
         <label>Runtime name for deployment:</label>
         <property>runtimename</property>
         <required>0</required>
-        <documentation>Stands for '--runtime-name' parameter for jboss-cli 'deploy' command. The runtime name for the deployment. NOTE: the file extension (.war, .jar, .ear etc.) needs to be included into runtime name so server can distinguish type of deployment somehow. This would typically be the same as '--name', and if not specified the value used for '--name' will be used.</documentation>
+        <documentation>The runtime name for the deployment. If not specified it will be the same as 'Deployment Name'.</documentation>
     </formElement>
     <formElement>
         <type>checkbox</type>
