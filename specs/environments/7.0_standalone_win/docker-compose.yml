@@ -23,8 +23,8 @@ services:
       - "7808:7800"
       - "8080:8080"
       - "9990:9990"
-    container_name: jboss7.0-win
-    hostname: "jboss"
+    container_name: "testjbosshostname"
+    hostname: "testjbosshostname"
     tty: false
 networks:
   default:
