@@ -3278,7 +3278,7 @@
         </procedure>
         <procedure>
             <procedureName>RemoveJMSQueue</procedureName>
-            <description>This procedure removes specified jms queue in default messaging provider within JBoss EAP messaging subsystem.</description>
+            <description>This procedure removes an existing jms queue in the JBoss EAP messaging subsystem.</description>
             <jobNameTemplate>jboss-remove-jms-queue-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3345,7 +3345,7 @@
             <formalParameter>
                 <formalParameterName>profile</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain where queue should be removed. For example: 'full', 'full-ha'</description>
+                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain form which queue should be removed. For example: 'full', 'full-ha'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
