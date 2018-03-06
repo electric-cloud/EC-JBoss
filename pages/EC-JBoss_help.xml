@@ -1028,7 +1028,7 @@
                                         (if not already assigned) and enabled. <br />
                                         These are the formatting rules: <br />
                                         Either a comma separated list of server groups (e.g.
-                                        'server-group-one, server-group-five') or 
+                                        'server-group-one,server-group-five') or 
                                         '--all-server-groups'. </td>
                                 </tr>
                                 <tr>
@@ -1038,12 +1038,12 @@
                                         (if not already assigned) and disabled. <br />
                                         These are the formatting rules: <br />
                                         Either a comma separated list of server groups (e.g.
-                                        'server-group-one, server-group-five') or 
+                                        'server-group-one,server-group-five') or 
                                         '--all-server-groups'. </td>
                                 </tr>
                                 <tr>
                                     <td>Additional Options</td>
-                                    <td>Applicable to JBoss Domain only<br />
+                                    <td>Applicable to JBoss Standalone only.<br />
                                         Currently supported additional option is '--disabled' for
                                         Standalone Server. If it is populated as '--disabled' the
                                         procedure will deploy the Application and leave it disabled.
