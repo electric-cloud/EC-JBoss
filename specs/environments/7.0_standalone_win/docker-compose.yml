@@ -13,6 +13,10 @@ services:
   jboss:
     image: electricflow/jboss7:v7.0-win
     environment:
+      - EF_SERVER_HOST=efserver
+      - EF_SERVER_ADMIN_USER=admin
+      - EF_SERVER_ADMIN_PASS=changeme
+      - EF_RESOURCE_NAME=JBOSS
       - SERVER_CONFIG=standalone-full.xml
       - JBOSS_MODE=standalone
     ports:
