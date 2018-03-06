@@ -331,6 +331,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Create JMS Topic with additional option --legacy-entries (C278556)"() {
         String testCaseId = "C278556"
 
