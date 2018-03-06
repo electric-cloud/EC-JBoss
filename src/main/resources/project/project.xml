@@ -2945,7 +2945,7 @@
         </procedure>
         <procedure>
             <procedureName>CreateOrUpdateJMSQueue</procedureName>
-            <description>This procedure creates a new jms queue or updates JNDI names for existing queue in default messaging provider within JBoss EAP messaging subsystem.</description>
+            <description>This procedure creates a new jms queue or updates JNDI names for an existing jms queue using the default message provider as specified in the configuration of the JBoss EAP messaging subsystem.</description>
             <jobNameTemplate>jboss-create-or-update-jms-queue-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3081,21 +3081,21 @@
             <formalParameter>
                 <formalParameterName>durable</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. Whether the queue to be created is durable or not. Default is false (unchecked) - non durable.</description>
+                <description>Whether the queue to be created is durable or not. Default is false (unchecked) - non durable. NOTE: This parameter will be considered only when creating queues and will be ignored for updates.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>messageSelector</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. JMS message selector the queue will have. Only messages that match the selector will be added to the queue. For example: color='red'</description>
+                <description>JMS message selector. Only messages that match the selector will be added to the queue. For example: color='red'. NOTE: This parameter will be considered only when creating queues and will be ignored for updates.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. The 'Additional options' string will be concatenated to already generated command line for creating queue. For example: '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'</description>
+                <description>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating queue. The following is an example: If Additional options is populated as follows '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2' the procedure invoke the following command for the creation of a queue whose name is myQueue: 'jms-queue add --queue-address=myQueue --entries=java:jboss/exported/jms/queue/test --durable=false --legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'. NOTE: This parameter will be considered only when creating queues and will be ignored for updates.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
