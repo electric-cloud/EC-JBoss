@@ -3136,7 +3136,7 @@
         </procedure>
         <procedure>
             <procedureName>CreateOrUpdateJMSTopic</procedureName>
-            <description>This procedure creates a new jms topic or updates JNDI names for existing topic in default messaging provider within JBoss EAP messaging subsystem.</description>
+            <description>This procedure creates a new jms topic or updates JNDI names for an existing jms topic using the default message provider as specified in the configuration of the JBoss EAP messaging subsystem.</description>
             <jobNameTemplate>jboss-create-or-update-jms-topic-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3237,7 +3237,7 @@
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. The 'Additional options' string will be concatenated to already generated command line for creating topic. For example: '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'</description>
+                <description>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating topic. The following is an example: If Additional options is populated as follows '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2' the procedure invoke the following command for the creation of a topic whose name is myTopic: 'jms-topic add --topic-address=myTopic --entries=java:jboss/exported/jms/topic/test --legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'. NOTE: This parameter will be considered only when creating topics and will be ignored for updates.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
