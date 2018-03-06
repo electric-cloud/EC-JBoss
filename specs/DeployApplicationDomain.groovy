@@ -3,7 +3,7 @@ import Models.JBoss.Domain.ServerHelper
 import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
-@Ignore
+
 @IgnoreIf({ env.JBOSS_MODE == 'standalone' })
 class DeployApplicationDomain extends PluginTestHelper {
 
@@ -237,7 +237,7 @@ class DeployApplicationDomain extends PluginTestHelper {
           }
 
            @Unroll
-           def "DeployApplication, app already deployed, file, enabled and disabled server groups, update app (C278242)"() {
+           def "DeployApplication, app already deployed, file, enabled and disabled server groups, change runtime name (C278242)"() {
                String testCaseId = "C278242"
 
                def runParams = [
@@ -282,7 +282,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
              @Unroll
              @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
-             def "DeployApplication, app already deployed, url (for EAP 7 and later), enabled server group and disabled server group, update app (C278258)"() {
+             def "DeployApplication, app already deployed, url (for EAP 7 and later), enabled server group and disabled server group, change runtime name (C278258)"() {
                  String testCaseId = "C278258"
 
                  def runParams = [
@@ -633,7 +633,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
           @Unroll
           @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
-          def "Negative. DeployApplication, app already deployed, url (for EAP 7 and later) is empty, update app (C278276)"() {
+          def "Negative. DeployApplication, app already deployed, url (for EAP 7 and later) is empty, change runtime name (C278276)"() {
               String testCaseId = "C278276"
 
               def runParams = [
