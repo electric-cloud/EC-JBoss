@@ -485,7 +485,7 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "DeployApp, app already deployed, force flag, server groups ignored, change runtime-name (C277890)"() {
+    def "DeployApp, app already deployed, force flag, server groups ignored, update app (C277890)"() {
         String testCaseId = "C277890"
 
         def runParams = [
@@ -529,7 +529,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
-    def "DeployApp, 1st time, force flag, all server groups ignored - just upload (C277906)"() {
+    def "DeployApp, 1st time, force flag (C277906)"() {
         String testCaseId = "C277906"
 
         def runParams = [
@@ -549,9 +549,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         String existingAppName = "$testCaseId-app.war"
         String runtimeName = "$testCaseId-app.war"
-        String[] oldServerGroupsWithApp = [serverGroup2]
-        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, runtimeName)
-        downloadArtifact(linkToSampleWarFile2, runParams.warphysicalpath)
+        String[] serverGroupsWithApp = [serverGroup2]
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -562,8 +560,8 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
 
         String contextRoot = "$testCaseId-app"
-        checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, oldServerGroupsWithApp)
-        checkAppDeployedToServerGroupsUrl(contextRoot, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, serverGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(contextRoot, serverGroupsWithApp)
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
