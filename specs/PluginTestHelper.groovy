@@ -108,7 +108,8 @@ class PluginTestHelper extends PluginSpockTestSupport {
         String property = "/myJob/jobSteps/RunSpecTests/debug_logs/COMMANDER_RESOURCENAME"
         String logs
         try {
-            logs = getJobProperty('/myJob/jobSteps/RunSpecTests/Command', runProcedureJob.getJobId());
+            logs = getJobProperty('/myJob/jobSteps/RunSpecTests/debug_logs', runProcedureJob.getJobId());
+            logs = getJobProperty(property, runProcedureJob.getJobId());
             logger.debug("logs "+logs)
         } catch (Throwable e) {
             logger.debug("cannot retrieve logs from the property '$property'")
