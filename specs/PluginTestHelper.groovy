@@ -62,7 +62,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         def resName = result?.resource?.resourceName
         assert resName
         resName
-        getLogs()
+        getJobLogsSpec()
     }
 
     def deleteProject(String projectName) {
@@ -106,8 +106,15 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     String getJobLogsSpec() {
-        String property = "/myProject/resourceName/"
+        String property = "/myJob/resourceName/"
         String logs
+        try {
+            logs = getJobProperty(property, runProcedureJob.getJobId());
+            logger.debug("logs "+logs)
+        } catch (Throwable e) {
+            logger.debug("cannot retrieve logs from the property '$property'")
+        }
+        property = "/myJob/resource/"
         try {
             logs = getJobProperty(property, runProcedureJob.getJobId());
             logger.debug("logs "+logs)
