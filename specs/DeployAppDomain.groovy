@@ -519,11 +519,11 @@ class DeployAppDomain extends PluginTestHelper {
 
         String contextRoot = "$testCaseId-app"
         checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, oldServerGroupsWithApp)
-        checkAppDeployedToServerGroupsUrl(contextRoot, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(contextRoot, oldServerGroupsWithApp, "2")
 
         // let's verify that assignservergroups was ignored
         String[] expectedServerGroupsWithoutApp = [serverGroup1]
-        checkAppNotDeployedToServerGroups(existingAppName, expectedServerGroupsWithoutApp, "2")
+        checkAppNotDeployedToServerGroups(existingAppName, expectedServerGroupsWithoutApp)
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")

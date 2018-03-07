@@ -2,7 +2,6 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-@Ignore
 @IgnoreIf({ env.JBOSS_MODE == 'domain' })
 class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
@@ -216,7 +215,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "error"
         String command = 'add'
         if(env.JBOSS_VERSION =~ '6.0'){
-            command = "org.jboss.as.cli.handlers.GenericTypeOperationHandler.*"
+            command = "org.jboss.as.cli.handlers.GenericTypeOperationHandler"
         }
         assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized argument ${runParams.additionalOptions} for command '$command'."
 
