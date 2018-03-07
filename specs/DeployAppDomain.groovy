@@ -548,7 +548,6 @@ class DeployAppDomain extends PluginTestHelper {
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
         String existingAppName = "$testCaseId-app.war"
-        String runtimeName = "$testCaseId-app.war"
         String[] serverGroupsWithApp = [serverGroup1,serverGroup2]
 
         when:
@@ -559,9 +558,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$existingAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
 
-        String contextRoot = "$testCaseId-app"
-        checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, serverGroupsWithApp)
-        checkAppDeployedToServerGroupsUrl(contextRoot, serverGroupsWithApp)
+        checkAppNotDeployedToServerGroups(existingAppName, serverGroupsWithApp)
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
