@@ -6,12 +6,6 @@ my %checkServerStatus = (
     category    => "Application Server"
 );
 my %deployApp = (
-    label       => "JBoss - Deploy App",
-    procedure   => "DeployApp",
-    description => "Deploy an application into JBoss server",
-    category    => "Application Server"
-);
-my %deployApplication = (
     label       => "JBoss - Deploy Application",
     procedure   => "DeployApplication",
     description => "Deploy an application (mainly WAR or EAR) from the specified source (usually from filepath) to standalone server (for Standalone JBoss) or to content repository and specified server groups (for Domain JBoss)",
@@ -135,12 +129,12 @@ my %removeJMSTopic = (
 );
 
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Start Domain Server");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Start Standalone Server");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Undeploy App");
 
-$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy Application");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Undeploy Application");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Deploy Status");
@@ -163,7 +157,6 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS T
 @::createStepPickerSteps = (
     \%checkServerStatus,
     \%deployApp,
-    \%deployApplication,
     \%shutdownStandaloneServer,
     \%startDomainServer,
     \%startStandaloneServer,
