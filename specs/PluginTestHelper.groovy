@@ -34,6 +34,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     def createJBossResource() {
+        getJobLogsSpec()
         def hostname = EnvPropertiesHelper.getResourceHostname()
         def port = EnvPropertiesHelper.getResourcePort()
 
@@ -97,6 +98,18 @@ class PluginTestHelper extends PluginSpockTestSupport {
         String logs
         try {
             logs = getJobProperty(property, jobId)
+        } catch (Throwable e) {
+            logger.debug("cannot retrieve logs from the property '$property'")
+        }
+        return logs
+    }
+
+    String getJobLogsSpec() {
+        String property = "/myJob/jobSteps/RunSpecTests/Command"
+        String logs
+        try {
+            logs = getJobProperty('/myJob/jobSteps/RunSpecTests/Command', runProcedureJob.getJobId());
+            logger.debug("logs "+logs)
         } catch (Throwable e) {
             logger.debug("cannot retrieve logs from the property '$property'")
         }

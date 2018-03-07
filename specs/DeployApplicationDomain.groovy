@@ -3,7 +3,7 @@ import Models.JBoss.Domain.ServerHelper
 import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
-@Ignore
+
 @IgnoreIf({ env.JBOSS_MODE == 'standalone' })
 class DeployApplicationDomain extends PluginTestHelper {
 
