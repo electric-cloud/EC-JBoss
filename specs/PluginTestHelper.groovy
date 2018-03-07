@@ -105,7 +105,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     String getJobLogsSpec() {
-        String property = "/myJob/jobSteps/RunSpecTests/Command"
+        String property = "/myJob/jobSteps/RunSpecTests/debug_logs/COMMANDER_RESOURCENAME"
         String logs
         try {
             logs = getJobProperty('/myJob/jobSteps/RunSpecTests/Command', runProcedureJob.getJobId());
