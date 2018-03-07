@@ -16,7 +16,10 @@ class DeployAppDomain extends PluginTestHelper {
     @Shared
     String defaultCliPath = ''
     @Shared
-    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war"
+    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-1.war"
+    @Shared
+    String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-2.war"
+
 
     // 2 default server groups
     @Shared
@@ -448,7 +451,7 @@ class DeployAppDomain extends PluginTestHelper {
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "/tmp/$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "1", // force flag
                 assignservergroups   : "",
                 assignallservergroups: "0",
@@ -459,9 +462,11 @@ class DeployAppDomain extends PluginTestHelper {
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-runtimename.war"
+        String runtimeName = "$testCaseId-app.war"
         String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
-        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, runtimeName)
+
+        downloadArtifact(linkToSampleWarFile2, runParams.warphysicalpath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -471,18 +476,16 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
 
-        // let's check that app was upgraded and runtime name was changed
-        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String newContextRoot = "$testCaseId-app-new-runtimename"
-        checkAppDeployedToServerGroupsCli(existingAppName, newRuntimeName, oldServerGroupsWithApp)
-        checkAppDeployedToServerGroupsUrl(newContextRoot, oldServerGroupsWithApp)
+        String contextRoot = "$testCaseId-app"
+        checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(contextRoot, oldServerGroupsWithApp, "2")
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
     @Unroll
-    def "DeployApp, app already deployed, force flag, server groups ignored, change runtime-name (C277890)"() {
+    def "DeployApp, app already deployed, force flag, server groups ignored, update app (C277890)"() {
         String testCaseId = "C277890"
 
         def runParams = [
@@ -490,7 +493,7 @@ class DeployAppDomain extends PluginTestHelper {
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "/tmp/$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "1", // when force is set
                 assignservergroups   : "$serverGroup1", // this param to be ignored
                 assignallservergroups: "0",
@@ -501,9 +504,10 @@ class DeployAppDomain extends PluginTestHelper {
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-runtimename.war"
+        String runtimeName = "$testCaseId-app.war"
         String[] oldServerGroupsWithApp = [serverGroup2]
-        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, runtimeName)
+        downloadArtifact(linkToSampleWarFile2, runParams.warphysicalpath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -513,11 +517,9 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
 
-        // let's check that app was upgraded and runtime name was changed
-        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String newContextRoot = "$testCaseId-app-new-runtimename"
-        checkAppDeployedToServerGroupsCli(existingAppName, newRuntimeName, oldServerGroupsWithApp)
-        checkAppDeployedToServerGroupsUrl(newContextRoot, oldServerGroupsWithApp)
+        String contextRoot = "$testCaseId-app"
+        checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(contextRoot, oldServerGroupsWithApp, "2")
 
         // let's verify that assignservergroups was ignored
         String[] expectedServerGroupsWithoutApp = [serverGroup1]
@@ -527,7 +529,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
-    def "DeployApp, 1st time, force flag, all server groups ignored - just upload (C277906)"() {
+    def "DeployApp, 1st time, force flag (C277906)"() {
         String testCaseId = "C277906"
 
         def runParams = [
@@ -538,29 +540,25 @@ class DeployAppDomain extends PluginTestHelper {
                 runtimename          : "",
                 force                : "1", // when force is set
                 assignservergroups   : "",
-                assignallservergroups: "1", // this param to be ignored
+                assignallservergroups: "1",
                 additional_options   : ""
         ]
 
         setup:
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
+        String existingAppName = "$testCaseId-app.war"
+        String[] serverGroupsWithApp = [serverGroup1,serverGroup2]
+
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        String expectedAppName = "$testCaseId-app.war"
-        String expectedRuntimeName = "$testCaseId-app.war"
-
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$existingAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
 
-        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
-
-        // let's verify that assignallservergroups was ignored
-        String[] expectedServerGroupsWithoutApp = [serverGroup1, serverGroup2]
-        checkAppNotDeployedToServerGroups(expectedAppName, expectedServerGroupsWithoutApp)
+        checkAppNotDeployedToServerGroups(existingAppName, serverGroupsWithApp)
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
@@ -574,7 +572,7 @@ class DeployAppDomain extends PluginTestHelper {
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "/tmp/$testCaseId-app.war",
                 appname              : "",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "1", // when force is set
                 assignservergroups   : "",
                 assignallservergroups: "1", // this param to be ignored
@@ -585,26 +583,23 @@ class DeployAppDomain extends PluginTestHelper {
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String runtimeName = "$testCaseId-app.war"
         String[] oldServerGroupsWithApp = [serverGroup2]
-        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, runtimeName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        String expectedAppName = "$testCaseId-app.war"
-        String expectedRuntimeName = "$testCaseId-app-new-runtimename.war"
-
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$existingAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--force"
 
-        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+        checkAppUploadedToContentRepo(existingAppName, runtimeName)
 
         // let's verify that assignallservergroups was ignored
         String[] expectedServerGroupsWithoutApp = [serverGroup1]
-        checkAppNotDeployedToServerGroups(expectedAppName, expectedServerGroupsWithoutApp)
+        checkAppNotDeployedToServerGroups(existingAppName, expectedServerGroupsWithoutApp)
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
@@ -629,10 +624,12 @@ class DeployAppDomain extends PluginTestHelper {
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
-        String oldContextRoot = "$testCaseId-app-old-runtimename"
+        String oldRuntimeName = "$testCaseId-app.war"
+        String oldContextRoot = "$testCaseId-app"
         String[] oldServerGroupsWithApp = [serverGroup2]
         deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+
+        downloadArtifact(linkToSampleWarFile2, runParams.warphysicalpath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -854,7 +851,7 @@ class DeployAppDomain extends PluginTestHelper {
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "/tmp/$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "0",
                 assignservergroups   : "",
                 assignallservergroups: "0",
@@ -865,9 +862,9 @@ class DeployAppDomain extends PluginTestHelper {
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
+        String runtimeName = "$testCaseId-app.war"
         String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
-        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, runtimeName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -878,10 +875,9 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*${runParams.additional_options}"
 
         // let's check that app was upgraded and runtime name was changed
-        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String newContextRoot = "$testCaseId-app-new-runtimename"
-        checkAppDeployedToServerGroupsCli(existingAppName, newRuntimeName, oldServerGroupsWithApp)
-        checkAppDeployedToServerGroupsUrl(newContextRoot, oldServerGroupsWithApp)
+        String contextRoot = "$testCaseId-app"
+        checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(contextRoot, oldServerGroupsWithApp)
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
@@ -965,7 +961,7 @@ class DeployAppDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
-        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'"
+        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=$linkToSampleWarFile'"
 
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
@@ -987,9 +983,9 @@ class DeployAppDomain extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "--url=$linkToSampleWarFile",
+                warphysicalpath      : "--url=$linkToSampleWarFile2",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "1",
                 assignservergroups   : "$serverGroup2",
                 assignallservergroups: "0",
@@ -997,24 +993,22 @@ class DeployAppDomain extends PluginTestHelper {
         ]
         setup:
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
-        String oldContextRoot = "$testCaseId-app-old-runtimename"
+        String runtimeName = "$testCaseId-app.war"
+        String contextRoot = "$testCaseId-app"
         String[] oldServerGroupsWithApp = [serverGroup1]
-        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        deployToServerGroups(oldServerGroupsWithApp, "--url=$linkToSampleWarFile", existingAppName, runtimeName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
-        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile2'"
+        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=$linkToSampleWarFile2'"
 
         // let's check that app was upgraded and runtime name was changed
-        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String newContextRoot = "$testCaseId-app-new-runtimename"
-        checkAppDeployedToServerGroupsCli(existingAppName, newRuntimeName, oldServerGroupsWithApp)
-        checkAppDeployedToServerGroupsUrl(newContextRoot, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(contextRoot, oldServerGroupsWithApp, "2")
 
         // let's verify that assignservergroups was ignored
         String[] expectedServerGroupsWithoutApp = [serverGroup2]
@@ -1034,7 +1028,7 @@ class DeployAppDomain extends PluginTestHelper {
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "--url=$linkToSampleWarFile",
                 appname              : "$testCaseId-app.war",
-                runtimename          : "$testCaseId-app-new-runtimename.war",
+                runtimename          : "$testCaseId-app.war",
                 force                : "",
                 assignservergroups   : "",
                 assignallservergroups: "",
@@ -1042,10 +1036,10 @@ class DeployAppDomain extends PluginTestHelper {
         ]
         setup:
         String existingAppName = "$testCaseId-app.war"
-        String oldRuntimeName = "$testCaseId-app-old-runtimename.war"
-        String oldContextRoot = "$testCaseId-app-old-runtimename"
+        String runtimeName = "$testCaseId-app.war"
+        String contextRoot = "$testCaseId-app"
         String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
-        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, oldRuntimeName)
+        deployToServerGroups(oldServerGroupsWithApp, runParams.warphysicalpath, existingAppName, runtimeName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -1053,12 +1047,10 @@ class DeployAppDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
-        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/master/dist/hello-world.war'"
+        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=$linkToSampleWarFile'"
 
-        String newRuntimeName = "$testCaseId-app-new-runtimename.war"
-        String newContextRoot = "$testCaseId-app-new-runtimename"
-        checkAppDeployedToServerGroupsCli(existingAppName, newRuntimeName, oldServerGroupsWithApp)
-        checkAppDeployedToServerGroupsUrl(newContextRoot, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(contextRoot, oldServerGroupsWithApp)
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
@@ -1126,8 +1118,12 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     void checkAppDeployedToServerGroupsUrl(String contextRoot, def serverGroups) {
+        checkAppDeployedToServerGroupsUrl(contextRoot, serverGroups, "1")
+    }
+
+    void checkAppDeployedToServerGroupsUrl(String contextRoot, def serverGroups, String version) {
         for (String rootUrls : getExpectedRootUrls(serverGroups)) {
-            String url = "$rootUrls/$contextRoot"
+            String url = "$rootUrls/$contextRoot/version$version"
             assert isUrlAvailable(url)
         }
     }

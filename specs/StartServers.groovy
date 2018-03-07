@@ -5,6 +5,7 @@ import Services.*
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
+
 @IgnoreIf({ env.JBOSS_MODE == 'standalone' })
 class StartServers extends PluginTestHelper {
 
@@ -539,6 +540,7 @@ class StartServers extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Server group parameter is mandatory"
     }
 
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     @Unroll
     def "Negative. Controller is not available (C278096)"() { //shutdown host. After test need start server
         setup:

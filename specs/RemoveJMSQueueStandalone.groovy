@@ -2,7 +2,6 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-
 @IgnoreIf({ env.JBOSS_MODE == 'domain' })
 class RemoveJMSQueueStandalone extends PluginTestHelper {
 
