@@ -14,9 +14,9 @@ class DeployApplicationStandalone extends PluginTestHelper {
     @Shared
     String defaultCliPath = ''
     @Shared
-    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-1.0.0.war"
+    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-1.war"
     @Shared
-    String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-2.0.0.war"
+    String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-2.war"
 
 
     def doSetupSpec() {
@@ -88,7 +88,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
-/*    @Unroll
+    @Unroll
     def "DeployApp, 1st time, file, disabled server groups ignored (C278101)"() {
         String testCaseId = "C278101"
 
@@ -571,9 +571,9 @@ class DeployApplicationStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        String expectedAppName = "hello-world.war"
-        String expectedRuntimeName = "hello-world.war"
-        String expectedContextRoot = "hello-world-war-1.0.0"
+        String expectedAppName = "hello-world-war-version-1.war"
+        String expectedRuntimeName = "hello-world-war-version-1.war"
+        String expectedContextRoot = "hello-world-war-version-1"
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on standalone server."
@@ -718,7 +718,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
-    }*/
+    }
 
     /*
 todo: test common cases (config/pathToCli/wrongCreds)
@@ -737,9 +737,9 @@ todo: test common cases (config/pathToCli/wrongCreds)
     void checkAppDeployedToStandaloneUrl(String contextRoot, String version, boolean available) {
         String hostname = System.getenv('RESOURCE_HOSTNAME')
         String port = 8080
-        String url = "http://$hostname:$port/$contextRoot"
+        String url = "http://$hostname:$port/$contextRoot/version$version"
         if (available)
-            assert isUrlAvailable(url, version)
+            assert isUrlAvailable(url)
         else
             assert isNotUrlAvailable(url)
     }

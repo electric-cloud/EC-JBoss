@@ -34,7 +34,6 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     def createJBossResource() {
-        getJobLogsSpec()
         def hostname = EnvPropertiesHelper.getResourceHostname()
         def port = EnvPropertiesHelper.getResourcePort()
 
@@ -62,7 +61,6 @@ class PluginTestHelper extends PluginSpockTestSupport {
         def resName = result?.resource?.resourceName
         assert resName
         resName
-        getJobLogsSpec()
     }
 
     def deleteProject(String projectName) {
@@ -99,25 +97,6 @@ class PluginTestHelper extends PluginSpockTestSupport {
         String logs
         try {
             logs = getJobProperty(property, jobId)
-        } catch (Throwable e) {
-            logger.debug("cannot retrieve logs from the property '$property'")
-        }
-        return logs
-    }
-
-    String getJobLogsSpec() {
-        String property = "/myJob/resourceName/"
-        String logs
-        try {
-            logs = getJobProperty(property, runProcedureJob.getJobId());
-            logger.debug("logs "+logs)
-        } catch (Throwable e) {
-            logger.debug("cannot retrieve logs from the property '$property'")
-        }
-        property = "/myJob/resource/"
-        try {
-            logs = getJobProperty(property, runProcedureJob.getJobId());
-            logger.debug("logs "+logs)
         } catch (Throwable e) {
             logger.debug("cannot retrieve logs from the property '$property'")
         }
@@ -259,7 +238,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         assert jobStatus(res.jobId).outcome == 'success'
     }
 
-    boolean isUrlAvailable(String url, String version) {
+    boolean isUrlAvailable(String url) {
         def res = dsl """
             runProcedure(
                 projectName: '$helperProjName',
@@ -273,11 +252,10 @@ class PluginTestHelper extends PluginSpockTestSupport {
         waitUntil {
             jobCompleted res
         }
-        checkVersionApplication(url, version)
         return jobStatus(res.jobId).outcome == 'success'
     }
 
-    def checkVersionApplication(String url, String version){
+    def checkVersionApplication(String url, String version){ //for parse web page
         String data = new URL(url).getText().replaceAll("\t", "").replaceAll("\\s+", "")
         assert data =~ "Theversionis$version.0.0"
     }

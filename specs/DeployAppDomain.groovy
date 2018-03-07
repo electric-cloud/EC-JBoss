@@ -16,9 +16,9 @@ class DeployAppDomain extends PluginTestHelper {
     @Shared
     String defaultCliPath = ''
     @Shared
-    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-1.0.0.war"
+    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-1.war"
     @Shared
-    String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-2.0.0.war"
+    String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-2.war"
 
 
     // 2 default server groups
@@ -1126,8 +1126,8 @@ class DeployAppDomain extends PluginTestHelper {
 
     void checkAppDeployedToServerGroupsUrl(String contextRoot, def serverGroups, String version) {
         for (String rootUrls : getExpectedRootUrls(serverGroups)) {
-            String url = "$rootUrls/$contextRoot"
-            assert isUrlAvailable(url, version)
+            String url = "$rootUrls/$contextRoot/version$version"
+            assert isUrlAvailable(url)
         }
     }
 

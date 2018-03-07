@@ -1,7 +1,7 @@
 import Services.CliCommandsGeneratorHelper
 import spock.lang.*
 import Utils.EnvPropertiesHelper
-@Ignore
+
 @IgnoreIf({ env.JBOSS_MODE == 'domain' })
 class DeployAppStandalone extends PluginTestHelper {
 
@@ -14,9 +14,9 @@ class DeployAppStandalone extends PluginTestHelper {
     @Shared
     String defaultCliPath = ''
     @Shared
-    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-1.0.0.war"
+    String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-1.war"
     @Shared
-    String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-2.0.0.war"
+    String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-2.war"
 
 
     def doSetupSpec() {
@@ -836,9 +836,9 @@ class DeployAppStandalone extends PluginTestHelper {
     void checkAppDeployedToStandaloneUrl(String contextRoot, String version, boolean available) {
         String hostname = EnvPropertiesHelper.getResourceHostname()
         String port = 8080
-        String url = "http://$hostname:$port/$contextRoot"
+        String url = "http://$hostname:$port/$contextRoot/version$version"
         if (available)
-            assert isUrlAvailable(url, version)
+            assert isUrlAvailable(url)
         else
             assert isNotUrlAvailable(url)
     }
