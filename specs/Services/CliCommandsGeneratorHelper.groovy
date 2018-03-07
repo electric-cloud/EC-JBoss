@@ -123,6 +123,9 @@ class CliCommandsGeneratorHelper {
 
     static String reloadHostDomain(String hostName) {
         String command = "/host=$hostName:reload"
+        if(EnvPropertiesHelper.getVersion() =~ '6.0'){
+            command = "/host=$hostName:shutdown(restart=true)"
+        }
         return command
     }
 

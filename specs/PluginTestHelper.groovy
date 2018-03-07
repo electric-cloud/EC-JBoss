@@ -252,8 +252,12 @@ class PluginTestHelper extends PluginSpockTestSupport {
         waitUntil {
             jobCompleted res
         }
-
         return jobStatus(res.jobId).outcome == 'success'
+    }
+
+    def checkVersionApplication(String url, String version){ //for parse web page
+        String data = new URL(url).getText().replaceAll("\t", "").replaceAll("\\s+", "")
+        assert data =~ "Theversionis$version.0.0"
     }
 
     boolean isNotUrlAvailable(String url) {
