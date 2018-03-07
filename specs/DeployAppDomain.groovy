@@ -478,7 +478,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         String contextRoot = "$testCaseId-app"
         checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, oldServerGroupsWithApp)
-        checkAppDeployedToServerGroupsUrl(contextRoot, oldServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(contextRoot, oldServerGroupsWithApp, "2")
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
@@ -523,7 +523,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         // let's verify that assignservergroups was ignored
         String[] expectedServerGroupsWithoutApp = [serverGroup1]
-        checkAppNotDeployedToServerGroups(existingAppName, expectedServerGroupsWithoutApp)
+        checkAppNotDeployedToServerGroups(existingAppName, expectedServerGroupsWithoutApp, "2")
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
@@ -540,7 +540,7 @@ class DeployAppDomain extends PluginTestHelper {
                 runtimename          : "",
                 force                : "1", // when force is set
                 assignservergroups   : "",
-                assignallservergroups: "1", // this param to be ignored
+                assignallservergroups: "1",
                 additional_options   : ""
         ]
 
@@ -549,7 +549,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         String existingAppName = "$testCaseId-app.war"
         String runtimeName = "$testCaseId-app.war"
-        String[] serverGroupsWithApp = [serverGroup2]
+        String[] serverGroupsWithApp = [serverGroup1,serverGroup2]
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)

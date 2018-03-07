@@ -1,7 +1,7 @@
 import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
-@Ignore
+
 @IgnoreIf({ env.JBOSS_MODE == 'standalone' })
 class RemoveJMSTopicDomain extends PluginTestHelper {
 
@@ -126,7 +126,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
         cleanup:
         topicName = "testTopic-$testCaseId"
         removeJMSTopic(topicName, defaultProfile)
-        shutdownHost("master") //for right next suit
+        reloadServerGroupDomain() //for right next suit
     }
 
     void removeJMSTopic(String topicName, String profile) {
@@ -137,8 +137,9 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addJMSTopicDomain(topicName, jndiName, "--profile=$profile"))
     }
 
-    void shutdownHost(String hostName) {
-        runCliCommand(CliCommandsGeneratorHelper.reloadHostDomain(hostName))
+    void reloadServerGroupDomain() {
+        runCliCommand(CliCommandsGeneratorHelper.reloadServerGroupDomain("main-server-group"))
+        runCliCommand(CliCommandsGeneratorHelper.reloadServerGroupDomain("other-server-group"))
     }
 
 }
