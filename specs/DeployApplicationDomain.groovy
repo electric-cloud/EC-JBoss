@@ -43,8 +43,6 @@ class DeployApplicationDomain extends PluginTestHelper {
 
     static String getPathApp(){
         String applicationContentSourcePath = "/tmp/"
-        logger.info("OS "+EnvPropertiesHelper.getOS())
-        logger.info("win "+EnvPropertiesHelper.isWindows())
         if(EnvPropertiesHelper.isWindows()){
             applicationContentSourcePath = "C:/tmp/"
         }
