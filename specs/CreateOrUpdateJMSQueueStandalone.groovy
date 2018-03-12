@@ -448,6 +448,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.0' })
     def "Negative. Create JMS Queue with wrong additional option (C278375)"() {
         String testCaseId = "C278375"
 
@@ -467,9 +468,6 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "error"
         String command = 'add'
-        if(env.JBOSS_VERSION =~ '6.0'){
-            command = "org.jboss.as.cli.handlers.GenericTypeOperationHandler"
-        }
         assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized argument ${runParams.additionalOptions} for command '$command'."
     }
 
