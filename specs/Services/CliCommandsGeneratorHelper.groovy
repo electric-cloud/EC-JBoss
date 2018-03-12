@@ -214,8 +214,9 @@ class CliCommandsGeneratorHelper {
             subsystem_part = "subsystem=messaging"
             provider_part = "hornetq-server=default"
         }
-        logger.info("JMS info command "+command)
+
         String command = "$subsystem_part/$provider_part"
+        logger.info("JMS info command "+command)
         return command
     }
 
