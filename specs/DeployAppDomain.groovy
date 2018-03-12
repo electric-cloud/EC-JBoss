@@ -93,7 +93,7 @@ class DeployAppDomain extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : "C:\\tmp\\$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -103,7 +103,7 @@ class DeployAppDomain extends PluginTestHelper {
         ]
 
         setup:
-        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+        downloadArtifact(linkToSampleWarFile, "C:\\tmp\\$testCaseId-app.war")
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
