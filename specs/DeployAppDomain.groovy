@@ -44,7 +44,7 @@ class DeployAppDomain extends PluginTestHelper {
     static String getPathApp(){
         String warphysicalpath = "/tmp/"
         if(EnvPropertiesHelper.isWindows()){
-            warphysicalpath = "C:\\tmp\\"
+            warphysicalpath = "C:\\"
         }
     }
 
@@ -93,7 +93,7 @@ class DeployAppDomain extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "C:\\tmp\\$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -103,7 +103,7 @@ class DeployAppDomain extends PluginTestHelper {
         ]
 
         setup:
-        downloadArtifact(linkToSampleWarFile, "C:\\tmp\\$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
