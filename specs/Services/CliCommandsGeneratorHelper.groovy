@@ -209,14 +209,12 @@ class CliCommandsGeneratorHelper {
         String subsystem_part = "subsystem=messaging-activemq"
         String provider_part = "server=default"
 
-        logger.info("version "+EnvPropertiesHelper.getVersion())
-        if(EnvPropertiesHelper.getVersion() =~ "6.*") {
+        if(env.JBOSS_VERSION =~ "6.*") {
             subsystem_part = "subsystem=messaging"
             provider_part = "hornetq-server=default"
         }
 
         String command = "$subsystem_part/$provider_part"
-        logger.info("JMS info command "+command)
         return command
     }
 
