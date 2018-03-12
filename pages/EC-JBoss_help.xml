@@ -223,8 +223,8 @@
                 </ol>
                 <h3>Output</h3>
                 <p>
-                    After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CheckDeployStatus</b> step, click the Log icon to see the diagnostic information and status of the deployment: 
-                    
+                    After the job runs, you can view the results on the Job Details page in ElectricFlow. In the <b>CheckDeployStatus</b> step, click the Log icon to see the diagnostic information and status of the deployment:
+
                 </p>
                     <br />
                     <img src="../../plugins/@PLUGIN_NAME@/images/CheckDeployStatus/ECJBossCheckDeployStatus3.png" />
@@ -437,8 +437,8 @@
                     <li>For Standalone : 'Queue Name'</li>
                     <li>For Domain : 'Queue Name' and 'Profile'</li>
                 </ol>
-                The expected behavior of this procedure is described below </div>
-            <div> <br />
+                The expected behavior of this procedure is described below
+                <br />
                 <ol>
                     <li> If queue does not exist (based on unique identifier) it will be
                         created with specified Queue Name and the list of JNDI names. In
@@ -540,7 +540,7 @@
                                         already generated command line for creating queue. The
                                         following is an example:<br />
                                         If Additional options is populated as follows<br />
-                                         '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'
+                                        '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'
                                         <br />the procedure invoke the following command for the
                                         creation of a queue whose name is myQueue:<br />
                                         'jms-queue add --queue-address=myQueue
@@ -580,8 +580,8 @@
                     <li>For Standalone : 'Topic Name'</li>
                     <li>For Domain : 'Topic Name' and 'Profile'</li>
                 </ol>
-                The expected behavior of this procedure is described below </div>
-            <div> <br />
+                The expected behavior of this procedure is described below
+                <br />
                 <ol>
                     <li> If topic does not exist (based on unique identifier) it will be
                         created with specified Topic Name and the list of JNDI names. In
@@ -662,7 +662,7 @@
                                         already generated command line for creating topic. The
                                         following is an example:<br />
                                         If Additional options is populated as follows<br />
-                                         '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'
+                                        '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'
                                         <br />the procedure invoke the following command for the
                                         creation of a topic whose name is myTopic:<br />
                                         'jms-topic add --topic-address=myTopic
@@ -753,7 +753,7 @@
 				For Standalone server: if the application was already deployed to the server and has to be replaced then deploy should be performed with force flag.
 				Or it is possible to undeploy the application (see <a href="#UndeployApp">UndeployApp</a> procedure) before deploying a new version (then force flag is not required).
 				<br/><br/>
-				For Domain JBoss with help of this procedure it is possible to do the following: 
+				For Domain JBoss with help of this procedure it is possible to do the following:
 				<ol>
                     <li>upload the deployment to content repository (when deployment does not exist there)</li>
 					<li>upload the deployment to content repository (when deployment does not exist there) and assign it to specified server groups</li>
@@ -768,7 +768,7 @@
                     <li>UndeployApp - undeploy app from all relevant server groups and remove from content repository (see <a href="#UndeployApp">UndeployApp</a> procedure)</li>
 					<li>DeployApp - upload the deployment to content repository (when deployment does not exist there) and assign it to specified server groups</li>
 				</ol>
-				
+
                 <h3>Input</h3>
 
                 <ol>
@@ -812,7 +812,7 @@
                                                 path to the application that needs to be deployed. E.g.
                                                 '/tmp/hello-world.war'</li>
                                             <li> If using URL it should be preceded by a -- prefix
-                                                anchor. E.g. 
+                                                anchor. E.g.
                                                 '--url=https://my.site.com/hello-world.war'. </li>
                                         </ol>
                                     </td>
@@ -922,7 +922,7 @@
                 The DeployApplication procedure is a major improvement to the existing
                 DeployApp procedure. It provides a very robust interface that brings in
                 the complete range of possibilities(enabled/disabled states,
-                enabled/disabled servergroups)  from Jboss during deployment to a
+                enabled/disabled servergroups) from Jboss during deployment to a
                 Domain. Most importantly its behavior is idempotent i.e., it leaves a
                 deployment in the specified state every single time it runs and hence
                 can be run as part of an environment template where in an Application
@@ -939,15 +939,17 @@
                 below:</div>
             <div><br />
             </div>
-            <div>      1. It will update the content repository if the deployment
-                exists, else it will create the content. </div>
-            <div>      2. It will enable the application by default, unless it is
-                specified other wise through Additional Options (see below).<br />
-            </div>
-            <div>      3. Enabled Server Groups and Disabled Server groups do not
-                apply to standalone.</div>
-            <div><br />
-            </div>
+            <ol>
+                <li>
+                    It will update the content repository if the deployment exists, else it will create the content.
+                </li>
+                <li>
+                    It will enable the application by default, unless it is specified other wise through Additional Options (see below).
+                </li>
+                <li>
+                    Enabled Server Groups and Disabled Server groups do not apply to standalone.
+                </li>
+            </ol>
             <div>The expected behavior of the procedure for a managed domain is
                 described below: <br />
                 <ol>
@@ -963,10 +965,10 @@
                         be disabled. </li>
                     <li>Server Groups that are not mentioned in 'Enabled Server Groups'
                         and 'Disabled Server Groups' parameters will retain their previous
-                        state (before deployment).  More specifically, if they were assigned
+                        state (before deployment). More specifically, if they were assigned
                         to the content before deployment, they will continue to be assigned
                         and if they were enabled/disabled before the deployment, they will
-                        continue to be enabled/disabled respectively.   </li>
+                        continue to be enabled/disabled respectively. </li>
                 </ol>
                 <h3>Input</h3>
                 <ol>
@@ -1003,7 +1005,7 @@
                                                 path to the application that needs to be deployed. E.g.
                                                 '/tmp/hello-world.war'</li>
                                             <li> If using URL it should be preceded by a -- prefix
-                                                anchor. E.g. 
+                                                anchor. E.g.
                                                 '--url=https://my.site.com/hello-world.war'. </li>
                                         </ol>
                                     </td>
@@ -1028,7 +1030,7 @@
                                         (if not already assigned) and enabled. <br />
                                         These are the formatting rules: <br />
                                         Either a comma separated list of server groups (e.g.
-                                        'server-group-one,server-group-five') or 
+                                        'server-group-one,server-group-five') or
                                         '--all-server-groups'. </td>
                                 </tr>
                                 <tr>
@@ -1038,7 +1040,7 @@
                                         (if not already assigned) and disabled. <br />
                                         These are the formatting rules: <br />
                                         Either a comma separated list of server groups (e.g.
-                                        'server-group-one,server-group-five') or 
+                                        'server-group-one,server-group-five') or
                                         '--all-server-groups'. </td>
                                 </tr>
                                 <tr>
@@ -1200,7 +1202,7 @@
                 procedure invokes this operation using jms-cli</div>
             <div> <br />
             </div>
-            <div> 'jms-queue --profile=full remove --queue-address=someQueue'
+            <div> 'jms-queue --profile=full remove --queue-address=someQueue'
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the RemoveJMSQueue procedure.</li>
@@ -1269,7 +1271,7 @@
                 procedure invokes this operation using jms-cli</div>
             <div> <br />
             </div>
-            <div> 'jms-topic --profile=full remove --topic-address=someTopic'
+            <div> 'jms-topic --profile=full remove --topic-address=someTopic'
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the RemoveJMSTopic procedure.</li>
