@@ -301,7 +301,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
     @Unroll
-    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.1' })
     def "Create JMS Queue with 'message selector' with whitespace (C278436)"() {
         String testCaseId = "C278436"
 
