@@ -42,9 +42,9 @@ class DeployApplicationDomain extends PluginTestHelper {
     String hostNameMaster = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
     static String getPathApp(){
-        String warphysicalpath = "/tmp/"
+        String applicationContentSourcePath = "/tmp/"
         if(EnvPropertiesHelper.isWindows()){
-            warphysicalpath = "C:/tmp/"
+            applicationContentSourcePath = "C:/tmp/"
         }
     }
 
