@@ -41,6 +41,12 @@ class DeployApplicationDomain extends PluginTestHelper {
     @Shared
     String hostNameMaster = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
+    static String getPathApp(){
+        String warphysicalpath = "/tmp/"
+        if(EnvPropertiesHelper.isWindows()){
+            warphysicalpath = "C:/tmp/"
+        }
+    }
 
     def doSetupSpec() {
         logger.info("Hello World! doSetupSpec")
@@ -84,7 +90,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : '',
                 disabledServerGroups           : '',
                 enabledServerGroups            : "$serverGroup1",
@@ -120,7 +126,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
            def runParams = [
                    additionalOptions              : '',
-                   applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                   applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                    deploymentName                 : '',
                    disabledServerGroups           : "$serverGroup1",
                    enabledServerGroups            : '',
@@ -157,7 +163,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
            def runParams = [
                    additionalOptions              : '',
-                   applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                   applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                    deploymentName                 : '',
                    disabledServerGroups           : "$serverGroup1",
                    enabledServerGroups            : "$serverGroup2",
@@ -199,7 +205,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
               def runParams = [
                       additionalOptions              : '',
-                      applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                      applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                       deploymentName                 : "app-custom-$testCaseId-appname.war",
                       disabledServerGroups           : "$serverGroup1",
                       enabledServerGroups            : "$serverGroup2",
@@ -242,7 +248,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                def runParams = [
                        additionalOptions              : '',
-                       applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                       applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                        deploymentName                 : "$testCaseId-app.war",
                        disabledServerGroups           : "$serverGroup1",
                        enabledServerGroups            : "$serverGroup2",
@@ -329,7 +335,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                  def runParams = [
                          additionalOptions              : '',
-                         applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                          deploymentName                 : "$testCaseId-custom-appname.war",
                          disabledServerGroups           : "$serverGroup1",
                          enabledServerGroups            : "$serverGroup2",
@@ -370,7 +376,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                  def runParams = [
                          additionalOptions              : '',
-                         applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                          deploymentName                 : "$testCaseId-app.war",
                          disabledServerGroups           : "$serverGroup1",
                          enabledServerGroups            : "$serverGroup2",
@@ -412,7 +418,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                  def runParams = [
                          additionalOptions              : '',
-                         applicationContentSourcePath   : "/tmp/$testCaseId-app with whitespace.war",
+                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app with whitespace.war",
                          deploymentName                 : "$testCaseId-app.war",
                          disabledServerGroups           : "$serverGroup1",
                          enabledServerGroups            : "$serverGroup2",
@@ -454,7 +460,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                    def runParams = [
                            additionalOptions              : '',
-                           applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                           applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                            deploymentName                 : "$testCaseId-app",
                            disabledServerGroups           : "$serverGroup1",
                            enabledServerGroups            : "$serverGroup2",
@@ -609,7 +615,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
            def runParams = [
                    additionalOptions              : '',
-                   applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                   applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                    deploymentName                 : "$testCaseId-app.war",
                    disabledServerGroups           : "disabled-non-existing-server-group",
                    enabledServerGroups            : "enabled-non-existing-server-group",
@@ -648,12 +654,12 @@ class DeployApplicationDomain extends PluginTestHelper {
 
 
               setup:
-              downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
+              downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
 
               String existingAppName = "$testCaseId-app.war"
               String oldRuntimeName = "$testCaseId-app.war"
               String[] oldServerGroupsWithApp = [serverGroup2]
-              deployToServerGroups(oldServerGroupsWithApp, "/tmp/$testCaseId-app.war", existingAppName, oldRuntimeName)
+              deployToServerGroups(oldServerGroupsWithApp, getPathApp()+"$testCaseId-app.war", existingAppName, oldRuntimeName)
 
               when:
               RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -674,7 +680,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
               def runParams = [
                       additionalOptions              : '',
-                      applicationContentSourcePath   : "/tmp/wrongpath/$testCaseId-app.war",
+                      applicationContentSourcePath   : getPathApp()+"wrongpath/$testCaseId-app.war",
                       deploymentName                 : "$testCaseId-app",
                       disabledServerGroups           : "$serverGroup1",
                       enabledServerGroups            : "$serverGroup2",
@@ -683,7 +689,7 @@ class DeployApplicationDomain extends PluginTestHelper {
               ]
 
               setup:
-              downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
+              downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
 
               when:
               RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -702,7 +708,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                  def runParams = [
                          additionalOptions              : '',
-                         applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                          deploymentName                 : "$testCaseId-app.war",
                          disabledServerGroups           : '',
                          enabledServerGroups            : '',
@@ -711,7 +717,7 @@ class DeployApplicationDomain extends PluginTestHelper {
                  ]
 
                  setup:
-                 downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
+                 downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
 
                  when:
                  RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -733,7 +739,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                  def runParams = [
                          additionalOptions              : '',
-                         applicationContentSourcePath   : "/tmp/$testCaseId-app",
+                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                          deploymentName                 : '',
                          disabledServerGroups           : '',
                          enabledServerGroups            : '',
@@ -742,7 +748,7 @@ class DeployApplicationDomain extends PluginTestHelper {
                  ]
 
                  setup:
-                 downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app")
+                 downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
 
                  when:
                  RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -764,7 +770,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
            def runParams = [
                    additionalOptions              : '--some-wrong-param',
-                   applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                   applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                    deploymentName                 : '',
                    disabledServerGroups           : "$serverGroup1",
                    enabledServerGroups            : "$serverGroup2",
@@ -773,7 +779,7 @@ class DeployApplicationDomain extends PluginTestHelper {
            ]
 
            setup:
-           downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
+           downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
 
            when:
            RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -815,7 +821,7 @@ class DeployApplicationDomain extends PluginTestHelper {
            ]
 
            setup:
-           downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app")
+           downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
 
            when:
            RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -864,7 +870,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
            def runParams = [
                    additionalOptions              : '',
-                   applicationContentSourcePath   : "/tmp/$testCaseId-app",
+                   applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                    deploymentName                 : '',
                    disabledServerGroups           : "$serverGroup2",
                    enabledServerGroups            : "$serverGroup2",
@@ -872,7 +878,7 @@ class DeployApplicationDomain extends PluginTestHelper {
                    serverconfig                   : defaultConfigName,
            ]
            setup:
-           downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app")
+           downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
 
            when:
            RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -892,7 +898,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : "$testCaseId-app.war",
                 disabledServerGroups           : '',
                 enabledServerGroups            : '--all-server-groups',

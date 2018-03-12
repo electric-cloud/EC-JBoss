@@ -18,6 +18,12 @@ class DeployAppStandalone extends PluginTestHelper {
     @Shared
     String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-2.war"
 
+    static String getPathApp(){
+        String warphysicalpath = "/tmp/"
+        if(EnvPropertiesHelper.isWindows()){
+            warphysicalpath = "C:/tmp/"
+        }
+    }
 
     def doSetupSpec() {
         logger.info("Hello World! doSetupSpec")
@@ -62,7 +68,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -100,7 +106,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -138,7 +144,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -176,7 +182,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app-custom-appname.war", // custom app name
                 runtimename          : "",
                 force                : "",
@@ -213,7 +219,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "$testCaseId-app-custom-runtimename.war", // custom runtime name
                 force                : "",
@@ -251,7 +257,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app-custom-appname.war", // custom app name
                 runtimename          : "$testCaseId-app-custom-runtimename.war", // and custom runtime name
                 force                : "",
@@ -288,7 +294,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app-custom-appname", // no extension here
                 runtimename          : "$testCaseId-app-custom-runtimename.war", // here we have usual extension .war
                 force                : "",
@@ -325,7 +331,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app-custom-runtimename.war",
                 force                : "",
@@ -362,7 +368,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "1", // force flag
@@ -401,7 +407,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "1", // force flag
@@ -439,7 +445,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "$testCaseId-app.war",
                 force                : "0", // when force is not set, but app exists
@@ -478,7 +484,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app with whitespace.war", // whitespaces in path
+                warphysicalpath      : getPathApp()+"$testCaseId-app with whitespace.war", // whitespaces in path
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "",
@@ -516,7 +522,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/non-existing-file.war", // non existing file
+                warphysicalpath      : getPathApp()+"non-existing-file.war", // non existing file
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "",
@@ -541,7 +547,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -577,7 +583,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "0",
@@ -616,7 +622,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "1", // this one
@@ -657,7 +663,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "",
@@ -732,10 +738,10 @@ class DeployAppStandalone extends PluginTestHelper {
                 additional_options   : ""
         ]
         setup:
-        downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
         String existingAppName = "$testCaseId-app.war"
         String runtimeName = "$testCaseId-app.war"
-        deployAppToStandalone("/tmp/$testCaseId-app.war", existingAppName, runtimeName)
+        deployAppToStandalone(getPathApp()+"$testCaseId-app.war", existingAppName, runtimeName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -771,10 +777,10 @@ class DeployAppStandalone extends PluginTestHelper {
                 additional_options   : "--force"
         ]
         setup:
-        downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
         String existingAppName = "$testCaseId-app.war"
         String runtimeName = "$testCaseId-app.war"
-        deployAppToStandalone("/tmp/$testCaseId-app.war", existingAppName, runtimeName)
+        deployAppToStandalone(getPathApp()+"$testCaseId-app.war", existingAppName, runtimeName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)

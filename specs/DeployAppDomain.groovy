@@ -121,8 +121,8 @@ class DeployAppDomain extends PluginTestHelper {
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
         checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
 
-//        cleanup:
-//        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
  /*   @Unroll
@@ -767,7 +767,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "File '/tmp/non-existing-file.war' doesn't exists"
+        assert runProcedureJob.getUpperStepSummary() =~ "File '+"getPathApp()+"non-existing-file.war' doesn't exists"
     }
 
     @Unroll
