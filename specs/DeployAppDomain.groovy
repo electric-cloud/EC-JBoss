@@ -121,8 +121,8 @@ class DeployAppDomain extends PluginTestHelper {
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
         checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
 
-        cleanup:
-        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+//        cleanup:
+//        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
  /*   @Unroll
