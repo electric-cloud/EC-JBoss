@@ -319,7 +319,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
 
                  cleanup:
-                 expectedAppName = "$testCaseId-app.war"
+                 existingAppName = "$testCaseId-app.war"
                  undeployFromAllRelevantServerGroups(existingAppName)
              }
 
