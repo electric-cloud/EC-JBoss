@@ -37,20 +37,20 @@
         <checkedValue>1</checkedValue>
         <uncheckedValue>0</uncheckedValue>
         <initiallyChecked>0</initiallyChecked>
-        <documentation>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. Whether the queue to be created is durable or not. Default is false (unchecked) - non durable.</documentation>
+        <documentation>Whether the queue to be created is durable or not. Default is false (unchecked) - non durable. NOTE: This parameter will be considered only when creating queues and will be ignored for updates.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Message Selector:</label>
         <property>messageSelector</property>
         <required>0</required>
-        <documentation>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. JMS message selector the queue will have. Only messages that match the selector will be added to the queue. For example: color='red'</documentation>
+        <documentation>JMS message selector. Only messages that match the selector will be added to the queue. For example: color='red'. NOTE: This parameter will be considered only when creating queues and will be ignored for updates.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Additional Options:</label>
         <property>additionalOptions</property>
         <required>0</required>
-        <documentation>NOTE: This parameter will be considered only for create scenario and will be ignored for update scenario. The 'Additional options' string will be concatenated to already generated command line for creating queue. For example: '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'</documentation>
+        <documentation>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating queue. The following is an example: If Additional options is populated as follows '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2' the procedure invoke the following command for the creation of a queue whose name is myQueue: 'jms-queue add --queue-address=myQueue --entries=java:jboss/exported/jms/queue/test --durable=false --legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'. NOTE: This parameter will be considered only when creating queues and will be ignored for updates.</documentation>
     </formElement>
 </editor>
