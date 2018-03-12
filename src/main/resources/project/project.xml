@@ -926,7 +926,7 @@
         </procedure>
         <procedure>
             <procedureName>DeployApplication</procedureName>
-            <description>The DeployApplication procedure deploys an application (mainly WAR or EAR) to a JBoss Standalone or Managed domain. The procedure will automatically detect as to which operating mode (Standalone/Domain) JBoss is running as. The DeployApplication procedure is a major improvement to the existing DeployApp procedure. It provides a very robust interface that brings in the complete range of possibilities(enabled/disabled states, enabled/disabled servergroups)  from Jboss during deployment to a Domain. Most importantly its behavior is idempotent i.e., it leaves a deployment in the specified state every single time it runs and hence can be run as part of an environment template where in an Application that exists gets updated with new content or gets created otherwise.</description>
+            <description>The DeployApplication procedure deploys an application (mainly WAR or EAR) to a JBoss Standalone or Managed domain. The procedure will automatically detect as to which operating mode (Standalone/Domain) JBoss is running as. The DeployApplication procedure is a major improvement to the existing DeployApp procedure. It provides a very robust interface that brings in the complete range of possibilities(enabled/disabled states, enabled/disabled servergroups) from Jboss during deployment to a Domain. Most importantly its behavior is idempotent i.e., it leaves a deployment in the specified state every single time it runs and hence can be run as part of an environment template where in an Application that exists gets updated with new content or gets created otherwise.</description>
             <jobNameTemplate>jboss-deployapplication-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -1047,7 +1047,7 @@
             <formalParameter>
                 <formalParameterName>enabledServerGroups</formalParameterName>
                 <defaultValue>--all-server-groups</defaultValue>
-                <description>Applicable to Jboss Domain only. Server groups specified in this parameter will be assigned (if not already assigned) and enabled. These are the formatting rules: Either a comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.</description>
+                <description>Applicable to Jboss Domain only. Server groups specified in this parameter will be assigned (if not already assigned) and enabled. These are the formatting rules: Either a comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
