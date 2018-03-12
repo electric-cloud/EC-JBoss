@@ -19,7 +19,7 @@ services:
       - EF_RESOURCE_NAME=JBOSS
       - SERVER_CONFIG=standalone-full.xml
       - JBOSS_MODE=standalone
-      - JBOSS_PASSWORD=changeme1!
+      - JBOSS_PASSWORD=changeme
     ports:
       - "7808:7800"
       - "8080:8080"

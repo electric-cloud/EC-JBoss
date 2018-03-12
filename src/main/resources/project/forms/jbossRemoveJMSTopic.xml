@@ -21,6 +21,6 @@
         <label>Profile:</label>
         <property>profile</property>
         <required>0</required>
-        <documentation>Required for Domain, will be ignored for Standalone. Name of profile in Domain where topic should be removed. For example: 'full', 'full-ha'</documentation>
+        <documentation>Required for Domain, will be ignored for Standalone. Name of profile in Domain form which topic should be removed. For example: 'full', 'full-ha'</documentation>
     </formElement>
 </editor>

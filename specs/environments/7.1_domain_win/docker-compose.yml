@@ -18,7 +18,7 @@ services:
       - EF_SERVER_ADMIN_PASS=changeme
       - EF_RESOURCE_NAME=JBOSS
       - JBOSS_MODE=domain
-      - JBOSS_PASSWORD=changeme1!
+      - JBOSS_PASSWORD=changeme
     ports:
       - "7808:7800"
       - "8080:8080"
