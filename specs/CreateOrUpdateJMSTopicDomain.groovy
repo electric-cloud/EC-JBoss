@@ -81,7 +81,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         removeJMSTopic(topicName, defaultProfile)
     }
 
-    @Unroll
+/*    @Unroll
     def "Create JMS Topic with 'Profile' and 'Profile' in additional options (C278498)"() {
         String testCaseId = "C278498"
 
@@ -384,7 +384,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         cleanup:
         topicName = "testTopic-$testCaseId"
         removeJMSTopic(topicName, defaultProfile)
-    }
+    }*/
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile) {
         logger.debug("env "+EnvPropertiesHelper.getVersion())
