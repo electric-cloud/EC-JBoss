@@ -387,11 +387,13 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
     }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile) {
+        logger.debug("env "+EnvPropertiesHelper.getVersion())
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoDomain(topicName, profile)).result
         assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
     }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile, String legacy) {
+        logger.debug("env "+EnvPropertiesHelper.getVersion())
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoDomain(topicName, profile)).result
         assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
         assert result.'legacy-entries' =~ legacy
