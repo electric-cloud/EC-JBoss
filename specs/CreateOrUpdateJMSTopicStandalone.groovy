@@ -197,6 +197,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
     }
 
     @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.0' })
     def "Negative. Create JMS Topic with wrong additional option (C278450)"() {
         String testCaseId = "C278450"
 
@@ -214,9 +215,6 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "error"
         String command = 'add'
-        if(env.JBOSS_VERSION =~ '6.0'){
-            command = "org.jboss.as.cli.handlers.GenericTypeOperationHandler"
-        }
         assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized argument ${runParams.additionalOptions} for command '$command'."
 
     }
