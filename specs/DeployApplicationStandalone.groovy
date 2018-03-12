@@ -1,7 +1,7 @@
 import Services.CliCommandsGeneratorHelper
 import spock.lang.*
 import Utils.EnvPropertiesHelper
-@Ignore
+
 @IgnoreIf({ env.JBOSS_MODE == 'domain' })
 class DeployApplicationStandalone extends PluginTestHelper {
 

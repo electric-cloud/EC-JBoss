@@ -81,7 +81,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         removeJMSTopic(topicName, defaultProfile)
     }
 
-/*    @Unroll
+    @Unroll
     def "Create JMS Topic with 'Profile' and 'Profile' in additional options (C278498)"() {
         String testCaseId = "C278498"
 
@@ -384,7 +384,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         cleanup:
         topicName = "testTopic-$testCaseId"
         removeJMSTopic(topicName, defaultProfile)
-    }*/
+    }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile) {
         logger.debug("env "+EnvPropertiesHelper.getVersion())
@@ -393,7 +393,6 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
     }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile, String legacy) {
-        logger.debug("env "+EnvPropertiesHelper.getVersion())
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoDomain(topicName, profile)).result
         assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
         assert result.'legacy-entries' =~ legacy
