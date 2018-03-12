@@ -36,7 +36,7 @@
         <property>enabledServerGroups</property>
         <required>0</required>
         <value>--all-server-groups</value>
-        <documentation>Applicable to Jboss Domain only. Server groups specified in this parameter will be assigned (if not already assigned) and enabled. These are the formatting rules: Either a comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.</documentation>
+        <documentation>Applicable to Jboss Domain only. Server groups specified in this parameter will be assigned (if not already assigned) and enabled. These are the formatting rules: Either a comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
