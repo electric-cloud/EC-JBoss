@@ -41,6 +41,12 @@ class DeployAppDomain extends PluginTestHelper {
     @Shared
     String hostNameMaster = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
+    static String getPathApp(){
+        String warphysicalpath = "/tmp/"
+        if(EnvPropertiesHelper.isWindows()){
+            warphysicalpath = "C:\\tmp"
+        }
+    }
 
     def doSetupSpec() {
         logger.info("Hello World! doSetupSpec")
@@ -87,7 +93,7 @@ class DeployAppDomain extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : "/tmp/$testCaseId-app.war",
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -119,7 +125,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
-    @Unroll
+ /*   @Unroll
     def "DeployApp, 1st time, 2 server groups, minimum params (C84612)"() {
         String testCaseId = "C84612"
 
@@ -1081,7 +1087,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Invalid url stream"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}"
 
-    }
+    }*/
 
     /*
     todo: test common cases (config/pathToCli/wrongCreds)
