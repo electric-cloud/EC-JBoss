@@ -213,6 +213,7 @@ class CliCommandsGeneratorHelper {
             subsystem_part = "subsystem=messaging"
             provider_part = "hornetq-server=default"
         }
+
         String command = "$subsystem_part/$provider_part"
         return command
     }
