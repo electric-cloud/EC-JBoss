@@ -1796,6 +1796,59 @@
                 Latest version of JBoss 6.2 is required. This issue has been fixed in 6.2.1.
             </p>
             <h1 id="rns">Release Notes</h1>
+            <h2>@PLUGIN_KEY@ 2.4.0</h2>
+            <ul>
+                <li>
+                    Following procedures have been added
+                    <ul>
+                        <li>
+                            <a href="#DeployApplication">DeployApplication</a>
+                            - a major improvement to the existing DeployApp procedure. It provides a very robust interface and its behavior is idempotent.
+                        </li>
+                        <li>
+                            <a href="#CreateOrUpdateJMSQueue">CreateOrUpdateJMSQueue</a>
+                        </li>
+                        <li>
+                            <a href="#CreateOrUpdateJMSTopic">CreateOrUpdateJMSTopic</a>
+                        </li>
+                        <li>
+                            <a href="#RemoveJMSQueue">RemoveJMSQueue</a>
+                        </li>
+                        <li>
+                            <a href="#RemoveJMSTopic">RemoveJMSTopic</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#DeployApp">DeployApp</a>
+                    <ul>
+                        <li>Renamed parameter "Path to the application to deploy" to "Application Content Source Path"</li>
+                        <li>Added support of URL within "Application Content Source Path" for JBoss EAP 7.0 and later</li>
+                        <li>Changed successful step summary</li>
+                        <li>Improved documentation</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StartServers">StartServers</a>
+                    <ul>
+                        <li>Renamed parameter "Wait time" to "Timeout for recurring check of servers (seconds)"</li>
+                        <li>Changed behavior for check of servers in order to perform check at least once</li>
+                        <li>Improved documentation</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StopServers">StopServers</a>
+                    <ul>
+                        <li>Renamed parameter "Wait time" to "Timeout for recurring check of servers (seconds)"</li>
+                        <li>Changed behavior for check of servers in order to perform check at least once</li>
+                        <li>Changed warning step summary in order include information about already DISABLED servers (similar to information about already STOPPED servers)</li>
+                        <li>Improved documentation</li>
+                    </ul>
+                </li>
+                <li>
+                    Fixed non-ascii characters in plugin forms.
+                </li>
+            </ul>
             <h2>@PLUGIN_KEY@ 2.1.5</h2>
             <ul>
                 <li>Form for DeleteDatasource has been changed. Property "application_name" has been renamed to "datasource_name".</li>
