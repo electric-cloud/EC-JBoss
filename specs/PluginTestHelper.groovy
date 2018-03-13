@@ -11,6 +11,24 @@ class PluginTestHelper extends PluginSpockTestSupport {
     static def helperProcedureDownloadArtifact = 'DownloadArtifact'
     static def helperProcedureCheckUrl = 'CheckUrl'
 
+    def createWorkspace(def workspaceName) {
+
+        def workspacePath = "/tmp";
+        if (EnvPropertiesHelper.isWindows()) {
+            workspacePath = "C:/workspace";
+        }
+        def workspaceResult = dsl """
+try {
+            createWorkspace(
+                workspaceName: '${workspaceName}',
+                agentDrivePath: '${workspacePath}',
+                agentUnixPath: '/tmp',
+                local: '1'
+            )
+} catch (Exception e) {}
+        """
+    }
+
     def createDefaultConfiguration(String configName, props = [:]) {
         String pluginName = "EC-JBoss"
 
@@ -48,12 +66,26 @@ class PluginTestHelper extends PluginSpockTestSupport {
             return resource.resourceName
         }
         logger.debug("Creating new JBoss resource")
+        def workspaceName = randomize("JBoss")
+
+        def workspaceResult = dsl """
+try {
+            createWorkspace(
+                workspaceName: '${workspaceName}',
+                agentDrivePath: '/tmp',
+                agentUncPath: '/tmp',
+                local: '1'
+            )
+} catch (Exception e) {}
+        """
+        logger.debug(objectToJson(workspaceResult))
 
         def result = dsl """
             createResource(
                 resourceName: '${randomize("JBoss")}',
                 hostName: '$hostname',
-                port: '$port'
+                port: '$port',
+                workspaceName: '$workspaceName'
             )
         """
 
