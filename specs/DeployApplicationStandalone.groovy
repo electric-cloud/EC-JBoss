@@ -18,11 +18,12 @@ class DeployApplicationStandalone extends PluginTestHelper {
     @Shared
     String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-2.war"
 
-    static String getPathApp(){
+    static String getPathApp() {
         String applicationContentSourcePath = "/tmp/"
         if(EnvPropertiesHelper.isWindows()){
-            applicationContentSourcePath = "C:/tmp/"
+            applicationContentSourcePath = "C:\\tmp\\"
         }
+        return applicationContentSourcePath
     }
 
     def doSetupSpec() {
