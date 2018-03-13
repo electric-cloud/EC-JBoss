@@ -136,6 +136,7 @@ my %removeJMSTopic = (
 
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy Application (new)");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Start Domain Server");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Start Standalone Server");
