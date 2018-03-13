@@ -1797,7 +1797,104 @@
             <p>
                 Latest version of JBoss 6.2 is required. This issue has been fixed in 6.2.1.
             </p>
+            <br />
+            <h2>Windows only, JBoss EAP 7.0. Failing to connect to controller when using password with special character '!'.</h2>
+            jboss-cli.bat may fail due to "Failed to connect to the controller: Unable to authenticate against controller at ...
+            Authentication failed: all available authentication mechanisms failed: DIGEST-MD5: javax.security.sasl.SaslException: DIGEST-MD5: Server rejected authentication".
+            This is bug in jboss-cli.bat script - "Cannot connect to JBoss controller via CLI by passing password in command line if password contains '!' character (for JBoss EAP 7.1.0.GA in Windows)"
+            <p>
+                JIRA ticket for JBoss Enterprise Application Platform: <a href="https://issues.jboss.org/browse/JBEAP-14335" target="_BLANK">https://issues.jboss.org/browse/JBEAP-14335</a>.<br />
+                JIRA ticket for WildFly Core: <a href="https://issues.jboss.org/browse/WFCORE-3674" target="_BLANK">https://issues.jboss.org/browse/WFCORE-3674</a>.<br />
+            </p>
             <h1 id="rns">Release Notes</h1>
+            <h2>@PLUGIN_KEY@ 2.4.0</h2>
+            <ul>
+                <li>
+                    Following procedures have been added
+                    <ul>
+                        <li>
+                            <a href="#DeployApplication">DeployApplication</a>
+                            - a major improvement to the existing DeployApp procedure. It provides a very robust interface and its behavior is idempotent.
+                        </li>
+                        <li>
+                            <a href="#CreateOrUpdateJMSQueue">CreateOrUpdateJMSQueue</a>
+                        </li>
+                        <li>
+                            <a href="#CreateOrUpdateJMSTopic">CreateOrUpdateJMSTopic</a>
+                        </li>
+                        <li>
+                            <a href="#RemoveJMSQueue">RemoveJMSQueue</a>
+                        </li>
+                        <li>
+                            <a href="#RemoveJMSTopic">RemoveJMSTopic</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#DeployApp">DeployApp</a>
+                    <ul>
+                        <li>Renamed parameter "Path to the application to deploy" to "Application Content Source Path"</li>
+                        <li>Added support of URL within "Application Content Source Path" for JBoss EAP 7.0 and later</li>
+                        <li>Changed successful step summary</li>
+                        <li>Improved documentation</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StartServers">StartServers</a>
+                    <ul>
+                        <li>Renamed parameter "Wait time" to "Timeout for recurring check of servers (seconds)"</li>
+                        <li>Changed behavior for check of servers in order to perform check at least once</li>
+                        <li>Improved documentation</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StopServers">StopServers</a>
+                    <ul>
+                        <li>Renamed parameter "Wait time" to "Timeout for recurring check of servers (seconds)"</li>
+                        <li>Changed behavior for check of servers in order to perform check at least once</li>
+                        <li>Changed warning step summary in order include information about already DISABLED servers (similar to information about already STOPPED servers)</li>
+                        <li>Improved documentation</li>
+                    </ul>
+                </li>
+                <li>
+                    Fixed non-ascii characters in plugin forms.
+                </li>
+            </ul>
+            <h2>@PLUGIN_KEY@ 2.3.2</h2>
+            <ul>
+                <li>
+                    <a href="#StartStandaloneServer">StartStandaloneServer</a>
+                    <ul>
+                        <li>Fixed handling of "Optional configuration name"</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StartDomainServer">StartDomainServer</a>
+                    <ul>
+                        <li>Renamed parameter "Optional configuration name" to "Optional domain configuration name"</li>
+                        <li>Fixed handling of "Optional domain configuration name"</li>
+                        <li>Added new parameter "Optional host configuration name"</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#CheckServerStatus">CheckServerStatus</a>
+                    <ul>
+                        <li>Fixed check of "NOT RUNNING" success criteria</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StopServers">StopServers</a>
+                    <ul>
+                        <li>Expanded check of servers by handling of DISABLED server status (similar to handling of STOPPED server status)</li>
+                    </ul>
+                </li>
+                <li>
+                    Edit of JBoss configuration
+                    <ul>
+                        <li>Renamed parameter "JBoss AS URL" to "JBoss controller location"</li>
+                    </ul>
+                </li>
+            </ul>
             <h2>@PLUGIN_KEY@ 2.1.5</h2>
             <ul>
                 <li>Form for DeleteDatasource has been changed. Property "application_name" has been renamed to "datasource_name".</li>
