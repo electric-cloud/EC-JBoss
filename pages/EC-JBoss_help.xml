@@ -1858,6 +1858,41 @@
                     Fixed non-ascii characters in plugin forms.
                 </li>
             </ul>
+            <h2>@PLUGIN_KEY@ 2.3.2</h2>
+            <ul>
+                <li>
+                    <a href="#StartStandaloneServer">StartStandaloneServer</a>
+                    <ul>
+                        <li>Fixed handling of "Optional configuration name"</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StartDomainServer">StartDomainServer</a>
+                    <ul>
+                        <li>Renamed parameter "Optional configuration name" to "Optional domain configuration name"</li>
+                        <li>Fixed handling of "Optional domain configuration name"</li>
+                        <li>Added new parameter "Optional host configuration name"</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#CheckServerStatus">CheckServerStatus</a>
+                    <ul>
+                        <li>Fixed check of "NOT RUNNING" success criteria</li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StopServers">StopServers</a>
+                    <ul>
+                        <li>Expanded check of servers by handling of DISABLED server status (similar to handling of STOPPED server status)</li>
+                    </ul>
+                </li>
+                <li>
+                    Edit of JBoss configuration
+                    <ul>
+                        <li>Renamed parameter "JBoss AS URL" to "JBoss controller location"</li>
+                    </ul>
+                </li>
+            </ul>
             <h2>@PLUGIN_KEY@ 2.1.5</h2>
             <ul>
                 <li>Form for DeleteDatasource has been changed. Property "application_name" has been renamed to "datasource_name".</li>
