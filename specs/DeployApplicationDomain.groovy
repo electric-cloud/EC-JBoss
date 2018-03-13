@@ -306,7 +306,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                  then:
                  assert runProcedureJob.getStatus() == "success"
-                 assert runProcedureJob.getUpperStepSummary() =~ "Application '$existingAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
+                 assert runProcedureJob.getUpperStepSummary() =~ "Application '$existingAppName' has been successfully deployed from '$linkToSampleWarFile2'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
 
                  String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
                  String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
