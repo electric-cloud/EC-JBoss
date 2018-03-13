@@ -1795,6 +1795,15 @@
             <p>
                 Latest version of JBoss 6.2 is required. This issue has been fixed in 6.2.1.
             </p>
+            <br />
+            <h2>Windows only, JBoss EAP 7.0. Failing to connect to controller when using password with special character '!'.</h2>
+            jboss-cli.bat may fail due to "Failed to connect to the controller: Unable to authenticate against controller at ...
+            Authentication failed: all available authentication mechanisms failed: DIGEST-MD5: javax.security.sasl.SaslException: DIGEST-MD5: Server rejected authentication".
+            This is bug in jboss-cli.bat script - "Cannot connect to JBoss controller via CLI by passing password in command line if password contains '!' character (for JBoss EAP 7.1.0.GA in Windows)"
+            <p>
+                JIRA ticket for JBoss Enterprise Application Platform: <a href="https://issues.jboss.org/browse/JBEAP-14335" target="_BLANK">https://issues.jboss.org/browse/JBEAP-14335</a>.<br />
+                JIRA ticket for WildFly Core: <a href="https://issues.jboss.org/browse/WFCORE-3674" target="_BLANK">https://issues.jboss.org/browse/WFCORE-3674</a>.<br />
+            </p>
             <h1 id="rns">Release Notes</h1>
             <h2>@PLUGIN_KEY@ 2.4.0</h2>
             <ul>
