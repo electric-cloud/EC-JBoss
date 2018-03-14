@@ -46,7 +46,7 @@ class DeployAppDomain extends PluginTestHelper {
         logger.info("win "+EnvPropertiesHelper.isWindows())
         String warphysicalpath = "/tmp/"
         if(EnvPropertiesHelper.isWindows()){
-            warphysicalpath = "c:/tmp/"
+            warphysicalpath = "C:\\\\tmp\\\\"
         }
         return warphysicalpath
     }
