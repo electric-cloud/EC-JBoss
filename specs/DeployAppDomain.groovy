@@ -128,11 +128,8 @@ class DeployAppDomain extends PluginTestHelper {
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
-        try{
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*"+getPathAppLogs()+"$testCaseId-app.war"
-        } catch (Exception e){
-            assert runProcedureJob.getLogs().replaceAll("\\\\", "\\") =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.warphysicalpath}".replaceAll("\\\\", "\\")
-        }
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+getPathAppLogs()+"$testCaseId-app.war.*--server-groups=.*${runParams.assignservergroups}"
+
 
 
         String[] expectedServerGroupsWithApp = [serverGroup1]
