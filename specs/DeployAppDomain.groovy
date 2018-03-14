@@ -121,11 +121,11 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}"
 
         String[] expectedServerGroupsWithApp = [serverGroup1]
- //       checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
- //       checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
 
- //       cleanup:
-//        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
  /*   @Unroll
