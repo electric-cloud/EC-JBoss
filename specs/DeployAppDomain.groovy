@@ -118,7 +118,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
-        checkLogs("jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}")
+        checkLogs(runProcedureJob.getLogs(), "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}")
 
 
         String[] expectedServerGroupsWithApp = [serverGroup1]
@@ -1098,11 +1098,11 @@ class DeployAppDomain extends PluginTestHelper {
     todo: test deploy of txt files instead of jars
      */
 
-    static String checkLogs(String logs) {
+    static String checkLogs(String actualLogs,String expectedlogs) {
         if(EnvPropertiesHelper.isWindows()) {
-            assert runProcedureJob.getLogs().replaceAll("\\", "") =~ logs.replaceAll("\\", "")
+            assert actualLogs.replaceAll("\\", "") =~ expectedlogs.replaceAll("\\", "")
         } else {
-            assert runProcedureJob.getLogs() =~ logs
+            assert actualLogs =~ expectedlogs
         }
     }
 
