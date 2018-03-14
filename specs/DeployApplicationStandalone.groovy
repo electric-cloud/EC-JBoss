@@ -20,10 +20,8 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
     static String getPathApp() {
         String applicationContentSourcePath = "/tmp/"
-        if(EnvPropertiesHelper.getOS() == "WINDOWS"){
-            applicationContentSourcePath = "C:\\\\tmp\\\\"
-        }
-        return applicationContentSourcePath
+        EnvPropertiesHelper.getOS() == "WINDOWS" ? applicationContentSourcePath = "C:\\\\tmp\\\\" : applicationContentSourcePath
+        return  applicationContentSourcePath
     }
 
     def doSetupSpec() {

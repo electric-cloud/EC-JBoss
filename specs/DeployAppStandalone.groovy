@@ -20,10 +20,8 @@ class DeployAppStandalone extends PluginTestHelper {
 
     static String getPathApp(){
         String warphysicalpath = "/tmp/"
-        if(EnvPropertiesHelper.getOS() == "WINDOWS"){
-            warphysicalpath = "C:\\\\tmp\\\\"
-        }
-        return warphysicalpath
+        EnvPropertiesHelper.getOS() == "WINDOWS" ? warphysicalpath = "C:\\\\tmp\\\\" : warphysicalpath
+        return  warphysicalpath
     }
 
     static String getPathAppLogs() {
