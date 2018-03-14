@@ -52,11 +52,9 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
     static String getPathAppLogs() {
-        logger.info("OS "+EnvPropertiesHelper.getOS())
-        logger.info("win "+EnvPropertiesHelper.isWindows())
         String warphysicalpath = "/tmp/"
         if(EnvPropertiesHelper.isWindows()){
-            warphysicalpath = "C:\\\\tmp.*"
+            warphysicalpath = "C:.*tmp.*"
         }
         return warphysicalpath
     }
@@ -128,7 +126,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+getPathAppLogs()+"$testCaseId-app.war.*--server-groups=.*${runParams.assignservergroups}"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy.*"+getPathAppLogs()+"$testCaseId-app.war.*--server-groups=.*${runParams.assignservergroups}"
 
 
 
@@ -1109,13 +1107,6 @@ class DeployAppDomain extends PluginTestHelper {
     todo: test deploy of txt files instead of jars
      */
 
-    static String checkLogs(String actualLogs,String expectedlogs) {
-        if(EnvPropertiesHelper.isWindows()) {
-            assert actualLogs.replaceAll("\\\\", "") =~ expectedlogs.replaceAll("\\\\", "")
-        } else {
-            assert actualLogs =~ expectedlogs
-        }
-    }
 
     void checkAppDeployedToServerGroupsCli(String appName, String runtimeName, def serverGroups) { //not working for JBoss 6.4
         for (String serverGroup : serverGroups) {
