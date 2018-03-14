@@ -118,7 +118,8 @@ class DeployAppDomain extends PluginTestHelper {
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}"
+        checkLogs("jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}")
+
 
         String[] expectedServerGroupsWithApp = [serverGroup1]
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
@@ -1096,6 +1097,14 @@ class DeployAppDomain extends PluginTestHelper {
     todo: test common cases (config/pathToCli/wrongCreds)
     todo: test deploy of txt files instead of jars
      */
+
+    static String checkLogs(String logs) {
+        if(EnvPropertiesHelper.isWindows()) {
+            assert runProcedureJob.getLogs().replaceAll("\\", "") =~ logs.replaceAll("\\", "")
+        } else {
+            assert runProcedureJob.getLogs() =~ logs
+        }
+    }
 
     void checkAppDeployedToServerGroupsCli(String appName, String runtimeName, def serverGroups) { //not working for JBoss 6.4
         for (String serverGroup : serverGroups) {
