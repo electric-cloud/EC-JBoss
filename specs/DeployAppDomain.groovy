@@ -51,6 +51,16 @@ class DeployAppDomain extends PluginTestHelper {
         return warphysicalpath
     }
 
+    static String getPathAppLogs() {
+        logger.info("OS "+EnvPropertiesHelper.getOS())
+        logger.info("win "+EnvPropertiesHelper.isWindows())
+        String warphysicalpath = "/tmp/"
+        if(EnvPropertiesHelper.isWindows()){
+            warphysicalpath = "C:\\\\tmp\\"
+        }
+        return warphysicalpath
+    }
+
     def doSetupSpec() {
         logger.info("Hello World! doSetupSpec")
         redirectLogs()
@@ -118,7 +128,11 @@ class DeployAppDomain extends PluginTestHelper {
 
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
-        checkLogs(runProcedureJob.getLogs(), "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.assignservergroups}")
+        try{
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*"+getPathAppLogs()+"$testCaseId-app.war"
+        } catch (Exception e){
+            assert runProcedureJob.getLogs().replaceAll("\\\\", "\\") =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--server-groups=.*${runParams.warphysicalpath}".replaceAll("\\\\", "\\")
+        }
 
 
         String[] expectedServerGroupsWithApp = [serverGroup1]
