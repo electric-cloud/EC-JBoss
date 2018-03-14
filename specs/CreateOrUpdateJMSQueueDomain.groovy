@@ -479,7 +479,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "error"
         String command = 'add'
-        assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized argument ${runParams.additionalOptions} for command $command."
+        assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized argument ${runParams.additionalOptions} for command '$command'."
     }
 
     @Unroll
