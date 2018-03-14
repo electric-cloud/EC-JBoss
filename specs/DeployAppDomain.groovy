@@ -1100,7 +1100,7 @@ class DeployAppDomain extends PluginTestHelper {
 
     static String checkLogs(String actualLogs,String expectedlogs) {
         if(EnvPropertiesHelper.isWindows()) {
-            assert actualLogs.replaceAll("\\", "") =~ expectedlogs.replaceAll("\\", "")
+            assert actualLogs.replaceAll("\\\\", "") =~ expectedlogs.replaceAll("\\\\", "")
         } else {
             assert actualLogs =~ expectedlogs
         }
