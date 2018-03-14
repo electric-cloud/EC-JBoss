@@ -41,22 +41,16 @@ class DeployAppDomain extends PluginTestHelper {
     @Shared
     String hostNameMaster = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
-    static String getPathApp() {
-        logger.info("OS "+EnvPropertiesHelper.getOS())
-        logger.info("win "+EnvPropertiesHelper.isWindows())
+    static String getPathApp(){
         String warphysicalpath = "/tmp/"
-        if(EnvPropertiesHelper.isWindows()){
-            warphysicalpath = "C:\\\\tmp\\\\"
-        }
-        return warphysicalpath
+        EnvPropertiesHelper.getOS() == "WINDOWS" ? warphysicalpath = "C:\\\\tmp\\\\" : warphysicalpath
+        return  warphysicalpath
     }
 
     static String getPathAppLogs() {
         String warphysicalpath = "/tmp/"
-        if(EnvPropertiesHelper.isWindows()){
-            warphysicalpath = "C:.*tmp.*"
-        }
-        return warphysicalpath
+        EnvPropertiesHelper.getOS() == "WINDOWS" ? warphysicalpath = "C:.*tmp.*" : warphysicalpath
+        return  warphysicalpath
     }
 
     def doSetupSpec() {

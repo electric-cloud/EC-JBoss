@@ -10,7 +10,6 @@ services:
     networks:
       - internal
     container_name: electricflow
-    hostname: "efserver"
     tty: true
   jboss:
     image: electricflow/jboss7:v7.1
@@ -26,7 +25,6 @@ services:
     networks:
       - internal
     container_name: jboss7.1
-    hostname: jboss
     tty: true
 networks:
   internal:

@@ -41,12 +41,10 @@ class DeployApplicationDomain extends PluginTestHelper {
     @Shared
     String hostNameMaster = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
-    static String getPathApp(){
+    static String getPathApp() {
         String applicationContentSourcePath = "/tmp/"
-        if(EnvPropertiesHelper.isWindows()){
-            applicationContentSourcePath = "C:\\\\tmp\\\\"
-        }
-        return applicationContentSourcePath
+        EnvPropertiesHelper.getOS() == "WINDOWS" ? applicationContentSourcePath = "C:\\\\tmp\\\\" : applicationContentSourcePath
+        return  applicationContentSourcePath
     }
 
     def doSetupSpec() {
