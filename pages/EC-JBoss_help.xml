@@ -55,29 +55,19 @@
             </p>
             <h1 id="overview">Overview</h1>
             <p>
-                JBoss Application Server (JBoss AS) is an open-source Java EE-based application server. This class of software
-                implements a server that runs on Java and the Java EE part of Java. Because it is Java-based, the JBoss AS operates
-                cross-platform. You can use it on any operating system that supports Java. JBoss AS was developed by JBoss, which is now a
-                division of Red Hat.
+                JBoss is a cross-platform Application Server that implements the JEE
+                specification. Based on the way it has evolved over the years, it is
+                also referred to as Wildfly (the current name for JBoss AS) or JBoss EAP
+                (owned by Red Hat). Wildfly is the open source community edition and
+                JBoss EAP the commercial edition.
             </p>
-            <p>For more information, go to the following:</p>
-            <ul>
-                <li>
-                    <a href="https://docs.jboss.org/author/display/AS7/Getting+Started+Guide" target="_blank">JBoss AS7 Getting Started Guide</a>
-                </li>
-                <li>
-                    <a href="http://community.jboss.org/wiki/JBossAS7UserGuide" target="_blank"> JBoss AS7 User Guide</a>
-                </li>
-                <li>
-                    <a href="http://community.jboss.org/wiki/CLINon-interactiveMode" target="_blank">JBoss 7 CLI Non-Interactive Mode</a>
-                </li>
-            </ul>
-            <h2>ElectricFlow Integration to JBoss</h2>
-            <!-- The integration description should answer the questions: How deep does our integration go?
-                 Why should I care? What general functionality does the plugin include? What functionality does the plugin omit? -->
-
             <p>
-                Use the EC-JBoss plugin to interact with the JBoss EAP Server Version 7 (JBoss EAP 7) to do tasks such as managing servers and deployments.
+                The following link provides the Red Hat documentation for JBoss EAP:
+                <a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/" title="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/">JBoss EAP</a>
+            </p>
+            <h2>ElectricFlow Integration with JBoss</h2>
+            <p>
+                Use the EC-JBoss plugin to interact with JBoss EAP to perform tasks such as managing servers and deployments.
             </p>
 
             <h2>Supported Versions</h2>
