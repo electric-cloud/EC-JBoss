@@ -121,7 +121,7 @@ class DeployApplicationDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups(expectedAppName)
     }
 
-/*        @Unroll
+        @Unroll
        def "DeployApplication, 1st time, file, disabled server group: 1 server group, minimum params (C278235)"() {
            String testCaseId = "C278235"
 
@@ -927,7 +927,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
         cleanup:
         undeployFromAllRelevantServerGroups(expectedAppName)
-    }*/
+    }
 
     void checkAppDeployedToServerGroupsCli(String appName, String runtimeName, def serverGroups) { //not working for JBoss 6.4
         for (String serverGroup : serverGroups) {
