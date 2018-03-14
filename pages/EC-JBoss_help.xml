@@ -62,13 +62,8 @@
                 JBoss EAP the commercial edition.
             </p>
             <p>
-                The following link provides the Red Hat documentation for JBoss EAP.
-            </p>
-            <p>
-                <a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/"
-                   title="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/">
-                    JBoss EAP
-                </a>
+                The following link provides the Red Hat documentation for JBoss EAP:
+                <a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/" title="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/">JBoss EAP</a>
             </p>
             <h2>ElectricFlow Integration with JBoss</h2>
             <p>
