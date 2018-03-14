@@ -21,7 +21,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     static String getPathApp() {
         String applicationContentSourcePath = "/tmp/"
         if(EnvPropertiesHelper.isWindows()){
-            applicationContentSourcePath = "c:/tmp/"
+            applicationContentSourcePath = "C:\\\\tmp\\\\"
         }
         return applicationContentSourcePath
     }
