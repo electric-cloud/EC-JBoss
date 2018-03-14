@@ -20,7 +20,7 @@ class DeployAppStandalone extends PluginTestHelper {
 
     static String getPathApp(){
         String warphysicalpath = "/tmp/"
-        if(EnvPropertiesHelper.isWindows()){
+        if(env.OS == "WINDOWS"){
             warphysicalpath = "C:\\\\tmp\\\\"
         }
         return warphysicalpath
@@ -28,7 +28,7 @@ class DeployAppStandalone extends PluginTestHelper {
 
     static String getPathAppLogs() {
         String warphysicalpath = "/tmp/"
-        if(EnvPropertiesHelper.isWindows()){
+        if(env.OS == "WINDOWS"){
             warphysicalpath = "C:.*tmp.*"
         }
         return warphysicalpath
@@ -734,7 +734,7 @@ class DeployAppStandalone extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
-        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-1.0.0.war'"
+        assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=$linkToSampleWarFile'"
 
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
