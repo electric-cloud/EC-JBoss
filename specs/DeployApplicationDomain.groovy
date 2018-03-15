@@ -83,7 +83,7 @@ class DeployApplicationDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-   @Unroll
+/*   @Unroll
     def "DeployApplication, 1st time, file, enabled server group: 1 server group, minimum params (C278234)"() {
         String testCaseId = "C278234"
 
@@ -283,7 +283,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                cleanup:
                undeployFromAllRelevantServerGroups("$testCaseId-app.war")
-           }
+           }*/
 
              @Unroll
              @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
@@ -302,7 +302,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                  String existingAppName = "$testCaseId-app.war"
                  String runtimeName = "$testCaseId-app.war"
-                 String expectedContextRoot = "$testCaseId-app.war"
+                 String expectedContextRoot = "$testCaseId-app"
                  String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
                  deployToServerGroups(oldServerGroupsWithApp, "--url=$linkToSampleWarFile", existingAppName, runtimeName)
 
@@ -328,7 +328,7 @@ class DeployApplicationDomain extends PluginTestHelper {
                  undeployFromAllRelevantServerGroups(existingAppName)
              }
 
-             @Unroll
+ /*            @Unroll
              def "DeployApplication,  1st time, file, custom app name (C278245)"() {
                  String testCaseId = "C278245"
 
@@ -729,7 +729,7 @@ class DeployApplicationDomain extends PluginTestHelper {
                  assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$runParams.applicationContentSourcePath'."
 
                  checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
-             }
+             }*/
 
 
              @Unroll
@@ -738,7 +738,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                  def runParams = [
                          additionalOptions              : '',
-                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
+                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app",
                          deploymentName                 : '',
                          disabledServerGroups           : '',
                          enabledServerGroups            : '',
@@ -747,7 +747,7 @@ class DeployApplicationDomain extends PluginTestHelper {
                  ]
 
                  setup:
-                 downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
+                 downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app")
 
                  when:
                  RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -763,7 +763,7 @@ class DeployApplicationDomain extends PluginTestHelper {
              }
 
 
-       @Unroll
+  /*     @Unroll
        def "DeployApplication, 1st time, file, with wrong additional options (C278227)"() {
            String testCaseId = "C278227"
 
@@ -925,7 +925,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
         cleanup:
         undeployFromAllRelevantServerGroups(expectedAppName)
-    }
+    }*/
 
     void checkAppDeployedToServerGroupsCli(String appName, String runtimeName, def serverGroups) { //not working for JBoss 6.4
         for (String serverGroup : serverGroups) {
