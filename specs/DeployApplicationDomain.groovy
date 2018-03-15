@@ -302,7 +302,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                  String existingAppName = "$testCaseId-app.war"
                  String runtimeName = "$testCaseId-app.war"
-                 String expectedContextRoot = "$testCaseId-app.war"
+                 String expectedContextRoot = "$testCaseId-app"
                  String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
                  deployToServerGroups(oldServerGroupsWithApp, "--url=$linkToSampleWarFile", existingAppName, runtimeName)
 
@@ -738,7 +738,7 @@ class DeployApplicationDomain extends PluginTestHelper {
 
                  def runParams = [
                          additionalOptions              : '',
-                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
+                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app",
                          deploymentName                 : '',
                          disabledServerGroups           : '',
                          enabledServerGroups            : '',
@@ -747,7 +747,7 @@ class DeployApplicationDomain extends PluginTestHelper {
                  ]
 
                  setup:
-                 downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
+                 downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app")
 
                  when:
                  RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
