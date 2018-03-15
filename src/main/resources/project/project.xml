@@ -6,6 +6,56 @@
         <description>Integration with JBoss</description>
         <workspaceName/>
         <propertySheet>
+            <!-- CEV-17558 improvements -->
+            <property>
+                <propertyName>ec_config</propertyName>
+                <description/>
+                <propertySheet>
+                    <!-- JBoss doesn't have custom GWT logic. Setting it for plugin context -->
+                    <property>
+                        <propertyName>ec_formXmlCompliant</propertyName>
+                        <value>true</value>
+                    </property>
+                    <property>
+                        <propertyName>configLocation</propertyName>
+                        <expandable>0</expandable>
+                        <value>jboss_cfgs</value>
+                    </property>
+                    <property>
+                        <propertyName>fields</propertyName>
+                        <description/>
+                        <propertySheet>
+                            <property>
+                                <propertyName>jboss_url</propertyName>
+                                <propertySheet>
+                                    <property>
+                                        <propertyName>label</propertyName>
+                                        <value>JBoss controller location</value>
+                                    </property>
+                                    <property>
+                                        <propertyName>order</propertyName>
+                                        <value>1</value>
+                                    </property>
+                                </propertySheet>
+                            </property>
+                            <property>
+                                <propertyName>scriptphysicalpath</propertyName>
+                                <propertySheet>
+                                    <property>
+                                        <propertyName>label</propertyName>
+                                        <value>WSAdmin Absolute Path</value>
+                                    </property>
+                                    <property>
+                                        <propertyName>order</propertyName>
+                                        <value>2</value>
+                                    </property>
+                                </propertySheet>
+                            </property>
+                        </propertySheet>
+                    </property>
+                </propertySheet>
+            </property>
+            <!-- End of CEV-17558 improvements -->
             <property>
                 <propertyName>jboss_driver</propertyName>
                 <description>Home for perl code</description>

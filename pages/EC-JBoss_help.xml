@@ -1797,6 +1797,10 @@
                 JIRA ticket for WildFly Core: <a href="https://issues.jboss.org/browse/WFCORE-3674" target="_BLANK">https://issues.jboss.org/browse/WFCORE-3674</a>.<br />
             </p>
             <h1 id="rns">Release Notes</h1>
+            <h2>@PLUGIN_KEY@ 2.4.1</h2>
+            <ul>
+                <li>Internal improvements for 8.3 release.</li>
+            </ul>
             <h2>@PLUGIN_KEY@ 2.4.0</h2>
             <ul>
                 <li>
