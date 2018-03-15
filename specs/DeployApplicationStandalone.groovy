@@ -18,6 +18,11 @@ class DeployApplicationStandalone extends PluginTestHelper {
     @Shared
     String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-2.war"
 
+    static String getPathApp() {
+        String applicationContentSourcePath = "/tmp/"
+        EnvPropertiesHelper.getOS() == "WINDOWS" ? applicationContentSourcePath = "C:\\\\tmp\\\\" : applicationContentSourcePath
+        return  applicationContentSourcePath
+    }
 
     def doSetupSpec() {
         logger.info("Hello World! doSetupSpec")
@@ -59,7 +64,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : '',
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
@@ -94,7 +99,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : '',
                 disabledServerGroups           : 'disabled-server-group',
                 enabledServerGroups            : '',
@@ -129,7 +134,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : '',
                 disabledServerGroups           : '',
                 enabledServerGroups            : 'enabled-server-group',
@@ -164,7 +169,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : "$testCaseId-app-custom-appname.war",
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
@@ -200,7 +205,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : "$testCaseId-app.war",
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
@@ -235,7 +240,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : "$testCaseId-app-custom-appname.war",
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
@@ -271,7 +276,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : "$testCaseId-app-custom-appname.war",
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
@@ -307,7 +312,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/app with whitespace.war",
+                applicationContentSourcePath   : getPathApp()+"app with whitespace.war",
                 deploymentName                 : "$testCaseId-app.war",
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
@@ -342,7 +347,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '--disabled',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : "$testCaseId-app.war",
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
@@ -454,8 +459,8 @@ class DeployApplicationStandalone extends PluginTestHelper {
         ]
 
         setup:
-        downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
-        deployAppToStandalone("/tmp/$testCaseId-app.war","$testCaseId-app.war","$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
+        deployAppToStandalone(getPathApp()+"$testCaseId-app.war","$testCaseId-app.war","$testCaseId-app.war")
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -483,7 +488,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : "$testCaseId-app.war",
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
@@ -521,7 +526,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : "$testCaseId-app.war",
                 disabledServerGroups           : 'disabled-server-group',
                 enabledServerGroups            : 'enabled-server-group',
@@ -591,7 +596,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '',
-                applicationContentSourcePath   : "/tmp/non-existing-file.war",
+                applicationContentSourcePath   : getPathApp()+"non-existing-file.war",
                 deploymentName                 : '',
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
@@ -613,7 +618,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions              : '--some-wrong-param',
-                applicationContentSourcePath   : "/tmp/$testCaseId-app.war",
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
                 deploymentName                 : '',
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
@@ -706,8 +711,8 @@ class DeployApplicationStandalone extends PluginTestHelper {
         ]
 
         setup:
-        downloadArtifact(linkToSampleWarFile, "/tmp/$testCaseId-app.war")
-        deployAppToStandalone("/tmp/$testCaseId-app.war","$testCaseId-app.war","$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile,    getPathApp()+"$testCaseId-app.war")
+        deployAppToStandalone(getPathApp()+"$testCaseId-app.war","$testCaseId-app.war","$testCaseId-app.war")
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
