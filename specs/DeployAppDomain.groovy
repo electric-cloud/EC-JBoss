@@ -701,7 +701,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "One of --disabled, (--enabled,) --all-server-groups or --server-groups is missing."
+        assert runProcedureJob.getUpperStepSummary() =~ "(One of --disabled, --enabled, --all-server-groups or --server-groups is missing.|One of --disabled, --all-server-groups or --server-groups is missing.)"
     }
 
  /*   @Unroll
