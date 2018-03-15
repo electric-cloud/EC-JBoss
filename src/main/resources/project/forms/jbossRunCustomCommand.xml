@@ -23,5 +23,5 @@
         <property>customCommand</property>
         <required>1</required>
         <documentation>Custom command to run.</documentation>
-    </formElement>              
+    </formElement>
 </editor>

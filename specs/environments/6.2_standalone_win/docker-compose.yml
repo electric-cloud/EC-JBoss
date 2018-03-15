@@ -1,0 +1,34 @@
+version: '3'
+services:
+  electric-flow:
+    image: "electricflow/efserver:latest-windowsservercore"
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "443:443"
+      - "80:80"
+    container_name: "efserver"
+    hostname: "efserver"
+    tty: true
+  jboss:
+    image: "electricflow/jboss6:v6.2-win"
+    environment:
+      - EF_SERVER_HOST=efserver
+      - EF_SERVER_ADMIN_USER=admin
+      - EF_SERVER_ADMIN_PASS=changeme
+      - EF_RESOURCE_NAME=JBOSS
+      - SERVER_CONFIG=standalone-full.xml
+      - JBOSS_MODE=standalone
+      - JBOSS_PASSWORD=changeme1!
+    ports:
+      - "7808:7800"
+      - "8080:8080"
+      - "9990:9990"
+      - "9999:9999"
+    container_name: "jboss62standalone"
+    hostname: "jboss62standalone"
+    tty: false
+networks:
+  default:
+    external:
+      name: nat

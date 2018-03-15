@@ -39,10 +39,10 @@ BEGIN {
 $| = 1;
 
 {
-    my $tec = ElectricCommander->new();
+    my $ec = ElectricCommander->new();
     my $log_property_path;
     eval {
-        $log_property_path = $tec->getProperty('/plugins/EC-JBoss/project/ec_debug_logToProperty')->findvalue('//value')->string_value();
+        $log_property_path = $ec->getProperty('/plugins/EC-JBoss/project/ec_debug_logToProperty')->findvalue('//value')->string_value();
     };
     if ($log_property_path) {
         ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::LogTrapper");
@@ -53,10 +53,10 @@ $| = 1;
                 sub {
                     my $value = '';
                     eval {
-                        $value = $tec->getProperty($log_property_path)->findvalue('//value')->string_value();
+                        $value = $ec->getProperty($log_property_path)->findvalue('//value')->string_value();
                     };
                     $value .= join '', @_;
-                    $tec->setProperty($log_property_path, $value);
+                    $ec->setProperty($log_property_path, $value);
                     print @_;
                     # print map { uc } @_;
                 }
@@ -144,8 +144,10 @@ sub new {
         if ($creds->{scriptphysicalpath}) {
             $params{script_path} = $creds->{scriptphysicalpath};
         }
-        if ($self->get_param('scriptphysicalpath')) {
-            $params{script_path} = $self->get_param('scriptphysicalpath');
+        if (!$params{no_cli_path_in_procedure_params}) {
+            if ($self->get_param('scriptphysicalpath')) {
+                $params{script_path} = $self->get_param('scriptphysicalpath');
+            }
         }
     }
     unless ($params{script_path}) {
@@ -176,8 +178,7 @@ sub new {
 
     if ($params{script_path}) {
         if (!$self->{dryrun} && (!-e $params{script_path} || !-s $params{script_path})) {
-            print "(test print) File $params{script_path} doesn't exist or empty";
-            croak "(test croak) File $params{script_path} doesn't exist or empty";
+            croak "File $params{script_path} doesn't exist or empty";
         }
         if (-d $params{script_path}) {
             croak "$params{script_path} is a directory";
@@ -1107,6 +1108,7 @@ sub get_servergroup_status {
 
     for my $host_name (@{$hosts_json->{result}}) {
         my $command = sprintf '/host=%s:read-children-resources(child-type=server-config,include-runtime=true)', $host_name;
+        #todo: possibile issue here - what if command fail for one host, then we ignore it and will provide consolidated status of servers on other hosts
         my %response = $self->run_command($command);
         my $children_json = $self->decode_answer($response{stdout});
 

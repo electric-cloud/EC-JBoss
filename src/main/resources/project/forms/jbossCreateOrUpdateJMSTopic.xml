@@ -1,0 +1,40 @@
+<editor>
+    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#CreateOrUpdateJMSTopic</help>
+    <formElement>
+        <type>entry</type>
+        <label>Configuration name:</label>
+        <property>serverconfig</property>
+        <required>1</required>
+        <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <propertyReference>/plugins/@PLUGIN_NAME@/project/jboss_cfgs</propertyReference>
+        <htmlDocumentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Topic Name:</label>
+        <property>topicName</property>
+        <required>1</required>
+        <documentation>Name of the Topic.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>JNDI Names:</label>
+        <property>jndiNames</property>
+        <required>1</required>
+        <documentation>Format: comma separated JNDI names (do not use whitespaces). The list of JNDI names the topic will be bound to. For example: 'java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2'</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Profile:</label>
+        <property>profile</property>
+        <required>0</required>
+        <documentation>Required for Domain, will be ignored for Standalone. Name of profile in Domain where topic should be created or updated (in case of need). For example: 'full', 'full-ha'</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Additional Options:</label>
+        <property>additionalOptions</property>
+        <required>0</required>
+        <documentation>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating topic. The following is an example: If Additional options is populated as follows '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2' the procedure invoke the following command for the creation of a topic whose name is myTopic: 'jms-topic add --topic-address=myTopic --entries=java:jboss/exported/jms/topic/test --legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'. NOTE: This parameter will be considered only when creating topics and will be ignored for updates.</documentation>
+    </formElement>
+</editor>

@@ -836,7 +836,7 @@
             <formalParameter>
                 <formalParameterName>warphysicalpath</formalParameterName>
                 <defaultValue/>
-                <description>Stands for 'file_path' parameter for jboss-cli 'deploy' command, but it is also possible to provide '--url' parameter here for JBoss EAP 7 and later versions. In case of 'file_path' - pass full filesystem path to the application to deploy, e.g. '/tmp/hello-world.war'. In case of '--url' (for EAP 7 and later) - pass URL at which the deployment content is available (in this case should include prefix anchor '--url=', e.g. '--url=https://my.site.com/hello-world.war').</description>
+                <description>Either an absolute filepath (including the name of the WAR or EAR) or a URL that the Domain controller or the Standalone Server (as the case may be) can resolve. URL is supported only for 7.0 EAP and later versions. This parameter should be populated as follows. If using filepath, it should be the full filesystem path to the application that needs to be deployed. E.g. '/tmp/hello-world.war'. If using URL it should be preceded by a -- prefix anchor. E.g. '--url=https://my.site.com/hello-world.war'.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -857,14 +857,14 @@
             <formalParameter>
                 <formalParameterName>runtimename</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Stands for '--runtime-name' parameter for jboss-cli 'deploy' command. The runtime name for the deployment. NOTE: the file extension (.war, .jar, .ear etc.) needs to be included into runtime name so server can distinguish type of deployment somehow. This would typically be the same as '--name', and if not specified the value used for '--name' will be used.</description>
+                <description>The runtime name for the deployment. If not specified it will be the same as 'Deployment Name'.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>force</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Stands for '--force' parameter for jboss-cli 'deploy' command. NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored. Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Source with application for deploy' parameter. If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.</description>
+                <description>Stands for '--force' parameter for jboss-cli 'deploy' command. NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored. Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Application Content Source Path' parameter. If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.</description>
                 <required>0</required>
                 <type>checkbox</type>
             </formalParameter>
@@ -885,7 +885,7 @@
             <formalParameter>
                 <formalParameterName>additional_options</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Additional options for jboss-cli 'deploy' command. The 'Additional options' string will be concatenated to already generated command line from the parameters above. NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Source with application for deploy' parameter.</description>
+                <description>Additional options for jboss-cli 'deploy' command. The 'Additional options' string will be concatenated to already generated command line from the parameters above. NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Application Content Source Path' parameter.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
@@ -909,6 +909,182 @@
                 <workingDirectory/>
                 <workspaceName/>
                 <procedureName>DeployApp</procedureName>
+                <projectName>EC-JBoss</projectName>
+                <propertySheet>
+                    <property>
+                        <propertyName>ec_customEditorData</propertyName>
+                        <propertySheet>
+                            <property>
+                                <propertyName>formType</propertyName>
+                                <expandable>1</expandable>
+                                <value>command</value>
+                            </property>
+                        </propertySheet>
+                    </property>
+                </propertySheet>
+            </step>
+        </procedure>
+        <procedure>
+            <procedureName>DeployApplication</procedureName>
+            <description>The DeployApplication procedure deploys an application (mainly WAR or EAR) to a JBoss Standalone or Managed domain. The procedure will automatically detect as to which operating mode (Standalone/Domain) JBoss is running as. The DeployApplication procedure is a major improvement to the existing DeployApp procedure. It provides a very robust interface that brings in the complete range of possibilities(enabled/disabled states, enabled/disabled servergroups) from Jboss during deployment to a Domain. Most importantly its behavior is idempotent i.e., it leaves a deployment in the specified state every single time it runs and hence can be run as part of an environment template where in an Application that exists gets updated with new content or gets created otherwise.</description>
+            <jobNameTemplate>jboss-deployapplication-$[jobId]</jobNameTemplate>
+            <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
+            <propertySheet>
+                <property>
+                    <propertyName>ec_parameterForm</propertyName>
+                    <expandable>1</expandable>
+                    <value></value>
+                </property>
+                <property>
+                    <propertyName>ec_customEditorData</propertyName>
+                    <propertySheet>
+                        <property>
+                            <propertyName>parameters</propertyName>
+                            <propertySheet>
+                                <property>
+                                    <propertyName>serverconfig</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>applicationContentSourcePath</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>deploymentName</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>runtimeName</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>enabledServerGroups</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>disabledServerGroups</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>additionalOptions</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                            </propertySheet>
+                        </property>
+                    </propertySheet>
+                </property>
+            </propertySheet>
+            <formalParameter>
+                <formalParameterName>serverconfig</formalParameterName>
+                <defaultValue/>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>applicationContentSourcePath</formalParameterName>
+                <defaultValue/>
+                <description>Either an absolute filepath (including the name of the WAR or EAR) or a URL that the Domain controller or the Standalone Server (as the case may be) can resolve. URL is supported only for 7.0 EAP and later versions. This parameter should be populated as follows. If using filepath, it should be the full filesystem path to the application that needs to be deployed. E.g. '/tmp/hello-world.war'. If using URL it should be preceded by a -- prefix anchor. E.g. '--url=https://my.site.com/hello-world.war'.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>deploymentName</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>The unique name of the deployment. If this parameter is not passed, it will be derived from 'Application Content Source Path' parameter.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>runtimeName</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>The runtime name for the deployment. If not specified it will be the same as 'Deployment Name'.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>enabledServerGroups</formalParameterName>
+                <defaultValue>--all-server-groups</defaultValue>
+                <description>Applicable to Jboss Domain only. Server groups specified in this parameter will be assigned (if not already assigned) and enabled. These are the formatting rules: Either a comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>disabledServerGroups</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Applicable to Jboss Domain only. Server groups specified in this parameter will be assigned (if not already assigned) and disabled. These are the formatting rules: Either a comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>additionalOptions</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Applicable to JBoss Standalone only. Currently supported additional option is '--disabled' for Standalone Server. If it is populated as '--disabled' the procedure will deploy the Application and leave it disabled.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <step>
+                <stepName>DeployApplication</stepName>
+                <alwaysRun>0</alwaysRun>
+                <broadcast>0</broadcast>
+                <command/>
+                <condition/>
+                <description/>
+                <errorHandling>failProcedure</errorHandling>
+                <exclusive>0</exclusive>
+                <logFileName/>
+                <parallel>0</parallel>
+                <releaseExclusive>0</releaseExclusive>
+                <resourceName/>
+                <retries>0</retries>
+                <shell>ec-perl</shell>
+                <timeLimit/>
+                <timeLimitUnits>minutes</timeLimitUnits>
+                <workingDirectory/>
+                <workspaceName/>
+                <procedureName>DeployApplication</procedureName>
                 <projectName>EC-JBoss</projectName>
                 <propertySheet>
                     <property>
@@ -2752,6 +2928,555 @@
                 <workingDirectory/>
                 <workspaceName/>
                 <procedureName>CheckHostControllerStatus</procedureName>
+                <projectName>EC-JBoss</projectName>
+                <propertySheet>
+                    <property>
+                        <propertyName>ec_customEditorData</propertyName>
+                        <propertySheet>
+                            <property>
+                                <propertyName>formType</propertyName>
+                                <expandable>1</expandable>
+                                <value>command</value>
+                            </property>
+                        </propertySheet>
+                    </property>
+                </propertySheet>
+            </step>
+        </procedure>
+        <procedure>
+            <procedureName>CreateOrUpdateJMSQueue</procedureName>
+            <description>This procedure creates a new jms queue or updates JNDI names for an existing jms queue using the default message provider as specified in the configuration of the JBoss EAP messaging subsystem.</description>
+            <jobNameTemplate>jboss-create-or-update-jms-queue-$[jobId]</jobNameTemplate>
+            <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
+            <propertySheet>
+                <property>
+                    <propertyName>ec_parameterForm</propertyName>
+                    <expandable>1</expandable>
+                    <value></value>
+                </property>
+                <property>
+                    <propertyName>ec_customEditorData</propertyName>
+                    <propertySheet>
+                        <property>
+                            <propertyName>parameters</propertyName>
+                            <propertySheet>
+                                <property>
+                                    <propertyName>serverconfig</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>queueName</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>jndiNames</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>profile</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>durable</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>checkedValue</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>1</value>
+                                        </property>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                        <property>
+                                            <propertyName>initiallyChecked</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>0</value>
+                                        </property>
+                                        <property>
+                                            <propertyName>uncheckedValue</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>0</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>messageSelector</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>additionalOptions</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                            </propertySheet>
+                        </property>
+                    </propertySheet>
+                </property>
+            </propertySheet>
+            <formalParameter>
+                <formalParameterName>serverconfig</formalParameterName>
+                <defaultValue/>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>queueName</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Name of the Queue.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>jndiNames</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Format: comma separated JNDI names (do not use whitespaces). The list of JNDI names the queue will be bound to. For example: 'java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2'</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>profile</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain where queue should be created or updated (in case of need). For example: 'full', 'full-ha'</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>durable</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Whether the queue to be created is durable or not. Default is false (unchecked) - non durable. NOTE: This parameter will be considered only when creating queues and will be ignored for updates.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>messageSelector</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>JMS message selector. Only messages that match the selector will be added to the queue. For example: color='red'. NOTE: This parameter will be considered only when creating queues and will be ignored for updates.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>additionalOptions</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating queue. The following is an example: If Additional options is populated as follows '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2' the procedure invoke the following command for the creation of a queue whose name is myQueue: 'jms-queue add --queue-address=myQueue --entries=java:jboss/exported/jms/queue/test --durable=false --legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'. NOTE: This parameter will be considered only when creating queues and will be ignored for updates.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <step>
+                <stepName>CreateOrUpdateJMSQueue</stepName>
+                <alwaysRun>0</alwaysRun>
+                <broadcast>0</broadcast>
+                <command/>
+                <condition/>
+                <description/>
+                <errorHandling>failProcedure</errorHandling>
+                <exclusive>0</exclusive>
+                <logFileName/>
+                <parallel>0</parallel>
+                <releaseExclusive>0</releaseExclusive>
+                <resourceName/>
+                <retries>0</retries>
+                <shell>ec-perl</shell>
+                <timeLimit/>
+                <timeLimitUnits>minutes</timeLimitUnits>
+                <workingDirectory/>
+                <workspaceName/>
+                <procedureName>CreateOrUpdateJMSQueue</procedureName>
+                <projectName>EC-JBoss</projectName>
+                <propertySheet>
+                    <property>
+                        <propertyName>ec_customEditorData</propertyName>
+                        <propertySheet>
+                            <property>
+                                <propertyName>formType</propertyName>
+                                <expandable>1</expandable>
+                                <value>command</value>
+                            </property>
+                        </propertySheet>
+                    </property>
+                </propertySheet>
+            </step>
+        </procedure>
+        <procedure>
+            <procedureName>CreateOrUpdateJMSTopic</procedureName>
+            <description>This procedure creates a new jms topic or updates JNDI names for an existing jms topic using the default message provider as specified in the configuration of the JBoss EAP messaging subsystem.</description>
+            <jobNameTemplate>jboss-create-or-update-jms-topic-$[jobId]</jobNameTemplate>
+            <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
+            <propertySheet>
+                <property>
+                    <propertyName>ec_parameterForm</propertyName>
+                    <expandable>1</expandable>
+                    <value></value>
+                </property>
+                <property>
+                    <propertyName>ec_customEditorData</propertyName>
+                    <propertySheet>
+                        <property>
+                            <propertyName>parameters</propertyName>
+                            <propertySheet>
+                                <property>
+                                    <propertyName>serverconfig</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>topicName</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>jndiNames</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>profile</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>additionalOptions</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                            </propertySheet>
+                        </property>
+                    </propertySheet>
+                </property>
+            </propertySheet>
+            <formalParameter>
+                <formalParameterName>serverconfig</formalParameterName>
+                <defaultValue/>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>topicName</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Name of the Topic.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>jndiNames</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Format: comma separated JNDI names (do not use whitespaces). The list of JNDI names the topic will be bound to. For example: 'java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2'</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>profile</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain where topic should be created or updated (in case of need). For example: 'full', 'full-ha'</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>additionalOptions</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating topic. The following is an example: If Additional options is populated as follows '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2' the procedure invoke the following command for the creation of a topic whose name is myTopic: 'jms-topic add --topic-address=myTopic --entries=java:jboss/exported/jms/topic/test --legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'. NOTE: This parameter will be considered only when creating topics and will be ignored for updates.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <step>
+                <stepName>CreateOrUpdateJMSTopic</stepName>
+                <alwaysRun>0</alwaysRun>
+                <broadcast>0</broadcast>
+                <command/>
+                <condition/>
+                <description/>
+                <errorHandling>failProcedure</errorHandling>
+                <exclusive>0</exclusive>
+                <logFileName/>
+                <parallel>0</parallel>
+                <releaseExclusive>0</releaseExclusive>
+                <resourceName/>
+                <retries>0</retries>
+                <shell>ec-perl</shell>
+                <timeLimit/>
+                <timeLimitUnits>minutes</timeLimitUnits>
+                <workingDirectory/>
+                <workspaceName/>
+                <procedureName>CreateOrUpdateJMSTopic</procedureName>
+                <projectName>EC-JBoss</projectName>
+                <propertySheet>
+                    <property>
+                        <propertyName>ec_customEditorData</propertyName>
+                        <propertySheet>
+                            <property>
+                                <propertyName>formType</propertyName>
+                                <expandable>1</expandable>
+                                <value>command</value>
+                            </property>
+                        </propertySheet>
+                    </property>
+                </propertySheet>
+            </step>
+        </procedure>
+        <procedure>
+            <procedureName>RemoveJMSQueue</procedureName>
+            <description>This procedure removes an existing jms queue in the JBoss EAP messaging subsystem.</description>
+            <jobNameTemplate>jboss-remove-jms-queue-$[jobId]</jobNameTemplate>
+            <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
+            <propertySheet>
+                <property>
+                    <propertyName>ec_parameterForm</propertyName>
+                    <expandable>1</expandable>
+                    <value></value>
+                </property>
+                <property>
+                    <propertyName>ec_customEditorData</propertyName>
+                    <propertySheet>
+                        <property>
+                            <propertyName>parameters</propertyName>
+                            <propertySheet>
+                                <property>
+                                    <propertyName>serverconfig</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>queueName</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>profile</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                            </propertySheet>
+                        </property>
+                    </propertySheet>
+                </property>
+            </propertySheet>
+            <formalParameter>
+                <formalParameterName>serverconfig</formalParameterName>
+                <defaultValue/>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>queueName</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Name of the Queue.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>profile</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain form which queue should be removed. For example: 'full', 'full-ha'</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <step>
+                <stepName>RemoveJMSQueue</stepName>
+                <alwaysRun>0</alwaysRun>
+                <broadcast>0</broadcast>
+                <command/>
+                <condition/>
+                <description/>
+                <errorHandling>failProcedure</errorHandling>
+                <exclusive>0</exclusive>
+                <logFileName/>
+                <parallel>0</parallel>
+                <releaseExclusive>0</releaseExclusive>
+                <resourceName/>
+                <retries>0</retries>
+                <shell>ec-perl</shell>
+                <timeLimit/>
+                <timeLimitUnits>minutes</timeLimitUnits>
+                <workingDirectory/>
+                <workspaceName/>
+                <procedureName>RemoveJMSQueue</procedureName>
+                <projectName>EC-JBoss</projectName>
+                <propertySheet>
+                    <property>
+                        <propertyName>ec_customEditorData</propertyName>
+                        <propertySheet>
+                            <property>
+                                <propertyName>formType</propertyName>
+                                <expandable>1</expandable>
+                                <value>command</value>
+                            </property>
+                        </propertySheet>
+                    </property>
+                </propertySheet>
+            </step>
+        </procedure>
+        <procedure>
+            <procedureName>RemoveJMSTopic</procedureName>
+            <description>This procedure removes an existing jms topic in the JBoss EAP messaging subsystem.</description>
+            <jobNameTemplate>jboss-remove-jms-topic-$[jobId]</jobNameTemplate>
+            <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
+            <propertySheet>
+                <property>
+                    <propertyName>ec_parameterForm</propertyName>
+                    <expandable>1</expandable>
+                    <value></value>
+                </property>
+                <property>
+                    <propertyName>ec_customEditorData</propertyName>
+                    <propertySheet>
+                        <property>
+                            <propertyName>parameters</propertyName>
+                            <propertySheet>
+                                <property>
+                                    <propertyName>serverconfig</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>topicName</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>profile</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                            </propertySheet>
+                        </property>
+                    </propertySheet>
+                </property>
+            </propertySheet>
+            <formalParameter>
+                <formalParameterName>serverconfig</formalParameterName>
+                <defaultValue/>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>topicName</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Name of the Topic.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>profile</formalParameterName>
+                <defaultValue></defaultValue>
+                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain form which topic should be removed. For example: 'full', 'full-ha'</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <step>
+                <stepName>RemoveJMSTopic</stepName>
+                <alwaysRun>0</alwaysRun>
+                <broadcast>0</broadcast>
+                <command/>
+                <condition/>
+                <description/>
+                <errorHandling>failProcedure</errorHandling>
+                <exclusive>0</exclusive>
+                <logFileName/>
+                <parallel>0</parallel>
+                <releaseExclusive>0</releaseExclusive>
+                <resourceName/>
+                <retries>0</retries>
+                <shell>ec-perl</shell>
+                <timeLimit/>
+                <timeLimitUnits>minutes</timeLimitUnits>
+                <workingDirectory/>
+                <workspaceName/>
+                <procedureName>RemoveJMSTopic</procedureName>
                 <projectName>EC-JBoss</projectName>
                 <propertySheet>
                     <property>

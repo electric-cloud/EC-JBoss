@@ -1,0 +1,31 @@
+version: '3'
+services:
+  electric-flow:
+    image: "ecdocker/eflow-ce-server"
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "443:443"
+      - "80:80"
+    networks:
+      - internal
+    container_name: electricflow
+    tty: true
+  jboss:
+    image: electricflow/jboss7:v7.1
+    environment:
+      - JBOSS_MODE=domain
+    ports:
+      - "7808:7808"
+      - "8080:8080"
+      - "9990:9990"
+      - "9999:9999"
+      - "8230:8230"
+      - "8330:8330"
+    networks:
+      - internal
+    container_name: jboss7.1
+    tty: true
+networks:
+  internal:
+    driver: bridge
