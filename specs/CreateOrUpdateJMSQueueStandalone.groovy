@@ -504,7 +504,8 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
     @Unroll
     def "Update JMS Queue, change 'JNDI Names' (C278362)"() { //need manual check with app
         String testCaseId = "C278362"
-
+        
+        def queueName = "testQueue-$testCaseId"
         def runParams = [
                 additionalOptions    : '',
                 durable              : '0',
@@ -521,21 +522,31 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "warning"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*" //for check need reload
-
-        String queueName = "testQueue-$testCaseId"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames)
+        def jbossVersion = System.getenv('JBOSS_VERSION')
+        def expectedJobStatus
+        def expectedUpperStepSummary
+        def isWorkingVersionOfJboss = !(jbossVersion in ["6.2", "6.3"])
+        if (isWorkingVersionOfJboss) { 
+            expectedJobStatus = "warning"
+            expectedUpperStepSummary = "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*" //for check need reload
+            checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames)
+        } 
+        else {
+            expectedJobStatus = "error"
+            expectedUpperStepSummary = "Update of JNDI names for JMS queue '${runParams.queueName}' cannot be performed for this version of JBoss \\(${jbossVersion}.0.GA\\).*"
+        }
+        assert runProcedureJob.getStatus() == expectedJobStatus
+        assert runProcedureJob.getUpperStepSummary() =~ expectedUpperStepSummary 
 
         cleanup:
-        queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName)
     }
 
     @Unroll
     def "Update JMS Queue with all completed field, change JNDI, ignored other fields (C278377)"() {
         String testCaseId = "C278377"
-
+        
+        def queueName = "testQueue-$testCaseId"
         def runParams = [
                 additionalOptions    : '',
                 durable              : '1', //durable=true
@@ -552,14 +563,23 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "warning"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
-
-        String queueName = "testQueue-$testCaseId"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames)
+        def jbossVersion = System.getenv('JBOSS_VERSION')
+        def expectedJobStatus
+        def expectedUpperStepSummary
+        def isWorkingVersionOfJboss = !(jbossVersion in ["6.2", "6.3"])
+        if (isWorkingVersionOfJboss) { 
+            expectedJobStatus = "warning"
+            expectedUpperStepSummary = "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
+            checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames)
+        } 
+        else {
+            expectedJobStatus = "error"
+            expectedUpperStepSummary = "Update of JNDI names for JMS queue '${runParams.queueName}' cannot be performed for this version of JBoss \\(${jbossVersion}.0.GA\\).*"
+        }
+        assert runProcedureJob.getStatus() == expectedJobStatus
+        assert runProcedureJob.getUpperStepSummary() =~ expectedUpperStepSummary
 
         cleanup:
-        queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName)
     }
 
