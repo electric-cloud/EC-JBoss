@@ -567,6 +567,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     def "Update JMS Queue, change 'JNDI Names' (C278386)"() { //need manual check with app
         String testCaseId = "C278386"
 
+        def queueName = "testQueue-$testCaseId"
         def runParams = [
                 additionalOptions    : '',
                 durable              : '0',
@@ -583,14 +584,23 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "warning"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
-
-        String queueName = "testQueue-$testCaseId"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
+        def jbossVersion = System.getenv('JBOSS_VERSION')
+        def expectedJobStatus
+        def expectedUpperStepSummary
+        def isWorkingVersionOfJboss = !(jbossVersion in ["6.2", "6.3"])
+        if (isWorkingVersionOfJboss) { 
+            expectedJobStatus = "warning"
+            expectedUpperStepSummary = "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*" //for check need reload
+            checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames)
+        } 
+        else {
+            expectedJobStatus = "error"
+            expectedUpperStepSummary = "Update of JNDI names for JMS queue '${runParams.queueName}' cannot be performed for this version of JBoss \\(${jbossVersion}.0.GA\\).*"
+        }
+        assert runProcedureJob.getStatus() == expectedJobStatus
+        assert runProcedureJob.getUpperStepSummary() =~ expectedUpperStepSummary 
 
         cleanup:
-        queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName, defaultProfile)
     }
 
@@ -599,6 +609,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     def "Update JMS Queue with all completed field, change JNDI, ignored other fileds (C278392)"() {
         String testCaseId = "C278392"
 
+        def queueName = "testQueue-$testCaseId"
         def runParams = [
                 additionalOptions    : '',
                 durable              : '1', //durable=true
@@ -615,14 +626,23 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
         then:
-        assert runProcedureJob.getStatus() == "warning"
-        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
-
-        String queueName = "testQueue-$testCaseId"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
+        def jbossVersion = System.getenv('JBOSS_VERSION')
+        def expectedJobStatus
+        def expectedUpperStepSummary
+        def isWorkingVersionOfJboss = !(jbossVersion in ["6.2", "6.3"])
+        if (isWorkingVersionOfJboss) { 
+            expectedJobStatus = "warning"
+            expectedUpperStepSummary = "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
+            checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames)
+        } 
+        else {
+            expectedJobStatus = "error"
+            expectedUpperStepSummary = "Update of JNDI names for JMS queue '${runParams.queueName}' cannot be performed for this version of JBoss \\(${jbossVersion}.0.GA\\).*"
+        }
+        assert runProcedureJob.getStatus() == expectedJobStatus
+        assert runProcedureJob.getUpperStepSummary() =~ expectedUpperStepSummary
 
         cleanup:
-        queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName, defaultProfile)
     }
 
