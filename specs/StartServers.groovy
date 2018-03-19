@@ -96,7 +96,7 @@ class StartServers extends PluginTestHelper {
            runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
        }
 
-       @Unroll
+ /*      @Unroll
        def "StartServers, group with all servers stopped (different auto-start options on each - check DISABLED status) (C259557)"() {
            setup:
            String testCaseId = "C259557"
@@ -562,7 +562,7 @@ class StartServers extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == 'error'
         assert runProcedureJob.getUpperStepSummary() =~ "Failed to connect to the controller"
-    }
+    }*/
 
 
 

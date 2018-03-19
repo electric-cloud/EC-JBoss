@@ -75,7 +75,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
         removeJMSTopic(topicName, defaultProfile)
     }
 
-    @Unroll
+/*    @Unroll
     def "Remove JMS Topic, non existing Topic Name (C278472)"() {
         String testCaseId = "C278472"
 
@@ -127,7 +127,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
         topicName = "testTopic-$testCaseId"
         removeJMSTopic(topicName, defaultProfile)
         reloadServerGroupDomain() //for right next suit
-    }
+    }*/
 
     void removeJMSTopic(String topicName, String profile) {
         runCliCommand(CliCommandsGeneratorHelper.removeJMSTopicDomain(topicName, profile))

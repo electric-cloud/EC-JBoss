@@ -61,7 +61,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-    @Unroll
+ /*   @Unroll
     def "Create JMS Queue with minimum parameters (C278706)"() {
         String testCaseId = "C278706"
 
@@ -328,7 +328,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName, defaultProfile)
-    }
+    }*/
 
 
     @Unroll
@@ -363,7 +363,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
 
-    @Unroll
+ /*   @Unroll
     def "Negative. Create JMS Queue without 'Queue Name' (C278396)"() {
         String testCaseId = "C278396"
 
@@ -560,7 +560,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName, defaultProfile)
-    }
+    }*/
 
 
     @Unroll

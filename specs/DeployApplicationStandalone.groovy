@@ -58,7 +58,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-    @Unroll
+ /*   @Unroll
     def "DeployApp, 1st time, file, minimum params  (C278099)"() {
         String testCaseId = "C278099"
 
@@ -91,7 +91,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
-    }
+    }*/
 
     @Unroll
     def "DeployApp, 1st time, file, disabled server groups ignored (C278101)"() {
@@ -128,7 +128,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
-    @Unroll
+/*    @Unroll
     def "DeployApp, 1st time, file, enabled server groups ignored (C278133)"() {
         String testCaseId = "C278133"
 
@@ -161,7 +161,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
-    }
+    }*/
 
     @Unroll
     def "DeployApp, 1st time, file, custom app name (C278102)"() {
@@ -199,7 +199,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
 
-    @Unroll
+ /*   @Unroll
     def "DeployApp, 1st time, file, custom runtime name (C278103)"() {
         String testCaseId = "C278103"
 
@@ -723,7 +723,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
-    }
+    }*/
 
     /*
 todo: test common cases (config/pathToCli/wrongCreds)
