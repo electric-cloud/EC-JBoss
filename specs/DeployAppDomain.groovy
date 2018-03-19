@@ -460,7 +460,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "does not exist"
+        assert runProcedureJob.getUpperStepSummary() =~ "(does not exist|not found)"
     }
 
     @Unroll
