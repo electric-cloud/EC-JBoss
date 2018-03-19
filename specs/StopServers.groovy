@@ -49,7 +49,7 @@ class StopServers extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-  /*  @Unroll
+    @Unroll
     def "StopServers, group with all servers started (C259528)"() {
         setup:
         String testCaseId = "C259528"
@@ -374,7 +374,7 @@ class StopServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
         runCliCommand(CliCommandsGeneratorHelper.removeServerCmd(server1))
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
-    }*/
+    }
 
     @Unroll
     def "StopServers, stop with no wait time - 0 (C259547)"() {
@@ -415,7 +415,7 @@ class StopServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
     }
 
- /*   @Unroll
+    @Unroll
     def "Negative. StopServers, non existing server group (C259535)"() {
         setup:
         String testCaseId = "C259535"
@@ -433,7 +433,7 @@ class StopServers extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == 'error'
-    }*/
+    }
 
     @Unroll
     def "Negative. StopServers, empty server group (C259538)"() {
@@ -462,7 +462,7 @@ class StopServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
     }
 
- /*   @Unroll
+    @Unroll
     def "Negative. StopServers, incorrect param, wait time - negative value (C259539)"() {
         setup:
         String testCaseId = "C259539"
@@ -500,7 +500,7 @@ class StopServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
         runCliCommand(CliCommandsGeneratorHelper.removeServerCmd(server1))
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
-    }*/
+    }
 
     @Unroll
     def "Negative. StopServers, incorrect param, wait time - decimal value (C277844)"() {
@@ -542,7 +542,7 @@ class StopServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
     }
 
-/*    @Unroll
+    @Unroll
     def "Negative. StopServers, incorrect param, undef required param, server group (C259548)"() {
         setup:
         String testCaseId = "C259548"
@@ -585,7 +585,7 @@ class StopServers extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == 'error'
         assert runProcedureJob.getUpperStepSummary() =~ "Failed to connect to the controller"
-    }*/
+    }
 
     void shutdownHost(String hostName) {
         runCliCommand(CliCommandsGeneratorHelper.reloadHostDomain(hostName))

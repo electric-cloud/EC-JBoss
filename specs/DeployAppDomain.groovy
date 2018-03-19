@@ -91,7 +91,7 @@ class DeployAppDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
- /*   @Unroll
+    @Unroll
     def "DeployApp, 1st time, 1 server group, minimum params (C84582)"() {
         String testCaseId = "C84582"
 
@@ -368,7 +368,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app-custom-appname")
-    }*/
+    }
 
     @Unroll
     def "DeployApp, 1st time, both server groups and all server groups are specified (C277930)"() {
@@ -409,7 +409,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
- /*   @Unroll
+    @Unroll
     def "Negative. DeployApp, 1st time, duplicated server groups (C258992)"() {
         String testCaseId = "C258992"
 
@@ -434,7 +434,7 @@ class DeployAppDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "error"
         assert runProcedureJob.getUpperStepSummary() =~ "Duplicate resource"
-    }*/
+    }
 
     @Unroll
     def "Negative. DeployApp, non existing server group (C258987)"() {
@@ -463,7 +463,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "(does not exist|not found)"
     }
 
- /*   @Unroll
+    @Unroll
     def "DeployApp, app already deployed, force flag (C277905)"() {
         String testCaseId = "C277905"
 
@@ -1111,7 +1111,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Invalid url stream"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}"
 
-    }*/
+    }
 
     /*
     todo: test common cases (config/pathToCli/wrongCreds)

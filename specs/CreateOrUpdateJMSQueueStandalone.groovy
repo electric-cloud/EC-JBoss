@@ -58,7 +58,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-/*    @Unroll
+    @Unroll
     def "Create JMS Queue with minimum parameters (C278344)"() {
         String testCaseId = "C278344"
 
@@ -318,7 +318,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName)
-    }*/
+    }
 
 
     @Unroll
@@ -352,7 +352,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         removeJMSQueue(queueName)
     }
 
- /*   @Unroll
+    @Unroll
     def "Negative. Create JMS Queue without 'Queue Name' (C278355)"() {
         String testCaseId = "C278355"
 
@@ -581,7 +581,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
 
         cleanup:
         removeJMSQueue(queueName)
-    }*/
+    }
 
     void checkCreateOrUpdateJMSQueue(String queueName, def durable, String messageSelector, String jndiNames, String legacy) { //check with legacy
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSQueueInfoStandalone(queueName)).result

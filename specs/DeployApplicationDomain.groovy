@@ -83,7 +83,7 @@ class DeployApplicationDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
- /*  @Unroll
+   @Unroll
     def "DeployApplication, 1st time, file, enabled server group: 1 server group, minimum params (C278234)"() {
         String testCaseId = "C278234"
 
@@ -326,7 +326,7 @@ class DeployApplicationDomain extends PluginTestHelper {
                  cleanup:
                  existingAppName = "$testCaseId-app.war"
                  undeployFromAllRelevantServerGroups(existingAppName)
-             }*/
+             }
 
              @Unroll
              def "DeployApplication,  1st time, file, custom app name (C278245)"() {
@@ -369,7 +369,7 @@ class DeployApplicationDomain extends PluginTestHelper {
                  undeployFromAllRelevantServerGroups("$testCaseId-custom-appname.war")
              }
 
-    /*         @Unroll
+             @Unroll
              def "DeployApplication, 1st time, file, custom runtime name (C278246)"() {
                  String testCaseId = "C278246"
 
@@ -888,7 +888,7 @@ class DeployApplicationDomain extends PluginTestHelper {
            assert runProcedureJob.getStatus() == "error"
            assert runProcedureJob.getUpperStepSummary() =~ "Duplicated server group\\(s\\) in enabled and disabled lists \\(please check provided parameters\\): $serverGroup2"
 
-       }*/
+       }
 
 
     @Unroll
