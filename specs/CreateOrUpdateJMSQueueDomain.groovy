@@ -591,7 +591,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         if (isWorkingVersionOfJboss) { 
             expectedJobStatus = "warning"
             expectedUpperStepSummary = "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*" //for check need reload
-            checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames)
+            checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
         } 
         else {
             expectedJobStatus = "error"
@@ -633,7 +633,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         if (isWorkingVersionOfJboss) { 
             expectedJobStatus = "warning"
             expectedUpperStepSummary = "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
-            checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames)
+            checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
         } 
         else {
             expectedJobStatus = "error"
