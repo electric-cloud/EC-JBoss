@@ -7,15 +7,15 @@
         <workspaceName/>
         <propertySheet>
             <!-- CEV-17558 improvements -->
+            <!-- JBoss doesn't have custom GWT logic. Setting it for plugin context -->
+            <property>
+                <propertyName>ec_formXmlCompliant</propertyName>
+                <value>true</value>
+            </property>
             <property>
                 <propertyName>ec_config</propertyName>
                 <description/>
                 <propertySheet>
-                    <!-- JBoss doesn't have custom GWT logic. Setting it for plugin context -->
-                    <property>
-                        <propertyName>ec_formXmlCompliant</propertyName>
-                        <value>true</value>
-                    </property>
                     <property>
                         <propertyName>configLocation</propertyName>
                         <expandable>0</expandable>
