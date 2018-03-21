@@ -91,7 +91,7 @@ class DeployAppDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-    @Unroll
+/*    @Unroll
     def "DeployApp, 1st time, 1 server group, minimum params (C84582)"() {
         String testCaseId = "C84582"
 
@@ -675,7 +675,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
-    }
+    }*/
 
     def "Negative. DeployApp with no specified server groups and with no apply to all server group options (C259002)"() {
         String testCaseId = "C259002"
@@ -704,7 +704,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "(One of --disabled, --enabled, --all-server-groups or --server-groups is missing.|One of --disabled, --all-server-groups or --server-groups is missing.)"
     }
 
-    @Unroll
+ /*   @Unroll
     def "DeployApp, 1st time, whitespace in path (C277891)"() {
         String testCaseId = "C277891"
 
@@ -911,7 +911,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
-    }
+    }*/
 
 
     @Unroll
@@ -968,7 +968,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized arguments: [--some-wrong-param]"
     }
 
-    @Unroll
+/*    @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, application content source path --url(C278052)"() {
         String testCaseId = "C278052"
@@ -1111,7 +1111,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Invalid url stream"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}"
 
-    }
+    }*/
 
     /*
     todo: test common cases (config/pathToCli/wrongCreds)

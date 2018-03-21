@@ -50,7 +50,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-    @Unroll
+ /*   @Unroll
     def "Create JMS Topic with minimum parameters (C278441)"() {
         String testCaseId = "C278441"
 
@@ -194,7 +194,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "error"
         assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.serverconfig} doesn't exist."
 
-    }
+    }*/
 
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.0' })
@@ -219,7 +219,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     }
 
-    @Unroll
+  /*  @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Create JMS Topic with additional option --legacy-entries (C278556)"() {
         String testCaseId = "C278556"
@@ -274,7 +274,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         cleanup:
         topicName = "testTopic-$testCaseId"
         removeJMSTopic(topicName)
-    }
+    }*/
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String legacy) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoStandalone(topicName)).result

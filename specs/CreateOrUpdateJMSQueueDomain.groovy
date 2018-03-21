@@ -61,7 +61,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-    @Unroll
+/*    @Unroll
     def "Create JMS Queue with minimum parameters (C278706)"() {
         String testCaseId = "C278706"
 
@@ -456,7 +456,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName, defaultProfile)
-    }
+    }*/
 
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.0' })
@@ -482,7 +482,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized argument ${runParams.additionalOptions} for command '$command'."
     }
 
-    @Unroll
+ /*   @Unroll
     def "Negative. Create JMS Queue without 'Profile' (C278412)"() {
         String testCaseId = "C278412"
 
@@ -560,7 +560,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName, defaultProfile)
-    }
+    }*/
 
 
     @Unroll

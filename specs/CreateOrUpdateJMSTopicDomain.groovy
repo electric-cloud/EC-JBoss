@@ -55,7 +55,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-    @Unroll
+ /*   @Unroll
     def "Create JMS Topic with minimum parameters (C278451)"() {
         String testCaseId = "C278451"
 
@@ -233,7 +233,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "error"
         assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.serverconfig} doesn't exist."
 
-    }
+    }*/
 
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.0' })
@@ -258,7 +258,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
 
     }
 
-    @Unroll
+ /*   @Unroll
     def "Negative. Create JMS Topic without 'Profile' (C278465)"() {
         String testCaseId = "C278465"
 
@@ -382,7 +382,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         cleanup:
         topicName = "testTopic-$testCaseId"
         removeJMSTopic(topicName, defaultProfile)
-    }
+    }*/
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile) {
         logger.debug("env "+EnvPropertiesHelper.getVersion())

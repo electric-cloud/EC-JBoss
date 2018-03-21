@@ -58,7 +58,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-    @Unroll
+ /*   @Unroll
     def "Create JMS Queue with minimum parameters (C278344)"() {
         String testCaseId = "C278344"
 
@@ -445,7 +445,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         cleanup:
         queueName = "testQueue-$testCaseId"
         removeJMSQueue(queueName)
-    }
+    }*/
 
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.0' })
@@ -471,7 +471,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized argument ${runParams.additionalOptions} for command '$command'."
     }
 
-    @Unroll
+/*    @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Create JMS Queue with additional option --legacy-entries (C278550)"() {
         String testCaseId = "C278550"
@@ -581,7 +581,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
 
         cleanup:
         removeJMSQueue(queueName)
-    }
+    }*/
 
     void checkCreateOrUpdateJMSQueue(String queueName, def durable, String messageSelector, String jndiNames, String legacy) { //check with legacy
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSQueueInfoStandalone(queueName)).result

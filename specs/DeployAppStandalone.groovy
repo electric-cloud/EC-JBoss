@@ -66,7 +66,7 @@ class DeployAppStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-    @Unroll
+/*    @Unroll
     def "DeployApp, 1st time, minimum params (C111844)"() {
         String testCaseId = "C111844"
 
@@ -675,7 +675,7 @@ class DeployAppStandalone extends PluginTestHelper {
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
-    }
+    }*/
 
     @Unroll
     def "Negative. DeployApp, wrong additional options (C277840)"() {
@@ -707,7 +707,7 @@ class DeployAppStandalone extends PluginTestHelper {
 
     }
 
-    @Unroll
+/*    @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, application content source path --url(C278037)"() {
         String testCaseId = "C278037"
@@ -846,7 +846,7 @@ class DeployAppStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Cannot create input stream from URL 'https://github.com/electric-cloud/incorrect-path/hello-world.war'"
         assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*${runParams.warphysicalpath}.*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}"
 
-    }
+    }*/
     /*
     todo: test common cases (config/pathToCli/wrongCreds)
      */
