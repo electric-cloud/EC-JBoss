@@ -49,11 +49,30 @@ class PluginTestHelper extends PluginSpockTestSupport {
         }
         logger.debug("Creating new JBoss resource")
 
+        def workspaceName = randomize("JBoss")
+        def agentDrivePath = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'c:/tmp/workspace' : '/tmp'
+        def agentUncPath = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'c:\\\\tmp\\\\workspace' : '/tmp'
+        def agentUnixPath = EnvPropertiesHelper.getOS() == "WINDOWS" ? '' : "/opt/electriccloud/electriccommander/workspace"
+           
+           def workspaceResult = dsl """
+            createWorkspace(
+                workspaceName: '${workspaceName}',
+                agentDrivePath: '${agentDrivePath}',
+                agentUncPath: '${agentUncPath}',
+                agentUnixPath: '${agentUnixPath}',
+                local: '1'
+            )
+        """
+
+        logger.debug(objectToJson(workspaceResult))
+
+
         def result = dsl """
             createResource(
                 resourceName: '${randomize("JBoss")}',
                 hostName: '$hostname',
-                port: '$port'
+                port: '$port',
+                workspaceName: '$workspaceName'
             )
         """
 
@@ -121,9 +140,29 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     RunProcedureJob runProcedureDsl(String projectName, String procedureName, def parameters) {
-        String parametersString = parameters.collect { k, v -> "$k: '$v'" }.join(', ')
+        runProcedureDsl(projectName, procedureName, parameters, '')
+    }
 
-        String dslString = """
+    RunProcedureJob runProcedureDsl(String projectName, String procedureName, def parameters, def credential) {
+        String parametersString = parameters.collect { k, v -> "$k: '$v'" }.join(', ')
+        String dslString = ''
+        if(procedureName == "CreateConfiguration"){
+        String credentialString = credential.collect { k, v -> "$k: '$v'" }.join(', ')
+        dslString = """
+                runProcedure(
+                    projectName: '$projectName',
+                    procedureName: '$procedureName',
+                    credential: [
+                       $credentialString
+                    ],
+                    actualParameter: [
+                        $parametersString
+                    ]
+                )
+        """
+        }
+        else {
+            dslString = """
                 runProcedure(
                     projectName: '$projectName',
                     procedureName: '$procedureName',
@@ -132,6 +171,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
                     ]
                 )
         """
+        }
 
         redirectLogs()
 
@@ -212,7 +252,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         ]
 
         RunProcedureJob runProcedureJob = runProcedureDsl(helperProjName, helperProcedureRunCustomCommand, runParams)
-        if (!runProcedureJob.isStatusSuccess()) {
+        if (runProcedureJob.isStatusError()) {
             throw new Exception("Run CLI Command failed");
         }
 
