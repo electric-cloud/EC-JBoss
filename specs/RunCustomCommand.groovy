@@ -76,7 +76,7 @@ class RunCustomCommand extends PluginTestHelper {
 
 
     @Unroll
-    def "DeployApplication, 1st time, file, enabled server group: 1 server group, minimum params (C278234)"() {
+    def "RunCustomCommand, performance"() {
         String testCaseId = "C278234"
         String existingAppName = "$testCaseId-app.war"
         setup:
@@ -86,7 +86,7 @@ class RunCustomCommand extends PluginTestHelper {
         deployToServerGroups(oldServerGroupsWithApp, "--url=$linkToSampleWarFile", existingAppName, runtimeName)
 
         when:
-        for (int i = 0; i<400; i++){
+        for (int i = 0; i<1000; i++){
         checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, oldServerGroupsWithApp)
         }
 
@@ -108,6 +108,10 @@ class RunCustomCommand extends PluginTestHelper {
 
     void deployToServerGroups(String[] serverGroups, String filePath, String appName, String runtimeName) {
         runCliCommand(CliCommandsGeneratorHelper.deployToServerGroups(serverGroups, filePath, appName, runtimeName))
+    }
+
+    void undeployFromAllRelevantServerGroups(String appName) {
+        runCliCommand(CliCommandsGeneratorHelper.undeployFromAllRelevantServerGroups(appName))
     }
 
 }
