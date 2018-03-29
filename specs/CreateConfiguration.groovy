@@ -225,6 +225,7 @@ class CreateConfiguration extends PluginTestHelper {
     }
 
     @Unroll
+    @Ignore //need run after fix bug ECPAPPSERVERJBOSS-650
     def "Create Configuration, without 'JBoss controller location' (C289668)"() {
         String testCaseId = "C289668"
         String config_name = "config-"+testCaseId
