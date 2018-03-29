@@ -19,9 +19,17 @@ project projName, {
             }
         }
 
-        params.each { name, defValue ->
-            formalParameter name, defaultValue: defValue, {
-                type = 'textarea'
+        params.each {name, defValue ->
+        if (name != 'credential') {
+          formalParameter name, defaultValue: defValue, {
+            type = 'textarea'
+          }
+        }
+        else {
+          hasCredentials = true
+          formalParameter name, defaultValue: defValue, {
+            type = 'credential'
+             }
             }
         }
     }

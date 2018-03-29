@@ -121,9 +121,29 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     RunProcedureJob runProcedureDsl(String projectName, String procedureName, def parameters) {
-        String parametersString = parameters.collect { k, v -> "$k: '$v'" }.join(', ')
+        runProcedureDsl(projectName, procedureName, parameters, '')
+    }
 
-        String dslString = """
+    RunProcedureJob runProcedureDsl(String projectName, String procedureName, def parameters, def credential) {
+        String parametersString = parameters.collect { k, v -> "$k: '$v'" }.join(', ')
+        String dslString = ''
+        if(procedureName == "CreateConfiguration"){
+        String credentialString = credential.collect { k, v -> "$k: '$v'" }.join(', ')
+        dslString = """
+                runProcedure(
+                    projectName: '$projectName',
+                    procedureName: '$procedureName',
+                    credential: [
+                       $credentialString
+                    ],
+                    actualParameter: [
+                        $parametersString
+                    ]
+                )
+        """
+        }
+        else {
+            dslString = """
                 runProcedure(
                     projectName: '$projectName',
                     procedureName: '$procedureName',
@@ -132,6 +152,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
                     ]
                 )
         """
+        }
 
         redirectLogs()
 
