@@ -87,6 +87,7 @@ class RunCustomCommand extends PluginTestHelper {
 
         when:
         for (int i = 0; i<1000; i++){
+        logger.info("ITEM Run Custom Command" + i)
         checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, oldServerGroupsWithApp)
         }
 
