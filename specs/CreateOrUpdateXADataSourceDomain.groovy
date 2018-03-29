@@ -13,6 +13,10 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
     String defaultConfigName = 'specConfig'
     @Shared
     String defaultCliPath = ''
+    @Shared
+    String defaultProfile = 'full'
+    @Shared
+    String defaultEnabledDataSource = '0'
 
 
     def doSetupSpec() {
@@ -53,9 +57,22 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
     }
 
     @Unroll
-    def "Create JMS Queue with minimum parameters (C278706)"() {
-        String testCaseId = "C278706"
+    def "CreateorUpdateXADataSource, MySQL, minimum parameters (C289502)"() {
+        String testCaseId = "C289502"
 
+        def runParams = [
+                serverconfig                    : defaultConfigName,
+                dataSourceName                  : "MysqlXADS",
+                jndiName                        : "java:/MysqlXADS",
+                jdbcDriverName                  : "mysql",
+                xaDataSourceProperties          : '',
+                dataSourceConnectionCredentials : '',
+                enabled                         : '',
+                profile                         : '',
+                additionaOptions                : ''
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
     }
 
 

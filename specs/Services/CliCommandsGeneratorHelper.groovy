@@ -218,5 +218,19 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String getXADatasourceInfoStandalone(String nameDatasource){
+        String command = "/subsystem=datasources/xa-data-source=$nameDatasource:read-resource"
+        return command
+    }
+
+    static String getXADatasourceInfoDomain(String nameDatasource, String profile){
+        String command = "/profile=$profile/subsystem=datasources/xa-data-source=$nameDatasource:read-resource"
+        return command
+    }
+
+    static String removeXADatasource(String nameDatasource){
+        String command = "xa-data-source remove --name=$nameDatasource"
+        return command
+    }
 
 }
