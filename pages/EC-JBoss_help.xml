@@ -35,6 +35,7 @@
                     <li><a href="#CreateDatasource">CreateDatasource</a> (Standalone/Domain)</li>
                     <li><a href="#CreateOrUpdateJMSQueue">CreateOrUpdateJMSQueue</a> (Standalone/Domain)</li>
                     <li><a href="#CreateOrUpdateJMSTopic">CreateOrUpdateJMSTopic</a> (Standalone/Domain)</li>
+                    <li><a href="#CreateOrUpdateXADataSource">CreateOrUpdateXADataSource</a> (Standalone/Domain)</li>
                     <li><a href="#DeleteDatasource">DeleteDatasource</a> (Standalone/Domain)</li>
                     <li><a href="#DeployApp">DeployApp</a> (Standalone/Domain)</li>
                     <li><a href="#DeployApplication">DeployApplication</a> (Standalone/Domain)</li>
@@ -42,6 +43,7 @@
                     <li><a href="#EnableDeploy">EnableDeploy</a> (Standalone/Domain)</li>
                     <li><a href="#RemoveJMSQueue">RemoveJMSQueue</a> (Standalone/Domain)</li>
                     <li><a href="#RemoveJMSTopic">RemoveJMSTopic</a> (Standalone/Domain)</li>
+                    <li><a href="#RemoveXADataSource">RemoveXADataSource</a> (Standalone/Domain)</li>
                     <li><a href="#RunCustomCommand">RunCustomCommand</a> (Standalone/Domain)</li>
                     <li><a href="#ShutdownStandaloneServer">ShutdownStandaloneServer</a> (Standalone)</li>
                     <li><a href="#StartDomainServer">StartDomainServer</a> (Domain)</li>
@@ -676,6 +678,109 @@
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSTopic/CreateOrUpdateJMSTopicRunScenarios.PNG" />
             </div>
+            <div id="CreateOrUpdateXADataSource"> <a name="CreateOrUpdateXADataSource" id="CreateOrUpdateXADataSource"></a>
+                <h2>CreateOrUpdateXADataSource</h2>
+                This procedure creates a new XA Data Source or updates JNDI name or credentials for an
+                existing XA Data Source.
+                <h3>Input</h3>
+                <ol>
+                    <li>Go to the CreateOrUpdateXADataSource procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="required">Configuration Name</td>
+                                    <td> Required parameter. <br />
+                                        A unique name of the configuration to be used. URL, port and
+                                        credentials are retrieved from the given configuration. To
+                                        view or create a new configuration, go to the Administration
+                                        -&gt; Plugins tab, and select 'Configure' action for
+                                        @PLUGIN_KEY@ plugin. </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">Data Source Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example XAOracleDS
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">JNDI Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        JNDI Name of the Data Source. For example java:/XAOracleDS
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">JDBC Driver Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        Name of the JDBC Driver of the Database for which the XA Data source is created. For example oracle.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">XA Data Source Properties</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        A comma-separated list of XA datasource properties in key=value pair format. Note that the key value pairs are database dependent and at a minimum should contain the Database connection information.
+                                        <br />
+                                        For example
+                                        <br />
+                                        url=jdbc:oracle:oci8:@tc for an Oracle database
+                                        <br />
+                                        DatabaseName=mysqlDB,ServerName=localhost,Port=3306 for a Mysql database
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">Data Source Connection Credentials</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        Username and password used for the connection,that will be included as part of the step
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">Enabled</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        If the created XA Data Source should be enabled or not. Default is Y. Should be a Y/N list.
+                                        Note that for an Update to go through it should be disabled prior.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Profile (Domain only)</td>
+                                    <td> Required for Domain, will be ignored for Standalone <br />
+                                        Name of the Server Profile to which this XA Data Source applies to. </td>
+                                </tr>
+                                <tr>
+                                    <td>Additional Options</td>
+                                    <td>Optional parameter.
+                                        <br />
+                                        This is meant to pass additional options for both these use cases:
+                                        (1) To override parameters which are defaulted (for example Interleaving, PadXID etc.)
+                                        (2) Optional parameters which are not defaulted (for example min-pool-size, max-pool-size etc.)
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ol>
+                <h3>Output</h3>
+                <p> After the job runs, you can view the results on the Job Details page
+                    in ElectricFlow. In the <b>CreateOrUpdateXADataSource</b> step, click the
+                    Log icon to see the diagnostic information. </p>
+            </div>
             <div id="DeleteDatasource"> <a name='DeleteDatasource' id="DeleteDatasource"></a>
                 <h2>DeleteDatasource</h2>
                 <p>This procedure deletes a datasource in JBoss.</p>
@@ -1307,6 +1412,52 @@
                 <p> After the job runs, you can view the results on the Job Details page
                     in ElectricFlow. In the <b>RemoveJMSTopic</b> step, click the Log
                     icon to see the diagnostic information. </p>
+            </div>
+            <div id="RemoveXADataSource"> <a name="RemoveXADataSource" id="RemoveXADataSource"></a>
+                <h2>RemoveXADataSource</h2>
+                This procedure removes an existing XA data source in the JBoss EAP data source subsystem.
+                <h3>Input</h3>
+                <ol>
+                    <li>Go to the RemoveXADataSource procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="required">Configuration Name</td>
+                                    <td> Required parameter. <br />
+                                        A unique name of the configuration to be used. URL, port and
+                                        credentials are retrieved from the given configuration. To
+                                        view or create a new configuration, go to the Administration
+                                        -&gt; Plugins tab, and select 'Configure' action for
+                                        @PLUGIN_KEY@ plugin. </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">Data Source Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example XAOracleDS
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Profile (Domain only)</td>
+                                    <td> Required for Domain, will be ignored for Standalone <br />
+                                        Name of the Server Profile to which this XA Data Source applies to. </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ol>
+                <h3>Output</h3>
+                <p> After the job runs, you can view the results on the Job Details page
+                    in ElectricFlow. In the <b>RemoveXADataSource</b> step, click the
+                    Log icon to see the diagnostic information. </p>
             </div>
             <div id="RunCustomCommand"> <a name='RunCustomCommand' id="RunCustomCommand"></a>
                 <h2>RunCustomCommand</h2>

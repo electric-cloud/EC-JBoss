@@ -257,7 +257,13 @@ sub run_command {
         }
     }
 
-    $command .= '--command="' . $self->escape_string(join (' ', @command)) . '"';
+    if ($self->{run_commands_mode}) {
+        $command .= '--commands="' . $self->escape_string(join (',', @command)) . '"';
+    }
+    else {
+        $command .= '--command="' . $self->escape_string(join (' ', @command)) . '"';
+    }
+
 
     # if ($self->{do_we_have_error_on_interact_support}) {
     #     $command .= ' --error-on-interact';
@@ -340,6 +346,16 @@ sub run_command {
         $self->out("Warnings: $result->{stderr}");
     }
     return $result->{stdout};
+}
+
+sub run_commands {
+    my ($self, @commands) = @_;
+
+    $self->{run_commands_mode} = 1;
+    my %result = $self->run_command(@commands);
+    $self->{run_commands_mode} = 1;
+
+    return %result;
 }
 
 
