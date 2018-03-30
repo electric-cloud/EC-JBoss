@@ -79,12 +79,26 @@ sub main {
 
         $cli_command .= qq/ --name=$param_data_source_name /;
 
-        run_command_with_exiting_on_error(
-            command => $cli_command,
-            jboss   => $jboss
-        );
+        my %result = $jboss->run_commands($cli_command);
+        $jboss->process_response(%result);
 
-        $jboss->set_property(summary => "XA data source '$param_data_source_name' has been removed successfully");
+        my $summary;
+        if ($result{code}) {
+            # we expect that summary was already set within process_response if code is not 0
+            exit 1;
+        }
+        else {
+            $summary = "XA data source '$param_data_source_name' has been removed successfully";
+            if ($result{stdout}
+                && ($result{stdout} =~ m/process-state:\sreload-required/gs
+                || $result{stdout} =~ m/process-state:\srestart-required/gs)) {
+                $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
+                $jboss->warning();
+                $summary .= "\nJBoss reply: " . $result{stdout};
+            }
+            $jboss->set_property(summary => $summary);
+        }
+
         return;
     }
     else {
