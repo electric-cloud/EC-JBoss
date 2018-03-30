@@ -51,8 +51,8 @@ sub main {
     if (!$param_jdbc_driver_name) {
         $jboss->bail_out("Required parameter 'jdbcDriverName' is not provided");
     }
-    if (!$param_data_source_connection_credentials) {
-        $jboss->bail_out("Required parameter 'dataSourceConnectionCredentials' is not provided");
+    if (!$param_xa_data_source_properties) {
+        $jboss->bail_out("Required parameter 'xaDataSourceProperties' is not provided");
     }
     if (!defined $param_enabled) {
         $jboss->bail_out("Required parameter 'enabled' is not provided");
@@ -60,13 +60,13 @@ sub main {
 
     my $param_user_name;
     my $param_password;
-    if ($param_xa_data_source_properties) {
-        my $xpath = $jboss->ec()->getFullCredential($param_xa_data_source_properties);
+    if ($param_data_source_connection_credentials) {
+        my $xpath = $jboss->ec()->getFullCredential($param_data_source_connection_credentials);
         $param_user_name = $xpath->findvalue("//userName");
         $param_password = $xpath->findvalue("//password");
     }
     else {
-        $jboss->bail_out("Required parameter 'xaDataSourceProperties' is not provided");
+        $jboss->bail_out("Required parameter 'dataSourceConnectionCredentials' is not provided");
     }
 
     ########
@@ -192,7 +192,9 @@ sub main {
 
             $cli_command = "$profile_prefix/subsystem=datasources/xa-data-source=$param_data_source_name/:write-attribute(name=password,value=$param_password)";
 
+            $jboss->{silent} = 1;
             my %result = $jboss->run_command($cli_command);
+            $jboss->{silent} = 0;
 
             if ($result{code}) {
                 $jboss->process_response(%result);
@@ -327,7 +329,7 @@ sub run_command_and_get_json_result_with_exiting_on_non_success {
         $jboss->bail_out("JBoss replied with undefined result when expectation was to verify the result: " . (encode_json $json));
     }
 
-    return $json;
+    return $json->{result};
 }
 
 sub run_command_and_get_json_with_exiting_on_non_success {
