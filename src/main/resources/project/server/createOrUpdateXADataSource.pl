@@ -92,7 +92,7 @@ sub main {
     my $profile_prefix = $jboss_is_domain ? "/profile=$param_profile" : "";
 
     ########
-    # check if jms queue with specified name exists
+    # check if xa data source with specified name exists
     ########
     my @all_xa_data_sources;
     if ($jboss_is_domain) {
