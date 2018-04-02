@@ -353,7 +353,7 @@ sub run_commands {
 
     $self->{run_commands_mode} = 1;
     my %result = $self->run_command(@commands);
-    $self->{run_commands_mode} = 1;
+    $self->{run_commands_mode} = 0;
 
     return %result;
 }
