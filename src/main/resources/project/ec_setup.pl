@@ -134,6 +134,20 @@ my %removeJMSTopic = (
     category    => "Application Server"
 );
 
+my %createOrUpdateXADataSource = (
+    label       => "JBoss - Create or Update XA Data Source",
+    procedure   => "CreateOrUpdateXADataSource",
+    description => "Create or update XA data source",
+    category    => "Application Server"
+);
+
+my %removeXADataSource = (
+    label       => "JBoss - Remove XA Data Source",
+    procedure   => "RemoveXADataSource",
+    description => "Remove XA data source",
+    category    => "Application Server"
+);
+
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
@@ -158,6 +172,8 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Up
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update JMS Topic");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS Queue");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS Topic");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update XA Data Source");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove XA Data Source");
 
 
 @::createStepPickerSteps = (
@@ -181,7 +197,9 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS T
     \%createOrUpdateJMSQueue,
     \%createOrUpdateJMSTopic,
     \%removeJMSQueue,
-    \%removeJMSTopic
+    \%removeJMSTopic,
+    \%createOrUpdateXADataSource,
+    \%removeXADataSource
 );
 
 
@@ -350,6 +368,16 @@ if ($upgradeAction eq "upgrade") {
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                     procedureName => 'RemoveJMSTopic',
                     stepName => 'RemoveJMSTopic'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'CreateOrUpdateXADataSource',
+                    stepName => 'CreateOrUpdateXADataSource'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'RemoveXADataSource',
+                    stepName => 'RemoveXADataSource'
                 });
         }
     }
