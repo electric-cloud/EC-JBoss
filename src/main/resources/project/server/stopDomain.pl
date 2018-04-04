@@ -20,15 +20,19 @@ sub main {
     );
 
     my $params = $jboss->get_params_as_hashref(qw/
-        timeout
+        jbossTimeout
         allControllersShutdown
         /);
 
-    my $param_timeout = $params->{timeout};
+    my $param_timeout = $params->{jbossTimeout};
+    $param_timeout = "" if !defined $param_timeout;
+    $param_timeout = trim($param_timeout);
+
     my $param_all_controllers_shutdown = $params->{allControllersShutdown};
 
     my $cli_command;
     my $json;
+    my $summary;
 
     ########
     # check jboss launch type
@@ -51,35 +55,189 @@ sub main {
     }
 
     ########
+    # get all host controller names
+    ########
+    my @all_hosts = @{ get_all_hosts(jboss => $jboss) };
+
+    ########
     # stop all servers in domain
     ########
     $jboss->log_info("=======Started: stopping all servers within domain=======");
+
+    # stop all servers withing domain
     my $cli_stop_servers = ":stop-servers";
-    $cli_stop_servers .= "(timeout=$param_timeout)" if defined $param_timeout;
+    $cli_stop_servers .= "(timeout=$param_timeout)" if $param_timeout ne "";
     run_command_with_exiting_on_error(command => $cli_stop_servers, jboss => $jboss);
+
+    # verification that all servers within domain are STOPPED or DISABLED
+    my @servers_with_status_stopped_or_disabled;
+    my @servers_with_status_stopping;
+    my @servers_with_unexpected_status;
+    foreach my $host (@all_hosts) {
+        $cli_command = qq|/host=$host/:read-children-resources(child-type=server-config,include-runtime=true)|;
+        my $server_config_resources = run_command_and_get_json_result_with_exiting_on_non_success(
+            command => $cli_command,
+            jboss   => $jboss
+        );
+        foreach my $server_name (keys %$server_config_resources) {
+            my $server_status = $server_config_resources->{$server_name}->{status};
+            if ($server_status eq "STOPPED" || $server_status eq "DISABLED") {
+                $jboss->log_info("Server '$server_name' on host '$host' is '$server_status'");
+                my %server_info = (
+                    server_name => $server_name,
+                    server_status => $server_status,
+                    host_name => $host,
+                );
+                push @servers_with_status_stopped_or_disabled, \%server_info;
+            }
+            elsif ($server_status eq "STOPPING") {
+                $jboss->log_warning("Server '$server_name' on host '$host' is '$server_status'");
+                my %server_info = (
+                    server_name => $server_name,
+                    server_status => $server_status,
+                    host_name => $host,
+                );
+                push @servers_with_status_stopping, \%server_info;
+            }
+            else {
+                $jboss->log_error("Server '$server_name' on host '$host' is '$server_status'");
+                my %server_info = (
+                    server_name => $server_name,
+                    server_status => $server_status,
+                    host_name => $host,
+                );
+                push @servers_with_unexpected_status, \%server_info;
+            }
+        }
+    }
+
+    ########
+    # preparing step summary for stop servers part
+    ########
+    my @summary_messages;
+    if (@servers_with_unexpected_status) {
+        my $message = "Found " . scalar @servers_with_unexpected_status . " servers with unexpected statuses:";
+        foreach my $server_info (@servers_with_unexpected_status) {
+            my $server_name = $server_info->{server_name};
+            my $server_status = $server_info->{server_status};
+            my $host_name = $server_info->{host_name};
+            $message .= join("\n", " server '$server_name' on host '$host_name' with '$server_status' status");
+        }
+        push @summary_messages, $message;
+    }
+    if (@servers_with_status_stopping) {
+        my $message = "Found " . scalar @servers_with_status_stopping . " servers with STOPPING status:";
+        foreach my $server_info (@servers_with_status_stopping) {
+            my $server_name = $server_info->{server_name};
+            my $server_status = $server_info->{server_status};
+            my $host_name = $server_info->{host_name};
+            $message .= join("\n", " server '$server_name' on host '$host_name' with '$server_status' status");
+        }
+        push @summary_messages, $message;
+    }
+    if (@servers_with_status_stopped_or_disabled) {
+        my $message = "Found " . scalar @servers_with_status_stopped_or_disabled . " servers with expected statuses (STOPPED or DISABLED)";
+        push @summary_messages, $message;
+    }
+
+    $summary = "Performed stop-servers operation for domain";
+    if (@summary_messages) {
+        $summary .= "\n" . join("\n", @summary_messages);
+    }
+    $jboss->set_property(summary => $summary);
+
+    if ($param_all_controllers_shutdown) {
+        if (@servers_with_unexpected_status || @servers_with_status_stopping) {
+            $jboss->warning();
+        }
+    }
+    else {
+        if ((@servers_with_unexpected_status)) {
+            $jboss->error();
+            exit 1;
+        }
+        if (@servers_with_status_stopping) {
+            $jboss->warning();
+        }
+    }
+
     $jboss->log_info("=======Finished: stopping all servers within domain=======");
 
     if ($param_all_controllers_shutdown) {
         $jboss->log_info("=======Started: shutdown all host controllers within domain=======");
 
-        my @all_slave_hosts = @{ get_all_slave_hosts(jboss => $jboss) };
-        foreach my $host (@all_slave_hosts) {
-            $jboss->log_info("Starting shudown of slave host '$host'");
-            my $cli_shutdown_slave = "shutdown --host=$host";
-            $cli_shutdown_slave .= " --timeout=$param_timeout" if defined $param_timeout;
-            run_command_with_exiting_on_error(command => $cli_shutdown_slave, jboss => $jboss);
-            $jboss->log_info("Done with shudown of slave host '$host'");
+        # gathering information about host controllers
+        my @all_slave_hosts;
+        my $master_host;
+
+        foreach my $host (@all_hosts) {
+            $jboss->log_info("Checking whether host controller '$host' is master or slave");
+            if ( is_host_master(jboss => $jboss, host => $host) ) {
+                $jboss->log_info("Host controller '$host' is master");
+                $master_host = $host;
+            }
+            else {
+                $jboss->log_info("Host controller '$host' is slave");
+                push @all_slave_hosts, $host;
+            }
         }
 
-        my $master_host = get_master_host_name(jboss => $jboss);
-        $jboss->log_info("Starting shudown of master host '$master_host'");
+        # shutdown of slave host controllers
+        foreach my $host (@all_slave_hosts) {
+            $jboss->log_info("Starting shudown of slave host controller '$host'");
+            my $cli_shutdown_slave = "shutdown --host=$host";
+            $cli_shutdown_slave .= " --timeout=$param_timeout" if $param_timeout ne "";
+            run_command_with_exiting_on_error(command => $cli_shutdown_slave, jboss => $jboss);
+            $summary .= "\nShutdown was performed for slave host controller '$host'";
+            $jboss->log_info("Done with shudown of slave host controller '$host'");
+        }
+
+        # verification that shutdown of slave host controllers was successful
+        my @all_hosts_after_all_slaves_shutdown = @{ get_all_hosts(jboss => $jboss) };
+        if (@all_hosts_after_all_slaves_shutdown == 1
+            || $all_hosts_after_all_slaves_shutdown[0] eq $master_host) {
+            $jboss->log_info("All slave host controllers expect master '$master_host' are shut down");
+        }
+        else {
+            my $error_summary = "Something wrong after stopping all slave host controllers (before stopping master host controller '$master_host').";
+            $error_summary .= "\nExpected is to have only master host controller '$master_host' started at this point, but actual list of started host controllers is: [" . join(", ", @all_hosts_after_all_slaves_shutdown) . "]";
+            $jboss->log_error($error_summary);
+
+            $summary .= "\n\nError: $error_summary";
+            $jboss->set_property(summary => $summary );
+            $jboss->error();
+            exit 1;
+        }
+
+        # shutdown of master host controller
+        $jboss->log_info("Starting shudown of master host controller '$master_host'");
         my $cli_shutdown_master = "shutdown --host=$master_host";
-        $cli_shutdown_master .= " --timeout=$param_timeout" if defined $param_timeout;
+        $cli_shutdown_master .= " --timeout=$param_timeout" if $param_timeout ne "";
         run_command_with_exiting_on_error(command => $cli_shutdown_master, jboss => $jboss);
-        $jboss->log_info("Done with shudown of master host '$master_host'");
+        $summary .= "\nShutdown was performed for master host controller '$master_host'";
+        $jboss->log_info("Done with shudown of master host controller '$master_host'");
+
+        # verification that shutdown of master host controller was successful
+        $cli_command = ':read-attribute(name=launch-type)';
+        my %result = $jboss->run_command($cli_command);
+        if ( $result{code}
+            && ($result{stdout} =~ m/The\scontroller\sis\snot\savailable/gs
+                || $result{stderr} =~ m/The\scontroller\sis\snot\savailable/gs) ) {
+            $jboss->log_info("Master host controller '$master_host' is shut down, checked that connenction via CLI failed with 'The controller is not available...' error");
+        }
+        else {
+            my $error_summary = "Check that master host controller '$master_host' is shut down failed";
+            $jboss->log_error("Check that master host controller '$master_host' is shut down failed (check that connenction via CLI failed with 'The controller is not available...' error is failed)");
+
+            $summary .= "\n\nError: $error_summary";
+            $jboss->set_property(summary => $summary );
+            $jboss->error();
+            exit 1;
+        }
 
         $jboss->log_info("=======Finished: shutdown all servers within domain=======");
     }
+    $jboss->set_property(summary => $summary);
 }
 
 sub run_command_and_get_json_result_with_exiting_on_non_success {
@@ -142,35 +300,37 @@ sub run_command_with_exiting_on_error {
     return %result;
 }
 
-sub get_all_slave_hosts {
+sub get_all_hosts {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my @slave_hosts;
 
-    my $cli_command = qq|/host=*:query(select=["name"],where=["master","false"])|;
-    my $selected_entries = run_command_and_get_json_result_with_exiting_on_non_success(
+    my $cli_command = qq|/:read-children-names(child-type=host)|;
+    my $hosts = run_command_and_get_json_result_with_exiting_on_non_success(
         command => $cli_command,
         jboss   => $jboss
     );
-    foreach my $entry (@$selected_entries) {
-        push @slave_hosts, $entry->{result}->{name};
-    }
 
-    return \@slave_hosts;
+    return $hosts;
 }
 
-sub get_master_host_name {
+sub is_host_master {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $master_host;
+    my $host = $args{host} || croak "'host' is required param";
 
-    my $cli_command = qq|/host=*:query(select=["name"],where=["master","true"])|;
-    my $selected_entries = run_command_and_get_json_result_with_exiting_on_non_success(
+    my $cli_command = qq|/host=$host/:read-attribute(name=master)|;
+    my $is_master = run_command_and_get_json_result_with_exiting_on_non_success(
         command => $cli_command,
         jboss   => $jboss
     );
 
-    $master_host = $selected_entries->[0]->{result}->{name};
+    return 1 if $is_master;
+    return 0;
+}
 
-    return $master_host;
+sub trim {
+    my $s = shift;
+    return $s if !$s;
+    $s =~ s/^\s+|\s+$//g;
+    return $s;
 }

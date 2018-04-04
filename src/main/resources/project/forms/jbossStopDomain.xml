@@ -12,8 +12,9 @@
     <formElement>
         <type>entry</type>
         <label>Timeout:</label>
-        <property>timeout</property>
+        <property>jbossTimeout</property>
         <required>0</required>
+        <value>60</value>
         <documentation>Timeout for stopping all servers within domain and for shutdown each host controller: ':stop-servers(timeout=60)', 'shutdown --host=master --timeout=60', According to JBoss documentation: "The shutdown timeout in seconds. If this is zero then the server will shutdown immediately. A value larger than zero means the server will wait up to this many seconds for all active requests to finish. A value smaller than zero means that the server will wait indefinitely for all active requests to finish."</documentation>
     </formElement>
     <formElement>
