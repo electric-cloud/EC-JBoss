@@ -21,10 +21,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
     @Shared
     String dataSourceConnectionCredentials = "dataSourceConnectionCredentials"
     @Shared
-    String link = "https://github.com/Victorii/SimpleProject/raw/Victorii-patch-1/dist/mysql-connector-java-5.1.36.jar"
-    @Shared
-    String xml = "https://github.com/Victorii/SimpleProject/raw/Victorii-patch-1/dist/module.xml"
-    @Shared
     def jndiName = [
             /**
              * Required
@@ -32,6 +28,36 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
             empty: '',
             mysql: 'java:/MysqlXADS',
             postgresql: 'java:/PostgresXADS',
+            oracle: 'java:/XAOracleDS',
+            sqlserver: 'java:/MSSQLXADS',
+            ibmdb2: 'java:/DB2XADS',
+            sybase: 'java:/SybaseXADS',
+            mariadb: 'java:jboss/MariaDBXADS'
+    ]
+
+    @Shared
+    def link = [
+            /**
+             * Required
+             */
+            empty: '',
+            mysql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/mysql/mysql-connector-java-5.1.36.jar",
+            postgresql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/postgresql/postgresql-42.2.2.jar",
+            oracle: 'java:/XAOracleDS',
+            sqlserver: 'java:/MSSQLXADS',
+            ibmdb2: 'java:/DB2XADS',
+            sybase: 'java:/SybaseXADS',
+            mariadb: 'java:jboss/MariaDBXADS'
+    ]
+
+    @Shared
+    def xml = [
+            /**
+             * Required
+             */
+            empty: '',
+            mysql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/mysql/module.xml",
+            postgresql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/postgresql/module.xml",
             oracle: 'java:/XAOracleDS',
             sqlserver: 'java:/MSSQLXADS',
             ibmdb2: 'java:/DB2XADS',
@@ -112,7 +138,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, minimum parameters (C289502)"() {
         String testCaseId = "C289502"
         String jdbcDriverName = "mysql"
-        String dataSourceName = dataSourceName.mysql+testCaseId+"two2"
+        String dataSourceName = dataSourceName.mysql+testCaseId
 
 
         def runParams = [
@@ -133,11 +159,12 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         ]
 
         setup:
- /*       createDir("/opt/jboss/modules/system/layers/base/com/mysql")
-        createDir("/opt/jboss/modules/system/layers/base/com/mysql/main")
-        downloadArtifact(link, "/opt/jboss/modules/system/layers/base/com/mysql/main/mysql-connector-java-5.1.36.jar")
-        downloadArtifact(xml, "/opt/jboss/modules/system/layers/base/com/mysql/main/module.xml")
-        addModuleXADatasource("");*/
+        String path = "/opt/jboss/modules/system/layers/base/com/mysql/main"
+        createDir("/opt/jboss/modules/system/layers/base/com/mysql")
+        createDir(path)
+        downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
+        downloadArtifact(xml.mysql, path+"/module.xml")
+        addModuleXADatasource(defaultProfile, jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -149,36 +176,85 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 xaDataSourceProperties.mysql, jdbcDriverName, dataSourceConnectionCredentials, "1", "")
     }
 
-    /*   @Unroll
+       @Unroll
        def "CreateorUpdateXADataSource, PostgreSQL, minimum parameters (C289503)"() {
            String testCaseId = "C289503"
            String jdbcDriverName = "postgresql"
-           String dataSourceName = dataSourceName.jdbcDriverName+testCaseId
+           String dataSourceName = dataSourceName.postgresql+testCaseId
 
            def runParams = [
-                   serverconfig                    : defaultConfigName,
+                   additionalOptions               : '',
+                   dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
                    dataSourceName                  : dataSourceName,
-                   jndiName                        : jndiName.jdbcDriverName,
+                   enabled                         : defaultEnabledDataSource,
                    jdbcDriverName                  : jdbcDriverName,
-                   xaDataSourceProperties          : xaDataSourceProperties.jdbcDriverName,
-                   dataSourceConnectionCredentials : dataSourceConnectionCredentials, //need re-write
-                   enabled                         : '1',
+                   jndiName                        : jndiName.postgresql,
                    profile                         : defaultProfile,
-                   additionaOptions                : ''
+                   serverconfig                    : defaultConfigName,
+                   xaDataSourceProperties          : xaDataSourceProperties.postgresql,
+           ]
+           def credential = [
+                   credentialName: 'dataSourceConnectionCredentials',
+                   userName: 'admin',
+                   password: 'changeme'
            ]
 
+           setup:
+           String path = "/opt/jboss/modules/system/layers/base/org/postgresql/main"
+           createDir("/opt/jboss/modules/system/layers/base/org/postgresql")
+           createDir(path)
+           downloadArtifact(link.postgresql, path+"/postgresql-42.2.2.jar")
+           downloadArtifact(xml.postgresql, path+"/module.xml")
+           addModuleXADatasource(defaultProfile, jdbcDriverName, "org.postgresql.xa.PGXADataSource")
+
            when:
-           RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+           RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
 
            then:
            assert runProcedureJob.getStatus() == "success"
-           assert runProcedureJob.getUpperStepSummary() =~ "TBD"
-           checkCreateXADataSource(dataSourceName.jdbcDriverName, defaultProfile, jndiName.jdbcDriverName,
-                   xaDataSourceProperties.jdbcDriverName, jdbcDriverName, dataSourceConnectionCredentials, "1", "")
+           assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been added successfully"
+           checkCreateXADataSource(dataSourceName, defaultProfile, jndiName.postgresql,
+                   xaDataSourceProperties.postgresql, jdbcDriverName, dataSourceConnectionCredentials, "1", "")
        }
 
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, minimum parameters (C289553)"() {
+        String testCaseId = "C289553"
+        String jdbcDriverName = "mysql"
+        String dataSourceName = dataSourceName.mysql+testCaseId
 
-       @Unroll
+
+        def runParams = [
+                additionalOptions               : '',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : dataSourceName,
+                enabled                         : '0',
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.mysql,
+                profile                         : 'default',
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: 'admin',
+                password: 'changeme'
+        ]
+        setup:
+        addModuleXADatasource('default', jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been added successfully"
+        checkCreateXADataSource(dataSourceName, 'default', jndiName.mysql,
+                xaDataSourceProperties.mysql, jdbcDriverName, dataSourceConnectionCredentials, "0", "")
+    }
+
+
+  /*     @Unroll
        def "CreateorUpdateXADataSource, Oracle, minimum parameters (C289504)"() {
            String testCaseId = "C289504"
            String jdbcDriverName = "oracle"
@@ -320,8 +396,20 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
        }
 */
 
-    void addModuleXADatasource(String pathToModule){
-        runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasource(pathToModule))
+/*    void createDir(){
+        //for mysql
+        createDir("/opt/jboss/modules/system/layers/base/com/mysql")
+        createDir("/opt/jboss/modules/system/layers/base/com/mysql/main")
+    }
+
+    void downloadArtifact(){
+        //for mysql
+        downloadArtifact(link, "/opt/jboss/modules/system/layers/base/com/mysql/main/mysql-connector-java-5.1.36.jar")
+        downloadArtifact(xml, "/opt/jboss/modules/system/layers/base/com/mysql/main/module.xml")
+    }*/
+
+    void addModuleXADatasource(String profile, String driver, String DSclass){
+        runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
     }
 
        void checkUpdateXADataSource(String nameDatasource, String profile, String jndiNames, String dataSourceConnectionCredentials){

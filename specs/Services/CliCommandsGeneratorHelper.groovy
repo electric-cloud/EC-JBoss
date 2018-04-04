@@ -233,8 +233,9 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
-    static String addModuleXADatasource(String profile){
-        String command = "/profile=$profile/subsystem=datasources/jdbc-driver=mysql:add(driver-name=mysql,driver-module-name=com.mysql,driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource)"
+    static String addModuleXADatasource(String profile, String driver, String DSclass){
+        String domain = (driver == 'mysql' ? 'com' : 'org')
+        String command = "/profile=$profile/subsystem=datasources/jdbc-driver=$driver:add(driver-name=$driver,driver-module-name=$domain.$driver,driver-xa-datasource-class-name=$DSclass)"
         return command
     }
 
