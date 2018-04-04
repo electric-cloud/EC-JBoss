@@ -10,10 +10,6 @@
     </file>
     <file>
         <path>JBossCreateConfigForm.xml</path>
-        <xpath>//property[propertyName=&quot;ec_config&quot;]/propertySheet/property[propertyName=&quot;form&quot;]/value</xpath>
-    </file>
-    <file>
-        <path>JBossCreateConfigForm.xml</path>
         <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;JBossCreateConfigForm&quot;]/value</xpath>
     </file>
     <file>
