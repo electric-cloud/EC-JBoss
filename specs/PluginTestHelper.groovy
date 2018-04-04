@@ -10,6 +10,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     static def helperProcedureRunCustomCommand = 'RunCustomCommand'
     static def helperProcedureDownloadArtifact = 'DownloadArtifact'
     static def helperProcedureCheckUrl = 'CheckUrl'
+    static def helperProcedureMkdir = 'Mkdir'
 
     def createDefaultConfiguration(String configName, props = [:]) {
         String pluginName = "EC-JBoss"
@@ -88,6 +89,37 @@ class PluginTestHelper extends PluginSpockTestSupport {
         """
     }
 
+    def createCredential(String projectName, String credName) {
+        def credentialResult = dsl """
+            createCredential(
+                projectName: '${projectName}',
+                credentialName: '${credName}',
+                userName: 'admin',
+                password: 'changeme',
+                description: '',
+                passwordRecoveryAllowed: 'true'
+            )
+        """
+
+        logger.debug(objectToJson(credentialResult))
+    }
+
+    def attachCredential(String projectName, String credName, String procName) {
+        def credentialResult = dsl """
+            attachCredential(
+                projectName: '${projectName}',
+                credentialName: '${credName}',
+                procedureName: '${procName}',
+                processStepName: '${procName}',
+                stepName: '${procName}'
+                
+            )
+        """
+
+        logger.debug(objectToJson(credentialResult))
+    }
+
+
     def redirectLogs(String parentProperty = '/myJob') {
         def propertyLogName = parentProperty + '/debug_logs'
         dsl """
@@ -161,6 +193,22 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 )
         """
         }
+            else if(procedureName == "CreateOrUpdateXADataSource"){
+            String credentialString = credential.collect { k, v -> "$k: '$v'" }.join(', ')
+            dslString = """
+                runProcedure(
+                    projectName: '$projectName',
+                    procedureName: '$procedureName',
+                    actualParameter: [
+                        $parametersString
+                    ],
+                    credential: [
+                        $credentialString
+                    ]
+                )
+        """
+        }
+
         else {
             dslString = """
                 runProcedure(
@@ -216,7 +264,8 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 projName: helperProjName,
                 resName: resName,
                 procNameDownloadArtifact: helperProcedureDownloadArtifact,
-                procNameCheckUrl: helperProcedureCheckUrl
+                procNameCheckUrl: helperProcedureCheckUrl,
+                procNameMkdir: helperProcedureMkdir
         ]
     }
 
@@ -276,6 +325,23 @@ class PluginTestHelper extends PluginSpockTestSupport {
         }
 
         assert jobStatus(res.jobId).outcome == 'success'
+    }
+
+    def createDir(dirName) {
+        def result = dsl """
+            runProcedure(
+                projectName: '$helperProjName',
+                procedureName: '$helperProcedureMkdir',
+                actualParameter: [
+                    directory: '$dirName'
+                ]
+            )
+        """
+
+        assert result.jobId
+        waitUntil {
+            jobCompleted result.jobId
+        }
     }
 
     boolean isUrlAvailable(String url) {
