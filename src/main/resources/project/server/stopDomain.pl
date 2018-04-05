@@ -235,9 +235,10 @@ sub main {
             exit 1;
         }
 
+        $jboss->set_property(summary => $summary);
+
         $jboss->log_info("=======Finished: shutdown all servers within domain=======");
     }
-    $jboss->set_property(summary => $summary);
 }
 
 sub run_command_and_get_json_result_with_exiting_on_non_success {
