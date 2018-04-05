@@ -49,6 +49,7 @@
                     <li><a href="#StartDomainServer">StartDomainServer</a> (Domain)</li>
                     <li><a href="#StartServers">StartServers</a> (Domain)</li>
                     <li><a href="#StartStandaloneServer">StartStandaloneServer</a> (Standalone)</li>
+                    <li><a href="#StopDomain">StopDomain</a> (Domain)</li>
                     <li><a href="#StopServers">StopServers</a> (Domain)</li>
                     <li><a href="#UndeployApp">UndeployApp</a> (Standalone/Domain)</li>
                 </ul>
@@ -779,6 +780,66 @@
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
                     in ElectricFlow. In the <b>CreateOrUpdateXADataSource</b> step, click the
+                    Log icon to see the diagnostic information. </p>
+            </div>
+            <div id="StopDomain"> <a name="StopDomain" id="StopDomain"></a>
+                <h2>StopDomain</h2>
+                This procedure stops all servers within domain with specified timeout
+                and if "All Controllers Shutdown" option is chosen then the procedure also performs shutdown of all controllers one by one with specified timeout
+                (shutdown of a master host controller to be performed on final stage).
+                <h3>Input</h3>
+                <ol>
+                    <li>Go to the StopDomain procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="required">Configuration Name</td>
+                                    <td> Required parameter. <br />
+                                        A unique name of the configuration to be used. URL, port and
+                                        credentials are retrieved from the given configuration. To
+                                        view or create a new configuration, go to the Administration
+                                        -&gt; Plugins tab, and select 'Configure' action for
+                                        @PLUGIN_KEY@ plugin. </td>
+                                </tr>
+                                <tr>
+                                    <td>Timeout</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br />
+                                        Timeout for stopping all servers within domain and for shutdown each host controller:
+                                        <br />
+                                        :stop-servers(timeout=60)
+                                        <br />
+                                        shutdown --host=master --timeout=60
+                                        <br />
+                                        According to JBoss documentation: "The shutdown timeout in seconds.
+                                        If this is zero then the server will shutdown immediately.
+                                        A value larger than zero means the server will wait up to this many seconds for all active requests to finish.
+                                        A value smaller than zero means that the server will wait indefinitely for all active requests to finish."
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>All Controllers Shutdown</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br />
+                                        Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default is no shutdown (unchecked).
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ol>
+                <h3>Output</h3>
+                <p> After the job runs, you can view the results on the Job Details page
+                    in ElectricFlow. In the <b>StopDomain</b> step, click the
                     Log icon to see the diagnostic information. </p>
             </div>
             <div id="DeleteDatasource"> <a name='DeleteDatasource' id="DeleteDatasource"></a>

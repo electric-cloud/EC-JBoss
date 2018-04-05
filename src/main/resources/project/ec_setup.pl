@@ -148,6 +148,13 @@ my %removeXADataSource = (
     category    => "Application Server"
 );
 
+my %stopDomain = (
+    label       => "JBoss - Stop Domain",
+    procedure   => "StopDomain",
+    description => "Stop all servers within domain with specified timeout and if 'All Controllers Shutdown' option is chosen then perform shutdown of all controllers one by one with specified timeout (shutdown of a master host controller to be performed on final stage)",
+    category    => "Application Server"
+);
+
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
@@ -174,6 +181,7 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS Q
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS Topic");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update XA Data Source");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove XA Data Source");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Stop Domain");
 
 
 @::createStepPickerSteps = (
@@ -199,7 +207,8 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove XA Da
     \%removeJMSQueue,
     \%removeJMSTopic,
     \%createOrUpdateXADataSource,
-    \%removeXADataSource
+    \%removeXADataSource,
+    \%stopDomain
 );
 
 
@@ -378,6 +387,11 @@ if ($upgradeAction eq "upgrade") {
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                     procedureName => 'RemoveXADataSource',
                     stepName => 'RemoveXADataSource'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'StopDomain',
+                    stepName => 'StopDomain'
                 });
         }
     }
