@@ -89,13 +89,13 @@ class PluginTestHelper extends PluginSpockTestSupport {
         """
     }
 
-    def createCredential(String projectName, String credName) {
+    def createCredential(String projectName, String credName, String userName, String password) {
         def credentialResult = dsl """
             createCredential(
                 projectName: '${projectName}',
                 credentialName: '${credName}',
-                userName: 'admin',
-                password: 'changeme',
+                userName: '${userName}',
+                password: '${password}',
                 description: '',
                 passwordRecoveryAllowed: 'true'
             )
