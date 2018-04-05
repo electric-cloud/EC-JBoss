@@ -490,7 +490,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
 
     @Unroll
-    @IgnoreRest
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--min-pool-size' (C289515)"() {
         String testCaseId = "C289515"
         String jdbcDriverName = "mysql"
@@ -499,6 +498,43 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions               : '--min-pool-size=10',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : dataSourceName,
+                enabled                         : defaultEnabledDataSource,
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.mysql,
+                profile                         : 'default',
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+
+        setup:
+        addModuleXADatasource('default', jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been added successfully"
+        checkCreateXADataSourceAdditionalOptions(dataSourceName, 'default', jndiName.mysql, jdbcDriverName, "1",
+                'min-pool-size', 10,  defaultPassword, defaultUserName)
+    }
+
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, Additional Options '--max-pool-size' (C290066)"() {
+        String testCaseId = "C290066"
+        String jdbcDriverName = "mysql"
+        String dataSourceName ="MysqlXADS"+testCaseId
+
+
+        def runParams = [
+                additionalOptions               : '--max-pool-size=25',
                 dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
                 dataSourceName                  : dataSourceName,
                 enabled                         : defaultEnabledDataSource,
@@ -513,8 +549,9 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 userName: defaultUserName,
                 password: defaultPassword
         ]
+
         setup:
-        addModuleXADatasource('ha', jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
+        addModuleXADatasource('ha', jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -523,20 +560,126 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been added successfully"
         checkCreateXADataSourceAdditionalOptions(dataSourceName, 'ha', jndiName.mysql, jdbcDriverName, "1",
-                'min-pool-size', '10',  defaultPassword, defaultUserName)
+                'max-pool-size', 25,  defaultPassword, defaultUserName)
     }
 
 
+    @Unroll
+    @Ignore //need run after fix ECPAPPSERVERJBOSS-660
+    def "CreateorUpdateXADataSource, MySQL, Additional Options '--check-valid-connection-sql' (C290071)"() {
+        String testCaseId = "C290071"
+        String jdbcDriverName = "postgresql"
+        String dataSourceName = dataSourceName.postgresql+testCaseId
+
+        def runParams = [
+                additionalOptions               : '--check-valid-connection-sql="Select 1"',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : dataSourceName,
+                enabled                         : defaultEnabledDataSource,
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.postgresql,
+                profile                         : 'default',
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.postgresql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+
+        setup:
+        addModuleXADatasource('default', jdbcDriverName, "org.postgresql.xa.PGXADataSource")
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been added successfully"
+        checkCreateXADataSourceAdditionalOptions(dataSourceName, 'default', jndiName.mysql, jdbcDriverName, "1",
+                'check-valid-connection-sql', '"Select 1"',  defaultPassword, defaultUserName)
+    }
 
 
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, Additional Options '--pad-xid' (C290075)"() {
+        String testCaseId = "C290075"
+        String jdbcDriverName = "postgresql"
+        String dataSourceName = dataSourceName.postgresql+testCaseId
 
+        def runParams = [
+                additionalOptions               : '--pad-xid=true',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : dataSourceName,
+                enabled                         : defaultEnabledDataSource,
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.postgresql,
+                profile                         : 'full-ha',
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.postgresql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+
+        setup:
+        addModuleXADatasource('full-ha', jdbcDriverName, "org.postgresql.xa.PGXADataSource")
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been added successfully"
+        checkCreateXADataSourceAdditionalOptions(dataSourceName, 'full-ha', jndiName.postgresql, jdbcDriverName, "1",
+                '--pad-xid', true,  defaultPassword, defaultUserName)
+    }
+
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, Additional Options 'interleaving' (C290076)"() {
+        String testCaseId = "C290076"
+        String jdbcDriverName = "postgresql"
+        String dataSourceName = dataSourceName.postgresql+testCaseId
+
+        def runParams = [
+                additionalOptions               : '--interleaving=true',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : dataSourceName,
+                enabled                         : defaultEnabledDataSource,
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.postgresql,
+                profile                         : 'ha',
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.postgresql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+
+        setup:
+        addModuleXADatasource('ha', jdbcDriverName, "org.postgresql.xa.PGXADataSource")
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been added successfully"
+        checkCreateXADataSourceAdditionalOptions(dataSourceName, 'ha', jndiName.postgresql, jdbcDriverName, "1",
+                '--interleaving', true,  defaultPassword, defaultUserName)
+    }
 
     void addModuleXADatasource(String profile, String driver, String DSclass){
         runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
     }
 
        void checkCreateXADataSourceAdditionalOptions(String nameDatasource, String profile, String jndiNames, String jdbcDriverName,
-                                             String enabled, String additionaOptionsParameter, String additionaOptionsValue, String password, String userName) {
+                                             String enabled, String additionaOptionsParameter, def additionaOptionsValue, String password, String userName) {
            def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getXADatasourceInfoDomain(nameDatasource, profile)).result
            assert result.'jndi-name' =~ jndiNames
            assert result.'driver-name' == jdbcDriverName
