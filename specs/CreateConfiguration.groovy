@@ -1,7 +1,7 @@
 import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
-@Ignore
+
 class CreateConfiguration extends PluginTestHelper {
 
     @Shared
