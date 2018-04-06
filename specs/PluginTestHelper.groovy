@@ -11,6 +11,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     static def helperProcedureDownloadArtifact = 'DownloadArtifact'
     static def helperProcedureCheckUrl = 'CheckUrl'
     static def helperProcedureMkdir = 'Mkdir'
+    static def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
 
     def createDefaultConfiguration(String configName, props = [:]) {
         String pluginName = "EC-JBoss"
@@ -265,7 +266,8 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 resName: resName,
                 procNameDownloadArtifact: helperProcedureDownloadArtifact,
                 procNameCheckUrl: helperProcedureCheckUrl,
-                procNameMkdir: helperProcedureMkdir
+                procNameMkdir: helperProcedureMkdir,
+                shell: shell
         ]
     }
 
@@ -328,7 +330,6 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     def createDir(dirName) {
-        def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
         def result = dsl """
             runProcedure(
                 projectName: '$helperProjName',

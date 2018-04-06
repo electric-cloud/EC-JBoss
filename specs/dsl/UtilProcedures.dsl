@@ -5,6 +5,7 @@ def resName = args.resName
 def procNameDownloadArtifact = args.procNameDownloadArtifact
 def procNameCheckUrl = args.procNameCheckUrl
 def procNameMkdir = args.procNameMkdir
+def someShell = args.shell
 
 project projName, {
 
@@ -92,10 +93,11 @@ else {
     }
 
     procedure procNameMkdir, {
+        shell = someShell
          resourceName = resName
           step procNameMkdir , {
            command = 'mkdir "\$[directory]"'
-           shell = 'bash'
+
            }
           formalParameter 'directory', defaultValue: '', {
           type = 'entry'

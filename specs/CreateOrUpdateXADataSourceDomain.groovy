@@ -47,11 +47,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
             empty: '',
             mysql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/mysql/mysql-connector-java-5.1.36.jar",
             postgresql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/postgresql/postgresql-42.2.2.jar",
-            oracle: 'java:/XAOracleDS',
-            sqlserver: 'java:/MSSQLXADS',
-            ibmdb2: 'java:/DB2XADS',
-            sybase: 'java:/SybaseXADS',
-            mariadb: 'java:jboss/MariaDBXADS'
     ]
 
     @Shared
@@ -62,11 +57,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
             empty: '',
             mysql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/mysql/module.xml",
             postgresql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/postgresql/module.xml",
-            oracle: 'java:/XAOracleDS',
-            sqlserver: 'java:/MSSQLXADS',
-            ibmdb2: 'java:/DB2XADS',
-            sybase: 'java:/SybaseXADS',
-            mariadb: 'java:jboss/MariaDBXADS'
     ]
 
     @Shared
@@ -130,7 +120,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
+//        deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -192,8 +182,8 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         createDir(path)
         downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
         downloadArtifact(xml.mysql, path+"/module.xml")
-        if(EnvPropertiesHelper.getVersion() != "6.0") {
-            addModuleXADatasource(defaultProfile, jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource");
+        if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
+            addModuleXADatasource(defaultProfile, jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
         }
 
         when:
@@ -230,8 +220,8 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
            ]
 
            setup:
-           String path = getPathToMain("postgresq", "org")
-           createDir(getPath("postgresq", "org"))
+           String path = getPathToMain("postgresql", "org")
+           createDir(getPath("postgresql", "org"))
            createDir(path)
            downloadArtifact(link.postgresql, path+"/postgresql-42.2.2.jar")
            downloadArtifact(xml.postgresql, path+"/module.xml")
