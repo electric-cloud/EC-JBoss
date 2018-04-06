@@ -1,0 +1,29 @@
+<editor>
+    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#StopDomain</help>
+    <formElement>
+        <type>entry</type>
+        <label>Configuration name:</label>
+        <property>serverconfig</property>
+        <required>1</required>
+        <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <propertyReference>/plugins/@PLUGIN_NAME@/project/jboss_cfgs</propertyReference>
+        <htmlDocumentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Timeout:</label>
+        <property>jbossTimeout</property>
+        <required>0</required>
+        <value>60</value>
+        <documentation>Timeout for stopping all servers within domain and for shutdown each host controller: ':stop-servers(timeout=60)', 'shutdown --host=master --timeout=60', According to JBoss documentation: "The shutdown timeout in seconds. If this is zero then the server will shutdown immediately. A value larger than zero means the server will wait up to this many seconds for all active requests to finish. A value smaller than zero means that the server will wait indefinitely for all active requests to finish."</documentation>
+    </formElement>
+    <formElement>
+        <type>checkbox</type>
+        <label>All Controllers Shutdown:</label>
+        <property>allControllersShutdown</property>
+        <checkedValue>1</checkedValue>
+        <uncheckedValue>0</uncheckedValue>
+        <initiallyChecked>0</initiallyChecked>
+        <documentation>Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default is no shutdown (unchecked).</documentation>
+    </formElement>
+</editor>

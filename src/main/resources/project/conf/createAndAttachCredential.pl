@@ -188,6 +188,27 @@ $xpath = $ec->attachCredential($projName, $credName, {
 );
 $errors .= $ec->checkAllErrors($xpath);
 
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'CreateOrUpdateXADataSource',
+        stepName => 'CreateOrUpdateXADataSource'
+    }
+);
+$errors .= $ec->checkAllErrors($xpath);
+
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'RemoveXADataSource',
+        stepName => 'RemoveXADataSource'
+    }
+);
+$errors .= $ec->checkAllErrors($xpath);
+
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'StopDomain',
+        stepName => 'StopDomain'
+    }
+);
+$errors .= $ec->checkAllErrors($xpath);
+
 
 if ($errors ne '') {
 
