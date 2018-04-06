@@ -328,6 +328,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     def createDir(dirName) {
+        def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
         def result = dsl """
             runProcedure(
                 projectName: '$helperProjName',
