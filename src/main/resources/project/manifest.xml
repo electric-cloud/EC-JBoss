@@ -133,6 +133,10 @@
         <xpath>//procedure[procedureName=&quot;StopDomain&quot;]/step[stepName=&quot;StopDomain&quot;]/command</xpath>
     </file>
     <file>
+        <path>server/getEnvInfo.pl</path>
+        <xpath>//procedure[procedureName=&quot;GetEnvInfo&quot;]/step[stepName=&quot;GetEnvInfo&quot;]/command</xpath>
+    </file>
+    <file>
         <path>conf/createcfg.pl</path>
         <xpath>//procedure[procedureName=&quot;CreateConfiguration&quot;]/step[stepName=&quot;CreateConfiguration&quot;]/command</xpath>
     </file>
@@ -245,6 +249,10 @@
         <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;StopDomain&quot;]/value</xpath>
     </file>
     <file>
+        <path>forms/jbossGetEnvInfo.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;GetEnvInfo&quot;]/value</xpath>
+    </file>
+    <file>
         <path>forms/jbossEnableDeployForm.xml</path>
         <xpath>//procedure[procedureName=&quot;EnableDeploy&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
     </file>
@@ -339,5 +347,9 @@
     <file>
         <path>forms/jbossStopDomain.xml</path>
         <xpath>//procedure[procedureName=&quot;StopDomain&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossGetEnvInfo.xml</path>
+        <xpath>//procedure[procedureName=&quot;GetEnvInfo&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
     </file>
 </fileset>

@@ -209,6 +209,13 @@ $xpath = $ec->attachCredential($projName, $credName, {
 );
 $errors .= $ec->checkAllErrors($xpath);
 
+$xpath = $ec->attachCredential($projName, $credName, {
+        procedureName => 'GetEnvInfo',
+        stepName => 'GetEnvInfo'
+    }
+);
+$errors .= $ec->checkAllErrors($xpath);
+
 
 if ($errors ne '') {
 

@@ -41,6 +41,7 @@
                     <li><a href="#DeployApplication">DeployApplication</a> (Standalone/Domain)</li>
                     <li><a href="#DisableDeploy">DisableDeploy</a> (Standalone/Domain)</li>
                     <li><a href="#EnableDeploy">EnableDeploy</a> (Standalone/Domain)</li>
+                    <li><a href="#GetEnvInfo">GetEnvInfo</a> (Standalone/Domain)</li>
                     <li><a href="#RemoveJMSQueue">RemoveJMSQueue</a> (Standalone/Domain)</li>
                     <li><a href="#RemoveJMSTopic">RemoveJMSTopic</a> (Standalone/Domain)</li>
                     <li><a href="#RemoveXADataSource">RemoveXADataSource</a> (Standalone/Domain)</li>
@@ -1335,6 +1336,70 @@
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/EnableDeploy/ECJBossEnableDeploy4.png" />
                 <br />
+            </div>
+            <div id="GetEnvInfo"> <a name="GetEnvInfo" id="GetEnvInfo"></a>
+                <h2>GetEnvInfo</h2>
+                This procedure retrieves requested information from JBoss via CLI and writes it to logs and property.
+                <h3>Input</h3>
+                <ol>
+                    <li>Go to the GetEnvInfo procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="required">Configuration Name</td>
+                                    <td> Required parameter. <br />
+                                        A unique name of the configuration to be used. URL, port and
+                                        credentials are retrieved from the given configuration. To
+                                        view or create a new configuration, go to the Administration
+                                        -&gt; Plugins tab, and select 'Configure' action for
+                                        @PLUGIN_KEY@ plugin. </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">Information Type</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        Information Type.
+                                        Possible options:
+                                        System Dump,
+                                        Profiles,
+                                        Data Sources,
+                                        XA Data Sources
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Information Type Context
+                                    </td>
+                                    <td>
+                                        Optional parameter.
+                                        <br />
+                                        Information Type Context
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Additional Options</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br />
+                                        Additional Options
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ol>
+                <h3>Output</h3>
+                <p> After the job runs, you can view the results on the Job Details page
+                    in ElectricFlow. In the <b>GetEnvInfo</b> step, click the
+                    Log icon to see the diagnostic information. </p>
             </div>
             <div id="RemoveJMSQueue"> <a name="RemoveJMSQueue" id="RemoveJMSQueue"></a>
                 <h2>RemoveJMSQueue</h2>
