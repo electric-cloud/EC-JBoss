@@ -34,7 +34,6 @@ sub main {
 
     my $cli_command;
     my $json;
-    my $summary;
 
     ########
     # check jboss launch type
@@ -55,87 +54,67 @@ sub main {
     $jboss->log_info("=======Started: getting environment information, information type - '$param_information_type'=======");
 
     if ($param_information_type eq "systemDump") {
-        my $additional_parameters = $param_additional_options if $param_additional_options;
+        my $additional_parameters = $param_additional_options ? $param_additional_options : "";
         $cli_command = "/:read-resource($additional_parameters)";
-        my $result = run_command_and_get_json_result_with_exiting_on_non_success(
-            command => $cli_command,
-            jboss   => $jboss
-        );
-        $env_info = $result;
+        my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+        $env_info = $result{stdout};
     }
     elsif ($param_information_type eq "profiles") {
-        my $additional_parameters = ",$param_additional_options" if $param_additional_options;
+        my $additional_parameters = $param_additional_options ? ",$param_additional_options" : "";
         $cli_command = "/:read-children-resources(child-type=profile$additional_parameters)";
-        my $result = run_command_and_get_json_result_with_exiting_on_non_success(
-            command => $cli_command,
-            jboss   => $jboss
-        );
-        $env_info = $result;
+        my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+        $env_info = $result{stdout};
     }
     elsif ($param_information_type eq "dataSources") {
-        my $additional_parameters = ",$param_additional_options" if $param_additional_options;
+        my $additional_parameters = $param_additional_options ? ",$param_additional_options" : "";
         if ($jboss_is_domain) {
             if ($param_information_type_context) {
                 my $profile = $param_information_type_context;
                 $cli_command = "/profile=$profile/subsystem=datasources/:read-children-resources(child-type=data-source$additional_parameters)";
-                my $result = run_command_and_get_json_result_with_exiting_on_non_success(
-                    command => $cli_command,
-                    jboss   => $jboss
-                );
-                $env_info = $result;
+                my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+                $env_info = $result{stdout};
             }
             else {
                 my @all_profiles = @{ get_all_profiles(jboss => $jboss) };
+                my %profiles_env_info;
                 foreach my $profile (@all_profiles) {
                     $cli_command = "/profile=$profile/subsystem=datasources/:read-children-resources(child-type=data-source$additional_parameters)";
-                    my $result = run_command_and_get_json_result_with_exiting_on_non_success(
-                        command => $cli_command,
-                        jboss   => $jboss
-                    );
-                    $env_info = "Profile '$profile': $result\n";
+                    my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+                    $profiles_env_info{$profile} = $result{stdout};
                 }
+                $env_info = join("\n", map {"Profile '$_': $profiles_env_info{$_}"} keys %profiles_env_info);
             }
         }
         else {
             $cli_command = "/subsystem=datasources/:read-children-resources(child-type=data-source$additional_parameters)";
-            my $result = run_command_and_get_json_result_with_exiting_on_non_success(
-                command => $cli_command,
-                jboss   => $jboss
-            );
-            $env_info = $result;
+            my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+            $env_info = $result{stdout};
         }
     }
     elsif ($param_information_type eq "xaDataSources") {
-        my $additional_parameters = ",$param_additional_options" if $param_additional_options;
+        my $additional_parameters = $param_additional_options ? ",$param_additional_options" : "";
         if ($jboss_is_domain) {
             if ($param_information_type_context) {
                 my $profile = $param_information_type_context;
                 $cli_command = "/profile=$profile/subsystem=datasources/:read-children-resources(child-type=xa-data-source$additional_parameters)";
-                my $result = run_command_and_get_json_result_with_exiting_on_non_success(
-                    command => $cli_command,
-                    jboss   => $jboss
-                );
-                $env_info = $result;
+                my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+                $env_info = $result{stdout};
             }
             else {
                 my @all_profiles = @{ get_all_profiles(jboss => $jboss) };
+                my %profiles_env_info;
                 foreach my $profile (@all_profiles) {
                     $cli_command = "/profile=$profile/subsystem=datasources/:read-children-resources(child-type=xa-data-source$additional_parameters)";
-                    my $result = run_command_and_get_json_result_with_exiting_on_non_success(
-                        command => $cli_command,
-                        jboss   => $jboss
-                    );
-                    $env_info = "Profile '$profile': $result\n";
+                    my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+                    $profiles_env_info{$profile} = $result{stdout};
                 }
+                $env_info = join("\n", map {"Profile '$_': $profiles_env_info{$_}"} keys %profiles_env_info);
             }
         }
         else {
             $cli_command = "/subsystem=datasources/:read-children-resources(child-type=xa-data-source$additional_parameters)";
-            my $result = run_command_and_get_json_result_with_exiting_on_non_success(
-                command => $cli_command,
-                jboss   => $jboss
-            );
-            $env_info = $result;
+            my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+            $env_info = $result{stdout};
         }
     }
 

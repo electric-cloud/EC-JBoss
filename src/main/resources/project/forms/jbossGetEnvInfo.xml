@@ -20,15 +20,15 @@
             <value>systemDump</value>
         </option>
         <option>
-            <name>profiles</name>
+            <name>Profiles</name>
             <value>profiles</value>
         </option>
         <option>
-            <name>data sources</name>
+            <name>Data Sources</name>
             <value>dataSources</value>
         </option>
         <option>
-            <name>xa data sources</name>
+            <name>XA Data Sources</name>
             <value>xaDataSources</value>
         </option>
     </formElement>
