@@ -14,6 +14,20 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
     @Shared
     String defaultProfile = 'full'
     @Shared
+    def jndiName = [
+            /**
+             * Required
+             */
+            empty: '',
+            mysql: 'java:/MysqlXADS',
+            postgresql: 'java:/PostgresXADS',
+            oracle: 'java:/XAOracleDS',
+            sqlserver: 'java:/MSSQLXADS',
+            ibmdb2: 'java:/DB2XADS',
+            sybase: 'java:/SybaseXADS',
+            mariadb: 'java:jboss/MariaDBXADS'
+    ]
+    @Shared
     def link = [
             /**
              * Required
@@ -57,7 +71,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
+        // deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -104,11 +118,34 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         createDir(path)
         downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
         downloadArtifact(xml.mysql, path+"/module.xml")
-        if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
-            addModuleXADatasource(defaultProfile, jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
+        // if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
+        //     addModuleXADatasource(defaultProfile, jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
+        // }
+        def dataSourceName = runParams.dataSourceName
+        addXADatasource(defaultProfile, dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource')
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been removed successfully"
+        checkCreateXADataSource(dataSourceName, defaultProfile)
+
+    }
+
+    void checkCreateXADataSource(String nameDatasource, String profile) {
+        try {
+            print("QA ED")
+            def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getXADatasourceInfoDomain(nameDatasource, profile)) 
+        }
+        catch(Exception e) {
+            print("QA ED ================= $e")
         }
         
-        
+    }
+
+    void addXADatasource(String profile, String name, String jndiName, String driverName, String xaDatasourceClass){
+        runCliCommand(CliCommandsGeneratorHelper.addXADatasource(profile, name, jndiName, driverName, xaDatasourceClass))
     }
     
     void addModuleXADatasource(String profile, String driver, String DSclass){
