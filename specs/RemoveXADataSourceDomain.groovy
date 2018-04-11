@@ -47,7 +47,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
                 params  : [
                         profile      : '',
                         serverconfig : '',
-                        dataSourceName:    : '',
+                        dataSourceName:    '',
                 ]
         ]
 
@@ -92,6 +92,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
     @Unroll
     def "RemoveXADataSource, MySQL C289593"() {
         String testCaseId = "C278471"
+        String jdbcDriverName = "mysql"
         def runParams = [
                 profile          : defaultProfile,
                 serverconfig     : defaultConfigName,
@@ -103,6 +104,10 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         createDir(path)
         downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
         downloadArtifact(xml.mysql, path+"/module.xml")
+        if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
+            addModuleXADatasource(defaultProfile, jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
+        }
+        
         
     }
     
