@@ -5,6 +5,7 @@ def resName = args.resName
 def procNameDownloadArtifact = args.procNameDownloadArtifact
 def procNameCheckUrl = args.procNameCheckUrl
 def procNameMkdir = args.procNameMkdir
+def someShell = args.shell
 def procNameRunCustomCliCommand = args.procNameRunCustomCliCommand
 
 project projName, {

@@ -11,6 +11,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     static def helperProcedureDownloadArtifact = 'DownloadArtifact'
     static def helperProcedureCheckUrl = 'CheckUrl'
     static def helperProcedureMkdir = 'Mkdir'
+    static def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
     static def helperProcedureRunCustomCliCommand = "RunCustomCliCommand"
 
     def createDefaultConfiguration(String configName, props = [:]) {
