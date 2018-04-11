@@ -52,8 +52,11 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         def runParams = [
                 profile          : defaultProfile,
                 serverconfig     : defaultConfigName,
-                dataSourceName        : 'MysqlXADS',
-        ]  
+                dataSourceName   : 'MysqlXADS',
+        ]
+        setup:
+        
+    }
     
 
 
