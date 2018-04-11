@@ -4,7 +4,6 @@ import Utils.EnvPropertiesHelper
 import spock.lang.*
 import Utils.EnvPropertiesHelper
 
-@IngoreRest
 @IgnoreIf({ env.JBOSS_MODE == 'standalone' })
 class StopDomain extends PluginTestHelper {
 
