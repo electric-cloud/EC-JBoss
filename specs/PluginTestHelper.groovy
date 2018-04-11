@@ -14,6 +14,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     static def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
     static def helperProcedureRunCustomCliCommand = "RunCustomCliCommand"
 
+
     def createDefaultConfiguration(String configName, props = [:]) {
         String pluginName = "EC-JBoss"
 
@@ -272,6 +273,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 procNameCheckUrl: helperProcedureCheckUrl,
                 procNameMkdir: helperProcedureMkdir,
                 procNameRunCustomCliCommand: helperProcedureRunCustomCliCommand, 
+                shell: shell
         ]
     }
 
@@ -343,7 +345,6 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     def createDir(dirName) {
-        def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
         def result = dsl """
             runProcedure(
                 projectName: '$helperProjName',

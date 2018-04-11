@@ -8,6 +8,7 @@ def procNameMkdir = args.procNameMkdir
 def someShell = args.shell
 def procNameRunCustomCliCommand = args.procNameRunCustomCliCommand
 
+
 project projName, {
 
     procedure procNameDownloadArtifact, {
@@ -94,10 +95,11 @@ else {
     }
 
     procedure procNameMkdir, {
+        shell = someShell
          resourceName = resName
           step procNameMkdir , {
            command = 'mkdir "\$[directory]"'
-           shell = 'bash'
+
            }
           formalParameter 'directory', defaultValue: '', {
           type = 'entry'

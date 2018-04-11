@@ -134,6 +134,34 @@ my %removeJMSTopic = (
     category    => "Application Server"
 );
 
+my %createOrUpdateXADataSource = (
+    label       => "JBoss - Create or Update XA Data Source",
+    procedure   => "CreateOrUpdateXADataSource",
+    description => "Create or update XA data source",
+    category    => "Application Server"
+);
+
+my %removeXADataSource = (
+    label       => "JBoss - Remove XA Data Source",
+    procedure   => "RemoveXADataSource",
+    description => "Remove XA data source",
+    category    => "Application Server"
+);
+
+my %stopDomain = (
+    label       => "JBoss - Stop Domain",
+    procedure   => "StopDomain",
+    description => "Stop all servers within domain with specified timeout and if 'All Controllers Shutdown' option is chosen then perform shutdown of all controllers one by one with specified timeout (shutdown of a master host controller to be performed on final stage)",
+    category    => "Application Server"
+);
+
+my %getEnvInfo = (
+    label       => "JBoss - Get Environment Information",
+    procedure   => "GetEnvInfo",
+    description => "Get environment information",
+    category    => "Application Server"
+);
+
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
@@ -158,6 +186,10 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Up
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update JMS Topic");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS Queue");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS Topic");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update XA Data Source");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove XA Data Source");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Stop Domain");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Get Environment Information");
 
 
 @::createStepPickerSteps = (
@@ -181,7 +213,11 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove JMS T
     \%createOrUpdateJMSQueue,
     \%createOrUpdateJMSTopic,
     \%removeJMSQueue,
-    \%removeJMSTopic
+    \%removeJMSTopic,
+    \%createOrUpdateXADataSource,
+    \%removeXADataSource,
+    \%stopDomain,
+    \%getEnvInfo
 );
 
 
@@ -350,6 +386,26 @@ if ($upgradeAction eq "upgrade") {
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                     procedureName => 'RemoveJMSTopic',
                     stepName => 'RemoveJMSTopic'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'CreateOrUpdateXADataSource',
+                    stepName => 'CreateOrUpdateXADataSource'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'RemoveXADataSource',
+                    stepName => 'RemoveXADataSource'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'StopDomain',
+                    stepName => 'StopDomain'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'GetEnvInfo',
+                    stepName => 'GetEnvInfo'
                 });
         }
     }

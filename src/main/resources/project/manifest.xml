@@ -121,6 +121,22 @@
         <xpath>//procedure[procedureName=&quot;RemoveJMSTopic&quot;]/step[stepName=&quot;RemoveJMSTopic&quot;]/command</xpath>
     </file>
     <file>
+        <path>server/createOrUpdateXADataSource.pl</path>
+        <xpath>//procedure[procedureName=&quot;CreateOrUpdateXADataSource&quot;]/step[stepName=&quot;CreateOrUpdateXADataSource&quot;]/command</xpath>
+    </file>
+    <file>
+        <path>server/removeXADataSource.pl</path>
+        <xpath>//procedure[procedureName=&quot;RemoveXADataSource&quot;]/step[stepName=&quot;RemoveXADataSource&quot;]/command</xpath>
+    </file>
+    <file>
+        <path>server/stopDomain.pl</path>
+        <xpath>//procedure[procedureName=&quot;StopDomain&quot;]/step[stepName=&quot;StopDomain&quot;]/command</xpath>
+    </file>
+    <file>
+        <path>server/getEnvInfo.pl</path>
+        <xpath>//procedure[procedureName=&quot;GetEnvInfo&quot;]/step[stepName=&quot;GetEnvInfo&quot;]/command</xpath>
+    </file>
+    <file>
         <path>conf/createcfg.pl</path>
         <xpath>//procedure[procedureName=&quot;CreateConfiguration&quot;]/step[stepName=&quot;CreateConfiguration&quot;]/command</xpath>
     </file>
@@ -221,6 +237,22 @@
         <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;RemoveJMSTopic&quot;]/value</xpath>
     </file>
     <file>
+        <path>forms/jbossCreateOrUpdateXADataSource.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;CreateOrUpdateXADataSource&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossRemoveXADataSource.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;RemoveXADataSource&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossStopDomain.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;StopDomain&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossGetEnvInfo.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;GetEnvInfo&quot;]/value</xpath>
+    </file>
+    <file>
         <path>forms/jbossEnableDeployForm.xml</path>
         <xpath>//procedure[procedureName=&quot;EnableDeploy&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
     </file>
@@ -303,5 +335,21 @@
     <file>
         <path>forms/jbossRemoveJMSTopic.xml</path>
         <xpath>//procedure[procedureName=&quot;RemoveJMSTopic&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossCreateOrUpdateXADataSource.xml</path>
+        <xpath>//procedure[procedureName=&quot;CreateOrUpdateXADataSource&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossRemoveXADataSource.xml</path>
+        <xpath>//procedure[procedureName=&quot;RemoveXADataSource&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossStopDomain.xml</path>
+        <xpath>//procedure[procedureName=&quot;StopDomain&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossGetEnvInfo.xml</path>
+        <xpath>//procedure[procedureName=&quot;GetEnvInfo&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
     </file>
 </fileset>

@@ -21,7 +21,6 @@ sub main {
 
     my $params = $jboss->get_params_as_hashref(qw/
         queueName
-        jndiNames
         profile
         /);
 

@@ -1,0 +1,70 @@
+<editor>
+    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#CreateOrUpdateXADataSource</help>
+    <formElement>
+        <type>entry</type>
+        <label>Configuration name:</label>
+        <property>serverconfig</property>
+        <required>1</required>
+        <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <propertyReference>/plugins/@PLUGIN_NAME@/project/jboss_cfgs</propertyReference>
+        <htmlDocumentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Data Source Name:</label>
+        <property>dataSourceName</property>
+        <required>1</required>
+        <documentation>Name of the Data Source. This will also serve as the unique identifier for this resource. For example XAOracleDS</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>JNDI Name:</label>
+        <property>jndiName</property>
+        <required>1</required>
+        <documentation>JNDI Name of the Data Source. For example java:/XAOracleDS</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>JDBC Driver Name:</label>
+        <property>jdbcDriverName</property>
+        <required>1</required>
+        <documentation>Name of the JDBC Driver of the Database for which the XA Data source is created. For example oracle.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>XA Data Source Properties:</label>
+        <property>xaDataSourceProperties</property>
+        <required>1</required>
+        <documentation>A comma-separated list of XA data source properties in key=value pair format. Note that the key value pairs are database dependent and at a minimum should contain the Database connection information. For example: url=jdbc:oracle:oci8:@tc for an Oracle database; DatabaseName=mysqlDB,ServerName=localhost,PortNumber=3306 for a Mysql database.</documentation>
+    </formElement>
+    <formElement>
+        <type>credential</type>
+        <label>Data Source Connection Credentials:</label>
+        <property>dataSourceConnectionCredentials</property>
+        <required>1</required>
+        <documentation>Username and password used for the connection, that will be included as part of the step</documentation>
+    </formElement>
+    <formElement>
+        <type>checkbox</type>
+        <label>Enabled:</label>
+        <property>enabled</property>
+        <checkedValue>1</checkedValue>
+        <uncheckedValue>0</uncheckedValue>
+        <initiallyChecked>1</initiallyChecked>
+        <documentation>If the created XA Data Source should be enabled or not. Default is Y. Note that for an Update to go through it should be disabled prior.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Profile:</label>
+        <property>profile</property>
+        <required>0</required>
+        <documentation>Required for Domain, will be ignored for Standalone. Name of profile in Domain where XA data source should be created or updated (in case of need). For example: 'full', 'default'</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Additional Options:</label>
+        <property>additionalOptions</property>
+        <required>0</required>
+        <documentation>This is meant to pass additional options for both these use cases: 1. To override parameters which are defaulted (for example Interleaving, PadXID etc.). 2. Optional parameters which are not defaulted (for example min-pool-size, max-pool-size, --check-valid-connection-sql etc.)</documentation>
+    </formElement>
+</editor>
