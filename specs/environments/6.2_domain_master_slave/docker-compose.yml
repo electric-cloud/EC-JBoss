@@ -14,7 +14,6 @@ services:
   jboss:
     image: jboss-domain:v6.2
     environment:
-      - JBOSS_PASSWORD=changeme1!
       - JBOSS_MODE=domain
       - SLAVE_USERS=jbossslave1,jbossslave2
     ports:
