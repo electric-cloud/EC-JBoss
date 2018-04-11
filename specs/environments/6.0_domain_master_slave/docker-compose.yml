@@ -12,7 +12,7 @@ services:
     container_name: electricflow
     tty: true
   jboss:
-    image: jboss-domain:v6.0
+    image: electricflow/jboss6:v6.0
     environment:
       - JBOSS_MODE=domain
       - SLAVE_USERS=jbossslave1,jbossslave2
@@ -28,7 +28,7 @@ services:
     container_name: jboss6.0-master
     tty: true
   jboss-slave1: 
-    image: jboss-domain:v6.0
+    image: electricflow/jboss6:v6.0
     environment:
       - SLAVE_USER=jbossslave1
       - JBOSS_PASSWORD=changeme1!
