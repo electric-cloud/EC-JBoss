@@ -11,6 +11,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     static def helperProcedureDownloadArtifact = 'DownloadArtifact'
     static def helperProcedureCheckUrl = 'CheckUrl'
     static def helperProcedureMkdir = 'Mkdir'
+    static def helperProcedureRunCustomCliCommand = "RunCustomCliCommand"
 
     def createDefaultConfiguration(String configName, props = [:]) {
         String pluginName = "EC-JBoss"
@@ -34,10 +35,13 @@ class PluginTestHelper extends PluginSpockTestSupport {
         )
     }
 
-    def createJBossResource() {
+    def createJBossResource(def mode='master') {
         def hostname = EnvPropertiesHelper.getResourceHostname()
         def port = EnvPropertiesHelper.getResourcePort()
-
+        if (mode == 'slave') {
+            hostname = EnvPropertiesHelper.getResourceSlaveHostname()
+            port = EnvPropertiesHelper.getResourcePortSlave()
+        } 
         def resources = dsl "getResources()"
         logger.debug(objectToJson(resources))
 
@@ -265,7 +269,8 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 resName: resName,
                 procNameDownloadArtifact: helperProcedureDownloadArtifact,
                 procNameCheckUrl: helperProcedureCheckUrl,
-                procNameMkdir: helperProcedureMkdir
+                procNameMkdir: helperProcedureMkdir,
+                procNameRunCustomCliCommand: helperProcedureRunCustomCliCommand, 
         ]
     }
 
@@ -305,6 +310,15 @@ class PluginTestHelper extends PluginSpockTestSupport {
             throw new Exception("Run CLI Command failed");
         }
 
+        return runProcedureJob
+    }
+
+    RunProcedureJob runCliCommandAnyResult(String command) {
+        def runParams = [
+                customCommand: command
+        ]
+
+        RunProcedureJob runProcedureJob = runProcedureDsl(helperProjName, helperProcedureRunCustomCommand, runParams)
         return runProcedureJob
     }
 
@@ -360,6 +374,28 @@ class PluginTestHelper extends PluginSpockTestSupport {
             jobCompleted res
         }
         return jobStatus(res.jobId).outcome == 'success'
+    }
+
+    def runCustomCliCommand(command, res='') {
+        def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
+        // def resLine = ''
+        // if (res != 'default')
+        //     resLine = '\nresourceName: $res,'
+        def result = dsl """
+            runProcedure(
+                projectName: '$helperProjName',
+                procedureName: '$helperProcedureRunCustomCliCommand',
+                actualParameter: [
+                    cli_command: '$command',
+                    stepRes:     '$res'
+                ]
+            )
+        """
+
+        assert result.jobId
+        waitUntil {
+            jobCompleted result.jobId
+        }
     }
 
     def checkVersionApplication(String url, String version){ //for parse web page

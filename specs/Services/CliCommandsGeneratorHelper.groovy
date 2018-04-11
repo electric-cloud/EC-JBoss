@@ -67,6 +67,15 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String getServerAutoStartInDomain(ServerHelper server) {
+        return getServerAutoStartInDomain(server.getServerName(), server.getHostName());
+    }
+
+    static String getServerAutoStartInDomain(String serverName, String hostName) {
+        String command = "/host=$hostName/server-config=$serverName/:read-attribute(name=auto-start)"
+        return command
+    }
+
     static String getDeploymentRuntimeName(String appName) {
         String command = "/deployment=$appName/:read-attribute(name=runtime-name)"
         return command
@@ -236,6 +245,11 @@ class CliCommandsGeneratorHelper {
     static String addModuleXADatasource(String profile, String driver, String DSclass){
         String domain = (driver == 'mysql' ? 'com' : 'org')
         String command = "/profile=$profile/subsystem=datasources/jdbc-driver=$driver:add(driver-name=$driver,driver-module-name=$domain.$driver,driver-xa-datasource-class-name=$DSclass)"
+        return command
+    }
+
+    static String getHostStatus(String hostName){
+        String command = "/host=$hostName/:read-attribute(name=host-state)"
         return command
     }
 
