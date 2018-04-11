@@ -1,0 +1,51 @@
+version: '3'
+services:
+  electric-flow:
+    image: "ecdocker/eflow-ce-server"
+    ports:
+      - "8000:8000"
+      - "8443:8443"
+      - "443:443"
+      - "80:80"
+    networks:
+      - internal
+    container_name: electricflow
+    tty: true
+  jboss:
+    image: jboss-domain:v6.3
+    environment:
+      - JBOSS_PASSWORD=changeme1!
+      - JBOSS_MODE=domain
+      - SLAVE_USERS=jbossslave1,jbossslave2
+    ports:
+      - "7808:7808"
+      - "8080:8080"
+      - "9990:9990"
+      - "9999:9999"
+      - "8230:8230"
+      - "8330:8330"
+    networks:
+      - internal
+    container_name: jboss6.3-master
+    tty: true
+  jboss-slave1: 
+    image: jboss-domain:v6.3
+    environment:
+      - SLAVE_USER=jbossslave1
+      - JBOSS_PASSWORD=changeme1!
+      - JBOSS_MODE=slave
+      - HOST_CONFIG=host-slave.xml
+    ports:
+      - "7807:7808"
+      - "8079:8080"
+      - "9989:9990"
+      - "9998:9999"
+      - "8229:8230"
+      - "8329:8330"
+    networks:
+      - internal
+    container_name: jboss6.3-slave1
+    tty: true
+networks:
+  internal:
+    driver: bridge
