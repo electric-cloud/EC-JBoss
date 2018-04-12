@@ -25,7 +25,8 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
             sqlserver: 'java:/MSSQLXADS',
             ibmdb2: 'java:/DB2XADS',
             sybase: 'java:/SybaseXADS',
-            mariadb: 'java:jboss/MariaDBXADS'
+            mariadb: 'java:jboss/MariaDBXADS',
+            h2: 'java:/H2XADS'
     ]
     @Shared
     def link = [
@@ -71,7 +72,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        // deleteProject(projectName)
+        deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -118,9 +119,9 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         createDir(path)
         downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
         downloadArtifact(xml.mysql, path+"/module.xml")
-        // if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
-        //     addModuleXADatasource(defaultProfile, jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
-        // }
+        if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
+            addModuleXADatasource(defaultProfile, jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
+        }
         def dataSourceName = runParams.dataSourceName
         addXADatasource(defaultProfile, dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource')
         when:
@@ -130,9 +131,12 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been removed successfully"
         assert getListOfXADataSource(defaultProfile) == null
+
+        cleanup:
+        restartServer('master')
+        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "mysql"))
     }
 
-    @IgnoreRest
     @Unroll
     def "RemoveXADataSource, PostgreSQL C289594"() {
         String testCaseId = "C289594"
@@ -164,6 +168,102 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "postgresql"))
     }
 
+    @Unroll
+    def "RemoveXADataSource, H2 C290242"() {
+        String testCaseId = "C290242"
+        String jdbcDriverName = "h2"
+        def runParams = [
+                profile          : defaultProfile,
+                serverconfig     : defaultConfigName,
+                dataSourceName   : 'H2XADS',
+        ]
+        setup:
+        def dataSourceName = runParams.dataSourceName
+        addXADatasource(defaultProfile, dataSourceName, jndiName.h2, jdbcDriverName, 'org.h2.jdbcx.JdbcDataSource')
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been removed successfully"
+        assert getListOfXADataSource(defaultProfile) == null
+
+        cleanup:
+        restartServer('master')
+    }
+
+    @Unroll
+    def "RemoveXADataSource, not existing 'Configuration name' C289610"() {
+        String testCaseId = "C289610"
+        String jdbcDriverName = "h2"
+        def runParams = [
+                profile          : defaultProfile,
+                serverconfig     : 'no_name',
+                dataSourceName   : 'H2XADS',
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Configuration no_name doesn't exist."
+        assert runProcedureJob.getLogs() =~ "Configuration no_name doesn't exist."
+    }
+
+    @Unroll
+    def "RemoveXADataSource, without 'Profile' C289609"() {
+        String testCaseId = "C289609"
+        String jdbcDriverName = "h2"
+        def runParams = [
+                profile          : '',
+                serverconfig     : defaultConfigName,
+                dataSourceName   : 'H2XADS',
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'profile' is not provided (parameter required for JBoss domain)"
+        assert runProcedureJob.getLogs() =~ "Required parameter 'profile' is not provided (parameter required for JBoss domain)"
+    }
+
+    @Unroll
+    def "   RemoveXADataSource, not existing 'Data Source Name' C289611"() {
+        String testCaseId = "C289611"
+        String jdbcDriverName = "h2"
+        def runParams = [
+                profile          : defaultProfile,
+                serverconfig     : defaultConfigName,
+                dataSourceName   : 'no_name',
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        
+        then:
+        assert runProcedureJob.getStatus() == "warning"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source 'no_name' not found"
+        assert runProcedureJob.getLogs() =~ "XA data source 'no_name' not found"
+    }
+
+    // Bug P3 http://jira/browse/ECPAPPSERVERJBOSS-667
+    @Unroll
+    def "RemoveXADataSource, not existing 'full' C289612"() {
+        String testCaseId = "C289612"
+        String jdbcDriverName = "h2"
+        def runParams = [
+                profile          : 'not_full',
+                serverconfig     : defaultConfigName,
+                dataSourceName   : 'H2XADS',
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "profile 'not_full' not found"
+        assert runProcedureJob.getLogs() =~ "profile 'not_full' not found"
+    }
 
     String getListOfXADataSource(String profile) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getListOfXADatasourceInDomain(profile)).result."xa-data-source"
