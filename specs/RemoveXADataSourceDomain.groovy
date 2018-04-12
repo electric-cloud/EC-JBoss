@@ -160,7 +160,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         assert getListOfXADataSource(defaultProfile) == null
 
         cleanup:
-        
+        restartServer('master')
         runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "postgresql"))
     }
 
@@ -170,9 +170,21 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         return result
     }
 
-    void restartServer()
-        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.reloadHostDomain('master'))
-        
+    void restartServer(String host){
+        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.reloadHostDomain(host))
+        def cond = true
+        while(cond){
+            try {
+                sleep(3000)
+                if (runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getHostStatus(host)).result == 'running') {
+                    cond = false
+                }
+            }
+            catch (Exception e){
+                println e.getMessage()
+            }
+        }
+    }        
 
     void addXADatasource(String profile, String name, String jndiName, String driverName, String xaDatasourceClass){
         runCliCommand(CliCommandsGeneratorHelper.addXADatasource(profile, name, jndiName, driverName, xaDatasourceClass))
