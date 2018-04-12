@@ -105,7 +105,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
     
     @Unroll
     def "RemoveXADataSource, MySQL C289593"() {
-        String testCaseId = "C278471"
+        String testCaseId = "C289593"
         String jdbcDriverName = "mysql"
         def runParams = [
                 profile          : defaultProfile,
@@ -129,20 +129,50 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been removed successfully"
-        checkCreateXADataSource(dataSourceName, defaultProfile)
-
+        assert getListOfXADataSource(defaultProfile) == null
     }
 
-    void checkCreateXADataSource(String nameDatasource, String profile) {
-        try {
-            print("QA ED")
-            def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getXADatasourceInfoDomain(nameDatasource, profile)) 
-        }
-        catch(Exception e) {
-            print("QA ED ================= $e")
-        }
+    @IgnoreRest
+    @Unroll
+    def "RemoveXADataSource, PostgreSQL C289594"() {
+        String testCaseId = "C289594"
+        String jdbcDriverName = "postgresql"
+        def runParams = [
+                profile          : defaultProfile,
+                serverconfig     : defaultConfigName,
+                dataSourceName   : 'PostgresXADS',
+        ]
+        setup:
+        String path = getPathToMain("postgresql", "org")
+        createDir(getPath("postgresql", "org"))
+        createDir(path)
+        downloadArtifact(link.postgresql, path+"/postgresql-42.2.2.jar")
+        downloadArtifact(xml.postgresql, path+"/module.xml")
+        addModuleXADatasource(defaultProfile, jdbcDriverName, "org.postgresql.xa.PGXADataSource")
+        def dataSourceName = runParams.dataSourceName
+        addXADatasource(defaultProfile, dataSourceName, jndiName.postgresql, jdbcDriverName, 'org.postgresql.xa.PGXADataSource')
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
         
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been removed successfully"
+        assert getListOfXADataSource(defaultProfile) == null
+
+        cleanup:
+        
+        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "postgresql"))
     }
+
+
+    String getListOfXADataSource(String profile) {
+        def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getListOfXADatasourceInDomain(profile)).result."xa-data-source"
+        return result
+    }
+
+    void restartServer()
+        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.reloadHostDomain('master'))
+        
 
     void addXADatasource(String profile, String name, String jndiName, String driverName, String xaDatasourceClass){
         runCliCommand(CliCommandsGeneratorHelper.addXADatasource(profile, name, jndiName, driverName, xaDatasourceClass))
