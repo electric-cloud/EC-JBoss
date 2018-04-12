@@ -516,7 +516,6 @@ sub get_xa_data_source_password_standalone {
 sub escape_additional_options {
     my $additional_options = shift || croak "required param is not provided (additional_options)";
 
-    $additional_options =~ s|\\|\\\\|;
     $additional_options =~ s|"|\"|gs;
 
     return $additional_options;
