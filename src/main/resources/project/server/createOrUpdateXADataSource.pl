@@ -269,7 +269,7 @@ sub main {
             $command_add_xa_data_source .= qq| --enabled=false |;
         }
         if ($param_additional_options) {
-            my $escaped_additional_options = $jboss->escape_string($param_additional_options);
+            my $escaped_additional_options = escape_additional_options($param_additional_options);
             $command_add_xa_data_source .= qq/ $escaped_additional_options /;
         }
         push @commands, $command_add_xa_data_source;
@@ -511,4 +511,13 @@ sub get_xa_data_source_password_standalone {
         attribute_name => $attribute_name
     );
     return $attribute_value;
+}
+
+sub escape_additional_options {
+    my $additional_options = shift || croak "required param is not provided (additional_options)";
+
+    $additional_options =~ s|\\|\\\\|;
+    $additional_options =~ s|"|\"|gs;
+
+    return $additional_options;
 }
