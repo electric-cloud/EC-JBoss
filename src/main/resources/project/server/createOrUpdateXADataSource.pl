@@ -262,6 +262,12 @@ sub main {
         if ($param_password) {
             $command_add_xa_data_source .= qq| --password=$param_password |;
         }
+        if ($param_enabled) {
+            $command_add_xa_data_source .= qq| --enabled=true |;
+        }
+        else {
+            $command_add_xa_data_source .= qq| --enabled=false |;
+        }
         if ($param_additional_options) {
             my $escaped_additional_options = $jboss->escape_string($param_additional_options);
             $command_add_xa_data_source .= qq/ $escaped_additional_options /;
