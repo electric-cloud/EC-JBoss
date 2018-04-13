@@ -26,6 +26,7 @@ use Data::Dumper;
 use IPC::Open3;
 use Symbol qw/gensym/;
 use IO::Select;
+use Storable 'dclone';
 
 our $VERSION = 0.02;
 
@@ -334,10 +335,26 @@ sub run_command {
         }
     }
     # end of check
-    unshift @{$self->{history}}, {
-        command     =>  $self->safe_command($command),
-        result      =>  $result,
-    };
+
+    if ($self->{hide_password}) {
+        my $command_with_password_hidden = $command;
+        $command_with_password_hidden = replace_password_by_stars($command_with_password_hidden);
+        my $result_with_password_hidden = dclone $result;
+        $result_with_password_hidden->{stdout} = replace_password_by_stars($result_with_password_hidden->{stdout});
+        $result_with_password_hidden->{stderr} = replace_password_by_stars($result_with_password_hidden->{stderr});
+
+        unshift @{$self->{history}}, {
+                command     =>  $command_with_password_hidden,
+                result      =>  $result_with_password_hidden,
+            };
+    }
+    else {
+        unshift @{$self->{history}}, {
+                command     =>  $self->safe_command($command),
+                result      =>  $result,
+            };
+    }
+
 
     if (wantarray) {
         return %$result;
@@ -920,6 +937,11 @@ sub logit {
     return 0 if ($self->{log_level} < $level);
 
     my $msg = join '', @msg;
+
+    if ($self->{hide_password}) {
+        $msg = replace_password_by_stars($msg);
+    }
+
     $msg =~ s/\n$//gs;
     $msg .= "\n";
     print $msg;
@@ -1523,6 +1545,16 @@ sub do_we_have_error_on_interact_support {
     }
     $self->log_debug("We don't have --error-on-interact support");
     return 0;
+}
+
+sub replace_password_by_stars {
+    my $string = shift;
+    return $string unless $string;
+    $string =~ s/password=.*?\s/password=*** /gs;
+    $string =~ s/"password" => ".*?"/"password" => "***"/gs;
+    $string =~ s/"password":".*?"/"password":"***"/gs;
+    $string =~ s/\/:write-attribute\(name=password,value=.*?\)/\/:write-attribute\(name=password,value=***\)/gs;
+    return $string;
 }
 
 1;
