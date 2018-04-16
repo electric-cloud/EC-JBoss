@@ -19,6 +19,8 @@ sub main {
         no_cli_path_in_procedure_params => 1
     );
 
+    $jboss->{hide_password} = 1;
+
     my $params = $jboss->get_params_as_hashref(qw/
         dataSourceName
         jndiName
@@ -111,34 +113,18 @@ sub main {
         ########
         $jboss->log_info("XA data source '$param_data_source_name' exists");
 
-        my $existing_jndi_name;
-        my $existing_user_name;
-        my $existing_password;
+        $cli_command = "$profile_prefix/subsystem=datasources/xa-data-source=$param_data_source_name/:read-resource(recursive=false)";
+        my $xa_data_source_resource = run_command_and_get_json_result_with_exiting_on_non_success(
+            command => $cli_command,
+            jboss   => $jboss
+        );
 
-        if ($jboss_is_domain) {
-            $existing_jndi_name = get_xa_data_source_jndi_name_domain(jboss => $jboss, profile => $param_profile,
-                data_source                                                 => $param_data_source_name);
-            $existing_user_name = get_xa_data_source_user_name_domain(jboss => $jboss, profile => $param_profile,
-                data_source                                                 => $param_data_source_name);
-            $jboss->{silent} = 1;
-            $existing_password = get_xa_data_source_password_domain(jboss => $jboss, profile => $param_profile,
-                data_source                                               => $param_data_source_name);
-            $jboss->{silent} = 0;
-        }
-        else {
-            $existing_jndi_name = get_xa_data_source_jndi_name_standalone(jboss => $jboss, data_source =>
-                $param_data_source_name);
-            $existing_user_name = get_xa_data_source_user_name_standalone(jboss => $jboss, data_source =>
-                $param_data_source_name);
-            $jboss->{silent} = 1;
-            $existing_password = get_xa_data_source_password_standalone(jboss => $jboss, data_source =>
-                $param_data_source_name);
-            $jboss->{silent} = 0;
-        }
+        my $existing_jndi_name = $xa_data_source_resource->{'jndi-name'};
+        my $existing_user_name = $xa_data_source_resource->{'user-name'};
+        my $existing_password = $xa_data_source_resource->{'password'};
 
         my @updated_items;
         my @update_responses;
-        my $recent_jboss_response_where_reload_or_restat_required;
 
         if ($existing_jndi_name ne $param_jndi_name) {
             ########
@@ -262,8 +248,14 @@ sub main {
         if ($param_password) {
             $command_add_xa_data_source .= qq| --password=$param_password |;
         }
+        if ($param_enabled) {
+            $command_add_xa_data_source .= qq| --enabled=true |;
+        }
+        else {
+            $command_add_xa_data_source .= qq| --enabled=false |;
+        }
         if ($param_additional_options) {
-            my $escaped_additional_options = $jboss->escape_string($param_additional_options);
+            my $escaped_additional_options = escape_additional_options($param_additional_options);
             $command_add_xa_data_source .= qq/ $escaped_additional_options /;
         }
         push @commands, $command_add_xa_data_source;
@@ -401,108 +393,11 @@ sub get_all_xa_data_sources_standalone {
     return $json_result;
 }
 
-sub get_xa_data_source_attribute {
-    my %args = @_;
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $profile = $args{profile};
-    my $data_source = $args{data_source} || croak "'data_source' is required param";
-    my $attribute_name = $args{attribute_name} || croak "'attribute_name' is required param";
+sub escape_additional_options {
+    my $additional_options = shift || croak "required param is not provided (additional_options)";
 
-    my $profile_prefix = "/profile=$profile" if $profile;
-    my $cli_command = "$profile_prefix/subsystem=datasources/xa-data-source=$data_source/:read-attribute(name=$attribute_name)";
-    my $json_result = run_command_and_get_json_result_with_exiting_on_non_success(
-        command => $cli_command,
-        jboss   => $jboss
-    );
-    return $json_result;
-}
+    $additional_options =~ s|\\|\\\\|;
+    $additional_options =~ s|"|\"|gs;
 
-sub get_xa_data_source_jndi_name_domain {
-    my %args = @_;
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $profile = $args{profile} || croak "'profile' is required param";
-    my $data_source = $args{data_source} || croak "'data_source' is required param";
-
-    my $attribute_name = "jndi-name";
-    my $attribute_value = get_xa_data_source_attribute(
-        jboss          => $jboss,
-        profile        => $profile,
-        data_source    => $data_source,
-        attribute_name => $attribute_name
-    );
-    return $attribute_value;
-}
-
-sub get_xa_data_source_jndi_name_standalone {
-    my %args = @_;
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $data_source = $args{data_source} || croak "'data_source' is required param";
-
-    my $attribute_name = "jndi-name";
-    my $attribute_value = get_xa_data_source_attribute(
-        jboss          => $jboss,
-        data_source    => $data_source,
-        attribute_name => $attribute_name
-    );
-    return $attribute_value;
-}
-
-sub get_xa_data_source_user_name_domain {
-    my %args = @_;
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $profile = $args{profile} || croak "'profile' is required param";
-    my $data_source = $args{data_source} || croak "'data_source' is required param";
-
-    my $attribute_name = "user-name";
-    my $attribute_value = get_xa_data_source_attribute(
-        jboss          => $jboss,
-        profile        => $profile,
-        data_source    => $data_source,
-        attribute_name => $attribute_name
-    );
-    return $attribute_value;
-}
-
-sub get_xa_data_source_user_name_standalone {
-    my %args = @_;
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $data_source = $args{data_source} || croak "'data_source' is required param";
-
-    my $attribute_name = "user-name";
-    my $attribute_value = get_xa_data_source_attribute(
-        jboss          => $jboss,
-        data_source    => $data_source,
-        attribute_name => $attribute_name
-    );
-    return $attribute_value;
-}
-
-sub get_xa_data_source_password_domain {
-    my %args = @_;
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $profile = $args{profile} || croak "'profile' is required param";
-    my $data_source = $args{data_source} || croak "'data_source' is required param";
-
-    my $attribute_name = "password";
-    my $attribute_value = get_xa_data_source_attribute(
-        jboss          => $jboss,
-        profile        => $profile,
-        data_source    => $data_source,
-        attribute_name => $attribute_name
-    );
-    return $attribute_value;
-}
-
-sub get_xa_data_source_password_standalone {
-    my %args = @_;
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $data_source = $args{data_source} || croak "'data_source' is required param";
-
-    my $attribute_name = "password";
-    my $attribute_value = get_xa_data_source_attribute(
-        jboss          => $jboss,
-        data_source    => $data_source,
-        attribute_name => $attribute_name
-    );
-    return $attribute_value;
+    return $additional_options;
 }

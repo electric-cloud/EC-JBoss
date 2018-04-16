@@ -19,6 +19,8 @@ sub main {
         no_cli_path_in_procedure_params => 1
     );
 
+    $jboss->{hide_password} = 1;
+
     my $params = $jboss->get_params_as_hashref(qw/
         informationType
         informationTypeContext
@@ -117,6 +119,7 @@ sub main {
             $env_info = $result{stdout};
         }
     }
+    $env_info = replace_passwords_by_stars_in_cli_response($env_info);
 
     $jboss->log_info("Requested Environment Information: $env_info");
     $jboss->set_property($property_path, $env_info);
@@ -195,4 +198,11 @@ sub get_all_profiles {
     );
 
     return $profiles;
+}
+
+sub replace_passwords_by_stars_in_cli_response {
+    my $string = shift;
+    return $string unless $string;
+    $string =~ s/"password" => ".*?"/"password" => "***"/gs;
+    return $string;
 }

@@ -237,6 +237,16 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String getListOfXADatasourceInDomain(String profile){
+        String command = "/profile=$profile/subsystem=datasources:read-resource"
+        return command
+    }
+
+    static String getListOfXADatasourceInStandalone(){
+        String command = "/subsystem=datasources:read-resource"
+        return command
+    }
+
     static String removeXADatasource(String nameDatasource){
         String command = "xa-data-source remove --name=$nameDatasource"
         return command
@@ -248,9 +258,41 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+
+    static String addModuleXADatasourceStandalone(String driver, String DSclass){
+        String domain = (driver == 'mysql' ? 'com' : 'org')
+        String command = "/subsystem=datasources/jdbc-driver=$driver:add(driver-name=$driver,driver-module-name=$domain.$driver,driver-xa-datasource-class-name=$DSclass)"
+        return command
+    }
+
+    static String addXADatasource(String profile, String name, String jndiName, String driverName, String xaDatasourceClass){
+        String command = "xa-data-source add --profile=$profile --name=$name --jndi-name=\"$jndiName\" --driver-name=\"$driverName\" --xa-datasource-class=$xaDatasourceClass --xa-datasource-properties={\"ServerName\"=>\"localhost\",\"DatabaseName\"=>\"test\",\"PortNumber\"=>\"3306\",\"DriverType\"=>\"4\"}"
+        return command
+    }
+
+    static String addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass){
+        String command = "xa-data-source add --name=$name --jndi-name=\"$jndiName\" --driver-name=\"$driverName\" --xa-datasource-class=$xaDatasourceClass --xa-datasource-properties={\"ServerName\"=>\"localhost\",\"DatabaseName\"=>\"test\",\"PortNumber\"=>\"3306\",\"DriverType\"=>\"4\"}"
+        return command
+    }
+
+    static String deleteJDBCDriverInDomain(String profile, String driver){
+        String command = "/profile=$profile/subsystem=datasources/jdbc-driver=$driver:remove"
+        return command
+    }
+
+    static String deleteJDBCDriverInStandalone(String driver){
+        String command = "/subsystem=datasources/jdbc-driver=$driver:remove"
+        return command
+    }
+
+
     static String getHostStatus(String hostName){
         String command = "/host=$hostName/:read-attribute(name=host-state)"
         return command
     }
 
+    static String getStandaloneStatus(){
+        String command = ":read-attribute(name=server-state)"
+        return command
+    }
 }

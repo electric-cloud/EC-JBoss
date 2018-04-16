@@ -14,6 +14,7 @@ services:
   jboss:
     image: electricflow/jboss6:v6.0
     environment:
+      - JBOSS_PASSWORD=changeme1!
       - JBOSS_MODE=domain
       - SLAVE_USERS=jbossslave1,jbossslave2
     ports:
