@@ -5,7 +5,6 @@ import Services.*
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-
 @IgnoreIf({ env.JBOSS_MODE == 'standalone' })
 class StartServers extends PluginTestHelper {
 
