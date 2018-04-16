@@ -289,12 +289,12 @@ class StopDomain extends PluginTestHelper {
     }
 
     def waitUntilServerIsUp(def serverName){
-        def cond = true
-        while(cond){
+        def isHostControllerRunning = true
+        while(isHostControllerRunning){
             try {
                 sleep(3000)
                 if (runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getHostStatus(serverName)).result == 'running') {
-                    cond = false
+                    isHostControllerRunning = false
                 }
             }
             catch (Exception e){
