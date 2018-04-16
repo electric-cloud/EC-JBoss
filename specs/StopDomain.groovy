@@ -168,8 +168,8 @@ class StopDomain extends PluginTestHelper {
         assert runCliCommandAnyResult(":read-attribute(name=launch-type)").getUpperStepSummary().contains(expectedStatus)
         cleanup:
         def jbossDomainPath = EnvPropertiesHelper.getJbossDomainPath();
-        runCustomCliCommand("nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &", resName)
-        runCustomCliCommand("nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &", resSlaveName)
+        runCustomShellCommand("nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &", resName)
+        runCustomShellCommand("nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &", resSlaveName)
         waitUntilServerIsUp('master')
         waitUntilServerIsUp('jbossslave1')
     }   
@@ -196,8 +196,8 @@ class StopDomain extends PluginTestHelper {
         assert runCliCommandAnyResult(":read-attribute(name=launch-type)").getUpperStepSummary().contains(expectedStatus)
         cleanup:
         def jbossDomainPath = EnvPropertiesHelper.getJbossDomainPath();
-        runCustomCliCommand("nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &", resName)
-        runCustomCliCommand("nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &", resSlaveName)
+        runCustomShellCommand("nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &", resName)
+        runCustomShellCommand("nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &", resSlaveName)
         waitUntilServerIsUp('master')
         waitUntilServerIsUp('jbossslave1')
     }   
@@ -256,8 +256,8 @@ class StopDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary().contains(expectedStatus)
         cleanup:
         def jbossDomainPath = EnvPropertiesHelper.getJbossDomainPath();
-        runCustomCliCommand("nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &", resName)
-        runCustomCliCommand("nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &", resSlaveName)
+        runCustomShellCommand("nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &", resName)
+        runCustomShellCommand("nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &", resSlaveName)
         waitUntilServerIsUp('master')
         waitUntilServerIsUp('jbossslave1')
     }   
@@ -282,8 +282,8 @@ class StopDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary().contains(expectedStatus)
         cleanup:
         def jbossDomainPath = EnvPropertiesHelper.getJbossDomainPath();
-        runCustomCliCommand("nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &", resName)
-        runCustomCliCommand("nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &", resSlaveName)
+        runCustomShellCommand("nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &", resName)
+        runCustomShellCommand("nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &", resSlaveName)
         waitUntilServerIsUp('master')
         waitUntilServerIsUp('jbossslave1')
     }

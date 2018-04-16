@@ -12,7 +12,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     static def helperProcedureCheckUrl = 'CheckUrl'
     static def helperProcedureMkdir = 'Mkdir'
     static def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
-    static def helperProcedureRunCustomCliCommand = "RunCustomCliCommand"
+    static def helperProcedurerunCustomShellCommand = "runCustomShellCommand"
 
 
     def createDefaultConfiguration(String configName, props = [:]) {
@@ -272,7 +272,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 procNameDownloadArtifact: helperProcedureDownloadArtifact,
                 procNameCheckUrl: helperProcedureCheckUrl,
                 procNameMkdir: helperProcedureMkdir,
-                procNameRunCustomCliCommand: helperProcedureRunCustomCliCommand, 
+                procNamerunCustomShellCommand: helperProcedurerunCustomShellCommand, 
                 shell: shell
         ]
     }
@@ -378,7 +378,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         return jobStatus(res.jobId).outcome == 'success'
     }
 
-    def runCustomCliCommand(command, res='') {
+    def runCustomShellCommand(command, res='') {
         def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
         // def resLine = ''
         // if (res != 'default')
@@ -386,7 +386,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         def result = dsl """
             runProcedure(
                 projectName: '$helperProjName',
-                procedureName: '$helperProcedureRunCustomCliCommand',
+                procedureName: '$helperProcedurerunCustomShellCommand',
                 actualParameter: [
                     cli_command: '$command',
                     stepRes:     '$res'
