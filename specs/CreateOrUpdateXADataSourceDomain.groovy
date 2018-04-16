@@ -2,7 +2,7 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-@IgnoreIf({ env.JBOSS_MODE == 'standalone' })
+@Requires({ env.JBOSS_TOPOLOGY == 'master' })
 @Stepwise
 class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
