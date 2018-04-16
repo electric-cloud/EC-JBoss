@@ -72,7 +72,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
+        // deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -224,8 +224,8 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'profile' is not provided (parameter required for JBoss domain)"
-        assert runProcedureJob.getLogs() =~ "Required parameter 'profile' is not provided (parameter required for JBoss domain)"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'profile' is not provided"
+        assert runProcedureJob.getLogs() =~ "Required parameter 'profile' is not provided"
     }
 
     @Unroll
@@ -261,8 +261,8 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "profile 'not_full' not found"
-        assert runProcedureJob.getLogs() =~ "profile 'not_full' not found"
+        assert runProcedureJob.getUpperStepSummary().contains("'[(\\\"profile\\\" => \\\"not_full\\\")]'")
+        assert runProcedureJob.getLogs().contains("'[(\\\"profile\\\" => \\\"not_full\\\")]'")
     }
 
     String getListOfXADataSource(String profile) {
