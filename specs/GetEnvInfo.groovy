@@ -32,10 +32,10 @@ class GetEnvInfo extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig      : '',
-                        scriptphysicalpath: '',
-                        serversgroup      : '',
-                        wait_time         : '',
+                        serverconfig          : '',
+                        informationType       : '',
+                        informationTypeContext: '',
+                        additionalOptions     : '',
                 ]
         ]
 
@@ -90,7 +90,6 @@ class GetEnvInfo extends PluginTestHelper {
                 additionalOptions     : ''
         ]
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-        def envInfo = getJobProperty('/myJob/jobSteps/GetEnvInfo/envInfo', runProcedureJob.getJobId())
 
         then:
         assert runProcedureJob.getStatus() == "error"
