@@ -344,17 +344,16 @@ sub run_command {
         $result_with_password_hidden->{stderr} = replace_password_by_stars($result_with_password_hidden->{stderr});
 
         unshift @{$self->{history}}, {
-                command     =>  $command_with_password_hidden,
-                result      =>  $result_with_password_hidden,
+                command => $command_with_password_hidden,
+                result  => $result_with_password_hidden,
             };
     }
     else {
         unshift @{$self->{history}}, {
-                command     =>  $self->safe_command($command),
-                result      =>  $result,
+                command => $self->safe_command($command),
+                result  => $result,
             };
     }
-
 
     if (wantarray) {
         return %$result;
