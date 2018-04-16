@@ -2,7 +2,7 @@ import Services.CliCommandsGeneratorHelper
 import spock.lang.*
 import Utils.EnvPropertiesHelper
 
-@IgnoreIf({ env.JBOSS_MODE == 'domain' })
+@Requires({ env.JBOSS_MODE == 'standalone' })
 class DeployAppStandalone extends PluginTestHelper {
 
     @Shared

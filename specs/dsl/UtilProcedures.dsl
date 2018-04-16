@@ -6,6 +6,8 @@ def procNameDownloadArtifact = args.procNameDownloadArtifact
 def procNameCheckUrl = args.procNameCheckUrl
 def procNameMkdir = args.procNameMkdir
 def someShell = args.shell
+def procNamerunCustomShellCommand = args.procNamerunCustomShellCommand
+
 
 project projName, {
 
@@ -104,5 +106,20 @@ else {
               }
                  }
 
+    procedure procNamerunCustomShellCommand, {
+        resourceName = resName
+        step procNamerunCustomShellCommand , {
+            resourceName = '\$[stepRes]'
+            command = '\$[cli_command]'
+            shell = 'bash'
+            }
+            formalParameter 'cli_command', defaultValue: '', {
+            type = 'entry'
+            }
+            formalParameter 'stepRes', defaultValue: '', {
+            type = 'entry'
+            }
+        }
+    
 
 }

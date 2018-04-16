@@ -17,6 +17,10 @@ class EnvPropertiesHelper {
         return System.getenv('JBOSS_CLI_PATH') ?: '/opt/jboss/bin/jboss-cli.sh'
     }
 
+    public static String getJbossDomainPath() {
+        return System.getenv('JBOSS_DOMAIN_PATH') ?: '/opt/jboss/bin/domain.sh'
+    }
+
     public static String getJbossLogLevel() {
         return System.getenv('JBOSS_LOG_LEVEL') ?: 'DEBUG'
     }
@@ -42,8 +46,16 @@ class EnvPropertiesHelper {
         return System.getenv('RESOURCE_HOSTNAME') ?: 'jboss'
     }
 
+    public static String getResourceSlaveHostname() {
+        return System.getenv('RESOURCE_SLAVE1_HOSTNAME') ?: 'jboss-slave1'
+    }
+
     public static String getResourcePort() {
         return System.getenv('RESOURCE_PORT') ?: 7808;
+    }
+
+    public static String getResourcePortSlave() {
+        return System.getenv('RESOURCE_PORT_SLAVE1') ?: 7808;
     }
 
     public static String getServerConfigStandalone() {

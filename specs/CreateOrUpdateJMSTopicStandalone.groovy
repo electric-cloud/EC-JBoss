@@ -2,7 +2,7 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-@IgnoreIf({ env.JBOSS_MODE == 'domain' })
+@Requires({ env.JBOSS_MODE == 'standalone' })
 class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     @Shared
