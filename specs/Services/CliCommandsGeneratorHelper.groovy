@@ -248,7 +248,7 @@ class CliCommandsGeneratorHelper {
     }
 
     static String removeXADatasource(String nameDatasource){
-        String command = "/subsystem=datasources/xa-data-source=$nameDatasource:remove"
+        String command = "xa-data-source remove --name=$nameDatasource"
         return command
     }
 
