@@ -4,7 +4,7 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-@Requires({ env.JBOSS_TOPOLOGY == 'master' })
+@Ignore
 class DeployAppDomain extends PluginTestHelper {
 
     @Shared

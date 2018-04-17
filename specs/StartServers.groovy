@@ -5,7 +5,7 @@ import Services.*
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-@Requires({ env.JBOSS_TOPOLOGY == 'master' })
+@Ignore
 class StartServers extends PluginTestHelper {
 
     @Shared

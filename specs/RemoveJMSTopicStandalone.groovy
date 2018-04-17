@@ -2,7 +2,7 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-@Requires({ env.JBOSS_MODE == 'standalone' })
+@Ignore
 class RemoveJMSTopicStandalone extends PluginTestHelper {
 
     @Shared
