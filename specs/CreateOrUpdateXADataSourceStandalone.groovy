@@ -3,7 +3,6 @@ import Utils.EnvPropertiesHelper
 import spock.lang.*
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
-@Stepwise
 class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Shared

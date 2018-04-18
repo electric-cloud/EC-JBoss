@@ -3,7 +3,6 @@ import Utils.EnvPropertiesHelper
 import spock.lang.*
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
-@Stepwise
 class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
     @Shared
@@ -370,7 +369,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         reloadServer('master')
         runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
-
+    @IgnoreRest
     @Unroll
     def "CreateorUpdateXADataSource, update JNDI Name and Password, MySQL (C289514)"() {
         String testCaseId = "C289514"
@@ -403,8 +402,8 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
 
         then:
-        assert runProcedureJob.getStatus() == "warning"
-        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new password."
+        assert runProcedureJob1.getStatus() == "warning"
+        assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new user name, password"
         checkCreateXADataSource(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName,
                 "1", newPassword, newUserName)
 
