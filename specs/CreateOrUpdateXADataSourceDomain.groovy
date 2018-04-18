@@ -575,7 +575,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
-        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, 'default', jndiName.mysql, jdbcDriverName, "1",
+        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "1",
                 'min-pool-size', 10,  defaultPassword, defaultUserName)
         cleanup:
         reloadServer('master')
@@ -640,7 +640,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.postgresql,
+                jndiName                        : jndiName.mysql,
                 profile                         : defaultProfile,
                 serverconfig                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.postgresql,
