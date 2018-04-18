@@ -197,8 +197,8 @@ sub main {
         # shutdown of slave host controllers
         foreach my $host (@all_slave_hosts) {
             $jboss->log_info("Starting shudown of slave host controller '$host'");
-            my $cli_shutdown_slave = "shutdown --host=$host";
-            $cli_shutdown_slave .= " --timeout=$param_timeout" if $param_timeout ne "";
+            my $cli_shutdown_slave = "/host=$host:shutdown";
+            $cli_shutdown_slave .= "(timeout=$param_timeout)" if $param_timeout ne "";
             run_command_with_exiting_on_error(command => $cli_shutdown_slave, jboss => $jboss);
             $summary .= "\nShutdown was performed for slave host controller '$host'";
             $jboss->log_info("Done with shudown of slave host controller '$host'");
@@ -223,8 +223,8 @@ sub main {
 
         # shutdown of master host controller
         $jboss->log_info("Starting shudown of master host controller '$master_host'");
-        my $cli_shutdown_master = "shutdown --host=$master_host";
-        $cli_shutdown_master .= " --timeout=$param_timeout" if $param_timeout ne "";
+        my $cli_shutdown_master = "/host=$master_host:shutdown";
+        $cli_shutdown_master .= "(timeout=$param_timeout)" if $param_timeout ne "";
         run_command_with_exiting_on_error(command => $cli_shutdown_master, jboss => $jboss);
         $summary .= "\nShutdown was performed for master host controller '$master_host'";
         $jboss->log_info("Done with shudown of master host controller '$master_host'");
