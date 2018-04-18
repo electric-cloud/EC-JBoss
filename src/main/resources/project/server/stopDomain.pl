@@ -55,6 +55,18 @@ sub main {
     }
 
     ########
+    # check whether timeout option is supported (supported in EAP 7 and later)
+    ########
+    if ($param_timeout ne "") {
+        my $version = $jboss->get_jboss_server_version();
+        my $product_version = $version->{product_version};
+        if ($product_version =~ m/^6/ ) {
+            $jboss->log_warning("Timeout for stop-servers and shutdown is not supported in JBoss EAP 6.X - ignoring it");
+            $param_timeout = "";
+        }
+    }
+
+    ########
     # get all host controller names
     ########
     my @all_hosts = @{ get_all_hosts(jboss => $jboss) };
@@ -185,8 +197,8 @@ sub main {
         # shutdown of slave host controllers
         foreach my $host (@all_slave_hosts) {
             $jboss->log_info("Starting shudown of slave host controller '$host'");
-            my $cli_shutdown_slave = "shutdown --host=$host";
-            $cli_shutdown_slave .= " --timeout=$param_timeout" if $param_timeout ne "";
+            my $cli_shutdown_slave = "/host=$host:shutdown";
+            $cli_shutdown_slave .= "(timeout=$param_timeout)" if $param_timeout ne "";
             run_command_with_exiting_on_error(command => $cli_shutdown_slave, jboss => $jboss);
             $summary .= "\nShutdown was performed for slave host controller '$host'";
             $jboss->log_info("Done with shudown of slave host controller '$host'");
@@ -211,8 +223,8 @@ sub main {
 
         # shutdown of master host controller
         $jboss->log_info("Starting shudown of master host controller '$master_host'");
-        my $cli_shutdown_master = "shutdown --host=$master_host";
-        $cli_shutdown_master .= " --timeout=$param_timeout" if $param_timeout ne "";
+        my $cli_shutdown_master = "/host=$master_host:shutdown";
+        $cli_shutdown_master .= "(timeout=$param_timeout)" if $param_timeout ne "";
         run_command_with_exiting_on_error(command => $cli_shutdown_master, jboss => $jboss);
         $summary .= "\nShutdown was performed for master host controller '$master_host'";
         $jboss->log_info("Done with shudown of master host controller '$master_host'");
