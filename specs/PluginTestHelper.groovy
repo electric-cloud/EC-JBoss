@@ -110,6 +110,22 @@ class PluginTestHelper extends PluginSpockTestSupport {
         logger.debug(objectToJson(credentialResult))
     }
 
+    def modifyCredential(String projectName, String credName, String userName, String password) {
+        def credentialResult = dsl """
+            modifyCredential(
+                projectName: '${projectName}',
+                credentialName: '${credName}',
+                userName: '${userName}',
+                password: '${password}',
+                description: '',
+                passwordRecoveryAllowed: 'true'
+            )
+        """
+
+        logger.debug(objectToJson(credentialResult))
+    }
+
+
     def attachCredential(String projectName, String credName, String procName) {
         def credentialResult = dsl """
             attachCredential(
