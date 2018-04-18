@@ -252,6 +252,11 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String removeXADatasource(String profile, String nameDatasource){
+        String command = "xa-data-source remove --profile=$profile --name=$nameDatasource"
+        return command
+    }
+
     static String addModuleXADatasource(String profile, String driver, String DSclass){
         String domain = (driver == 'mysql' ? 'com' : 'org')
         String command = "/profile=$profile/subsystem=datasources/jdbc-driver=$driver:add(driver-name=$driver,driver-module-name=$domain.$driver,driver-xa-datasource-class-name=$DSclass)"
