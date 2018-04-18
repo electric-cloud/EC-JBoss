@@ -49,3 +49,7 @@ services:
 networks:
   internal:
     driver: bridge
+    ipam:
+    driver: default    
+    config:
+      - subnet: 172.29.1.0/24
