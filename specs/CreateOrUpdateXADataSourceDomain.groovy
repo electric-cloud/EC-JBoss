@@ -369,7 +369,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         reloadServer('master')
         runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
-    @IgnoreRest
+
     @Unroll
     def "CreateorUpdateXADataSource, update JNDI Name and Password, MySQL (C289514)"() {
         String testCaseId = "C289514"
