@@ -55,6 +55,18 @@ sub main {
     }
 
     ########
+    # check whether timeout option is supported (supported in EAP 7 and later)
+    ########
+    if ($param_timeout ne "") {
+        my $version = $jboss->get_jboss_server_version();
+        my $product_version = $version->{product_version};
+        if ($product_version =~ m/^6/ ) {
+            $jboss->log_warning("Timeout for stop-servers and shutdown is not supported in JBoss EAP 6.X - ignoring it");
+            $param_timeout = "";
+        }
+    }
+
+    ########
     # get all host controller names
     ########
     my @all_hosts = @{ get_all_hosts(jboss => $jboss) };
