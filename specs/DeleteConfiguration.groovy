@@ -2,6 +2,7 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
+@Ignore
 class DeleteConfiguration extends PluginTestHelper {
 
     @Shared

@@ -2,6 +2,7 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
+@Ignore
 @Requires({ env.JBOSS_MODE == 'standalone' })
 class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
 
