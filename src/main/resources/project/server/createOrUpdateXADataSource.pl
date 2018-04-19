@@ -205,9 +205,7 @@ sub main {
             my $unique_update_responses_str = join("\n", @unique_update_responses);
 
             foreach my $response (@unique_update_responses) {
-                if ($response
-                    && ($response =~ m/"process-state"\s=>\s"reload-required"/gs
-                    || $response =~ m/"process-state"\s=>\s"restart-required"/gs)) {
+                if ($response && is_reload_or_restart_required($response)) {
                     $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
                     $jboss->warning();
                     last;
@@ -266,11 +264,7 @@ sub main {
         }
         else {
             $summary = "XA data source '$param_data_source_name' has been added successfully";
-            if ($result{stdout}
-                && ($result{stdout} =~ m/process-state:\sreload-required/gs
-                || $result{stdout} =~ m/process-state:\srestart-required/gs
-                || $result{stdout} =~ m/"process-state"\s=>\s"reload-required"/gs
-                || $result{stdout} =~ m/"process-state"\s=>\s"restart-required"/gs)) {
+            if ($result{stdout} && is_reload_or_restart_required($result{stdout})) {
                 $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
                 $jboss->warning();
                 $summary .= "\nJBoss reply: " . $result{stdout};
@@ -374,4 +368,14 @@ sub escape_additional_options {
     $additional_options =~ s|"|\"|gs;
 
     return $additional_options;
+}
+
+sub is_reload_or_restart_required {
+    my $jboss_output = shift;
+    croak "required param is not provided (jboss_output)" unless defined $jboss_output;
+    if ($jboss_output =~ m/process-state:\s(reload|restart)-required/gs
+        || $jboss_output =~ m/"process-state"\s=>\s"(reload|restart)-required"/gs) {
+        return 1;
+    }
+    return 0;
 }
