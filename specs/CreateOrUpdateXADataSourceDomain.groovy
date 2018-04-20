@@ -64,13 +64,13 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
              * Required
              */
             empty: '',
-            mysql: 'DatabaseName=mysqlDB,ServerName=localhost,Port=3306',
-            postgresql: 'DatabaseName=postgresdb,ServerName=servername,Port=5432',
-            oracle: 'url=jdbc:oracle:oci8:@tc',
-            sqlserver: 'DatabaseName=mssqldb,ServerName=localhost,SelectMethod=cursor',
-            ibmdb2: 'DatabaseName=ibmdb2db,ServerName=localhost,PortNumber=446',
-            sybase: 'DatabaseName=mydatabase,ServerName=localhost,PortNumber=4100,NetworkProtocol=Tds',
-            mariadb: 'DatabaseName=mariadbdb,ServerName=localhost'
+            mysql: '"DatabaseName"=>"mysqlDB","ServerName"=>"localhost","Port"=>"3306"',
+            postgresql: '"DatabaseName"=>"postgresdb","ServerName"=>"servername","Port=>5432"'
+            // oracle: 'url=jdbc:oracle:oci8:@tc',
+            // sqlserver: 'DatabaseName=mssqldb,ServerName=localhost,SelectMethod=cursor',
+            // ibmdb2: 'DatabaseName=ibmdb2db,ServerName=localhost,PortNumber=446',
+            // sybase: 'DatabaseName=mydatabase,ServerName=localhost,PortNumber=4100,NetworkProtocol=Tds',
+            // mariadb: 'DatabaseName=mariadbdb,ServerName=localhost'
     ]
 
     @Shared
@@ -1197,9 +1197,9 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
     void checkXADataSourceProperties(def properties, def xaDataSourceName, def profile){
         properties.split(',').each {
-            def property = it.split("=")
-            def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getXADatasourceProperties(property[0], xaDataSourceName, profile)).result
-            assert property[1] == result.toString()
+            def property = it.split("=>")
+            def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getXADatasourceProperties(property[0][1..-2], xaDataSourceName, profile)).result
+            assert property[1][1..-2] == result.toString()
         }
     }
 
