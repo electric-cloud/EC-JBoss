@@ -118,7 +118,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
+        // deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -1026,7 +1026,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "The batch failed with the following error \\(you are remaining in the batch editing mode to have a chance to correct the error\\)"
+        assert runProcedureJob.getUpperStepSummary() =~ " Composite operation failed and was rolled back. Steps that failed"
     }
 
     @Unroll
@@ -1054,7 +1054,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "The batch failed with the following error \\(you are remaining in the batch editing mode to have a chance to correct the error\\)"
+        assert runProcedureJob.getUpperStepSummary() =~ "Jndi name have to start with java:/ or java:jboss/"
     }
 
     @Unroll
@@ -1082,7 +1082,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "The batch failed with the following error \\(you are remaining in the batch editing mode to have a chance to correct the error\\)"
+        assert runProcedureJob.getUpperStepSummary().contains('is missing [jboss.jdbc-driver.wrong_driver]')
     }
 
     @Unroll
@@ -1142,7 +1142,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob1.getStatus() == "error"
-        assert runProcedureJob1.getUpperStepSummary() =~ "The batch failed with the following error \\(you are remaining in the batch editing mode to have a chance to correct the error\\)"
+        assert runProcedureJob1.getUpperStepSummary() =~ "WFLYJCA0071: Jndi name have to start with java:/ or java:jboss/"
         cleanup:
         reloadServer()
         // remove XA datasource
