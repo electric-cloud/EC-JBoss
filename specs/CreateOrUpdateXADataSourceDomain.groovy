@@ -193,6 +193,49 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, minimum parameters, verify xaDataSourceProperties (C289502-1)"() {
+        String testCaseId = "C289502"
+        String jdbcDriverName = "mysql"
+        String xaDataSourceName = dataSourceName.mysql+testCaseId
+
+
+        def runParams = [
+                additionalOptions               : '',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : xaDataSourceName,
+                enabled                         : '0',
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.mysql,
+                profile                         : defaultProfile,
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+
+        setup:
+        addJDBCMySQL(jdbcDriverName)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
+        checkCreateXADataSource(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "0",
+                defaultPassword, defaultUserName)
+        checkXADataSourceProperties(runParams.xaDataSourceProperties,  runParams.dataSourceName, defaultProfile)
+        cleanup: 
+        reloadServer('master')
+        // remove XA datasource
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(defaultProfile, runParams.dataSourceName)) 
+        reloadServer('master')
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
+    }
+
     @IgnoreIf({EnvPropertiesHelper.getVersion() == '6.0'})
     @Unroll
     def "CreateorUpdateXADataSource, PostgreSQL, minimum parameters (C289503)"() {
@@ -577,7 +620,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
-        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "1",
+        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "0",
                 'min-pool-size', 10,  defaultPassword, defaultUserName)
         cleanup:
         reloadServer('master')
@@ -1140,7 +1183,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
     }
 
     void checkCreateXADataSourceAdditionalOptions(String nameDatasource, String profile, String jndiNames, String jdbcDriverName,
-            String enabled, String additionaOptionsParameter, def additionaOptionsValue, String password, String userName) {
+        String enabled, String additionaOptionsParameter, def additionaOptionsValue, String password, String userName) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getXADatasourceInfoDomain(nameDatasource, profile)).result
         assert result.'jndi-name' =~ jndiNames
         assert result.'driver-name' == jdbcDriverName
@@ -1148,9 +1191,16 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         assert result.'user-name' == userName
         assert result.'enabled' == (enabled == "1" ? true : false)
         if(additionaOptionsParameter != ''){
-        assert result[additionaOptionsParameter] == additionaOptionsValue
+            assert result[additionaOptionsParameter] == additionaOptionsValue
         }
+    }
 
+    void checkXADataSourceProperties(def properties, def xaDataSourceName, def profile){
+        properties.split(',').each {
+            def property = it.split("=")
+            def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getXADatasourceProperties(property[0], xaDataSourceName, profile)).result
+            assert property[1] == result.toString()
+        }
     }
 
     void addJDBCMySQL(String jdbcDriverName, String profile=defaultProfile){

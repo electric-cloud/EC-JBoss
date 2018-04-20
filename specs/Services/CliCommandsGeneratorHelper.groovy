@@ -239,6 +239,16 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String getXADatasourceProperties(String property, String xaDataSourece){
+        String command = "/subsystem=datasources/xa-data-source=$xaDataSourece/xa-datasource-properties=$property:read-attribute(name=value)"
+        return command
+    }
+
+    static String getXADatasourceProperties(String property, String xaDataSourece, String profile){
+        String command = "/profile=$profile/subsystem=datasources/xa-data-source=$xaDataSourece/xa-datasource-properties=$property:read-attribute(name=value)"
+        return command
+    }
+
     static String getListOfXADatasourceInDomain(String profile){
         String command = "/profile=$profile/subsystem=datasources:read-resource"
         return command

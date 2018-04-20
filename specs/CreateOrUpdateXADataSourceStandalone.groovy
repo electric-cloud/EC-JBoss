@@ -188,6 +188,45 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
 
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, minimum parameters, verify xaDataSourceProperties (C289546-1)"() {
+        String testCaseId = "C289546"
+        String jdbcDriverName = "mysql"
+        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        def runParams = [
+                additionalOptions               : '',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : xaDataSourceName,
+                enabled                         : '0',
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.mysql,
+                profile                         : '',
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+        setup:
+        addJDBCMySQL(jdbcDriverName)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
+        checkCreateXADataSource(xaDataSourceName, jndiName.mysql, jdbcDriverName, "10",
+                defaultPassword, defaultUserName)
+        checkXADataSourceProperties(runParams.xaDataSourceProperties, runParams.dataSourceName)
+        cleanup: 
+        reloadServer()
+        // remove XA datasource
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        reloadServer()
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
+    }    
+
     @IgnoreIf({EnvPropertiesHelper.getVersion() == '6.0'})
     @Unroll
     def "CreateorUpdateXADataSource, PostgreSQL, minimum parameters (C289547)"() {
@@ -1109,6 +1148,14 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
+    }
+
+    void checkXADataSourceProperties(def properties, def xaDataSourceName){
+        properties.split(',').each {
+            def property = it.split("=")
+            def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getXADatasourceProperties(property[0], xaDataSourceName)).result
+            assert property[1] == result.toString()
+        }
     }
 
     void addJDBCMySQL(String jdbcDriverName){
