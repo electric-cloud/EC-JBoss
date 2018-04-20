@@ -254,22 +254,13 @@ sub main {
             $command_add_xa_data_source .= qq/ $escaped_additional_options /;
         }
 
-        my %result = $jboss->run_command($command_add_xa_data_source);
-        $jboss->process_response(%result);
+        my %result = run_command_with_exiting_on_error(command => $command_add_xa_data_source, jboss => $jboss);
 
-        my $summary;
-        if ($result{code}) {
-            # we expect that summary was already set within process_response if code is not 0
-            exit 1;
-        }
-        else {
-            $summary = "XA data source '$param_data_source_name' has been added successfully";
-            if ($result{stdout} && is_reload_or_restart_required($result{stdout})) {
-                $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
-                $jboss->warning();
-                $summary .= "\nJBoss reply: " . $result{stdout};
-            }
-            $jboss->set_property(summary => $summary);
+        my $summary = "XA data source '$param_data_source_name' has been added successfully";
+        if ($result{stdout} && is_reload_or_restart_required($result{stdout})) {
+            $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
+            $jboss->warning();
+            $summary .= "\nJBoss reply: " . $result{stdout};
         }
 
         ########
@@ -282,13 +273,11 @@ sub main {
                 $jboss->log_info("Enabling data source within 6.0 separately due to known issue (enable=true within xa-data-source add command does not take affect, data source created and disabled)");
 
                 my $command_enable_data_source = "$profile_prefix/subsystem=datasources/xa-data-source=$param_data_source_name/:enable";
-                my %result_enable_data_source = $jboss->run_command($command_enable_data_source);
-                $jboss->process_response(%result_enable_data_source);
-                if ($result{code}) {
-                    exit 1;
-                }
+                run_command_with_exiting_on_error(command => $command_enable_data_source, jboss => $jboss);
             }
         }
+
+        $jboss->set_property(summary => $summary);
 
         return;
     }
