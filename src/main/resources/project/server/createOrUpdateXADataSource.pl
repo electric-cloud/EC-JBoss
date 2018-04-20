@@ -278,7 +278,7 @@ sub main {
         if ($param_enabled) {
             my $version = $jboss->get_jboss_server_version();
             my $product_version = $version->{product_version};
-            if ($product_version =~ m/^6\.0/ ) {
+            if ($product_version =~ m/^6\.0/) {
                 $jboss->log_info("Enabling data source within 6.0 separately due to known issue (enable=true within xa-data-source add command does not take affect, data source created and disabled)");
 
                 my $command_enable_data_source = "$profile_prefix/subsystem=datasources/xa-data-source=$param_data_source_name/:enable";
