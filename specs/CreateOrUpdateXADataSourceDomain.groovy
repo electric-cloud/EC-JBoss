@@ -620,7 +620,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
-        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "0",
+        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "1",
                 'min-pool-size', 10,  defaultPassword, defaultUserName)
         cleanup:
         reloadServer('master')
@@ -673,6 +673,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
+    @IgnoreIf({EnvPropertiesHelper.getVersion() == '7.0'})
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--check-valid-connection-sql' (C290071)"() {
         String testCaseId = "C290071"
@@ -707,6 +708,48 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "1",
                 'check-valid-connection-sql', 'INSERT INTO jboss_table VALUES (34, \'qa34\');',  defaultPassword, defaultUserName)
+        cleanup:
+        reloadServer('master')
+          // remove XA datasource
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(defaultProfile, runParams.dataSourceName)) 
+        reloadServer('master')
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
+    }
+
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, Additional Options '--check-valid-connection-sql-2' (C290071)"() {
+        String testCaseId = "C290071"
+        String jdbcDriverName = "mysql"
+        String xaDataSourceName = dataSourceName.postgresql+testCaseId
+
+        def runParams = [
+                additionalOptions               : '--check-valid-connection-sql="Select 1, 2;"',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : xaDataSourceName,
+                enabled                         : defaultEnabledDataSource,
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.mysql,
+                profile                         : defaultProfile,
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.postgresql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+
+        setup:
+        addJDBCMySQL(jdbcDriverName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
+        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "1",
+                'check-valid-connection-sql', 'Select 1, 2;',  defaultPassword, defaultUserName)
         cleanup:
         reloadServer('master')
           // remove XA datasource
@@ -1074,7 +1117,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "The batch failed with the following error \\(you are remaining in the batch editing mode to have a chance to correct the error\\)"
+        assert runProcedureJob.getUpperStepSummary() =~ "Composite operation failed and was rolled back. Steps that failed"
     }
 
     @Unroll
@@ -1105,7 +1148,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "The batch failed with the following error \\(you are remaining in the batch editing mode to have a chance to correct the error\\)"
+        assert runProcedureJob.getUpperStepSummary() =~ "Jndi name have to start with java:/ or java:jboss/"
     }
 
     @Unroll
