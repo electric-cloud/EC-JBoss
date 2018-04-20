@@ -82,10 +82,10 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         String pathForJar = ''
         if(EnvPropertiesHelper.getVersion() == "6.0"){
             pathForJar = "/opt/jboss/modules/$domain/$path/main"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmpt\\\\jboss\\\\modules\\\\$domain\\\\$path\\\\main" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path\\\\main" : pathForJar
         } else {
             pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path/main"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmpt\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path\\\\main" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path\\\\main" : pathForJar
         }
         return  pathForJar
     }
@@ -94,7 +94,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         String pathForJar = ''
         if(EnvPropertiesHelper.getVersion() == "6.0"){
             pathForJar = "/opt/jboss/modules/$domain/$path"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmpt\\\\jboss\\\\modules\\\\$domain\\\\$path" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path" : pathForJar
         } else {
             pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path"
             EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path" : pathForJar
