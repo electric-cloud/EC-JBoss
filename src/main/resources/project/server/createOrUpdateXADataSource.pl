@@ -205,9 +205,7 @@ sub main {
             my $unique_update_responses_str = join("\n", @unique_update_responses);
 
             foreach my $response (@unique_update_responses) {
-                if ($response
-                    && ($response =~ m/"process-state"\s=>\s"reload-required"/gs
-                    || $response =~ m/"process-state"\s=>\s"restart-required"/gs)) {
+                if ($response && is_reload_or_restart_required($response)) {
                     $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
                     $jboss->warning();
                     last;
@@ -232,11 +230,6 @@ sub main {
         ########
         $jboss->log_info("XA data source '$param_data_source_name' does not exist - to be created");
 
-        my @commands;
-
-        my $command_start_batch = "batch";
-        push @commands, $command_start_batch;
-
         my $command_add_xa_data_source = qq/xa-data-source add /;
         if ($jboss_is_domain) {
             $command_add_xa_data_source .= qq/ --profile=$param_profile /;
@@ -254,28 +247,14 @@ sub main {
         else {
             $command_add_xa_data_source .= qq| --enabled=false |;
         }
+        $command_add_xa_data_source .= qq| --xa-datasource-properties={$param_xa_data_source_properties} |;
+
         if ($param_additional_options) {
             my $escaped_additional_options = escape_additional_options($param_additional_options);
             $command_add_xa_data_source .= qq/ $escaped_additional_options /;
         }
-        push @commands, $command_add_xa_data_source;
 
-        my $command_add_xa_data_source_properties;
-        my @xa_data_source_properties_array = split ",", $param_xa_data_source_properties;
-        my %xa_data_source_properties_hash = map {my ( $key, $value ) = split "=";
-            $key => $value} @xa_data_source_properties_array;
-        foreach my $xa_data_source_property_key (keys %xa_data_source_properties_hash) {
-            my $property_name = $xa_data_source_property_key;
-            my $property_value = $xa_data_source_properties_hash{$xa_data_source_property_key};
-
-            my $command_add_xa_data_source_property = "$profile_prefix/subsystem=datasources/xa-data-source=$param_data_source_name/xa-datasource-properties=$property_name:add(value=$property_value)";
-            push @commands, $command_add_xa_data_source_property;
-        }
-
-        my $command_run_batch = "run-batch";
-        push @commands, $command_run_batch;
-
-        my %result = $jboss->run_commands(@commands);
+        my %result = $jboss->run_command($command_add_xa_data_source);
         $jboss->process_response(%result);
 
         my $summary;
@@ -283,25 +262,32 @@ sub main {
             # we expect that summary was already set within process_response if code is not 0
             exit 1;
         }
-        elsif (!$result{stdout}
-            && $result{stdout} !~ m/The\sbatch\sexecuted\ssuccessfully/gs) {
-            $jboss->log_error("XA data source was not added, JBoss did not reply with the following expected message: 'The batch executed successfully'");
-            $summary = "XA data source was not added, JBoss did not reply with the following expected message: 'The batch executed successfully'";
-            $summary .= "\nJBoss reply: " . $result{stdout} if $result{stdout};
-            $jboss->error();
-            $jboss->set_property(summary => $summary);
-            exit 1;
-        }
         else {
             $summary = "XA data source '$param_data_source_name' has been added successfully";
-            if ($result{stdout}
-                && ($result{stdout} =~ m/process-state:\sreload-required/gs
-                || $result{stdout} =~ m/process-state:\srestart-required/gs)) {
+            if ($result{stdout} && is_reload_or_restart_required($result{stdout})) {
                 $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
                 $jboss->warning();
                 $summary .= "\nJBoss reply: " . $result{stdout};
             }
             $jboss->set_property(summary => $summary);
+        }
+
+        ########
+        # workaround for 6.0 (enable=true within xa-data-source add command does not take affect, data source created and disabled)
+        ########
+        if ($param_enabled) {
+            my $version = $jboss->get_jboss_server_version();
+            my $product_version = $version->{product_version};
+            if ($product_version =~ m/^6\.0/) {
+                $jboss->log_info("Enabling data source within 6.0 separately due to known issue (enable=true within xa-data-source add command does not take affect, data source created and disabled)");
+
+                my $command_enable_data_source = "$profile_prefix/subsystem=datasources/xa-data-source=$param_data_source_name/:enable";
+                my %result_enable_data_source = $jboss->run_command($command_enable_data_source);
+                $jboss->process_response(%result_enable_data_source);
+                if ($result{code}) {
+                    exit 1;
+                }
+            }
         }
 
         return;
@@ -400,4 +386,14 @@ sub escape_additional_options {
     $additional_options =~ s|"|\"|gs;
 
     return $additional_options;
+}
+
+sub is_reload_or_restart_required {
+    my $jboss_output = shift;
+    croak "required param is not provided (jboss_output)" unless defined $jboss_output;
+    if ($jboss_output =~ m/process-state:\s(?:reload|restart)-required/s
+        || $jboss_output =~ m/"process-state"\s=>\s"(?:reload|restart)-required"/s) {
+        return 1;
+    }
+    return 0;
 }
