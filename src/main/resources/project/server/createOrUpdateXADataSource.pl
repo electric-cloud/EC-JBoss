@@ -373,8 +373,8 @@ sub escape_additional_options {
 sub is_reload_or_restart_required {
     my $jboss_output = shift;
     croak "required param is not provided (jboss_output)" unless defined $jboss_output;
-    if ($jboss_output =~ m/process-state:\s(reload|restart)-required/gs
-        || $jboss_output =~ m/"process-state"\s=>\s"(reload|restart)-required"/gs) {
+    if ($jboss_output =~ m/process-state:\s(?:reload|restart)-required/s
+        || $jboss_output =~ m/"process-state"\s=>\s"(?:reload|restart)-required"/s) {
         return 1;
     }
     return 0;
