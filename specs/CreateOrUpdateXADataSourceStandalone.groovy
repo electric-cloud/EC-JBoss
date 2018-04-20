@@ -150,7 +150,6 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         return  pathForJar
     }
 
-    @IgnoreRest
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, minimum parameters (C289546)"() {
         String testCaseId = "C289546"
