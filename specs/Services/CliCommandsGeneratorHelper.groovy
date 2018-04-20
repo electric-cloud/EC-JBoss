@@ -183,8 +183,10 @@ class CliCommandsGeneratorHelper {
     }
 
     static String reloadStandalone() {
-        String command = "reload"
-        return command
+        if (EnvPropertiesHelper.getVersion() ==~ '6.0'){
+            return '/:reload'
+        }
+        return "reload"
     }
 
     static String reloadServerGroupDomain(String serverGroup) {
@@ -237,6 +239,16 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String getXADatasourceProperties(String property, String xaDataSourece){
+        String command = "/subsystem=datasources/xa-data-source=$xaDataSourece/xa-datasource-properties=$property:read-attribute(name=value)"
+        return command
+    }
+
+    static String getXADatasourceProperties(String property, String xaDataSourece, String profile){
+        String command = "/profile=$profile/subsystem=datasources/xa-data-source=$xaDataSourece/xa-datasource-properties=$property:read-attribute(name=value)"
+        return command
+    }
+
     static String getListOfXADatasourceInDomain(String profile){
         String command = "/profile=$profile/subsystem=datasources:read-resource"
         return command
@@ -276,6 +288,9 @@ class CliCommandsGeneratorHelper {
     }
 
     static String addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass){
+        if (EnvPropertiesHelper.getVersion() ==~ '6.0'){
+            return "/subsystem=datasources/xa-data-source=$name:add(xa-datasource-class=$xaDatasourceClass,jndi-name=\"$jndiName\",driver-name=\"$driverName\")"
+        }
         String command = "xa-data-source add --name=$name --jndi-name=\"$jndiName\" --driver-name=\"$driverName\" --xa-datasource-class=$xaDatasourceClass --xa-datasource-properties={\"ServerName\"=>\"localhost\",\"DatabaseName\"=>\"test\",\"PortNumber\"=>\"3306\",\"DriverType\"=>\"4\"}"
         return command
     }

@@ -114,14 +114,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
                 dataSourceName   : 'MysqlXADS',
         ]
         setup:
-        String path = getPathToMain("mysql", "com")
-        createDir(getPath("mysql", "com"))
-        createDir(path)
-        downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
-        downloadArtifact(xml.mysql, path+"/module.xml")
-        if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
-            addModuleXADatasource(defaultProfile, jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
-        }
+        addJDBCMySQL(jdbcDriverName)
         def dataSourceName = runParams.dataSourceName
         addXADatasource(defaultProfile, dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource')
         when:
@@ -133,10 +126,11 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         assert getListOfXADataSource(defaultProfile) == null
 
         cleanup:
-        restartServer('master')
-        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "mysql"))
+        reloadServer('master')
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "mysql"))
     }
 
+    @IgnoreIf({EnvPropertiesHelper.getVersion() == '6.0'})
     @Unroll
     def "RemoveXADataSource, PostgreSQL C289594"() {
         String testCaseId = "C289594"
@@ -147,12 +141,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
                 dataSourceName   : 'PostgresXADS',
         ]
         setup:
-        String path = getPathToMain("postgresql", "org")
-        createDir(getPath("postgresql", "org"))
-        createDir(path)
-        downloadArtifact(link.postgresql, path+"/postgresql-42.2.2.jar")
-        downloadArtifact(xml.postgresql, path+"/module.xml")
-        addModuleXADatasource(defaultProfile, jdbcDriverName, "org.postgresql.xa.PGXADataSource")
+        addJDBCPostgres(jdbcDriverName)
         def dataSourceName = runParams.dataSourceName
         addXADatasource(defaultProfile, dataSourceName, jndiName.postgresql, jdbcDriverName, 'org.postgresql.xa.PGXADataSource')
         when:
@@ -164,8 +153,8 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         assert getListOfXADataSource(defaultProfile) == null
 
         cleanup:
-        restartServer('master')
-        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "postgresql"))
+        reloadServer('master')
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "postgresql"))
     }
 
     @Unroll
@@ -189,7 +178,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         assert getListOfXADataSource(defaultProfile) == null
 
         cleanup:
-        restartServer('master')
+        reloadServer('master')
     }
 
     @Unroll
@@ -270,7 +259,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         return result
     }
 
-    void restartServer(String host){
+    void reloadServer(String host){
         runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.reloadHostDomain(host))
         def cond = true
         while(cond){
@@ -290,8 +279,34 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.addXADatasource(profile, name, jndiName, driverName, xaDatasourceClass))
     }
     
+
+    void addJDBCMySQL(String jdbcDriverName, String profile=defaultProfile){
+        String path = getPathToMain("mysql", "com")
+        createDir(getPath("mysql", "com"))
+        createDir(path)
+        downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
+        downloadArtifact(xml.mysql, path+"/module.xml")
+        addModuleXADatasource(profile, jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
+    }
+
+    void addJDBCPostgres(String jdbcDriverName){
+        String path = getPathToMain("postgresql", "org")
+        createDir(getPath("postgresql", "org"))
+        createDir(path)
+        downloadArtifact(link.postgresql, path+"/postgresql-42.2.2.jar")
+        downloadArtifact(xml.postgresql, path+"/module.xml")
+        addModuleXADatasource(defaultProfile, jdbcDriverName, "org.postgresql.xa.PGXADataSource")
+    }
+
     void addModuleXADatasource(String profile, String driver, String DSclass){
-        runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
+        if (EnvPropertiesHelper.getVersion() ==~ '6.0') {
+            // https://issues.jboss.org/browse/JBPAPP6-944
+            reloadServer('master')
+            runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
+        } 
+        else {
+            runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
+        }
     }
 
 }
