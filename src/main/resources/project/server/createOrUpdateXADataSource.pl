@@ -247,7 +247,9 @@ sub main {
         else {
             $command_add_xa_data_source .= qq| --enabled=false |;
         }
-        $command_add_xa_data_source .= qq| --xa-datasource-properties={$param_xa_data_source_properties} |;
+
+        my $xa_data_source_properties_formatted = convert_xa_data_source_properties($param_xa_data_source_properties);
+        $command_add_xa_data_source .= qq| --xa-datasource-properties={$xa_data_source_properties_formatted} |;
 
         if ($param_additional_options) {
             my $escaped_additional_options = escape_additional_options($param_additional_options);
@@ -283,8 +285,8 @@ sub main {
 
                 my $command_enable_data_source = "$profile_prefix/subsystem=datasources/xa-data-source=$param_data_source_name/:enable";
                 my %result_enable_data_source = $jboss->run_command($command_enable_data_source);
-                $jboss->process_response(%result_enable_data_source);
                 if ($result{code}) {
+                    $jboss->process_response(%result_enable_data_source);
                     exit 1;
                 }
             }
@@ -396,4 +398,15 @@ sub is_reload_or_restart_required {
         return 1;
     }
     return 0;
+}
+
+# covert a=b,x=z to \"a\"=>\"b\",\"x\"=>\"z\"
+sub convert_xa_data_source_properties {
+    my $xa_data_source_properties = shift;
+    croak "required param is not provided (jboss_output)" unless defined $xa_data_source_properties;
+
+    $xa_data_source_properties =~ s/=/"=>"/gs;
+    $xa_data_source_properties =~ s/,/","/gs;
+    $xa_data_source_properties = '"' . $xa_data_source_properties . '"';
+    return $xa_data_source_properties;
 }
