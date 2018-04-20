@@ -150,6 +150,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         return  pathForJar
     }
 
+    @IgnoreRest
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, minimum parameters (C289546)"() {
         String testCaseId = "C289546"
@@ -646,6 +647,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
 
+    @IgnoreIf({EnvPropertiesHelper.getVersion() == '7.0'})
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options --check-valid-connection-sql' (C289557)"() {
         String testCaseId = "C289557"
@@ -677,6 +679,45 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSourceAdditionalOptions(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
                 'check-valid-connection-sql', 'INSERT INTO jboss_table VALUES (34, \'qa34\');',  defaultPassword, defaultUserName)
+        cleanup:
+        reloadServer()
+        // remove XA datasource
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        reloadServer()
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
+    }
+
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, Additional Options --check-valid-connection-sql-2' (C289557)"() {
+        String testCaseId = "C289557"
+        String jdbcDriverName = "mysql"
+        String xaDataSourceName ="MysqlXADS"+testCaseId
+        def runParams = [
+                additionalOptions               : '--check-valid-connection-sql="Select 1, 2;"',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : xaDataSourceName,
+                enabled                         : defaultEnabledDataSource,
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.mysql,
+                profile                         : '',
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+        setup:
+        addJDBCMySQL(jdbcDriverName)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
+        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
+                'check-valid-connection-sql', 'Select 1, 2;',  defaultPassword, defaultUserName)
         cleanup:
         reloadServer()
         // remove XA datasource
@@ -767,7 +808,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'Configuration name' ( C289561)"() {
-        String testCaseId = " C289561"
+        String testCaseId = "C289561"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -794,7 +835,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'Data Source Name'  ( C289562)"() {
-        String testCaseId = " C289562"
+        String testCaseId = "C289562"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -822,7 +863,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'JNDI Name'  ( C289563)"() {
-        String testCaseId = " C289563"
+        String testCaseId = "C289563"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -850,7 +891,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'JDBC Driver Name'  ( C289564)"() {
-        String testCaseId = " C289564"
+        String testCaseId = "C289564"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -878,7 +919,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'xaDataSourceProperties'  ( C289566)"() {
-        String testCaseId = " C289566"
+        String testCaseId = "C289566"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -906,7 +947,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'Datasource Connection Credentials'  ( C289567)"() {
-        String testCaseId = " C289567"
+        String testCaseId = "C289567"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -935,7 +976,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Configuration name'  ( C289569)"() {
-        String testCaseId = " C289569"
+        String testCaseId = "C289569"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -963,7 +1004,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Data Source Name' ( C289570)"() {
-        String testCaseId = " C289570"
+        String testCaseId = "C289570"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -989,10 +1030,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "The batch failed with the following error \\(you are remaining in the batch editing mode to have a chance to correct the error\\)"
     }
 
-
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'JNDI Name' ( C289571)"() {
-        String testCaseId = " C289571"
+        String testCaseId = "C289571"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -1020,7 +1060,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value  'JDBC Driver Name' ( C289572)"() {
-        String testCaseId = " C289572"
+        String testCaseId = "C289572"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -1048,7 +1088,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Additional Options' ( C289576)"() {
-        String testCaseId = " C289576"
+        String testCaseId = "C289576"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -1075,8 +1115,8 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     }
 
     @Unroll
-    def "CreateorUpdateXADataSource, MySQL, incorrect value 'Additional Options' ( C289577)"() {
-        String testCaseId = " C289577"
+    def "CreateorUpdateXADataSource, MySQL, incorrect value 'JNDI Name'' ( C289577)"() {
+        String testCaseId = "C289577"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
@@ -1114,7 +1154,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, empty value 'Additional Options' (C289578)"() {
-        String testCaseId = " C289578"
+        String testCaseId = "C289578"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
