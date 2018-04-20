@@ -112,14 +112,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
                 dataSourceName   : 'MysqlXADS',
         ]
         setup:
-        String path = getPathToMain("mysql", "com")
-        createDir(getPath("mysql", "com"))
-        createDir(path)
-        downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
-        downloadArtifact(xml.mysql, path+"/module.xml")
-        if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
-            addModuleXADatasource(jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
-        }
+        addJDBCMySQL("mysql")
         def dataSourceName = runParams.dataSourceName
         addXADatasource(dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource')
         when:
@@ -131,10 +124,11 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         assert getListOfXADataSource() == null
 
         cleanup:
-        restartServer()
-        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone("mysql"))
+        reloadServer()
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone("mysql"))
     }
 
+    @IgnoreIf({EnvPropertiesHelper.getVersion() == '6.0'})
     @Unroll
     def "RemoveXADataSource, PostgreSQL C289614"() {
         String testCaseId = "C289614"
@@ -162,8 +156,8 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         assert getListOfXADataSource() == null
 
         cleanup:
-        restartServer()
-        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone("postgresql"))
+        reloadServer()
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone("postgresql"))
     }
 
     @Unroll
@@ -187,7 +181,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         assert getListOfXADataSource() == null
 
         cleanup:
-        restartServer()
+        reloadServer()
     }
 
     @Unroll
@@ -229,7 +223,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         assert getListOfXADataSource() == null
 
         cleanup:
-        restartServer()
+        reloadServer()
     }
 
 
@@ -256,7 +250,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         return result
     }
        
-    def restartServer(){
+    def reloadServer(){
         try {
             // I used here try catch because "reload" command doesn't any json
             runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.reloadStandalone())
@@ -277,12 +271,40 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
             }
         }
     }     
+
+    void addJDBCMySQL(String jdbcDriverName){
+        String path = getPathToMain("mysql", "com")
+        createDir(getPath("mysql", "com"))
+        createDir(path)
+        downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
+        downloadArtifact(xml.mysql, path+"/module.xml")
+        // if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
+        addModuleXADatasource(jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
+        // }
+    }
+
+    void addJDBCPostgres(String jdbcDriverName){
+        String path = getPathToMain("postgresql", "org")
+        createDir(getPath("postgresql", "org"))
+        createDir(path)
+        downloadArtifact(link.postgresql, path+"/postgresql-42.2.2.jar")
+        downloadArtifact(xml.postgresql, path+"/module.xml")
+        addModuleXADatasource(jdbcDriverName, "org.postgresql.xa.PGXADataSource")
+    }
+
+    void addModuleXADatasource(String driver, String DSclass){
+        if (EnvPropertiesHelper.getVersion() ==~ '6.0') {
+            // https://issues.jboss.org/browse/JBPAPP6-944
+            reloadServer()
+            runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
+        } 
+        else {
+            runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
+        }
+    }
+
     void addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass){
         runCliCommand(CliCommandsGeneratorHelper.addXADatasource(name, jndiName, driverName, xaDatasourceClass))
-    }
-    
-    void addModuleXADatasource(String driver, String DSclass){
-        runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
     }
 
 }
