@@ -119,7 +119,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
+        // deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -1089,6 +1089,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Configuration jboss_conf_not_existing doesn't exist."
     }
 
+    @Ignore
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Data Source Name' (C289536)"() {
         String testCaseId = "C289536"
@@ -1118,6 +1119,37 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "error"
         assert runProcedureJob.getUpperStepSummary() =~ "Composite operation failed and was rolled back. Steps that failed"
+    }
+
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, incorrect value 'Data Source Name' Unclosed quotes (C289536)"() {
+        String testCaseId = "C289536"
+        String jdbcDriverName = "mysql"
+        String xaDataSourceName ="MysqlXADS"+testCaseId
+
+
+        def runParams = [
+                additionalOptions               : '',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : 'Mysql edXA@DS"',
+                enabled                         : defaultEnabledDataSource,
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.mysql,
+                profile                         : 'ha',
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "The closing '\"' is missing"
     }
 
     @Unroll
