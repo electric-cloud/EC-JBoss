@@ -646,7 +646,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() == '7.0'})
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.4', '7.0']})
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options --check-valid-connection-sql' (C289557)"() {
         String testCaseId = "C289557"
@@ -1142,7 +1142,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob1.getStatus() == "error"
-        assert runProcedureJob1.getUpperStepSummary() =~ "WFLYJCA0071: Jndi name have to start with java:/ or java:jboss/"
+        assert runProcedureJob1.getUpperStepSummary() =~ "Jndi name have to start with java:/ or java:jboss/"
         cleanup:
         reloadServer()
         // remove XA datasource
