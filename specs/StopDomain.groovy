@@ -58,7 +58,7 @@ class StopDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }    
 
-    @Timeout(300)
+    @Timeout(600)
     @Unroll
     def "StopDomain, with minimum parameters (no wait time - undef) (C289387)"() {
     	String testCaseId = "C289387"
@@ -90,7 +90,7 @@ class StopDomain extends PluginTestHelper {
         waitUntilServerIsUp('jbossslave1')
     }
 
-    @Timeout(300)
+    @Timeout(600)
     @Unroll
     def "StopDomain, with default parameters (C289399)"() {
         String testCaseId = "C289399"
@@ -117,7 +117,7 @@ class StopDomain extends PluginTestHelper {
         waitUntilServerIsUp('jbossslave1')
     }
 
-    @Timeout(300)
+    @Timeout(600)
     @Unroll
     def "StopDomain, stop with no wait time - 0 (C289400)"() {
         String testCaseId = "C289400"
@@ -150,7 +150,7 @@ class StopDomain extends PluginTestHelper {
         waitUntilServerIsUp('jbossslave1')
     }    
 
-    @Timeout(300)
+    @Timeout(600)
     @Unroll
     def "StopDomain, all fields are filled (All Controllers Shutdown=true) (C289401)"() {
         String testCaseId = "C289401"
@@ -184,7 +184,7 @@ class StopDomain extends PluginTestHelper {
     }   
 
     @IgnoreRest
-    @Timeout(300)
+    @Timeout(600)
     @Unroll
     def "StopDomain, one host with 'All Controllers Shutdown'=true (C289402)"() {
         String testCaseId = "C289402"
@@ -218,7 +218,7 @@ class StopDomain extends PluginTestHelper {
         waitUntilServerIsUp('jbossslave1')
     }   
 
-    @Timeout(300)
+    @Timeout(600)
     @Unroll
     def "StopDomain, with not existing 'Configuration name' (C289412)"() {
         String testCaseId = "C289412"
@@ -236,7 +236,7 @@ class StopDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() == "Configuration jboss_conf_not_exist doesn't exist.\n"
     }   
 
-    @Timeout(300)
+    @Timeout(600)
     @Unroll
     def "StopDomain, without 'Configuration name'  (C289411)"() {
         String testCaseId = "C289411"
@@ -254,7 +254,7 @@ class StopDomain extends PluginTestHelper {
         // assert runProcedureJob.getLogs() =~ "Configuration_name doesn't exist at*"
     }   
 
-    @Timeout(300)
+    @Timeout(600)
     @Unroll
     def "StopDomain, host controller 'master' is stopped   (C289407)"() {
         String testCaseId = "C289407"
@@ -285,7 +285,7 @@ class StopDomain extends PluginTestHelper {
         waitUntilServerIsUp('jbossslave1')
     }   
 
-    @Timeout(300)
+    @Timeout(600)
     @Unroll
     def "StopDomain, host controllers 'master' and 'slave' are stopped   (C289410)"() {
         String testCaseId = "C289410"
