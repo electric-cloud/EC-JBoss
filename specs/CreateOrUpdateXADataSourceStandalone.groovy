@@ -383,7 +383,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         println("QA $runParams")
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() == '6.0') ? "success" : "warning"
+        def expectedStatus = (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']) ? "success" : "warning"
         assert runProcedureJob1.getStatus() == expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new password."
         checkCreateXADataSource(xaDataSourceName, JNDI, jdbcDriverName,
