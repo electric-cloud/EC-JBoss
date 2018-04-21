@@ -399,7 +399,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
 
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() == '6.0') ? "success" : "warning"
+        def expectedStatus = (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']) ? "success" : "warning"
         assert runProcedureJob1.getStatus() == expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new password."
         checkCreateXADataSource(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName,
@@ -446,7 +446,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
 
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() == '6.0') ? "success" : "warning"
+        def expectedStatus = (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']) ? "success" : "warning"
         assert runProcedureJob1.getStatus() == expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new user name, password"
         checkCreateXADataSource(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName,
@@ -673,7 +673,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() == '7.0'})
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['7.0', ['6.4']})
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--check-valid-connection-sql' (C290071)"() {
         String testCaseId = "C290071"
