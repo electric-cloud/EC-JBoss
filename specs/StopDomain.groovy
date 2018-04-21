@@ -50,7 +50,7 @@ class StopDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
+        // deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -183,7 +183,6 @@ class StopDomain extends PluginTestHelper {
         waitUntilServerIsUp('jbossslave1')
     }   
 
-    @IgnoreRest
     @Timeout(600)
     @Unroll
     def "StopDomain, one host with 'All Controllers Shutdown'=true (C289402)"() {

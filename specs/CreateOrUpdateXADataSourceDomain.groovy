@@ -673,7 +673,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['7.0', ['6.4']})
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['7.0', '6.4']})
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--check-valid-connection-sql' (C290071)"() {
         String testCaseId = "C290071"
