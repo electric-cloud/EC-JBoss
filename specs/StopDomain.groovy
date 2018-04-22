@@ -169,7 +169,7 @@ class StopDomain extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() in [expectedSummary1, expectedSummary2]
         def expectedStatus = 'Failed to connect to the controller'
-        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']){
+        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3', '6.4']){
             assert runCliCommandAnyResult(":read-attribute(name=launch-type)").getLogs().contains(expectedStatus)
         } 
         else {
@@ -203,7 +203,7 @@ class StopDomain extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() in [expectedSummary1]
         def expectedStatus = 'Failed to connect to the controller'
-        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']){
+        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3', '6.4']){
             assert runCliCommandAnyResult(":read-attribute(name=launch-type)").getLogs().contains(expectedStatus)
         } 
         else {
@@ -270,7 +270,7 @@ class StopDomain extends PluginTestHelper {
         then:
         def expectedStatus = 'Failed to connect to the controller'
         assert runProcedureJob.getStatus() == "error"
-        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']){
+        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3', '6.4']){
             assert runCliCommandAnyResult(":read-attribute(name=launch-type)").getLogs().contains(expectedStatus)
         } 
         else {
@@ -302,7 +302,7 @@ class StopDomain extends PluginTestHelper {
         then:
         def expectedStatus = 'Failed to connect to the controller'
         assert runProcedureJob.getStatus() == "error"
-        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']){
+        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3', '6.4']){
             assert runCliCommandAnyResult(":read-attribute(name=launch-type)").getLogs().contains(expectedStatus)
         } 
         else {
