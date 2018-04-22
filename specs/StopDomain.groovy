@@ -50,7 +50,7 @@ class StopDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
+        // deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -169,7 +169,7 @@ class StopDomain extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() in [expectedSummary1, expectedSummary2]
         def expectedStatus = 'Failed to connect to the controller'
-        if (EnvPropertiesHelper.getVersion() == '6.0'){
+        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']){
             assert runCliCommandAnyResult(":read-attribute(name=launch-type)").getLogs().contains(expectedStatus)
         } 
         else {
@@ -203,7 +203,7 @@ class StopDomain extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() in [expectedSummary1]
         def expectedStatus = 'Failed to connect to the controller'
-        if (EnvPropertiesHelper.getVersion() == '6.0'){
+        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']){
             assert runCliCommandAnyResult(":read-attribute(name=launch-type)").getLogs().contains(expectedStatus)
         } 
         else {
@@ -270,7 +270,7 @@ class StopDomain extends PluginTestHelper {
         then:
         def expectedStatus = 'Failed to connect to the controller'
         assert runProcedureJob.getStatus() == "error"
-        if (EnvPropertiesHelper.getVersion() == '6.0'){
+        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']){
             assert runCliCommandAnyResult(":read-attribute(name=launch-type)").getLogs().contains(expectedStatus)
         } 
         else {
@@ -302,7 +302,7 @@ class StopDomain extends PluginTestHelper {
         then:
         def expectedStatus = 'Failed to connect to the controller'
         assert runProcedureJob.getStatus() == "error"
-        if (EnvPropertiesHelper.getVersion() == '6.0'){
+        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.4']){
             assert runCliCommandAnyResult(":read-attribute(name=launch-type)").getLogs().contains(expectedStatus)
         } 
         else {
@@ -318,15 +318,27 @@ class StopDomain extends PluginTestHelper {
 
     def waitUntilServerIsUp(def serverName){
         def isHostControllerRunning = true
+        def attemptNumber = 0
+        def attemptTotalCount = 10
+        def jbossDomainPath = EnvPropertiesHelper.getJbossDomainPath();
         while(isHostControllerRunning){
             try {
-                sleep(3000)
+                if (attemptNumber == attemptTotalCount){
+                    break
+                }
+                attemptNumber += 1 
                 if (runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getHostStatus(serverName)).result == 'running') {
                     isHostControllerRunning = false
                 }
+                sleep(15000)
             }
             catch (Exception e){
-                println e.getMessage()
+                if (serverName == 'master'){
+                    runCustomShellCommand("nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &", resName)
+                }
+                if (serverName == 'jbossslave1'){
+                    runCustomShellCommand("nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &", resSlaveName)
+                }
             }
         }
 
