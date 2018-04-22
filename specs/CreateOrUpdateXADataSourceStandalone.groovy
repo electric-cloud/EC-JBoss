@@ -150,7 +150,6 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         return  pathForJar
     }
 
-    @IgnoreRest
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, minimum parameters (C289546)"() {
         String testCaseId = "C289546"
@@ -189,7 +188,6 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
 
-    @IgnoreRest
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, minimum parameters, verify xaDataSourceProperties (C289546-1)"() {
         String testCaseId = "C289546"
