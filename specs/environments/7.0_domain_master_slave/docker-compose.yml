@@ -28,7 +28,7 @@ services:
     container_name: jboss7.0-master
     tty: true
   jboss-slave1: 
-    image: jboss-domain:v7.0
+    image: electricflow/jboss7:v7.0
     environment:
       - SLAVE_USER=jbossslave1
       - JBOSS_MODE=slave
