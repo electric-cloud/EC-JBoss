@@ -1249,7 +1249,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
 
     void addModuleXADatasource(String profile, String driver, String DSclass){
-        if (EnvPropertiesHelper.getVersion() ==~ '6.0') {
+        if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
             // https://issues.jboss.org/browse/JBPAPP6-944
             reloadServer('master')
             runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))

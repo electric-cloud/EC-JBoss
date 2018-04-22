@@ -1218,7 +1218,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     }
 
     void addModuleXADatasource(String driver, String DSclass){
-        if (EnvPropertiesHelper.getVersion() ==~ '6.0') {
+        if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
             // https://issues.jboss.org/browse/JBPAPP6-944
             reloadServer()
             runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
