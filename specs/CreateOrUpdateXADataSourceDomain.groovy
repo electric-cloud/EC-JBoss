@@ -65,7 +65,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
              */
             empty: '',
             mysql: '"DatabaseName"=>"mysqlDB","ServerName"=>"localhost","Port"=>"3306"',
-            postgresql: '"DatabaseName"=>"postgresdb","ServerName"=>"servername","Port=>5432"'
+            postgresql: '"DatabaseName"=>"postgresdb","ServerName"=>"servername","Port"=>"5432"'
             // oracle: 'url=jdbc:oracle:oci8:@tc',
             // sqlserver: 'DatabaseName=mssqldb,ServerName=localhost,SelectMethod=cursor',
             // ibmdb2: 'DatabaseName=ibmdb2db,ServerName=localhost,PortNumber=446',
