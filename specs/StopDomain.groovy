@@ -50,7 +50,7 @@ class StopDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        // deleteProject(projectName)
+        deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 

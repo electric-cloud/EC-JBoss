@@ -227,7 +227,6 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }    
 
-    @IgnoreRest
     @IgnoreIf({EnvPropertiesHelper.getVersion() == '6.0'})
     @Unroll
     def "CreateorUpdateXADataSource, PostgreSQL, minimum parameters (C289547)"() {
