@@ -1121,7 +1121,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Composite operation failed and was rolled back. Steps that failed"
     }
 
-    @IgnoreRest
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Data Source Name' Unclosed quotes (C289536)"() {
         String testCaseId = "C289536"
