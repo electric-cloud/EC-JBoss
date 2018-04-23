@@ -215,9 +215,16 @@ sub main {
             $jboss->log_info("All slave host controllers expect master '$master_host' are shut down");
         }
         else {
-            my $error_summary = "Something wrong after stopping all slave host controllers (before stopping master host controller '$master_host').";
-            $error_summary .= "\nExpected is to have only master host controller '$master_host' started at this point, but actual list of started host controllers is: ["
-                . join(", ", @all_hosts_after_all_slaves_shutdown) . "]";
+            my $error_summary = sprintf(
+                "Something wrong after stopping all slave host controllers"
+                    . "(before stopping master host controller '%s')."
+                    . "\nExpected is to have only master host controller '%s' started at this point,"
+                    . "but actual list of started host controllers is: [%s]",
+                ,
+                $master_host,
+                $master_host,
+                join(", ", @all_hosts_after_all_slaves_shutdown)
+            );
             $jboss->log_error($error_summary);
 
             $summary .= "\n\nError: $error_summary";
@@ -236,11 +243,7 @@ sub main {
         $jboss->log_info("Done with shudown of master host controller '$master_host'");
 
         # verification that shutdown of master host controller was successful
-        $cli_command = ':read-attribute(name=launch-type)';
-        my %result = $jboss->run_command($cli_command);
-        if ($result{code}
-            && ($result{stdout} =~ m/The\scontroller\sis\snot\savailable/gs
-            || $result{stderr} =~ m/The\scontroller\sis\snot\savailable/gs)) {
+        if (is_host_controller_not_available(jboss => $jboss)) {
             $jboss->log_info("Master host controller '$master_host' is shut down, checked that connenction via CLI failed with 'The controller is not available...' error");
         }
         else {
@@ -370,4 +373,20 @@ sub get_cli_host_shutdown_7x {
     my $cli_host_shutdown = "shutdown --host=$host";
     $cli_host_shutdown .= " --timeout=$timeout" if $timeout && $timeout ne "";
     return $cli_host_shutdown;
+}
+
+sub is_host_controller_not_available {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+
+    my $cli_command = ':read-attribute(name=launch-type)';
+    my %result = $jboss->run_command($cli_command);
+    if ($result{code}
+        && ($result{stdout} =~ m/The\scontroller\sis\snot\savailable/s
+        || $result{stderr} =~ m/The\scontroller\sis\snot\savailable/s)) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
 }
