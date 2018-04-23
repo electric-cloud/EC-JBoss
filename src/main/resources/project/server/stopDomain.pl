@@ -216,8 +216,8 @@ sub main {
         }
         else {
             my $error_summary = "Something wrong after stopping all slave host controllers (before stopping master host controller '$master_host').";
-            $error_summary .= "\nExpected is to have only master host controller '$master_host' started at this point, but actual list of started host controllers is: [" . join(
-                ", ", @all_hosts_after_all_slaves_shutdown) . "]";
+            $error_summary .= "\nExpected is to have only master host controller '$master_host' started at this point, but actual list of started host controllers is: ["
+                . join(", ", @all_hosts_after_all_slaves_shutdown) . "]";
             $jboss->log_error($error_summary);
 
             $summary .= "\n\nError: $error_summary";
