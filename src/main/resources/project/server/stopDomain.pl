@@ -211,7 +211,7 @@ sub main {
         # verification that shutdown of slave host controllers was successful
         my @all_hosts_after_all_slaves_shutdown = @{ get_all_hosts(jboss => $jboss) };
         if (@all_hosts_after_all_slaves_shutdown == 1
-            || $all_hosts_after_all_slaves_shutdown[0] eq $master_host) {
+            && $all_hosts_after_all_slaves_shutdown[0] eq $master_host) {
             $jboss->log_info("All slave host controllers expect master '$master_host' are shut down");
         }
         else {
