@@ -32,7 +32,6 @@ services:
     image: electricflow/jboss6:v6.2
     environment:
       - SLAVE_USER=jbossslave1
-      - JBOSS_PASSWORD=changeme1!
       - JBOSS_MODE=slave
       - HOST_CONFIG=host-slave.xml
     ports:

@@ -65,7 +65,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
              */
             empty: '',
             mysql: '"DatabaseName"=>"mysqlDB","ServerName"=>"localhost","Port"=>"3306"',
-            postgresql: '"DatabaseName"=>"postgresdb","ServerName"=>"servername","Port=>5432"'
+            postgresql: '"DatabaseName"=>"postgresdb","ServerName"=>"servername","Port"=>"5432"'
             // oracle: 'url=jdbc:oracle:oci8:@tc',
             // sqlserver: 'DatabaseName=mssqldb,ServerName=localhost,SelectMethod=cursor',
             // ibmdb2: 'DatabaseName=ibmdb2db,ServerName=localhost,PortNumber=446',
@@ -131,10 +131,10 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         String pathForJar = ''
         if(EnvPropertiesHelper.getVersion() == "6.0"){
             pathForJar = "/opt/jboss/modules/$domain/$path/main"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\$domain\\\\$path\\\\main" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path\\\\main" : pathForJar
         } else {
             pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path/main"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path\\\\main" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path\\\\main" : pathForJar
         }
         return  pathForJar
     }
@@ -143,10 +143,10 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         String pathForJar = ''
         if(EnvPropertiesHelper.getVersion() == "6.0"){
             pathForJar = "/opt/jboss/modules/$domain/$path"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\$domain\\\\$path" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path" : pathForJar
         } else {
             pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path" : pathForJar
         }
         return  pathForJar
     }
@@ -399,7 +399,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
 
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() == '6.0') ? "success" : "warning"
+        def expectedStatus = (EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3', '6.4']) ? "success" : "warning"
         assert runProcedureJob1.getStatus() == expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new password."
         checkCreateXADataSource(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName,
@@ -446,7 +446,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
 
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() == '6.0') ? "success" : "warning"
+        def expectedStatus = (EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3', '6.4']) ? "success" : "warning"
         assert runProcedureJob1.getStatus() == expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new user name, password"
         checkCreateXADataSource(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName,
@@ -620,7 +620,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
-        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "0",
+        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "1",
                 'min-pool-size', 10,  defaultPassword, defaultUserName)
         cleanup:
         reloadServer('master')
@@ -673,6 +673,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['7.0', '6.4']})
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--check-valid-connection-sql' (C290071)"() {
         String testCaseId = "C290071"
@@ -707,6 +708,48 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "1",
                 'check-valid-connection-sql', 'INSERT INTO jboss_table VALUES (34, \'qa34\');',  defaultPassword, defaultUserName)
+        cleanup:
+        reloadServer('master')
+          // remove XA datasource
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(defaultProfile, runParams.dataSourceName)) 
+        reloadServer('master')
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
+    }
+
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, Additional Options '--check-valid-connection-sql-2' (C290071)"() {
+        String testCaseId = "C290071"
+        String jdbcDriverName = "mysql"
+        String xaDataSourceName = dataSourceName.postgresql+testCaseId
+
+        def runParams = [
+                additionalOptions               : '--check-valid-connection-sql="Select 1, 2;"',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : xaDataSourceName,
+                enabled                         : defaultEnabledDataSource,
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.mysql,
+                profile                         : defaultProfile,
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.postgresql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+
+        setup:
+        addJDBCMySQL(jdbcDriverName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
+        checkCreateXADataSourceAdditionalOptions(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName, "1",
+                'check-valid-connection-sql', 'Select 1, 2;',  defaultPassword, defaultUserName)
         cleanup:
         reloadServer('master')
           // remove XA datasource
@@ -1046,6 +1089,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Configuration jboss_conf_not_existing doesn't exist."
     }
 
+    @Ignore
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Data Source Name' (C289536)"() {
         String testCaseId = "C289536"
@@ -1074,7 +1118,40 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "The batch failed with the following error \\(you are remaining in the batch editing mode to have a chance to correct the error\\)"
+        assert runProcedureJob.getUpperStepSummary() =~ "Composite operation failed and was rolled back. Steps that failed"
+    }
+
+    @Unroll
+    def "CreateorUpdateXADataSource, MySQL, incorrect value 'Data Source Name' Unclosed quotes (C289536)"() {
+        String testCaseId = "C289536"
+        String jdbcDriverName = "mysql"
+        String xaDataSourceName ="MysqlXADS"+testCaseId
+
+
+        def runParams = [
+                additionalOptions               : '',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : 'Mysql edXA@DS"',
+                enabled                         : defaultEnabledDataSource,
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.mysql,
+                profile                         : 'ha',
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        if (EnvPropertiesHelper.getOS() != "WINDOWS") { 
+            assert runProcedureJob.getUpperStepSummary() =~ "The closing '\"' is missing"
+        }
     }
 
     @Unroll
@@ -1105,7 +1182,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "The batch failed with the following error \\(you are remaining in the batch editing mode to have a chance to correct the error\\)"
+        assert runProcedureJob.getUpperStepSummary() =~ "Jndi name have to start with java:/ or java:jboss/"
     }
 
     @Unroll
@@ -1172,7 +1249,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
 
     void addModuleXADatasource(String profile, String driver, String DSclass){
-        if (EnvPropertiesHelper.getVersion() ==~ '6.0') {
+        if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
             // https://issues.jboss.org/browse/JBPAPP6-944
             reloadServer('master')
             runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
