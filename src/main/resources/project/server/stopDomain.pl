@@ -220,7 +220,6 @@ sub main {
                     . "(before stopping master host controller '%s')."
                     . "\nExpected is to have only master host controller '%s' started at this point,"
                     . "but actual list of started host controllers is: [%s]",
-                ,
                 $master_host,
                 $master_host,
                 join(", ", @all_hosts_after_all_slaves_shutdown)
