@@ -128,6 +128,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone("mysql"))
     }
 
+    @Ignore
     @Unroll
     def "RemoveXADataSource, MySQL  C289614"() {
         String testCaseId = "   C289614"
@@ -331,7 +332,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         }
     }
 
-    void addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass, def enabled){
+    void addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass, def enabled=false){
         runCliCommand(CliCommandsGeneratorHelper.addXADatasource(name, jndiName, driverName, xaDatasourceClass, enabled))
     }
 
