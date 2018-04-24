@@ -353,7 +353,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         when:
         def runParams = [
                 serverconfig          : defaultConfigName,
-                informationType       : informationTypeSystemDump,
+                informationType       : informationTypeDataSources,
                 informationTypeContext: 'full',
                 additionalOptions     : 'wrong-option=true'
         ]
@@ -369,7 +369,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         when:
         def runParams = [
                 serverconfig          : defaultConfigName,
-                informationType       : informationTypeSystemDump,
+                informationType       : informationTypeDataSources,
                 informationTypeContext: 'wrong-profile',
                 additionalOptions     : ''
         ]
