@@ -183,7 +183,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup: 
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -222,12 +222,12 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup: 
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }    
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() == '6.0'})
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']})
     @Unroll
     def "CreateorUpdateXADataSource, PostgreSQL, minimum parameters (C289547)"() {
         String testCaseId = "C289547"
@@ -263,7 +263,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
        }
@@ -306,7 +306,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -345,7 +345,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -383,17 +383,16 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         println("QA $runParams")
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3', '6.4']) ? "success" : "warning"
-        assert runProcedureJob1.getStatus() == expectedStatus
+        def expectedStatus = ["success", "warning"]
+        assert runProcedureJob1.getStatus() in expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new password."
         checkCreateXADataSource(xaDataSourceName, JNDI, jdbcDriverName,
                 "0", newPassword, defaultUserName)
-
         cleanup:
         reloadServer()
         modifyCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, defaultPassword)
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -431,17 +430,16 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         println("QA $runParams")
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() == '6.0') ? "success" : "warning"
-        assert runProcedureJob1.getStatus() == expectedStatus
+        def expectedStatus = ["success", "warning"]
+        assert runProcedureJob1.getStatus() in expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new user name, password."
         checkCreateXADataSource(xaDataSourceName, JNDI, jdbcDriverName,
                 "1", newPassword, newUserName)
-
         cleanup:
         reloadServer()
         modifyCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, defaultPassword)
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -483,7 +481,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -521,7 +519,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup: 
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -561,7 +559,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -602,7 +600,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -641,7 +639,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -681,7 +679,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -720,7 +718,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -760,7 +758,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -800,7 +798,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -1146,7 +1144,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -1184,7 +1182,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         cleanup:
         reloadServer()
         // remove XA datasource
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(runParams.dataSourceName)) 
+        removeXADatasource(xaDataSourceName)
         reloadServer()
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
@@ -1275,5 +1273,15 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
             }
         }
     }
+
+
+    def removeXADatasource(def xaDataSourceName){
+        if (EnvPropertiesHelper.getVersion() == "6.3") {
+            runCliCommandAndGetJBossReply("/subsystem=datasources/xa-data-source=$xaDataSourceName:disable()")
+            reloadServer()
+        }
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(xaDataSourceName)) 
+    }
+
 
 }
