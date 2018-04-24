@@ -1091,7 +1091,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Additional Options' ( C289576)"() {
         String testCaseId = "C289576"
-        String jdbcDriverName = "h2"
+        String jdbcDriverName = "mysql"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '--some-wrong-option',
