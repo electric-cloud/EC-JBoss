@@ -72,7 +72,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
+        // deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -130,7 +130,6 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "mysql"))
     }
 
-    @IgnoreRest
     @Unroll
     def "RemoveXADataSource Enabled XA dataSource, MySQL C289593"() {
         String testCaseId = "C289593"
@@ -143,21 +142,20 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         setup:
         addJDBCMySQL(jdbcDriverName)
         def dataSourceName = runParams.dataSourceName
-        addXADatasource(defaultProfile, dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource')
-        // when:
-        // RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        addXADatasource(defaultProfile, dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource', true)
+        reloadServer('master')
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
         
-        // then:
-        // assert runProcedureJob.getStatus() == "success"
-        // assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been removed successfully"
-        // assert getListOfXADataSource(defaultProfile) == null
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been removed successfully"
+        assert getListOfXADataSource(defaultProfile) == null
 
-        // cleanup:
-        // reloadServer('master')
-        // runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "mysql"))
+        cleanup:
+        reloadServer('master')
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "mysql"))
     }
-
-
 
     @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.3']})
     @Unroll
@@ -304,8 +302,8 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         }
     }        
 
-    void addXADatasource(String profile, String name, String jndiName, String driverName, String xaDatasourceClass){
-        runCliCommand(CliCommandsGeneratorHelper.addXADatasource(profile, name, jndiName, driverName, xaDatasourceClass))
+    void addXADatasource(String profile, String name, String jndiName, String driverName, String xaDatasourceClass, def enabled){
+        runCliCommand(CliCommandsGeneratorHelper.addXADatasource(profile, name, jndiName, driverName, xaDatasourceClass, enabled))
     }
     
 
