@@ -331,7 +331,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         }
     }
 
-    void addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass, def enabled){
+    void addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass, def enabled=false){
         runCliCommand(CliCommandsGeneratorHelper.addXADatasource(name, jndiName, driverName, xaDatasourceClass, enabled))
     }
 

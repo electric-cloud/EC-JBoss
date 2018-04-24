@@ -302,7 +302,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         }
     }        
 
-    void addXADatasource(String profile, String name, String jndiName, String driverName, String xaDatasourceClass, def enabled){
+    void addXADatasource(String profile, String name, String jndiName, String driverName, String xaDatasourceClass, def enabled=false){
         runCliCommand(CliCommandsGeneratorHelper.addXADatasource(profile, name, jndiName, driverName, xaDatasourceClass, enabled))
     }
     
