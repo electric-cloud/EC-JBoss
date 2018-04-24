@@ -56,69 +56,46 @@ sub main {
     $jboss->log_info("=======Started: getting environment information, information type - '$param_information_type'=======");
 
     if ($param_information_type eq "systemDump") {
-        my $additional_parameters = $param_additional_options ? $param_additional_options : "";
-        $cli_command = "/:read-resource($additional_parameters)";
-        my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
-        $env_info = $result{stdout};
+        $env_info = get_env_info_system_dump(
+            jboss                 => $jboss,
+            additional_parameters => $param_additional_options
+        );
     }
     elsif ($param_information_type eq "profiles") {
-        my $additional_parameters = $param_additional_options ? ",$param_additional_options" : "";
-        $cli_command = "/:read-children-resources(child-type=profile$additional_parameters)";
-        my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
-        $env_info = $result{stdout};
+        $env_info = get_env_info_profiles(
+            jboss                 => $jboss,
+            additional_parameters => $param_additional_options
+        );
     }
-    elsif ($param_information_type eq "dataSources") {
-        my $additional_parameters = $param_additional_options ? ",$param_additional_options" : "";
+    elsif ($param_information_type eq "dataSources" || $param_information_type eq "xaDataSources") {
+        my $get_xa = 1 if $param_information_type eq "xaDataSources";
+
         if ($jboss_is_domain) {
             if ($param_information_type_context) {
-                my $profile = $param_information_type_context;
-                $cli_command = "/profile=$profile/subsystem=datasources/:read-children-resources(child-type=data-source$additional_parameters)";
-                my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
-                $env_info = $result{stdout};
+                $env_info = get_env_info_data_sources_in_profile(
+                    jboss                 => $jboss,
+                    get_xa                => $get_xa,
+                    profile               => $param_information_type_context,
+                    additional_parameters => $param_additional_options
+                );
             }
             else {
-                my @all_profiles = @{ get_all_profiles(jboss => $jboss) };
-                my %profiles_env_info;
-                foreach my $profile (@all_profiles) {
-                    $cli_command = "/profile=$profile/subsystem=datasources/:read-children-resources(child-type=data-source$additional_parameters)";
-                    my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
-                    $profiles_env_info{$profile} = $result{stdout};
-                }
-                $env_info = join("\n", map {"Profile '$_': $profiles_env_info{$_}"} keys %profiles_env_info);
+                $env_info = get_env_info_data_sources_in_all_profiles(
+                    jboss                 => $jboss,
+                    get_xa                => $get_xa,
+                    additional_parameters => $param_additional_options
+                );
             }
         }
         else {
-            $cli_command = "/subsystem=datasources/:read-children-resources(child-type=data-source$additional_parameters)";
-            my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
-            $env_info = $result{stdout};
+            $env_info = get_env_info_data_sources_in_standalone(
+                jboss                 => $jboss,
+                get_xa                => $get_xa,
+                additional_parameters => $param_additional_options
+            );
         }
     }
-    elsif ($param_information_type eq "xaDataSources") {
-        my $additional_parameters = $param_additional_options ? ",$param_additional_options" : "";
-        if ($jboss_is_domain) {
-            if ($param_information_type_context) {
-                my $profile = $param_information_type_context;
-                $cli_command = "/profile=$profile/subsystem=datasources/:read-children-resources(child-type=xa-data-source$additional_parameters)";
-                my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
-                $env_info = $result{stdout};
-            }
-            else {
-                my @all_profiles = @{ get_all_profiles(jboss => $jboss) };
-                my %profiles_env_info;
-                foreach my $profile (@all_profiles) {
-                    $cli_command = "/profile=$profile/subsystem=datasources/:read-children-resources(child-type=xa-data-source$additional_parameters)";
-                    my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
-                    $profiles_env_info{$profile} = $result{stdout};
-                }
-                $env_info = join("\n", map {"Profile '$_': $profiles_env_info{$_}"} keys %profiles_env_info);
-            }
-        }
-        else {
-            $cli_command = "/subsystem=datasources/:read-children-resources(child-type=xa-data-source$additional_parameters)";
-            my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
-            $env_info = $result{stdout};
-        }
-    }
+
     $env_info = replace_passwords_by_stars_in_cli_response($env_info);
 
     $jboss->log_info("Requested Environment Information: $env_info");
@@ -205,4 +182,118 @@ sub replace_passwords_by_stars_in_cli_response {
     return $string unless $string;
     $string =~ s/"password" => ".*?"/"password" => "***"/gs;
     return $string;
+}
+
+sub is_datasources_subsystem_available_in_profile {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $profile = $args{profile} || croak "'profile' is required param";
+
+    my @subsystems = @{ get_all_subsystems_in_profile(jboss => $jboss, profile => $profile) };
+    my %subsystems_hash = map {$_ => 1} @subsystems;
+
+    if ($subsystems_hash{'datasources'}) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
+}
+
+sub get_all_subsystems_in_profile {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $profile = $args{profile} || croak "'profile' is required param";
+
+    my $cli_command = qq|/profile=$profile/:read-children-names(child-type=subsystem)|;
+    my $subsystems = run_command_and_get_json_result_with_exiting_on_non_success(
+        command => $cli_command,
+        jboss   => $jboss
+    );
+    return $subsystems;
+}
+
+sub get_env_info_system_dump {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $additional_parameters = $args{additional_parameters};
+
+    $additional_parameters = $additional_parameters ? $additional_parameters : "";
+    my $cli_command = "/:read-resource($additional_parameters)";
+    my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+    my $env_info = $result{stdout};
+
+    return $env_info;
+}
+
+sub get_env_info_profiles {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $additional_parameters = $args{additional_parameters};
+
+    $additional_parameters = $additional_parameters ? ",$additional_parameters" : "";
+    my $cli_command = "/:read-children-resources(child-type=profile$additional_parameters)";
+    my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+    my $env_info = $result{stdout};
+
+    return $env_info;
+}
+
+sub get_env_info_data_sources_in_standalone {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $get_xa = $args{get_xa};
+    my $additional_parameters = $args{additional_parameters};
+
+    my $xa_prefix = $get_xa ? "xa-" : "";
+    $additional_parameters = $additional_parameters ? ",$additional_parameters" : "";
+    my $cli_command = "/subsystem=datasources/:read-children-resources(child-type=${xa_prefix}data-source${additional_parameters})";
+    my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+    my $env_info = $result{stdout};
+
+    return $env_info;
+}
+
+sub get_env_info_data_sources_in_profile {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $profile = $args{profile} || croak "'profile' is required param";
+    my $get_xa = $args{get_xa};
+    my $additional_parameters = $args{additional_parameters};
+
+    my $xa_prefix = $get_xa ? "xa-" : "";
+    $additional_parameters = $additional_parameters ? ",$additional_parameters" : "";
+    my $cli_command = "/profile=${profile}/subsystem=datasources/:read-children-resources(child-type=${xa_prefix}data-source${additional_parameters})";
+    my %result = run_command_with_exiting_on_error(command => $cli_command, jboss => $jboss);
+    my $env_info = $result{stdout};
+
+    return $env_info;
+}
+
+sub get_env_info_data_sources_in_all_profiles {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $get_xa = $args{get_xa};
+    my $additional_parameters = $args{additional_parameters};
+
+    my @all_profiles = @{ get_all_profiles(jboss => $jboss) };
+    my %profiles_env_info;
+    foreach my $profile (@all_profiles) {
+        if (is_datasources_subsystem_available_in_profile(jboss => $jboss, profile => $profile)) {
+            $jboss->log_info("There is 'datasources' subsystem within '$profile' profile");
+            $profiles_env_info{$profile} = get_env_info_data_sources_in_profile(
+                jboss                 => $jboss,
+                get_xa                => $get_xa,
+                profile               => $profile,
+                additional_parameters => $additional_parameters
+            );
+        }
+        else {
+            $jboss->log_info("There is no 'datasources' subsystem within '$profile' profile");
+            $profiles_env_info{$profile} = "No 'datasources' subsystem";
+        }
+    }
+    my $env_info = join("\n", map {"Profile '$_': $profiles_env_info{$_}"} keys %profiles_env_info);
+
+    return $env_info;
 }

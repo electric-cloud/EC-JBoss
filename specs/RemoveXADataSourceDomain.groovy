@@ -84,10 +84,10 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         String pathForJar = ''
         if(EnvPropertiesHelper.getVersion() == "6.0"){
             pathForJar = "/opt/jboss/modules/$domain/$path/main"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\$domain\\\\$path\\\\main" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path\\\\main" : pathForJar
         } else {
             pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path/main"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path\\\\main" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path\\\\main" : pathForJar
         }
         return  pathForJar
     }
@@ -96,10 +96,10 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         String pathForJar = ''
         if(EnvPropertiesHelper.getVersion() == "6.0"){
             pathForJar = "/opt/jboss/modules/$domain/$path"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\$domain\\\\$path" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path" : pathForJar
         } else {
             pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path" : pathForJar
         }
         return  pathForJar
     }
@@ -326,7 +326,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
     }
 
     void addModuleXADatasource(String profile, String driver, String DSclass){
-        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.3']) {
+        if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
             // https://issues.jboss.org/browse/JBPAPP6-944
             reloadServer('master')
             runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))

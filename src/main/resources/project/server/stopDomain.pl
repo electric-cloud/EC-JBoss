@@ -55,15 +55,18 @@ sub main {
     }
 
     ########
+    # check jboss version
+    ########
+    my $version = $jboss->get_jboss_server_version();
+    my $product_version = $version->{product_version};
+    my $jboss_is_6x = 1 if $product_version =~ m/^6/;
+
+    ########
     # check whether timeout option is supported (supported in EAP 7 and later)
     ########
-    if ($param_timeout ne "") {
-        my $version = $jboss->get_jboss_server_version();
-        my $product_version = $version->{product_version};
-        if ($product_version =~ m/^6/ ) {
-            $jboss->log_warning("Timeout for stop-servers and shutdown is not supported in JBoss EAP 6.X - ignoring it");
-            $param_timeout = "";
-        }
+    if ($jboss_is_6x && $param_timeout ne "") {
+        $jboss->log_warning("Timeout for stop-servers and shutdown is not supported in JBoss EAP 6.X - ignoring it");
+        $param_timeout = "";
     }
 
     ########
@@ -96,27 +99,27 @@ sub main {
             if ($server_status eq "STOPPED" || $server_status eq "DISABLED") {
                 $jboss->log_info("Server '$server_name' on host '$host' is '$server_status'");
                 my %server_info = (
-                    server_name => $server_name,
+                    server_name   => $server_name,
                     server_status => $server_status,
-                    host_name => $host,
+                    host_name     => $host,
                 );
                 push @servers_with_status_stopped_or_disabled, \%server_info;
             }
             elsif ($server_status eq "STOPPING") {
                 $jboss->log_warning("Server '$server_name' on host '$host' is '$server_status'");
                 my %server_info = (
-                    server_name => $server_name,
+                    server_name   => $server_name,
                     server_status => $server_status,
-                    host_name => $host,
+                    host_name     => $host,
                 );
                 push @servers_with_status_stopping, \%server_info;
             }
             else {
                 $jboss->log_error("Server '$server_name' on host '$host' is '$server_status'");
                 my %server_info = (
-                    server_name => $server_name,
+                    server_name   => $server_name,
                     server_status => $server_status,
-                    host_name => $host,
+                    host_name     => $host,
                 );
                 push @servers_with_unexpected_status, \%server_info;
             }
@@ -184,7 +187,7 @@ sub main {
 
         foreach my $host (@all_hosts) {
             $jboss->log_info("Checking whether host controller '$host' is master or slave");
-            if ( is_host_master(jboss => $jboss, host => $host) ) {
+            if (is_host_master(jboss => $jboss, host => $host)) {
                 $jboss->log_info("Host controller '$host' is master");
                 $master_host = $host;
             }
@@ -197,8 +200,9 @@ sub main {
         # shutdown of slave host controllers
         foreach my $host (@all_slave_hosts) {
             $jboss->log_info("Starting shudown of slave host controller '$host'");
-            my $cli_shutdown_slave = "/host=$host:shutdown";
-            $cli_shutdown_slave .= "(timeout=$param_timeout)" if $param_timeout ne "";
+            my $cli_shutdown_slave = $jboss_is_6x
+                ? get_cli_host_shutdown_6x(host => $host)
+                : get_cli_host_shutdown_7x(host => $host, timeout => $param_timeout);
             run_command_with_exiting_on_error(command => $cli_shutdown_slave, jboss => $jboss);
             $summary .= "\nShutdown was performed for slave host controller '$host'";
             $jboss->log_info("Done with shudown of slave host controller '$host'");
@@ -207,34 +211,38 @@ sub main {
         # verification that shutdown of slave host controllers was successful
         my @all_hosts_after_all_slaves_shutdown = @{ get_all_hosts(jboss => $jboss) };
         if (@all_hosts_after_all_slaves_shutdown == 1
-            || $all_hosts_after_all_slaves_shutdown[0] eq $master_host) {
+            && $all_hosts_after_all_slaves_shutdown[0] eq $master_host) {
             $jboss->log_info("All slave host controllers expect master '$master_host' are shut down");
         }
         else {
-            my $error_summary = "Something wrong after stopping all slave host controllers (before stopping master host controller '$master_host').";
-            $error_summary .= "\nExpected is to have only master host controller '$master_host' started at this point, but actual list of started host controllers is: [" . join(", ", @all_hosts_after_all_slaves_shutdown) . "]";
+            my $error_summary = sprintf(
+                "Something wrong after stopping all slave host controllers"
+                    . "(before stopping master host controller '%s')."
+                    . "\nExpected is to have only master host controller '%s' started at this point,"
+                    . "but actual list of started host controllers is: [%s]",
+                $master_host,
+                $master_host,
+                join(", ", @all_hosts_after_all_slaves_shutdown)
+            );
             $jboss->log_error($error_summary);
 
             $summary .= "\n\nError: $error_summary";
-            $jboss->set_property(summary => $summary );
+            $jboss->set_property(summary => $summary);
             $jboss->error();
             exit 1;
         }
 
         # shutdown of master host controller
         $jboss->log_info("Starting shudown of master host controller '$master_host'");
-        my $cli_shutdown_master = "/host=$master_host:shutdown";
-        $cli_shutdown_master .= "(timeout=$param_timeout)" if $param_timeout ne "";
+        my $cli_shutdown_master = $jboss_is_6x
+            ? get_cli_host_shutdown_6x(host => $master_host)
+            : get_cli_host_shutdown_7x(host => $master_host, timeout => $param_timeout);
         run_command_with_exiting_on_error(command => $cli_shutdown_master, jboss => $jboss);
         $summary .= "\nShutdown was performed for master host controller '$master_host'";
         $jboss->log_info("Done with shudown of master host controller '$master_host'");
 
         # verification that shutdown of master host controller was successful
-        $cli_command = ':read-attribute(name=launch-type)';
-        my %result = $jboss->run_command($cli_command);
-        if ( $result{code}
-            && ($result{stdout} =~ m/The\scontroller\sis\snot\savailable/gs
-                || $result{stderr} =~ m/The\scontroller\sis\snot\savailable/gs) ) {
+        if (is_host_controller_not_available(jboss => $jboss)) {
             $jboss->log_info("Master host controller '$master_host' is shut down, checked that connenction via CLI failed with 'The controller is not available...' error");
         }
         else {
@@ -242,7 +250,7 @@ sub main {
             $jboss->log_error("Check that master host controller '$master_host' is shut down failed (check that connenction via CLI failed with 'The controller is not available...' error is failed)");
 
             $summary .= "\n\nError: $error_summary";
-            $jboss->set_property(summary => $summary );
+            $jboss->set_property(summary => $summary);
             $jboss->error();
             exit 1;
         }
@@ -346,4 +354,38 @@ sub trim {
     return $s if !$s;
     $s =~ s/^\s+|\s+$//g;
     return $s;
+}
+
+sub get_cli_host_shutdown_6x {
+    my %args = @_;
+    my $host = $args{host} || croak "'host' is required param";
+
+    my $cli_host_shutdown = "/host=$host:shutdown";
+    return $cli_host_shutdown;
+}
+
+sub get_cli_host_shutdown_7x {
+    my %args = @_;
+    my $host = $args{host} || croak "'host' is required param";
+    my $timeout = $args{timeout};
+
+    my $cli_host_shutdown = "shutdown --host=$host";
+    $cli_host_shutdown .= " --timeout=$timeout" if $timeout && $timeout ne "";
+    return $cli_host_shutdown;
+}
+
+sub is_host_controller_not_available {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+
+    my $cli_command = ':read-attribute(name=launch-type)';
+    my %result = $jboss->run_command($cli_command);
+    if ($result{code}
+        && ($result{stdout} =~ m/The\scontroller\sis\snot\savailable/s
+        || $result{stderr} =~ m/The\scontroller\sis\snot\savailable/s)) {
+        return 1;
+    }
+    else {
+        return 0;
+    }
 }

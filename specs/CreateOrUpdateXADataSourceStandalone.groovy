@@ -65,7 +65,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
              */
             empty: '',
             mysql: '"DatabaseName"=>"mysqlDB","ServerName"=>"localhost","Port"=>"3306"',
-            postgresql: '"DatabaseName"=>"postgresdb","ServerName"=>"servername","Port=>5432"'
+            postgresql: '"DatabaseName"=>"postgresdb","ServerName"=>"servername","Port"=>"5432"'
             // oracle: 'url=jdbc:oracle:oci8:@tc',
             // sqlserver: 'DatabaseName=mssqldb,ServerName=localhost,SelectMethod=cursor',
             // ibmdb2: 'DatabaseName=ibmdb2db,ServerName=localhost,PortNumber=446',
@@ -130,10 +130,10 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String pathForJar = ''
         if(EnvPropertiesHelper.getVersion() == "6.0"){
             pathForJar = "/opt/jboss/modules/$domain/$path/main"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\$domain\\\\$path\\\\main" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path\\\\main" : pathForJar
         } else {
             pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path/main"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path\\\\main" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path\\\\main" : pathForJar
         }
         return  pathForJar
     }
@@ -142,10 +142,10 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String pathForJar = ''
         if(EnvPropertiesHelper.getVersion() == "6.0"){
             pathForJar = "/opt/jboss/modules/$domain/$path"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\$domain\\\\$path" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path" : pathForJar
         } else {
             pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path"
-            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\opt\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path" : pathForJar
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path" : pathForJar
         }
         return  pathForJar
     }
@@ -644,7 +644,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(jdbcDriverName))
     }
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() == '7.0'})
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.4', '7.0']})
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options --check-valid-connection-sql' (C289557)"() {
         String testCaseId = "C289557"
@@ -1216,7 +1216,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     }
 
     void addModuleXADatasource(String driver, String DSclass){
-        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.3']) {
+        if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
             // https://issues.jboss.org/browse/JBPAPP6-944
             reloadServer()
             runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))

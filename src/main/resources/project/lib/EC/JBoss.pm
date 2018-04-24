@@ -1140,13 +1140,14 @@ sub get_servergroup_status {
     if (!$server_group_name) {
         $self->bail_out("Servergroup parameter is mandatory");
     }
-    my %hosts_response = $self->run_command(':read-children-names(child-type=host)');
+    my %hosts_response = $self->run_command_with_exiting_on_error(
+        command => ':read-children-names(child-type=host)'
+    );
     my $hosts_json = $self->decode_answer($hosts_response{stdout});
 
     for my $host_name (@{$hosts_json->{result}}) {
         my $command = sprintf '/host=%s:read-children-resources(child-type=server-config,include-runtime=true)', $host_name;
-        #todo: possibile issue here - what if command fail for one host, then we ignore it and will provide consolidated status of servers on other hosts
-        my %response = $self->run_command($command);
+        my %response = $self->run_command_with_exiting_on_error(command => $command);
         my $children_json = $self->decode_answer($response{stdout});
 
         for my $server_name ( keys %{$children_json->{result} } ) {
@@ -1554,6 +1555,20 @@ sub replace_password_by_stars {
     $string =~ s/"password":".*?"/"password":"***"/gs;
     $string =~ s/\/:write-attribute\(name=password,value=.*?\)/\/:write-attribute\(name=password,value=***\)/gs;
     return $string;
+}
+
+sub run_command_with_exiting_on_error {
+    my $self = shift;
+    my %args = @_;
+    my $command = $args{command} || croak "'command' is required param";
+
+    my %result = $self->run_command($command);
+    if ($result{code}) {
+        $self->process_response(%result);
+        exit 1;
+    }
+
+    return %result;
 }
 
 1;

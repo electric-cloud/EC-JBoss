@@ -12,9 +12,8 @@ services:
     container_name: electricflow
     tty: true
   jboss:
-    image: jboss-domain:v7.0
+    image: electricflow/jboss7:v7.0
     environment:
-      - JBOSS_PASSWORD=changeme1!
       - JBOSS_MODE=domain
       - SLAVE_USERS=jbossslave1
     ports:
@@ -29,10 +28,9 @@ services:
     container_name: jboss7.0-master
     tty: true
   jboss-slave1: 
-    image: jboss-domain:v7.0
+    image: electricflow/jboss7:v7.0
     environment:
       - SLAVE_USER=jbossslave1
-      - JBOSS_PASSWORD=changeme1!
       - JBOSS_MODE=slave
       - HOST_CONFIG=host-slave.xml
     ports:
