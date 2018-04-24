@@ -1055,7 +1055,6 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Jndi name have to start with java:/ or java:jboss/"
     }
 
-    // @IgnoreRest
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value  'JDBC Driver Name' ( C289572)"() {
         String testCaseId = "C289572"
