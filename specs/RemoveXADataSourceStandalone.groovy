@@ -156,7 +156,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
     }
 
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.3']})
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.2', '6.3']})
     @Unroll
     def "RemoveXADataSource, PostgreSQL C289614"() {
         String testCaseId = "C289614"
