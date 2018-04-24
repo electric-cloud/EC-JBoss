@@ -188,7 +188,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup: 
         reloadServer('master')
         // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName)
+        removeXADatasource(runParams.profile, xaDataSourceName)
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -231,7 +231,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup: 
         reloadServer('master')
         // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -272,7 +272,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup: 
         reloadServer('master')
         // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -315,7 +315,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup:
         reloadServer('master')
         // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -360,7 +360,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup:
         reloadServer('master')
         // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -407,7 +407,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         reloadServer('master')
         modifyCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, defaultPassword)
         // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -454,7 +454,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         reloadServer('master')
         modifyCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, defaultPassword)
         // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -495,7 +495,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup:
         reloadServer('master')
           // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -538,7 +538,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup:
         reloadServer('master')
         // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain('full-ha', jdbcDriverName))
     }
@@ -580,7 +580,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup:
         reloadServer('master')
           // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -623,7 +623,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup:
         reloadServer('master')
           // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -666,7 +666,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup:
         reloadServer('master')
           // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -709,7 +709,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup:
         reloadServer('master')
           // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -793,7 +793,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup:
         reloadServer('master')
           // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
@@ -835,7 +835,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         cleanup:
         reloadServer('master')
           // remove XA datasource
-        removeXADatasource(dataSourceName.profile, xaDataSourceName) 
+        removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
