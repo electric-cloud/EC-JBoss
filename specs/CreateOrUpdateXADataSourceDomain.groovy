@@ -2,7 +2,7 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-@Ignore({env.EnvPropertiesHelper.getVersion() == "6.3"})
+@IgnoreIf({env.EnvPropertiesHelper.getVersion() == "6.3"})
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
 
