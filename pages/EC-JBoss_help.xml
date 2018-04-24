@@ -685,17 +685,17 @@
                 This procedure creates a new XA data source or updates some properties (JNDI name or credentials) for an existing XA data source.
                 <br/><br/>
                 Unique identifier for a XA data source per operating mode are as follows:
-                <ol>
+                <ul>
                     <li>For Standalone : 'Data Source Name'</li>
                     <li>For Domain : 'Data Source Name' and 'Profile'</li>
-                </ol>
+                </ul>
                 List of updatable properties (for update scenarios):
-                <ol>
+                <ul>
                     <li>JNDI name</li>
                     <li>Credentials: username/password</li>
-                </ol>
+                </ul>
                 The expected behavior of this procedure is described below
-                <ol>
+                <ul>
                     <li>
                         If XA data source does not exist (based on unique identifier) it will be created.
                         In case of Domain it will be created based on the specified Profile.
@@ -720,7 +720,7 @@
                         <br/>
                         NOTE: all other properties than updatable ones and Additional Options will be ignored.
                     </li>
-                </ol>
+                </ul>
                 NOTE: JBoss servers may require restart or reload after a XA data source is created or updated.
                 The procedure would parse the JBoss Response and report as part of the step summary if a reload or a restart is required
                 and where these are required will have report the status as a Warning.
@@ -1336,20 +1336,20 @@
                 and writes it to logs and property.
                 <br/>
                 Outputs can be found in the following places:
-                <ol>
+                <ul>
                     <li>in property 'envInfo' within job step</li>
                     <li>in logs after "INFO: Requested Environment Information: " pattern</li>
-                </ol>
+                </ul>
                 There are the following 'Information Types' supported by the procedure which may be requested:
-                <ol>
+                <ul>
                     <li>System Dump</li>
                     <li>Profiles (for Domain only)</li>
                     <li>Data Sources</li>
                     <li>XA Data Sources</li>
-                </ol>
+                </ul>
                 Different CLI calls will be performed and different outputs will be received
                 depends on the 'Information Type' (and in some cases depends on 'Information Type Context').
-                <ol>
+                <ul>
                     <li>
                         System Dump.
                         <br/>
@@ -1386,8 +1386,7 @@
                         <br/>
                         Combined output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoXADataSourcesAllProfiles.PNG" />
                     </li>
-                    <li>XA Data Sources</li>
-                </ol>
+                </ul>
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the GetEnvInfo procedure.</li>
@@ -1599,10 +1598,10 @@
                 This procedure removes an existing XA data source in the JBoss EAP 'datasources' subsystem.
                 <br/>
                 Unique identifier for a XA data source per operating mode are as follows:
-                <ol>
+                <ul>
                     <li>For Standalone : 'Data Source Name'</li>
                     <li>For Domain : 'Data Source Name' and 'Profile'</li>
-                </ol>
+                </ul>
                 The expected behavior of this procedure is described below
                 <br/>
                 If the specified XA data source exists it will be removed, else it will return a job status of warning.
@@ -1929,19 +1928,31 @@
                 A value smaller than zero means that the server will wait indefinitely for all active requests to finish."
                 <br/><br/>
                 The following examples shows how the procedure stops servers and performs shutdown of all host controllers
-                in the case of EAP 7.0 and EAP 6.0 respectively:
-                <ol>
+                <br/>
+                in the case of EAP 7.0:
+                <ul>
                     <li>
                         :stop-servers(timeout=60)
-                        shutdown --host=slave --timeout=60
-                        shutdown --host=master --timeout=60
                     </li>
                     <li>
+                        shutdown --host=slave --timeout=60
+                    </li>
+                    <li>
+                        shutdown --host=master --timeout=60
+                    </li>
+                </ul>
+                and in case of EAP 6.0 :
+                <ul>
+                    <li>
                         :stop-servers
+                    </li>
+                    <li>
                         /host=slave:shutdown
+                    </li>
+                    <li>
                         /host=master:shutdown
                     </li>
-                </ol>
+                </ul>
                 NOTE: the procedure can have status warning in case
                 if there are some STOPPING servers detected after stop-servers is performed
                 when 'All Controllers Shutdown' is not chosen (expected statuses of servers are STOPPED or DISABLED).
