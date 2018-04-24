@@ -1332,7 +1332,62 @@
             </div>
             <div id="GetEnvInfo"> <a name="GetEnvInfo" id="GetEnvInfo"></a>
                 <h2>GetEnvInfo</h2>
-                This procedure retrieves requested information from JBoss via CLI and writes it to logs and property.
+                This procedure retrieves requested information from JBoss via CLI
+                and writes it to logs and property.
+                <br/>
+                Outputs can be found in the following places:
+                <ol>
+                    <li>in property 'envInfo' within job step</li>
+                    <li>in logs after "INFO: Requested Environment Information: " pattern</li>
+                </ol>
+                There are the following 'Information Types' supported by the procedure which may be requested:
+                <ol>
+                    <li>System Dump</li>
+                    <li>Profiles (for Domain only)</li>
+                    <li>Data Sources</li>
+                    <li>XA Data Sources</li>
+                </ol>
+                Different CLI calls will be performed and different outputs will be received
+                depends on the 'Information Type' (and in some cases depends on 'Information Type Context').
+                <ol>
+                    <li>
+                        System Dump.
+                        <br/>
+                        CLI call: '/:read-resource'
+                        <br/>
+                        Output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoSystemDump.PNG" />
+                    </li>
+                    <li>
+                        Profiles (for Domain only).
+                        <br/>
+                        CLI call: '/:read-children-resources(child-type=profile)'
+                        <br/>
+                        Output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoProfiles.PNG" />
+                    </li>
+                    <li>
+                        Data Sources on Standalone or on profile within Domain (provided within 'Information Type Context')
+                        <br/>
+                        CLI call on standalone: '/subsystem=datasources/:read-children-resources(child-type=data-source)'
+                        <br/>
+                        CLI call on 'full' profile within Domain: '/profile=full/subsystem=datasources/:read-children-resources(child-type=data-source)'
+                        <br/>
+                        Output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoDataSources.PNG" />
+                        <br/>
+                        Similar flow for XA Data Sources.
+                    </li>
+                    <li>
+                        Data Sources on all profiles within Domain (not provided 'Information Type Context')
+                        <br/>
+                        CLI call performed for every profile which contains 'datasources' subsystem: '/profile=full/subsystem=datasources/:read-children-resources(child-type=data-source)'
+                        <br/>
+                        Combined output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoDataSourcesAllProfiles.PNG" />
+                        <br/>
+                        Similar flow for XA Sata Sources. For example
+                        <br/>
+                        Combined output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoXADataSourcesAllProfiles.PNG" />
+                    </li>
+                    <li>XA Data Sources</li>
+                </ol>
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the GetEnvInfo procedure.</li>
@@ -1361,10 +1416,12 @@
                                         <br />
                                         Information Type.
                                         Possible options:
-                                        System Dump,
-                                        Profiles,
-                                        Data Sources,
-                                        XA Data Sources
+                                        <ol>
+                                            <li>System Dump</li>
+                                            <li>Profiles (for Domain only)</li>
+                                            <li>Data Sources</li>
+                                            <li>XA Data Sources</li>
+                                        </ol>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1374,7 +1431,9 @@
                                     <td>
                                         Optional parameter.
                                         <br />
-                                        Information Type Context
+                                        Information Type Context.
+                                        At current implementation it is considered only when Information Type is Data Sources or XA Data Sources and JBoss launched in Domain mode.
+                                        In this case it is considered as profile where information about data sources to be gathered.
                                     </td>
                                 </tr>
                                 <tr>
@@ -1382,7 +1441,8 @@
                                     <td>
                                         Optional parameter.
                                         <br />
-                                        Additional Options
+                                        'Additional Options' can be included into CLI call, e.g.: '/:read-resource(include-runtime=true,include-defaults=true)'
+                                        can be called instead of '/:read-resource' if 'include-runtime=true,include-defaults=true' is provided within 'Additional Options'.
                                     </td>
                                 </tr>
                             </tbody>
@@ -1393,6 +1453,8 @@
                 <p> After the job runs, you can view the results on the Job Details page
                     in ElectricFlow. In the <b>GetEnvInfo</b> step, click the
                     Log icon to see the diagnostic information. </p>
+                <br/>
+                <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoRun.PNG" />
             </div>
             <div id="RemoveJMSQueue"> <a name="RemoveJMSQueue" id="RemoveJMSQueue"></a>
                 <h2>RemoveJMSQueue</h2>
