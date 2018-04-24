@@ -1214,6 +1214,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Management resource.*full_not_existing.*not found"
     }
 
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0']})
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Additional Options' (C289542)"() {
         String testCaseId = "C289542"
