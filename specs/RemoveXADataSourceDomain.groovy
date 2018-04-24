@@ -157,7 +157,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "mysql"))
     }
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.2', '6.3']})
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3']})
     @Unroll
     def "RemoveXADataSource, PostgreSQL C289594"() {
         String testCaseId = "C289594"

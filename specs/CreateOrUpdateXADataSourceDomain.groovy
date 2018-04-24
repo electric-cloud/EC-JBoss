@@ -236,7 +236,7 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.2']})
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3']})
     @Unroll
     def "CreateorUpdateXADataSource, PostgreSQL, minimum parameters (C289503)"() {
         String testCaseId = "C289503"
