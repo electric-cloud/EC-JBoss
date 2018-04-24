@@ -2,7 +2,8 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
-class GetEnvInfo extends PluginTestHelper {
+@Requires({ env.JBOSS_MODE == 'standalone' })
+class GetEnvInfoStandalone extends PluginTestHelper {
 
     @Shared
     String procName = 'GetEnvInfo'
@@ -53,8 +54,7 @@ class GetEnvInfo extends PluginTestHelper {
     }
 
     @Unroll
-    @Requires({ env.JBOSS_MODE == 'standalone' })
-    def "GetEnvInfo, Standalone, systemDump with minimum params (systemDump1)"() {
+    def "GetEnvInfo, Standalone, systemDump with minimum params (systemDump 1)"() {
         when:
         def runParams = [
                 serverconfig          : defaultConfigName,
@@ -75,16 +75,112 @@ class GetEnvInfo extends PluginTestHelper {
                 prefix + /"extension" => \{.*/,
                 prefix + /"subsystem" => \{.*"datasources" => .*/
         ]
+        String[] envInfoPatternsNotExixsting = [
+                prefix + /"launch-type" => .*/
+        ]
 
         for (String envInfoPattern: envInfoPatterns) {
             assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
             assert envInfo =~ /(?s)/ + envInfoPattern
         }
+
+        for (String envInfoPattern: envInfoPatternsNotExixsting) {
+            assert !(runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern)
+            assert !(envInfo =~ /(?s)/ + envInfoPattern)
+        }
     }
 
     @Unroll
-    @Requires({ env.JBOSS_MODE == 'standalone' })
-    def "Negaitve. GetEnvInfo, requesting profiles when standalone (testsdkfj)"() {
+    def "GetEnvInfo, Standalone, systemDump context ignored (systemDump 2)"() {
+        when:
+        def runParams = [
+                serverconfig          : defaultConfigName,
+                informationType       : informationTypeSystemDump,
+                informationTypeContext: 'someContext',
+                additionalOptions     : ''
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        def envInfo = getJobProperty('/myJob/jobSteps/GetEnvInfo/envInfo', runProcedureJob.getJobId())
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+
+        String prefix = /"outcome" => "success",.*"result" => \{.*/
+        String[] envInfoPatterns = [
+                prefix + /"product-name" => .*/,
+                prefix + /"deployment" => .*/,
+                prefix + /"extension" => \{.*/,
+                prefix + /"subsystem" => \{.*"datasources" => .*/
+        ]
+        String[] envInfoPatternsNotExixsting = [
+                prefix + /"launch-type" => .*/
+        ]
+
+        for (String envInfoPattern: envInfoPatterns) {
+            assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
+            assert envInfo =~ /(?s)/ + envInfoPattern
+        }
+
+        for (String envInfoPattern: envInfoPatternsNotExixsting) {
+            assert !(runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern)
+            assert !(envInfo =~ /(?s)/ + envInfoPattern)
+        }
+    }
+
+    @Unroll
+    def "GetEnvInfo, Standalone, systemDump additional options (systemDump 3)"() {
+        when:
+        def runParams = [
+                serverconfig          : defaultConfigName,
+                informationType       : informationTypeSystemDump,
+                informationTypeContext: '',
+                additionalOptions     : 'include-runtime=true,include-defaults=true'
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        def envInfo = getJobProperty('/myJob/jobSteps/GetEnvInfo/envInfo', runProcedureJob.getJobId())
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+
+        String prefix = /"outcome" => "success",.*"result" => \{.*/
+        String[] envInfoPatterns = [
+                prefix + /"product-name" => .*/,
+                prefix + /"deployment" => .*/,
+                prefix + /"extension" => \{.*/,
+                prefix + /"subsystem" => \{.*"datasources" => .*/,
+                prefix + /"launch-type" => .*/
+        ]
+        String[] envInfoPatternsNotExixsting = []
+
+        for (String envInfoPattern: envInfoPatterns) {
+            assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
+            assert envInfo =~ /(?s)/ + envInfoPattern
+        }
+
+        for (String envInfoPattern: envInfoPatternsNotExixsting) {
+            assert !(runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern)
+            assert !(envInfo =~ /(?s)/ + envInfoPattern)
+        }
+    }
+
+    @Unroll
+    def "Negaitve. GetEnvInfo, Standalone, systemDump wrong additional options (systemDump 4)"() {
+        when:
+        def runParams = [
+                serverconfig          : defaultConfigName,
+                informationType       : informationTypeSystemDump,
+                informationTypeContext: '',
+                additionalOptions     : 'wrong-option=true'
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ /'wrong-option' is not found among the supported properties/
+    }
+
+    @Unroll
+    def "Negaitve. GetEnvInfo, requesting profiles when standalone (profiles 1)"() {
         when:
         def runParams = [
                 serverconfig          : defaultConfigName,
@@ -96,11 +192,11 @@ class GetEnvInfo extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ /No known child type named profile/
     }
 
     @Unroll
-    @Requires({ env.JBOSS_MODE == 'standalone' })
-    def "GetEnvInfo, Standalone, dataSources with minimum params - check default data source (dataSources1)"() {
+    def "GetEnvInfo, Standalone, dataSources with minimum params (dataSources 1)"() {
         when:
         def runParams = [
                 serverconfig          : defaultConfigName,
@@ -128,8 +224,79 @@ class GetEnvInfo extends PluginTestHelper {
     }
 
     @Unroll
-    @Requires({ env.JBOSS_MODE == 'standalone' })
-    def "GetEnvInfo, Standalone, dataSources with minimum params - check default data source (xaDataSources1)"() {
+    def "GetEnvInfo, Standalone, dataSources context ignored (dataSources 2)"() {
+        when:
+        def runParams = [
+                serverconfig          : defaultConfigName,
+                informationType       : informationTypeDataSources,
+                informationTypeContext: 'someContext',
+                additionalOptions     : ''
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        def envInfo = getJobProperty('/myJob/jobSteps/GetEnvInfo/envInfo', runProcedureJob.getJobId())
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+
+        String prefix = /"outcome" => "success",.*"result" => \{.*"ExampleDS" => \{.*/
+        String[] envInfoPatterns = [
+                prefix + /"driver-name" => "h2",.*/,
+                prefix + /"password" => "\*\*\*",.*/,
+                prefix + /"user-name" => "sa",.*/
+        ]
+
+        for (String envInfoPattern: envInfoPatterns) {
+            assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
+            assert envInfo =~ /(?s)/ + envInfoPattern
+        }
+    }
+
+    @Unroll
+    def "GetEnvInfo, Standalone, dataSources additional options (dataSources 3)"() {
+        when:
+        def runParams = [
+                serverconfig          : defaultConfigName,
+                informationType       : informationTypeDataSources,
+                informationTypeContext: '',
+                additionalOptions     : 'include-runtime=true,include-defaults=true'
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        def envInfo = getJobProperty('/myJob/jobSteps/GetEnvInfo/envInfo', runProcedureJob.getJobId())
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+
+        String prefix = /"outcome" => "success",.*"result" => \{.*"ExampleDS" => \{.*/
+        String[] envInfoPatterns = [
+                prefix + /"driver-name" => "h2",.*/,
+                prefix + /"password" => "\*\*\*",.*/,
+                prefix + /"user-name" => "sa",.*/
+        ]
+
+        for (String envInfoPattern: envInfoPatterns) {
+            assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
+            assert envInfo =~ /(?s)/ + envInfoPattern
+        }
+    }
+
+    @Unroll
+    def "Negaitve. GetEnvInfo, Standalone, dataSources wrong additional options (dataSources 4)"() {
+        when:
+        def runParams = [
+                serverconfig          : defaultConfigName,
+                informationType       : informationTypeDataSources,
+                informationTypeContext: '',
+                additionalOptions     : 'wrong-option=true'
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ /'wrong-option' is not found among the supported properties/
+    }
+
+    @Unroll
+    def "GetEnvInfo, Standalone, xaDataSources with minimum params (xaDataSources 1)"() {
         when:
         def runParams = [
                 serverconfig          : defaultConfigName,
@@ -155,13 +322,12 @@ class GetEnvInfo extends PluginTestHelper {
     }
 
     @Unroll
-    @Requires({ env.JBOSS_TOPOLOGY == 'master' })
-    def "GetEnvInfo, Domain, systemDump with minimum params (systemDump1)"() {
+    def "GetEnvInfo, Standalone, xaDataSources context ignored (xaDataSources 2)"() {
         when:
         def runParams = [
                 serverconfig          : defaultConfigName,
-                informationType       : informationTypeSystemDump,
-                informationTypeContext: '',
+                informationType       : informationTypeXaDataSources,
+                informationTypeContext: 'someContext',
                 additionalOptions     : ''
         ]
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -170,12 +336,9 @@ class GetEnvInfo extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
 
-        String prefix = /"outcome" => "success",.*"result" => \{.*/
+        //todo:
         String[] envInfoPatterns = [
-                prefix + /"product-name" => .*/,
-                prefix + /"deployment" => .*/,
-                prefix + /"extension" => \{.*/,
-                prefix + /"profile" => \{.*"full-ha" => .*/
+                /"outcome" => "success",.*"result" => \{\}.*/
         ]
 
         for (String envInfoPattern: envInfoPatterns) {
@@ -185,14 +348,13 @@ class GetEnvInfo extends PluginTestHelper {
     }
 
     @Unroll
-    @Requires({ env.JBOSS_TOPOLOGY == 'master' })
-    def "GetEnvInfo, Domain, profiles with minimum params (ksmdkm)"() {
+    def "GetEnvInfo, Standalone, xaDataSources additional options (xaDataSources 3)"() {
         when:
         def runParams = [
                 serverconfig          : defaultConfigName,
-                informationType       : informationTypeProfiles,
+                informationType       : informationTypeXaDataSources,
                 informationTypeContext: '',
-                additionalOptions     : ''
+                additionalOptions     : 'include-runtime=true,include-defaults=true'
         ]
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
         def envInfo = getJobProperty('/myJob/jobSteps/GetEnvInfo/envInfo', runProcedureJob.getJobId())
@@ -200,16 +362,9 @@ class GetEnvInfo extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
 
-        String prefix = /"outcome" => "success",.*"result" => \{.*/
+        //todo:
         String[] envInfoPatterns = [
-                prefix + /"default" => \{.*"logging" => .*/,
-                prefix + /"default" => \{.*"datasources" => .*/,
-                prefix + /"full" => \{.*"logging" => .*/,
-                prefix + /"full" => \{.*"datasources" => .*/,
-                prefix + /"full-ha" => \{.*"logging" => .*/,
-                prefix + /"full-ha" => \{.*"datasources" => .*/,
-                prefix + /"ha" => \{.*"logging" => .*/,
-                prefix + /"ha" => \{.*"datasources" => .*/
+                /"outcome" => "success",.*"result" => \{\}.*/
         ]
 
         for (String envInfoPattern: envInfoPatterns) {
@@ -219,70 +374,19 @@ class GetEnvInfo extends PluginTestHelper {
     }
 
     @Unroll
-    @Requires({ env.JBOSS_TOPOLOGY == 'master' })
-    def "GetEnvInfo, Domain, dataSources with minimum params - check default data source on full profile (dataSources1)"() {
+    def "Negaitve. GetEnvInfo, Standalone, xaDataSources wrong additional options (xaDataSources 4)"() {
         when:
         def runParams = [
                 serverconfig          : defaultConfigName,
-                informationType       : informationTypeDataSources,
-                informationTypeContext: 'full',
-                additionalOptions     : ''
-        ]
-        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-        def envInfo = getJobProperty('/myJob/jobSteps/GetEnvInfo/envInfo', runProcedureJob.getJobId())
-
-        then:
-        assert runProcedureJob.getStatus() == "success"
-
-        String prefix = /"outcome" => "success",.*"result" => \{.*"ExampleDS" => \{.*/
-        String[] envInfoPatterns = [
-                prefix + /"driver-name" => "h2",.*/,
-                prefix + /"password" => "\*\*\*",.*/,
-                prefix + /"user-name" => "sa",.*/
-        ]
-
-        for (String envInfoPattern: envInfoPatterns) {
-            assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
-            assert envInfo =~ /(?s)/ + envInfoPattern
-        }
-    }
-
-    @Unroll
-    @Requires({ env.JBOSS_TOPOLOGY == 'master' })
-    def "GetEnvInfo, Domain, dataSources with minimum params - check default data source on all profiles (dataSources1)"() {
-        when:
-        def runParams = [
-                serverconfig          : defaultConfigName,
-                informationType       : informationTypeDataSources,
+                informationType       : informationTypeXaDataSources,
                 informationTypeContext: '',
-                additionalOptions     : ''
+                additionalOptions     : 'wrong-option=true'
         ]
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-        def envInfo = getJobProperty('/myJob/jobSteps/GetEnvInfo/envInfo', runProcedureJob.getJobId())
 
         then:
-        assert runProcedureJob.getStatus() == "success"
-
-        String prefix = /"outcome" => "success",.*"result" => \{.*"ExampleDS" => \{.*/
-        String[] envInfoPatterns = [
-                /Profile 'full': .*/ + prefix + /"driver-name" => "h2",.*/,
-                /Profile 'full': .*/ + prefix + /"password" => "\*\*\*",.*/,
-                /Profile 'full': .*/ + prefix + /"user-name" => "sa",.*/,
-                /Profile 'full-ha': .*/ + prefix + /"driver-name" => "h2",.*/,
-                /Profile 'full-ha': .*/ + prefix + /"password" => "\*\*\*",.*/,
-                /Profile 'full-ha': .*/ + prefix + /"user-name" => "sa",.*/,
-                /Profile 'ha': .*/ + prefix + /"driver-name" => "h2",.*/,
-                /Profile 'ha': .*/ + prefix + /"password" => "\*\*\*",.*/,
-                /Profile 'ha': .*/ + prefix + /"user-name" => "sa",.*/,
-                /Profile 'default': .*/ + prefix + /"driver-name" => "h2",.*/,
-                /Profile 'default': .*/ + prefix + /"password" => "\*\*\*",.*/,
-                /Profile 'default': .*/ + prefix + /"user-name" => "sa",.*/
-        ]
-
-        for (String envInfoPattern: envInfoPatterns) {
-            assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
-            assert envInfo =~ /(?s)/ + envInfoPattern
-        }
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ /'wrong-option' is not found among the supported properties/
     }
 
 
