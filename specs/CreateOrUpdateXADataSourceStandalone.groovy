@@ -175,6 +175,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         addJDBCMySQL(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+                reloadServer()
+            }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
@@ -298,6 +301,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         def newJNDI = jndiName.mysql+"_new" 
         runParams.jndiName = newJNDI
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+                reloadServer()
+            }
         then:
         assert runProcedureJob1.getStatus() == "warning"
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new jndi name."
@@ -427,8 +433,10 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         modifyCredential(projectName, "dataSourceConnectionCredentials", newUserName, newPassword)
         when:
-        println("QA $runParams")
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+                reloadServer()
+            }
         then:
         def expectedStatus = ["success", "warning"]
         assert runProcedureJob1.getStatus() in expectedStatus
@@ -511,6 +519,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         addJDBCMySQL(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+                reloadServer()
+            }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
@@ -591,7 +602,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         addJDBCMySQL(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
-
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+                reloadServer()
+            }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
@@ -630,7 +643,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         addJDBCMySQL(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
-
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+                reloadServer()
+            }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
@@ -670,7 +685,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         addJDBCMySQL(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
-
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+                reloadServer()
+            }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
@@ -709,7 +726,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         addJDBCMySQL(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
-
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+                reloadServer()
+            }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
@@ -749,7 +768,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         addJDBCMySQL(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
-
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+                reloadServer()
+            }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
@@ -789,7 +810,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         addJDBCMySQL(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
-
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+                reloadServer()
+            }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
