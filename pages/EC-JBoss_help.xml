@@ -1534,7 +1534,7 @@
             </div>
             <div id="RemoveXADataSource"> <a name="RemoveXADataSource" id="RemoveXADataSource"></a>
                 <h2>RemoveXADataSource</h2>
-                This procedure removes an existing XA data source in the JBoss EAP data source subsystem.
+                This procedure removes an existing XA data source in the JBoss EAP 'datasources' subsystem.
                 Unique identifier for a XA data source per operating mode are as follows:
                 <ol>
                     <li>For Standalone : 'Data Source Name'</li>
