@@ -1535,6 +1535,7 @@
             <div id="RemoveXADataSource"> <a name="RemoveXADataSource" id="RemoveXADataSource"></a>
                 <h2>RemoveXADataSource</h2>
                 This procedure removes an existing XA data source in the JBoss EAP 'datasources' subsystem.
+                <br/>
                 Unique identifier for a XA data source per operating mode are as follows:
                 <ol>
                     <li>For Standalone : 'Data Source Name'</li>
@@ -1590,12 +1591,16 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/RemoveXADataSource/RemoveXADataSourceForm1.PNG" />
                     </li>
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
                     in ElectricFlow. In the <b>RemoveXADataSource</b> step, click the
                     Log icon to see the diagnostic information. </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/RemoveXADataSource/RemoveXADataSourceRunScenarios.PNG" />
             </div>
             <div id="RunCustomCommand"> <a name='RunCustomCommand' id="RunCustomCommand"></a>
                 <h2>RunCustomCommand</h2>
