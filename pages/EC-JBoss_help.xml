@@ -807,6 +807,8 @@
                                         Required for Domain, will be ignored for Standalone.
                                         <br/>
                                         Name of the Server Profile to which this XA Data Source applies to.
+                                        <br/>
+                                        For example: 'full', 'full-ha'
                                     </td>
                                 </tr>
                                 <tr>
@@ -1533,6 +1535,20 @@
             <div id="RemoveXADataSource"> <a name="RemoveXADataSource" id="RemoveXADataSource"></a>
                 <h2>RemoveXADataSource</h2>
                 This procedure removes an existing XA data source in the JBoss EAP data source subsystem.
+                Unique identifier for a XA data source per operating mode are as follows:
+                <ol>
+                    <li>For Standalone : 'Data Source Name'</li>
+                    <li>For Domain : 'Data Source Name' and 'Profile'</li>
+                </ol>
+                The expected behavior of this procedure is described below
+                <br/>
+                If the specified XA data source exists it will be removed, else it will return a job status of warning.
+                <br/>
+                NOTE: procedure will have waning status and include JBoss response if JBoss replied that restart or reload of server(s) is needed after removing of XA data source.
+                <br/>
+                The following is an example of how the procedure invokes this operation using jboss-cli
+                <br/>
+                xa-data-source --profile=full remove --name=someDataSourceName
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the RemoveXADataSource procedure.</li>
@@ -1559,13 +1575,18 @@
                                     <td>
                                         Required parameter.
                                         <br />
-                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example XAOracleDS
+                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Profile (Domain only)</td>
-                                    <td> Required for Domain, will be ignored for Standalone <br />
-                                        Name of the Server Profile to which this XA Data Source applies to. </td>
+                                    <td>
+                                        Required for Domain, will be ignored for Standalone
+                                        <br />
+                                        Name of the Server Profile to which this XA Data Source applies to.
+                                        <br/>
+                                        For example: 'full', 'full-ha'
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
