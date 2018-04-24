@@ -383,12 +383,11 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         println("QA $runParams")
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() == '6.0') ? "success" : "warning"
-        assert runProcedureJob1.getStatus() == expectedStatus
+        def expectedStatus = ["success", "warning"]
+        assert runProcedureJob1.getStatus() in expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new password."
         checkCreateXADataSource(xaDataSourceName, JNDI, jdbcDriverName,
                 "0", newPassword, defaultUserName)
-
         cleanup:
         reloadServer()
         modifyCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, defaultPassword)
@@ -431,12 +430,11 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         println("QA $runParams")
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() == '6.0') ? "success" : "warning"
-        assert runProcedureJob1.getStatus() == expectedStatus
+        def expectedStatus = ["success", "warning"]
+        assert runProcedureJob1.getStatus() in expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new user name, password."
         checkCreateXADataSource(xaDataSourceName, JNDI, jdbcDriverName,
                 "1", newPassword, newUserName)
-
         cleanup:
         reloadServer()
         modifyCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, defaultPassword)
@@ -1142,7 +1140,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob1.getStatus() == "error"
-        assert runProcedureJob1.getUpperStepSummary() =~ "WFLYJCA0071: Jndi name have to start with java:/ or java:jboss/"
+        assert runProcedureJob1.getUpperStepSummary() =~ "Jndi name have to start with java:/ or java:jboss/"
         cleanup:
         reloadServer()
         // remove XA datasource

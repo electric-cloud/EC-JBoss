@@ -397,8 +397,8 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
 
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() == '6.0') ? "success" : "warning"
-        assert runProcedureJob1.getStatus() == expectedStatus
+        def expectedStatus = ["success", "warning"]
+        assert runProcedureJob1.getStatus() in expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new password."
         checkCreateXADataSource(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName,
                 "0", newPassword, defaultUserName)
@@ -444,8 +444,8 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
 
         then:
-        def expectedStatus = (EnvPropertiesHelper.getVersion() == '6.0') ? "success" : "warning"
-        assert runProcedureJob1.getStatus() == expectedStatus
+        def expectedStatus = ["success", "warning"]
+        assert runProcedureJob1.getStatus() in expectedStatus
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new user name, password"
         checkCreateXADataSource(xaDataSourceName, defaultProfile, jndiName.mysql, jdbcDriverName,
                 "0", newPassword, newUserName)
