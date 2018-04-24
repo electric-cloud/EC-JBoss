@@ -823,12 +823,16 @@
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateXADataSource/CreateOrUpdateXADataSourceForm1.PNG" />
                     </li>
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
                     in ElectricFlow. In the <b>CreateOrUpdateXADataSource</b> step, click the
                     Log icon to see the diagnostic information. </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateXADataSource/CreateOrUpdateXADataSourceRunScenarios.PNG" />
             </div>
             <div id="DeleteDatasource"> <a name='DeleteDatasource' id="DeleteDatasource"></a>
                 <h2>DeleteDatasource</h2>
