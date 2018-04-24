@@ -287,11 +287,12 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
-    static String addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass){
+    static String addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass, def is_enabled=false){
         if (EnvPropertiesHelper.getVersion() ==~ '6.0'){
             return "/subsystem=datasources/xa-data-source=$name:add(xa-datasource-class=$xaDatasourceClass,jndi-name=\"$jndiName\",driver-name=\"$driverName\")"
         }
-        String command = "xa-data-source add --name=$name --jndi-name=\"$jndiName\" --driver-name=\"$driverName\" --xa-datasource-class=$xaDatasourceClass --xa-datasource-properties={\"ServerName\"=>\"localhost\",\"DatabaseName\"=>\"test\",\"PortNumber\"=>\"3306\",\"DriverType\"=>\"4\"}"
+        def enabled = is_enabled ? "--enabled=true" : ""
+        String command = "xa-data-source add --name=$name --jndi-name=\"$jndiName\" --driver-name=\"$driverName\" $enabled --xa-datasource-class=$xaDatasourceClass --xa-datasource-properties={\"ServerName\"=>\"localhost\",\"DatabaseName\"=>\"test\",\"PortNumber\"=>\"3306\",\"DriverType\"=>\"4\"}"
         return command
     }
 

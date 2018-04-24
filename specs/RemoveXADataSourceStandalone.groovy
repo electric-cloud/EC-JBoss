@@ -128,7 +128,36 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone("mysql"))
     }
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() == '6.0'})
+    @IgnoreRest
+    @Unroll
+    def "RemoveXADataSource, MySQL  C289614"() {
+        String testCaseId = "   C289614"
+        String jdbcDriverName = "mysql"
+        def runParams = [
+                profile          : '',
+                serverconfig     : defaultConfigName,
+                dataSourceName   : 'MysqlXADS',
+        ]
+        setup:
+        addJDBCMySQL("mysql")
+        def dataSourceName = runParams.dataSourceName
+        addXADatasource(dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource', true)
+        reloadServer()
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been removed successfully"
+        assert getListOfXADataSource() == null
+
+        cleanup:
+        reloadServer()
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone("mysql"))
+    }
+
+
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.3']})
     @Unroll
     def "RemoveXADataSource, PostgreSQL C289614"() {
         String testCaseId = "C289614"
