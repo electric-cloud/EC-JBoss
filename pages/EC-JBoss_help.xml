@@ -1856,9 +1856,33 @@
             </div>
             <div id="StopDomain"> <a name="StopDomain" id="StopDomain"></a>
                 <h2>StopDomain</h2>
-                This procedure stops all servers within domain with specified timeout
-                and if "All Controllers Shutdown" option is chosen then the procedure also performs shutdown of all controllers one by one with specified timeout
+                This procedure stops all servers within domain
+                and if "All Controllers Shutdown" option is chosen then the procedure also performs shutdown of all controllers one by one
                 (shutdown of a master host controller to be performed on final stage).
+                <br/><br/>
+                Starting from EAP 7.0 timeout can be specified for both stop-servers and shutdown of host controllers.
+                According to JBoss documentation: "The shutdown timeout in seconds.
+                If this is zero then the server will shutdown immediately.
+                A value larger than zero means the server will wait up to this many seconds for all active requests to finish.
+                A value smaller than zero means that the server will wait indefinitely for all active requests to finish."
+                <br/><br/>
+                The following examples shows how the procedure stops servers and performs shutdown of all host controllers
+                in the case of EAP 7.0 and EAP 6.0 respectively:
+                <ol>
+                    <li>
+                        :stop-servers(timeout=60)
+                        shutdown --host=slave --timeout=60
+                        shutdown --host=master --timeout=60
+                    </li>
+                    <li>
+                        :stop-servers
+                        /host=slave:shutdown
+                        /host=master:shutdown
+                    </li>
+                </ol>
+                NOTE: the procedure can have status warning in case
+                if there are some STOPPING servers detected after stop-servers is performed
+                when 'All Controllers Shutdown' is not chosen (expected statuses of servers are STOPPED or DISABLED).
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the StopDomain procedure.</li>
@@ -1883,10 +1907,12 @@
                                 <tr>
                                     <td>Timeout</td>
                                     <td>
-                                        Optional parameter.
+                                        Optional parameter. Starting from EAP 7.0, will be ignored for EAP 6.X.
                                         <br />
-                                        Timeout for stopping all servers within domain and for shutdown each host controller:
+                                        Timeout for stopping all servers within domain and for shutdown each host controller (if 'All Controllers Shutdown' is chosen).
                                         <br />
+                                        For example:
+                                        <br/>
                                         :stop-servers(timeout=60)
                                         <br />
                                         shutdown --host=master --timeout=60
@@ -1902,17 +1928,21 @@
                                     <td>
                                         Optional parameter.
                                         <br />
-                                        Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default is no shutdown (unchecked).
+                                        Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default - no shutdown (unchecked).
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/StopDomain/StopDomainForm1.PNG" />
                     </li>
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
                     in ElectricFlow. In the <b>StopDomain</b> step, click the
                     Log icon to see the diagnostic information. </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StopDomain/StopDomainRun1.PNG" />
             </div>
             <div id="StopServers"> <a name='StopServers' id="StopServers"></a>
                 <h2>StopServers</h2>
