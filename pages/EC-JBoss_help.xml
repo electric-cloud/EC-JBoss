@@ -2245,7 +2245,7 @@
                 Latest version of JBoss 6.2 is required. This issue has been fixed in 6.2.1.
             </p>
             <br />
-            <h2>Windows only, JBoss EAP 7.0. Failing to connect to controller when using password with special character '!'.</h2>
+            <h2>Windows only, JBoss EAP 7.1. Failing to connect to controller when using password with special character '!'.</h2>
             jboss-cli.bat may fail due to "Failed to connect to the controller: Unable to authenticate against controller at ...
             Authentication failed: all available authentication mechanisms failed: DIGEST-MD5: javax.security.sasl.SaslException: DIGEST-MD5: Server rejected authentication".
             This is bug in jboss-cli.bat script - "Cannot connect to JBoss controller via CLI by passing password in command line if password contains '!' character (for JBoss EAP 7.1.0.GA in Windows)"
@@ -2253,6 +2253,33 @@
                 JIRA ticket for JBoss Enterprise Application Platform: <a href="https://issues.jboss.org/browse/JBEAP-14335" target="_BLANK">https://issues.jboss.org/browse/JBEAP-14335</a>.<br />
                 JIRA ticket for WildFly Core: <a href="https://issues.jboss.org/browse/WFCORE-3674" target="_BLANK">https://issues.jboss.org/browse/WFCORE-3674</a>.<br />
             </p>
+            <br />
+            <h2>JBoss EAP 7.0. Create XA data sources with additional options (--check-valid-connection-sql) which contains single quotes.</h2>
+            Single quotes are missed from --check-valid-connection-sql when adding xa data source via jboss-cli --command.
+            <br/>
+            Fixed in JBoss EAP 7.1
+            <p>
+                JIRA ticket for JBoss Enterprise Application Platform: <a href="https://issues.jboss.org/browse/JBEAP-14659" target="_BLANK">https://issues.jboss.org/browse/JBEAP-14659</a>.<br />
+            </p>
+            <br />
+            <h2>JBoss EAP 6.3. Removing enabled XA data source failing.Standalone and Domain. Removing services has lead to unsatisfied dependencies</h2>
+            Removing XA data sources can fail when call remove command with the following error, e.g.:
+            "JBAS014762: Removing services has lead to unsatisfied dependencies:
+            Service jboss.data-source.reference-factory.MysqlXADSC289546 was depended upon by service jboss.naming.context.java.MysqlXADS
+            Service jboss.xa-data-source-config.MysqlXADSC289546 was depended upon by service jboss.data-source.java:/MysqlXADS".
+            <br/>
+            Minor observation: if remove command called twice (e.g. via RemoveXADataSource procedure) data source may be removed
+            (first call will fail, second may succeed), but we cannot be sure in results of such manipulations.
+            <br/>
+            There is a solution for Standalone where proposed to disable data source and reload the server before removing the data source.
+            <br/>
+            <p>
+                Solution for Standalone: <a href="https://access.redhat.com/solutions/907633" target="_BLANK">https://access.redhat.com/solutions/907633</a>.<br />
+            </p>
+            <br/>
+            For Domain solution is not found.
+            Furthermore, if removing of data source was failed or succeed for domain
+            there can be unpredictable consequences afterwards when trying to create new data sources.
             <h1 id="rns">Release Notes</h1>
             <h2>@PLUGIN_KEY@ 2.4.1</h2>
             <ul>
