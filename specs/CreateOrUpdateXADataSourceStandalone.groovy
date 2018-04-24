@@ -1055,6 +1055,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Jndi name have to start with java:/ or java:jboss/"
     }
 
+    // @IgnoreRest
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value  'JDBC Driver Name' ( C289572)"() {
         String testCaseId = "C289572"
@@ -1079,14 +1080,19 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
+        def expectedText = "is missing [jboss.jdbc-driver.wrong_driver]"
+        if (EnvPropertiesHelper.getVersion() == '6.0'){
+            expectedText = "is not installed."
+        }
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary().contains('is missing [jboss.jdbc-driver.wrong_driver]')
+        assert runProcedureJob.getUpperStepSummary().contains(expectedText)
     }
 
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0']})
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Additional Options' ( C289576)"() {
         String testCaseId = "C289576"
-        String jdbcDriverName = "mysql"
+        String jdbcDriverName = "h2"
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '--some-wrong-option',
@@ -1107,8 +1113,9 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
+        def expectedText = "Unrecognized arguments: \\[--some-wrong-option\\]"
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized arguments: \\[--some-wrong-option\\]"
+        assert runProcedureJob.getUpperStepSummary() =~ expectedText
     }
 
     @Unroll
