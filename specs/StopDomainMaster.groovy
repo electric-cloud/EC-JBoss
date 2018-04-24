@@ -5,7 +5,7 @@ import spock.lang.*
 import Utils.EnvPropertiesHelper
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
-class StopDomain extends PluginTestHelper {
+class StopDomainMaster extends PluginTestHelper {
 
 	@Shared
 	String procName = 'StopDomain'
