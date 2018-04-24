@@ -156,7 +156,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
     }
 
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.3']})
+    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.2', '6.3']})
     @Unroll
     def "RemoveXADataSource, PostgreSQL C289614"() {
         String testCaseId = "C289614"
@@ -331,7 +331,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         }
     }
 
-    void addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass, def enabled){
+    void addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass, def enabled=false){
         runCliCommand(CliCommandsGeneratorHelper.addXADatasource(name, jndiName, driverName, xaDatasourceClass, enabled))
     }
 
