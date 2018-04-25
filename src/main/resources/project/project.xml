@@ -4008,7 +4008,7 @@
         </procedure>
         <procedure>
             <procedureName>GetEnvInfo</procedureName>
-            <description>This procedure retrieves requested information from JBoss via CLI and writes it to logs and property.</description>
+            <description>This procedure retrieves requested information from JBoss via CLI and writes it to logs and property. There are the following 'Information Types' supported by the procedure which may be requested: System Dump; Profiles (for Domain only); Data Sources; XA Data Sources.</description>
             <jobNameTemplate>jboss-get-env-info-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -4078,21 +4078,21 @@
             <formalParameter>
                 <formalParameterName>informationType</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Information Type</description>
+                <description>Information Type. Possible options: System Dump; Profiles (for Domain only); Data Sources; XA Data Sources.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>informationTypeContext</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Information Type Context</description>
+                <description>Information Type Context. At current implementation it is considered only when Information Type is Data Sources or XA Data Sources and JBoss launched in Domain mode. In this case it is considered as profile where information about data sources to be gathered.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Additional Options</description>
+                <description>'Additional Options' can be included into CLI call, e.g.: '/:read-resource(include-runtime=true,include-defaults=true)' can be called instead of '/:read-resource' if 'include-runtime=true,include-defaults=true' is provided within 'Additional Options'.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
