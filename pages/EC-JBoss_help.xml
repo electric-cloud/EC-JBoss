@@ -1921,7 +1921,7 @@
                 and if "All Controllers Shutdown" option is chosen then the procedure also performs shutdown of all controllers one by one
                 (shutdown of a master host controller to be performed on final stage).
                 <br/><br/>
-                Starting from EAP 7.0 timeout can be specified for both stop-servers and shutdown of host controllers.
+                Starting from EAP 7.0 'timeout' can be specified for both stop-servers and shutdown of host controllers.
                 According to JBoss documentation: "The shutdown timeout in seconds.
                 If this is zero then the server will shutdown immediately.
                 A value larger than zero means the server will wait up to this many seconds for all active requests to finish.
@@ -1980,11 +1980,11 @@
                                 <tr>
                                     <td>Timeout</td>
                                     <td>
-                                        Optional parameter. Starting from EAP 7.0, will be ignored for EAP 6.X.
+                                        Optional parameter. Supported starting from EAP 7.0, will be ignored for EAP 6.X.
                                         <br />
                                         Timeout for stopping all servers within domain and for shutdown each host controller (if 'All Controllers Shutdown' is chosen).
                                         <br />
-                                        For example:
+                                        For example, the following CLI commands can be called:
                                         <br/>
                                         :stop-servers(timeout=60)
                                         <br />
