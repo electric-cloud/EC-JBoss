@@ -14,7 +14,7 @@
         <label>Information Type:</label>
         <property>informationType</property>
         <required>1</required>
-        <documentation>Information Type</documentation>
+        <documentation>Information Type. Possible options: System Dump; Profiles (for Domain only); Data Sources; XA Data Sources.</documentation>
         <option>
             <name>System Dump</name>
             <value>systemDump</value>
@@ -37,13 +37,13 @@
         <label>Information Type Context:</label>
         <property>informationTypeContext</property>
         <required>0</required>
-        <documentation>Information Type Context</documentation>
+        <documentation>Information Type Context. At current implementation it is considered only when Information Type is Data Sources or XA Data Sources and JBoss launched in Domain mode. In this case it is considered as profile where information about data sources to be gathered.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Additional Options:</label>
         <property>additionalOptions</property>
         <required>0</required>
-        <documentation>Additional Options</documentation>
+        <documentation>'Additional Options' can be included into CLI call, e.g.: '/:read-resource(include-runtime=true,include-defaults=true)' can be called instead of '/:read-resource' if 'include-runtime=true,include-defaults=true' is provided within 'Additional Options'.</documentation>
     </formElement>
 </editor>

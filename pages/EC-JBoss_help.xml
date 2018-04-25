@@ -20,7 +20,7 @@
                  ideas, examples, and so on. It is OK to copy them word-for-word only if it is appropriate, such as FOSS.
                  However, do not do this with commercial software. -->
 
-            <p>Revised on February 28, 2018</p>
+            <p>Revised on April 25, 2018</p>
 
             <h1>Contents</h1>
             <p>
@@ -682,8 +682,49 @@
             </div>
             <div id="CreateOrUpdateXADataSource"> <a name="CreateOrUpdateXADataSource" id="CreateOrUpdateXADataSource"></a>
                 <h2>CreateOrUpdateXADataSource</h2>
-                This procedure creates a new XA Data Source or updates JNDI name or credentials for an
-                existing XA Data Source.
+                This procedure creates a new XA data source or updates some properties (JNDI name or credentials) for an existing XA data source.
+                <br/><br/>
+                Unique identifier for a XA data source per operating mode are as follows:
+                <ul>
+                    <li>For Standalone : 'Data Source Name'</li>
+                    <li>For Domain : 'Data Source Name' and 'Profile'</li>
+                </ul>
+                List of updatable properties (for update scenarios):
+                <ul>
+                    <li>JNDI name</li>
+                    <li>Credentials: username/password</li>
+                </ul>
+                The expected behavior of this procedure is described below
+                <ul>
+                    <li>
+                        If XA data source does not exist (based on unique identifier) it will be created.
+                        In case of Domain it will be created based on the specified Profile.
+                        <br/>
+                        The following example shows how the procedure invokes the creation of xa data source:
+                        <br/>
+                        xa-data-source --profile=full add --name=someDataSourceName --jndi-name=java:/test --driver-name=mysql --user-name=someUserName --password=somePassword --xa-datasource-properties={"ServerName"=>"localhost","DatabaseName"=>"test","PortNumber"=>"3306","DriverType"=>"4"}
+                    </li>
+                    <li>
+                        If XA data source exists (based on unique identifier) and updatable properties differ from existing ones, they will get updated.
+                        <br/>
+                        NOTE: all other properties than updatable ones and 'Additional Options' will be ignored.
+                        <br/>
+                        The following examples shows how the procedure invokes the updation of a xa data source
+                        <br/>
+                        /profile=full/subsystem=datasources/xa-data-source=someDataSourceName/:write-attribute(name=jndi-name,value=newTest)
+                    </li>
+                    <li>
+                        If XA data source exists exists (based on unique identifier) and updatable properties are the same as what exists already,
+                        it will be a NO-OP for the procedure.
+                        It would update nothing in this case.
+                        <br/>
+                        NOTE: all other properties than updatable ones and Additional Options will be ignored.
+                    </li>
+                </ul>
+                NOTE: JBoss servers may require restart or reload after a XA data source is created or updated.
+                The procedure would parse the JBoss Response and report as part of the step summary if a reload or a restart is required
+                and where these are required will have report the status as a Warning.
+                The procedure will not perform the reload or restart.
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the CreateOrUpdateXADataSource procedure.</li>
@@ -710,7 +751,7 @@
                                     <td>
                                         Required parameter.
                                         <br />
-                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example XAOracleDS
+                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS
                                     </td>
                                 </tr>
                                 <tr>
@@ -718,7 +759,7 @@
                                     <td>
                                         Required parameter.
                                         <br />
-                                        JNDI Name of the Data Source. For example java:/XAOracleDS
+                                        JNDI Name of the Data Source. For example java:/MysqlXADS
                                     </td>
                                 </tr>
                                 <tr>
@@ -726,7 +767,8 @@
                                     <td>
                                         Required parameter.
                                         <br />
-                                        Name of the JDBC Driver of the Database for which the XA Data source is created. For example oracle.
+                                        Defines the JDBC driver the data source should use. It is a symbolic name matching
+                                        the name of installed driver. For example mysql.
                                     </td>
                                 </tr>
                                 <tr>
@@ -734,13 +776,13 @@
                                     <td>
                                         Required parameter.
                                         <br />
-                                        A comma-separated list of XA datasource properties in key=value pair format. Note that the key value pairs are database dependent and at a minimum should contain the Database connection information.
-                                        <br />
+                                        A comma-separated list of XA data source properties in "key"=>"value" pair format.
+                                        Note that the key value pairs are database dependent and at a minimum should contain the Database connection information.
                                         For example
                                         <br />
-                                        url=jdbc:oracle:oci8:@tc for an Oracle database
+                                        "URL"=>"jdbc:oracle:oci8:@tc" for an Oracle database
                                         <br />
-                                        DatabaseName=mysqlDB,ServerName=localhost,Port=3306 for a Mysql database
+                                        "ServerName"=>"localhost","DatabaseName"=>"test","PortNumber"=>"3306","DriverType"=>"4" for a Mysql database
                                     </td>
                                 </tr>
                                 <tr>
@@ -748,7 +790,7 @@
                                     <td>
                                         Required parameter.
                                         <br />
-                                        Username and password used for the connection,that will be included as part of the step
+                                        Credential that contains username and password used for the connection (need to be attached to step).
                                     </td>
                                 </tr>
                                 <tr>
@@ -756,92 +798,43 @@
                                     <td>
                                         Required parameter.
                                         <br />
-                                        If the created XA Data Source should be enabled or not. Default is Y. Should be a Y/N list.
-                                        Note that for an Update to go through it should be disabled prior.
+                                        If the created XA Data Source should be enabled or not. Default is true.
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Profile (Domain only)</td>
-                                    <td> Required for Domain, will be ignored for Standalone <br />
-                                        Name of the Server Profile to which this XA Data Source applies to. </td>
+                                    <td>
+                                        Required for Domain, will be ignored for Standalone.
+                                        <br/>
+                                        Name of the Server Profile to which this XA Data Source applies to.
+                                        <br/>
+                                        For example: 'full', 'full-ha'
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Additional Options</td>
-                                    <td>Optional parameter.
+                                    <td>
+                                        Optional parameter.
                                         <br />
-                                        This is meant to pass additional options for both these use cases:
-                                        (1) To override parameters which are defaulted (for example Interleaving, PadXID etc.)
-                                        (2) Optional parameters which are not defaulted (for example min-pool-size, max-pool-size etc.)
+                                        'Additional options' to be passed on to jboss-cli.
+                                        The parameters mentioned in this string will be concatenated to already generated command line for creating xa data source.
+                                        For example:
+                                        <br/>
+                                        --min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select top 1 1 from some_table"
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateXADataSource/CreateOrUpdateXADataSourceForm1.PNG" />
                     </li>
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
                     in ElectricFlow. In the <b>CreateOrUpdateXADataSource</b> step, click the
                     Log icon to see the diagnostic information. </p>
-            </div>
-            <div id="StopDomain"> <a name="StopDomain" id="StopDomain"></a>
-                <h2>StopDomain</h2>
-                This procedure stops all servers within domain with specified timeout
-                and if "All Controllers Shutdown" option is chosen then the procedure also performs shutdown of all controllers one by one with specified timeout
-                (shutdown of a master host controller to be performed on final stage).
-                <h3>Input</h3>
-                <ol>
-                    <li>Go to the StopDomain procedure.</li>
-                    <li>Enter the following parameters:<br />
-                        <table class="grid">
-                            <thead>
-                                <tr>
-                                    <th>Parameter</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="required">Configuration Name</td>
-                                    <td> Required parameter. <br />
-                                        A unique name of the configuration to be used. URL, port and
-                                        credentials are retrieved from the given configuration. To
-                                        view or create a new configuration, go to the Administration
-                                        -&gt; Plugins tab, and select 'Configure' action for
-                                        @PLUGIN_KEY@ plugin. </td>
-                                </tr>
-                                <tr>
-                                    <td>Timeout</td>
-                                    <td>
-                                        Optional parameter.
-                                        <br />
-                                        Timeout for stopping all servers within domain and for shutdown each host controller:
-                                        <br />
-                                        :stop-servers(timeout=60)
-                                        <br />
-                                        shutdown --host=master --timeout=60
-                                        <br />
-                                        According to JBoss documentation: "The shutdown timeout in seconds.
-                                        If this is zero then the server will shutdown immediately.
-                                        A value larger than zero means the server will wait up to this many seconds for all active requests to finish.
-                                        A value smaller than zero means that the server will wait indefinitely for all active requests to finish."
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>All Controllers Shutdown</td>
-                                    <td>
-                                        Optional parameter.
-                                        <br />
-                                        Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default is no shutdown (unchecked).
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </li>
-                </ol>
-                <h3>Output</h3>
-                <p> After the job runs, you can view the results on the Job Details page
-                    in ElectricFlow. In the <b>StopDomain</b> step, click the
-                    Log icon to see the diagnostic information. </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateXADataSource/CreateOrUpdateXADataSourceRunScenarios.PNG" />
             </div>
             <div id="DeleteDatasource"> <a name='DeleteDatasource' id="DeleteDatasource"></a>
                 <h2>DeleteDatasource</h2>
@@ -1339,7 +1332,61 @@
             </div>
             <div id="GetEnvInfo"> <a name="GetEnvInfo" id="GetEnvInfo"></a>
                 <h2>GetEnvInfo</h2>
-                This procedure retrieves requested information from JBoss via CLI and writes it to logs and property.
+                This procedure retrieves requested information from JBoss via CLI
+                and writes it to logs and property.
+                <br/>
+                Outputs can be found in the following places:
+                <ul>
+                    <li>in property 'envInfo' within job step</li>
+                    <li>in logs after "INFO: Requested Environment Information: " pattern</li>
+                </ul>
+                There are the following 'Information Types' supported by the procedure which may be requested:
+                <ul>
+                    <li>System Dump</li>
+                    <li>Profiles (for Domain only)</li>
+                    <li>Data Sources</li>
+                    <li>XA Data Sources</li>
+                </ul>
+                Different CLI calls will be performed and different outputs will be received
+                depends on the 'Information Type' (and in some cases depends on 'Information Type Context').
+                <ul>
+                    <li>
+                        System Dump.
+                        <br/>
+                        CLI call: '/:read-resource'
+                        <br/>
+                        Output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoSystemDump.PNG" />
+                    </li>
+                    <li>
+                        Profiles (for Domain only).
+                        <br/>
+                        CLI call: '/:read-children-resources(child-type=profile)'
+                        <br/>
+                        Output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoProfiles.PNG" />
+                    </li>
+                    <li>
+                        Data Sources on Standalone or on profile within Domain (provided within 'Information Type Context')
+                        <br/>
+                        CLI call on standalone: '/subsystem=datasources/:read-children-resources(child-type=data-source)'
+                        <br/>
+                        CLI call on 'full' profile within Domain: '/profile=full/subsystem=datasources/:read-children-resources(child-type=data-source)'
+                        <br/>
+                        Output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoDataSources.PNG" />
+                        <br/>
+                        Similar flow for XA Data Sources.
+                    </li>
+                    <li>
+                        Data Sources on all profiles within Domain (not provided 'Information Type Context')
+                        <br/>
+                        CLI call performed for every profile which contains 'datasources' subsystem: '/profile=full/subsystem=datasources/:read-children-resources(child-type=data-source)'
+                        <br/>
+                        Combined output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoDataSourcesAllProfiles.PNG" />
+                        <br/>
+                        Similar flow for XA Sata Sources. For example
+                        <br/>
+                        Combined output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoXADataSourcesAllProfiles.PNG" />
+                    </li>
+                </ul>
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the GetEnvInfo procedure.</li>
@@ -1368,10 +1415,12 @@
                                         <br />
                                         Information Type.
                                         Possible options:
-                                        System Dump,
-                                        Profiles,
-                                        Data Sources,
-                                        XA Data Sources
+                                        <ol>
+                                            <li>System Dump</li>
+                                            <li>Profiles (for Domain only)</li>
+                                            <li>Data Sources</li>
+                                            <li>XA Data Sources</li>
+                                        </ol>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1381,7 +1430,9 @@
                                     <td>
                                         Optional parameter.
                                         <br />
-                                        Information Type Context
+                                        Information Type Context.
+                                        At current implementation it is considered only when Information Type is Data Sources or XA Data Sources and JBoss launched in Domain mode.
+                                        In this case it is considered as profile where information about data sources to be gathered.
                                     </td>
                                 </tr>
                                 <tr>
@@ -1389,7 +1440,8 @@
                                     <td>
                                         Optional parameter.
                                         <br />
-                                        Additional Options
+                                        'Additional Options' can be included into CLI call, e.g.: '/:read-resource(include-runtime=true,include-defaults=true)'
+                                        can be called instead of '/:read-resource' if 'include-runtime=true,include-defaults=true' is provided within 'Additional Options'.
                                     </td>
                                 </tr>
                             </tbody>
@@ -1400,6 +1452,8 @@
                 <p> After the job runs, you can view the results on the Job Details page
                     in ElectricFlow. In the <b>GetEnvInfo</b> step, click the
                     Log icon to see the diagnostic information. </p>
+                <br/>
+                <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoRun.PNG" />
             </div>
             <div id="RemoveJMSQueue"> <a name="RemoveJMSQueue" id="RemoveJMSQueue"></a>
                 <h2>RemoveJMSQueue</h2>
@@ -1541,7 +1595,22 @@
             </div>
             <div id="RemoveXADataSource"> <a name="RemoveXADataSource" id="RemoveXADataSource"></a>
                 <h2>RemoveXADataSource</h2>
-                This procedure removes an existing XA data source in the JBoss EAP data source subsystem.
+                This procedure removes an existing XA data source in the JBoss EAP 'datasources' subsystem.
+                <br/>
+                Unique identifier for a XA data source per operating mode are as follows:
+                <ul>
+                    <li>For Standalone : 'Data Source Name'</li>
+                    <li>For Domain : 'Data Source Name' and 'Profile'</li>
+                </ul>
+                The expected behavior of this procedure is described below
+                <br/>
+                If the specified XA data source exists it will be removed, else it will return a job status of warning.
+                <br/>
+                NOTE: procedure will have waning status and include JBoss response if JBoss replied that restart or reload of server(s) is needed after removing of XA data source.
+                <br/>
+                The following is an example of how the procedure invokes this operation using jboss-cli
+                <br/>
+                xa-data-source --profile=full remove --name=someDataSourceName
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the RemoveXADataSource procedure.</li>
@@ -1568,22 +1637,31 @@
                                     <td>
                                         Required parameter.
                                         <br />
-                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example XAOracleDS
+                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Profile (Domain only)</td>
-                                    <td> Required for Domain, will be ignored for Standalone <br />
-                                        Name of the Server Profile to which this XA Data Source applies to. </td>
+                                    <td>
+                                        Required for Domain, will be ignored for Standalone
+                                        <br />
+                                        Name of the Server Profile to which this XA Data Source applies to.
+                                        <br/>
+                                        For example: 'full', 'full-ha'
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/RemoveXADataSource/RemoveXADataSourceForm1.PNG" />
                     </li>
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
                     in ElectricFlow. In the <b>RemoveXADataSource</b> step, click the
                     Log icon to see the diagnostic information. </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/RemoveXADataSource/RemoveXADataSourceRunScenarios.PNG" />
             </div>
             <div id="RunCustomCommand"> <a name='RunCustomCommand' id="RunCustomCommand"></a>
                 <h2>RunCustomCommand</h2>
@@ -1837,6 +1915,108 @@
                 <img src="../../plugins/@PLUGIN_NAME@/images/StartStandalone/ECJBossStartStandalone4.png" />
                 <br />
             </div>
+            <div id="StopDomain"> <a name="StopDomain" id="StopDomain"></a>
+                <h2>StopDomain</h2>
+                This procedure stops all servers within domain
+                and if "All Controllers Shutdown" option is chosen then the procedure also performs shutdown of all controllers one by one
+                (shutdown of a master host controller to be performed on final stage).
+                <br/><br/>
+                Starting from EAP 7.0 'timeout' can be specified for both stop-servers and shutdown of host controllers.
+                According to JBoss documentation: "The shutdown timeout in seconds.
+                If this is zero then the server will shutdown immediately.
+                A value larger than zero means the server will wait up to this many seconds for all active requests to finish.
+                A value smaller than zero means that the server will wait indefinitely for all active requests to finish."
+                <br/><br/>
+                The following examples shows how the procedure stops servers and performs shutdown of all host controllers
+                <br/>
+                in the case of EAP 7.0:
+                <ul>
+                    <li>
+                        :stop-servers(timeout=60)
+                    </li>
+                    <li>
+                        shutdown --host=slave --timeout=60
+                    </li>
+                    <li>
+                        shutdown --host=master --timeout=60
+                    </li>
+                </ul>
+                and in case of EAP 6.0 :
+                <ul>
+                    <li>
+                        :stop-servers
+                    </li>
+                    <li>
+                        /host=slave:shutdown
+                    </li>
+                    <li>
+                        /host=master:shutdown
+                    </li>
+                </ul>
+                NOTE: the procedure can have status warning in case
+                if there are some STOPPING servers detected after stop-servers is performed
+                when 'All Controllers Shutdown' is not chosen (expected statuses of servers are STOPPED or DISABLED).
+                <h3>Input</h3>
+                <ol>
+                    <li>Go to the StopDomain procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="required">Configuration Name</td>
+                                    <td> Required parameter. <br />
+                                        A unique name of the configuration to be used. URL, port and
+                                        credentials are retrieved from the given configuration. To
+                                        view or create a new configuration, go to the Administration
+                                        -&gt; Plugins tab, and select 'Configure' action for
+                                        @PLUGIN_KEY@ plugin. </td>
+                                </tr>
+                                <tr>
+                                    <td>Timeout</td>
+                                    <td>
+                                        Optional parameter. Supported starting from EAP 7.0, will be ignored for EAP 6.X.
+                                        <br />
+                                        Timeout for stopping all servers within domain and for shutdown each host controller (if 'All Controllers Shutdown' is chosen).
+                                        <br />
+                                        For example, the following CLI commands can be called:
+                                        <br/>
+                                        :stop-servers(timeout=60)
+                                        <br />
+                                        shutdown --host=master --timeout=60
+                                        <br />
+                                        According to JBoss documentation: "The shutdown timeout in seconds.
+                                        If this is zero then the server will shutdown immediately.
+                                        A value larger than zero means the server will wait up to this many seconds for all active requests to finish.
+                                        A value smaller than zero means that the server will wait indefinitely for all active requests to finish."
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>All Controllers Shutdown</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br />
+                                        Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default - no shutdown (unchecked).
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/StopDomain/StopDomainForm1.PNG" />
+                    </li>
+                </ol>
+                <h3>Output</h3>
+                <p> After the job runs, you can view the results on the Job Details page
+                    in ElectricFlow. In the <b>StopDomain</b> step, click the
+                    Log icon to see the diagnostic information. </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StopDomain/StopDomainRun1.PNG" />
+            </div>
             <div id="StopServers"> <a name='StopServers' id="StopServers"></a>
                 <h2>StopServers</h2>
 				The StopServers procedure stops the servers in the specified server group and checks if these servers are stopped successfully.
@@ -2065,7 +2245,7 @@
                 Latest version of JBoss 6.2 is required. This issue has been fixed in 6.2.1.
             </p>
             <br />
-            <h2>Windows only, JBoss EAP 7.0. Failing to connect to controller when using password with special character '!'.</h2>
+            <h2>Windows only, JBoss EAP 7.1. Failing to connect to controller when using password with special character '!'.</h2>
             jboss-cli.bat may fail due to "Failed to connect to the controller: Unable to authenticate against controller at ...
             Authentication failed: all available authentication mechanisms failed: DIGEST-MD5: javax.security.sasl.SaslException: DIGEST-MD5: Server rejected authentication".
             This is bug in jboss-cli.bat script - "Cannot connect to JBoss controller via CLI by passing password in command line if password contains '!' character (for JBoss EAP 7.1.0.GA in Windows)"
@@ -2073,7 +2253,60 @@
                 JIRA ticket for JBoss Enterprise Application Platform: <a href="https://issues.jboss.org/browse/JBEAP-14335" target="_BLANK">https://issues.jboss.org/browse/JBEAP-14335</a>.<br />
                 JIRA ticket for WildFly Core: <a href="https://issues.jboss.org/browse/WFCORE-3674" target="_BLANK">https://issues.jboss.org/browse/WFCORE-3674</a>.<br />
             </p>
+            <br />
+            <h2>JBoss EAP 7.0. Create XA data sources with additional options (--check-valid-connection-sql) which contains single quotes.</h2>
+            Single quotes are missed from --check-valid-connection-sql when adding xa data source via jboss-cli --command.
+            <br/>
+            Fixed in JBoss EAP 7.1
+            <p>
+                JIRA ticket for JBoss Enterprise Application Platform: <a href="https://issues.jboss.org/browse/JBEAP-14659" target="_BLANK">https://issues.jboss.org/browse/JBEAP-14659</a>.<br />
+            </p>
+            <br />
+            <h2>JBoss EAP 6.3. Removing enabled XA data source failing.Standalone and Domain. Removing services has lead to unsatisfied dependencies</h2>
+            Removing XA data sources can fail when call remove command with the following error, e.g.:
+            "JBAS014762: Removing services has lead to unsatisfied dependencies:
+            Service jboss.data-source.reference-factory.MysqlXADSC289546 was depended upon by service jboss.naming.context.java.MysqlXADS
+            Service jboss.xa-data-source-config.MysqlXADSC289546 was depended upon by service jboss.data-source.java:/MysqlXADS".
+            <br/>
+            Minor observation: if remove command called twice (e.g. via RemoveXADataSource procedure) data source may be removed
+            (first call will fail, second may succeed), but we cannot be sure in results of such manipulations.
+            <br/>
+            For Domain solution is not found.
+            Furthermore, if removing of data source was failed or succeed for domain
+            there can be unpredictable consequences afterwards when trying to create new data sources.
+            <br/>
+            There is a solution for Standalone where proposed to disable data source and reload the server before removing the data source.
+            <br/>
+            <p>
+                Solution for Standalone: <a href="https://access.redhat.com/solutions/907633" target="_BLANK">https://access.redhat.com/solutions/907633</a>.<br />
+            </p>
             <h1 id="rns">Release Notes</h1>
+            <h2>@PLUGIN_KEY@ 2.5.0</h2>
+            <ul>
+                <li>
+                    Following procedures have been added
+                    <ul>
+                        <li>
+                            <a href="#CreateOrUpdateXADataSource">CreateOrUpdateXADataSource</a>
+                        </li>
+                        <li>
+                            <a href="#RemoveXADataSource">RemoveXADataSource</a>
+                        </li>
+                        <li>
+                            <a href="#StopDomain">StopDomain</a>
+                        </li>
+                        <li>
+                            <a href="#GetEnvInfo">GetEnvInfo</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StartServers">StartServers</a> and <a href="#StopServers">StopServers</a>
+                    <ul>
+                        <li>Fixed step summary by correct information if controller is not available</li>
+                    </ul>
+                </li>
+            </ul>
             <h2>@PLUGIN_KEY@ 2.4.1</h2>
             <ul>
                 <li>Configured the plugin to allow the ElectricFlow UI to render the plugin procedure parameters entirely using the configured form XMLs.</li>

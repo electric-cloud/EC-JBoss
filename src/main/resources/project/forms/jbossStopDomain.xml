@@ -15,7 +15,7 @@
         <property>jbossTimeout</property>
         <required>0</required>
         <value>60</value>
-        <documentation>Timeout for stopping all servers within domain and for shutdown each host controller: ':stop-servers(timeout=60)', 'shutdown --host=master --timeout=60', According to JBoss documentation: "The shutdown timeout in seconds. If this is zero then the server will shutdown immediately. A value larger than zero means the server will wait up to this many seconds for all active requests to finish. A value smaller than zero means that the server will wait indefinitely for all active requests to finish."</documentation>
+        <documentation>Supported starting from EAP 7.0, will be ignored for EAP 6.X. Timeout for stopping all servers within domain and for shutdown each host controller (if 'All Controllers Shutdown' is chosen). For example, the following CLI commands can be called: ':stop-servers(timeout=60)', 'shutdown --host=master --timeout=60'. According to JBoss documentation: "The shutdown timeout in seconds. If this is zero then the server will shutdown immediately. A value larger than zero means the server will wait up to this many seconds for all active requests to finish. A value smaller than zero means that the server will wait indefinitely for all active requests to finish."</documentation>
     </formElement>
     <formElement>
         <type>checkbox</type>
@@ -24,6 +24,6 @@
         <checkedValue>1</checkedValue>
         <uncheckedValue>0</uncheckedValue>
         <initiallyChecked>0</initiallyChecked>
-        <documentation>Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default is no shutdown (unchecked).</documentation>
+        <documentation>Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default - no shutdown (unchecked).</documentation>
     </formElement>
 </editor>

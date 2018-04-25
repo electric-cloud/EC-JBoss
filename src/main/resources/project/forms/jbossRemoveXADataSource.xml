@@ -14,13 +14,13 @@
         <label>Data Source Name:</label>
         <property>dataSourceName</property>
         <required>1</required>
-        <documentation>Name of the Data Source. This will also serve as the unique identifier for this resource. For example XAOracleDS</documentation>
+        <documentation>Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Profile:</label>
         <property>profile</property>
         <required>0</required>
-        <documentation>Required for Domain, will be ignored for Standalone. Name of profile in Domain where XA data source should be created or updated (in case of need). For example: 'full', 'default'</documentation>
+        <documentation>Required for Domain, will be ignored for Standalone. Name of the Server Profile to which this XA Data Source applies to. For example: 'full', 'full-ha'</documentation>
     </formElement>
 </editor>
