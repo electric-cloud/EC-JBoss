@@ -2271,15 +2271,15 @@
             Minor observation: if remove command called twice (e.g. via RemoveXADataSource procedure) data source may be removed
             (first call will fail, second may succeed), but we cannot be sure in results of such manipulations.
             <br/>
+            For Domain solution is not found.
+            Furthermore, if removing of data source was failed or succeed for domain
+            there can be unpredictable consequences afterwards when trying to create new data sources.
+            <br/>
             There is a solution for Standalone where proposed to disable data source and reload the server before removing the data source.
             <br/>
             <p>
                 Solution for Standalone: <a href="https://access.redhat.com/solutions/907633" target="_BLANK">https://access.redhat.com/solutions/907633</a>.<br />
             </p>
-            <br/>
-            For Domain solution is not found.
-            Furthermore, if removing of data source was failed or succeed for domain
-            there can be unpredictable consequences afterwards when trying to create new data sources.
             <h1 id="rns">Release Notes</h1>
             <h2>@PLUGIN_KEY@ 2.5.0</h2>
             <ul>
