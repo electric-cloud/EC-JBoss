@@ -2281,6 +2281,32 @@
             Furthermore, if removing of data source was failed or succeed for domain
             there can be unpredictable consequences afterwards when trying to create new data sources.
             <h1 id="rns">Release Notes</h1>
+            <h2>@PLUGIN_KEY@ 2.5.0</h2>
+            <ul>
+                <li>
+                    Following procedures have been added
+                    <ul>
+                        <li>
+                            <a href="#CreateOrUpdateXADataSource">CreateOrUpdateXADataSource</a>
+                        </li>
+                        <li>
+                            <a href="#RemoveXADataSource">RemoveXADataSource</a>
+                        </li>
+                        <li>
+                            <a href="#StopDomain">StopDomain</a>
+                        </li>
+                        <li>
+                            <a href="#GetEnvInfo">GetEnvInfo</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StartServers">StartServers</a> and <a href="#StopServers">StopServers</a>
+                    <ul>
+                        <li>Fixed step summary by correct information if controller is not available</li>
+                    </ul>
+                </li>
+            </ul>
             <h2>@PLUGIN_KEY@ 2.4.1</h2>
             <ul>
                 <li>Configured the plugin to allow the ElectricFlow UI to render the plugin procedure parameters entirely using the configured form XMLs.</li>
