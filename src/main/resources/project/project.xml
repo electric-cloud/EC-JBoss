@@ -3777,7 +3777,7 @@
         </procedure>
         <procedure>
             <procedureName>RemoveXADataSource</procedureName>
-            <description>This procedure removes an existing XA data source in the JBoss EAP data source subsystem.</description>
+            <description>This procedure removes an existing XA data source in the JBoss EAP 'datasources' subsystem.</description>
             <jobNameTemplate>jboss-remove-xa-data-source-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3837,14 +3837,14 @@
             <formalParameter>
                 <formalParameterName>dataSourceName</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Name of the Data Source. This will also serve as the unique identifier for this resource. For example XAOracleDS</description>
+                <description>Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>profile</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain where XA data source should be created or updated (in case of need). For example: 'full', 'default'</description>
+                <description>Required for Domain, will be ignored for Standalone. Name of the Server Profile to which this XA Data Source applies to. For example: 'full', 'full-ha'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
