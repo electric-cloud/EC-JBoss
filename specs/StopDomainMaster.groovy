@@ -4,7 +4,8 @@ import Utils.EnvPropertiesHelper
 import spock.lang.*
 import Utils.EnvPropertiesHelper
 
-@IgnoreIf({EnvPropertiesHelper.getOS() == "WINDOWS"})
+
+@IgnoreIf({ EnvPropertiesHelper.getOS() == "WINDOWS" })
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class StopDomainMaster extends PluginTestHelper {
 
