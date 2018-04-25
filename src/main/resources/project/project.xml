@@ -3549,7 +3549,7 @@
         </procedure>
         <procedure>
             <procedureName>CreateOrUpdateXADataSource</procedureName>
-            <description>This procedure creates a new XA Data Source or updates JNDI name or credentials for an existing XA Data Source.</description>
+            <description>This procedure creates a new XA data source or updates some properties (JNDI name or credentials) for an existing XA data source.</description>
             <jobNameTemplate>jboss-create-or-update-xa-data-source-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3684,56 +3684,56 @@
             <formalParameter>
                 <formalParameterName>dataSourceName</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Name of the Data Source. This will also serve as the unique identifier for this resource. For example XAOracleDS</description>
+                <description>Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>jndiName</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>JNDI Name of the Data Source. For example java:/XAOracleDS</description>
+                <description>JNDI Name of the Data Source. For example java:/MysqlXADS</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>jdbcDriverName</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Name of the JDBC Driver of the Database for which the XA Data source is created. For example oracle.</description>
+                <description>Defines the JDBC driver the data source should use. It is a symbolic name matching the name of installed driver. For example mysql.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>xaDataSourceProperties</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>A comma-separated list of XA data source properties in key=value pair format. Note that the key value pairs are database dependent and at a minimum should contain the Database connection information. For example: url=jdbc:oracle:oci8:@tc for an Oracle database; DatabaseName=mysqlDB,ServerName=localhost,PortNumber=3306 for a Mysql database.</description>
+                <description>A comma-separated list of XA data source properties in "key"=>"value" pair format. Note that the key value pairs are database dependent and at a minimum should contain the Database connection information. For example: "URL"=>"jdbc:oracle:oci8:@tc" for an Oracle database; "ServerName"=>"localhost","DatabaseName"=>"test","PortNumber"=>"3306","DriverType"=>"4" for a Mysql database</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>dataSourceConnectionCredentials</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Username and password used for the connection, that will be included as part of the step</description>
+                <description>Credential that contains username and password used for the connection (need to be attached to step).</description>
                 <required>1</required>
                 <type>credential</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>enabled</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>If the created XA Data Source should be enabled or not. Default is Y. Note that for an Update to go through it should be disabled prior.</description>
+                <description>If the created XA Data Source should be enabled or not. Default is true.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>profile</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Required for Domain, will be ignored for Standalone. Name of profile in Domain where XA data source should be created or updated (in case of need). For example: 'full', 'default'</description>
+                <description>Required for Domain, will be ignored for Standalone. Name of the Server Profile to which this XA Data Source applies to. For example: 'full', 'full-ha'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>This is meant to pass additional options for both these use cases: 1. To override parameters which are defaulted (for example Interleaving, PadXID etc.). 2. Optional parameters which are not defaulted (for example min-pool-size, max-pool-size, --check-valid-connection-sql etc.)</description>
+                <description>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating xa data source. For example: --min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select top 1 1 from some_table"</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
