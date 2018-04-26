@@ -37,13 +37,13 @@
         <label>Information Type Context:</label>
         <property>informationTypeContext</property>
         <required>0</required>
-        <documentation>Information Type Context. At current implementation it is considered only when Information Type is Data Sources or XA Data Sources and JBoss launched in Domain mode. In this case it is considered as profile where information about data sources to be gathered.</documentation>
+        <documentation>Optional parameter. Applies only when Information Type is "Data Sources" or "XA Data Sources". Information Type Context. Enter the name of the Profile for which Information Type is requested for. If none the procedure would return for all profiles.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Additional Options:</label>
         <property>additionalOptions</property>
         <required>0</required>
-        <documentation>'Additional Options' can be included into CLI call, e.g.: '/:read-resource(include-runtime=true,include-defaults=true)' can be called instead of '/:read-resource' if 'include-runtime=true,include-defaults=true' is provided within 'Additional Options'.</documentation>
+        <documentation>'Additional Options' that can be included into CLI call to limit the information requested. For example, if you provide 'include-runtime=true,include-defaults=true' the procedure would call /:read-resource('include-runtime=true,include-defaults=true').</documentation>
     </formElement>
 </editor>

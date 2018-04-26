@@ -1323,23 +1323,22 @@
             </div>
             <div id="GetEnvInfo"> <a name="GetEnvInfo" id="GetEnvInfo"></a>
                 <h2>GetEnvInfo</h2>
-                This procedure retrieves requested information from JBoss via CLI
-                and writes it to logs and property.
+                This procedure returns different types of information about a Jboss environment
+                and writes it to property and logs.
                 <br/>
                 Outputs can be found in the following places:
                 <ul>
-                    <li>in property 'envInfo' within job step</li>
-                    <li>in logs after "INFO: Requested Environment Information: " pattern</li>
+                    <li>envInfo property within job step</li>
+                    <li>step logs under the "INFO: Requested Environment Information: " section</li>
                 </ul>
-                There are the following 'Information Types' supported by the procedure which may be requested:
+                There are the types of Information(aka 'Information Types') that can be requested:
                 <ul>
                     <li>System Dump</li>
                     <li>Profiles (for Domain only)</li>
                     <li>Data Sources</li>
                     <li>XA Data Sources</li>
                 </ul>
-                Different CLI calls will be performed and different outputs will be received
-                depends on the 'Information Type' (and in some cases depends on 'Information Type Context').
+                The following is provided as a quick reference to the different Jboss CLI calls invoked.
                 <ul>
                     <li>
                         System Dump.
@@ -1356,7 +1355,7 @@
                         Output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoProfiles.PNG" />
                     </li>
                     <li>
-                        Data Sources on Standalone or on profile within Domain (provided within 'Information Type Context')
+                        Data Sources on Standalone or for a specific profile in a domain.
                         <br/>
                         CLI call on standalone: '/subsystem=datasources/:read-children-resources(child-type=data-source)'
                         <br/>
@@ -1364,16 +1363,16 @@
                         <br/>
                         Output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoDataSources.PNG" />
                         <br/>
-                        Similar flow for XA Data Sources.
+                        For XA Data Sources, it is very similar to above.
                     </li>
                     <li>
-                        Data Sources on all profiles within Domain (not provided 'Information Type Context')
+                        Data Sources on all profiles in a Domain.
                         <br/>
                         CLI call performed for every profile which contains 'datasources' subsystem: '/profile=full/subsystem=datasources/:read-children-resources(child-type=data-source)'
                         <br/>
                         Combined output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoDataSourcesAllProfiles.PNG" />
                         <br/>
-                        Similar flow for XA Sata Sources. For example
+                        For XA Data Sources, it is very similar to above.
                         <br/>
                         Combined output: <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoXADataSourcesAllProfiles.PNG" />
                     </li>
@@ -1419,11 +1418,10 @@
                                         Information Type Context
                                     </td>
                                     <td>
-                                        Optional parameter.
+                                        Optional parameter. Applies only when Information Type is "Data Sources" or "XA Data Sources".
                                         <br />
                                         Information Type Context.
-                                        At current implementation it is considered only when Information Type is Data Sources or XA Data Sources and JBoss launched in Domain mode.
-                                        In this case it is considered as profile where information about data sources to be gathered.
+                                        Enter the name of the Profile for which Information Type is requested for. If none the procedure would return for all profiles.
                                     </td>
                                 </tr>
                                 <tr>
@@ -1431,8 +1429,8 @@
                                     <td>
                                         Optional parameter.
                                         <br />
-                                        'Additional Options' can be included into CLI call, e.g.: '/:read-resource(include-runtime=true,include-defaults=true)'
-                                        can be called instead of '/:read-resource' if 'include-runtime=true,include-defaults=true' is provided within 'Additional Options'.
+                                        'Additional Options' that can be included into CLI call to limit the information requested. For example, if you provide 'include-runtime=true,include-defaults=true'
+                                        the procedure would call /:read-resource('include-runtime=true,include-defaults=true').
                                     </td>
                                 </tr>
                             </tbody>
