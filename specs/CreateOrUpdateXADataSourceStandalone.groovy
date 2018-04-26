@@ -188,6 +188,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         if (jobUpperStepSummary.contains("reload-required") || jobUpperStepSummary.contains("restart-required")) {
             jobExpectedStatus = "warning"
         }
+        then:
         assert runProcedureJob.getStatus() == jobExpectedStatus
         assert jobUpperStepSummary =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSource(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
