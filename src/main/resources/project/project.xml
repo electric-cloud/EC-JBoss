@@ -3549,7 +3549,7 @@
         </procedure>
         <procedure>
             <procedureName>CreateOrUpdateXADataSource</procedureName>
-            <description>This procedure creates a new XA data source or updates some properties (JNDI name or credentials) for an existing XA data source.</description>
+            <description>This procedure can be used to either create a new XA data source or update certain properties of an existing XA data source.</description>
             <jobNameTemplate>jboss-create-or-update-xa-data-source-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3705,7 +3705,7 @@
             <formalParameter>
                 <formalParameterName>xaDataSourceProperties</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>A comma-separated list of XA data source properties in "key"=>"value" pair format. Note that the key value pairs are database dependent and at a minimum should contain the Database connection information. For example: "URL"=>"jdbc:oracle:oci8:@tc" for an Oracle database; "ServerName"=>"localhost","DatabaseName"=>"test","PortNumber"=>"3306","DriverType"=>"4" for a Mysql database</description>
+                <description>A comma-separated list of XA data source properties in "key"=>"value" pair format. Note that the key value pairs are database dependent and at a minimum should contain the database connection information. For example: "URL"=>"jdbc:oracle:oci8:@tc" for an Oracle database; "ServerName"=>"localhost","DatabaseName"=>"test","PortNumber"=>"3306","DriverType"=>"4" for a Mysql database</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -3733,7 +3733,7 @@
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating xa data source. For example: --min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select top 1 1 from some_table"</description>
+                <description>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating xa data source. For example: --min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select 1 from dual"</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
