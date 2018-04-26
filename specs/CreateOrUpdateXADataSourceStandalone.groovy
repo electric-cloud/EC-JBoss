@@ -178,11 +178,21 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         if (EnvPropertiesHelper.getVersion() == '6.1') {
                 reloadServer()
             }
-        then:
-        assert runProcedureJob.getStatus() == "success"
-        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
+
+        // we expect "success" or "warning"
+        // "success": if the server does not need reloading
+        // "warning": if server needs reloading, and this case we throw text "reload-required" or
+        // "restart-required" (it depends on jboss version).
+        def jobUpperStepSummary = runProcedureJob.getUpperStepSummary()
+        def jobExpectedStatus = "success"
+        if (jobUpperStepSummary.contains("reload-required") || jobUpperStepSummary.contains("restart-required")) {
+            jobExpectedStatus = "warning"
+        }
+        assert runProcedureJob.getStatus() == jobExpectedStatus
+        assert jobUpperStepSummary =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSource(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
                 defaultPassword, defaultUserName)
+
         cleanup: 
         reloadServer()
         // remove XA datasource
