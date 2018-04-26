@@ -1908,19 +1908,11 @@
             </div>
             <div id="StopDomain"> <a name="StopDomain" id="StopDomain"></a>
                 <h2>StopDomain</h2>
-                This procedure stops all servers within domain
-                and if "All Controllers Shutdown" option is chosen then the procedure also performs shutdown of all controllers one by one
-                (shutdown of a master host controller to be performed on final stage).
-                <br/><br/>
-                Starting from EAP 7.0 'timeout' can be specified for both stop-servers and shutdown of host controllers.
-                According to JBoss documentation: "The shutdown timeout in seconds.
-                If this is zero then the server will shutdown immediately.
-                A value larger than zero means the server will wait up to this many seconds for all active requests to finish.
-                A value smaller than zero means that the server will wait indefinitely for all active requests to finish."
-                <br/><br/>
-                The following examples shows how the procedure stops servers and performs shutdown of all host controllers
-                <br/>
-                in the case of EAP 7.0:
+                This procedure stops all servers within a managed domain and optionally shuts down all host controllers.
+                The following examples shows how the procedure stops servers and performs shutdown of all host controllers.
+                <br />
+                <br />
+                For EAP 7.0:
                 <ul>
                     <li>
                         :stop-servers(timeout=60)
@@ -1932,7 +1924,7 @@
                         shutdown --host=master --timeout=60
                     </li>
                 </ul>
-                and in case of EAP 6.0 :
+                For EAP 6.0 :
                 <ul>
                     <li>
                         :stop-servers
@@ -1944,9 +1936,8 @@
                         /host=master:shutdown
                     </li>
                 </ul>
-                NOTE: the procedure can have status warning in case
-                if there are some STOPPING servers detected after stop-servers is performed
-                when 'All Controllers Shutdown' is not chosen (expected statuses of servers are STOPPED or DISABLED).
+                NOTE:<b> timeout </b> is a new option introduced by Jboss in EAP 7.0. It is defined in the parameter section below.        <br />
+
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the StopDomain procedure.</li>
@@ -1971,7 +1962,7 @@
                                 <tr>
                                     <td>Timeout</td>
                                     <td>
-                                        Optional parameter. Supported starting from EAP 7.0, will be ignored for EAP 6.X.
+                                        Optional parameter. Supported only for EAP 7.X and ignored for EAP 6.X.
                                         <br />
                                         Timeout for stopping all servers within domain and for shutdown each host controller (if 'All Controllers Shutdown' is chosen).
                                         <br />
@@ -1992,7 +1983,7 @@
                                     <td>
                                         Optional parameter.
                                         <br />
-                                        Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default - no shutdown (unchecked).
+                                        Whether the procedure should perform shutdown of controllers. If chosen all controllers are shutdown one by one with the master host controller being shut down the last. If after shutting down, some servers are still in STOPPING STATUS the procedure will return a status of warning. By default this option is No ie., no host controller is shut down.
                                     </td>
                                 </tr>
                             </tbody>

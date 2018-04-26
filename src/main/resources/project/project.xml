@@ -3885,7 +3885,7 @@
         </procedure>
         <procedure>
             <procedureName>StopDomain</procedureName>
-            <description>This procedure stops all servers within domain and if "All Controllers Shutdown" option is chosen then the procedure also performs shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage).</description>
+            <description>This procedure stops all servers within a managed domain and optionally shuts down all host controllers.</description>
             <jobNameTemplate>jboss-stop-domain-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3960,14 +3960,14 @@
             <formalParameter>
                 <formalParameterName>jbossTimeout</formalParameterName>
                 <defaultValue>60</defaultValue>
-                <description>Supported starting from EAP 7.0, will be ignored for EAP 6.X. Timeout for stopping all servers within domain and for shutdown each host controller (if 'All Controllers Shutdown' is chosen). For example, the following CLI commands can be called: ':stop-servers(timeout=60)', 'shutdown --host=master --timeout=60'. According to JBoss documentation: "The shutdown timeout in seconds. If this is zero then the server will shutdown immediately. A value larger than zero means the server will wait up to this many seconds for all active requests to finish. A value smaller than zero means that the server will wait indefinitely for all active requests to finish."</description>
+                <description>Supported only for EAP 7.X and ignored for EAP 6.X. Timeout for stopping all servers within domain and for shutdown each host controller (if 'All Controllers Shutdown' is chosen). For example, the following CLI commands can be called: ':stop-servers(timeout=60)', 'shutdown --host=master --timeout=60'. According to JBoss documentation: "The shutdown timeout in seconds. If this is zero then the server will shutdown immediately. A value larger than zero means the server will wait up to this many seconds for all active requests to finish. A value smaller than zero means that the server will wait indefinitely for all active requests to finish."</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>allControllersShutdown</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default - no shutdown (unchecked).</description>
+                <description>Whether the procedure should perform shutdown of controllers. If chosen all controllers are shutdown one by one with the master host controller being shut down the last. If after shutting down, some servers are still in STOPPING STATUS the procedure will return a status of warning. By default this option is No ie., no host controller is shut down.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
