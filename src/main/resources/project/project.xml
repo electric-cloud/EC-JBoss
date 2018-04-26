@@ -3549,7 +3549,7 @@
         </procedure>
         <procedure>
             <procedureName>CreateOrUpdateXADataSource</procedureName>
-            <description>This procedure creates a new XA data source or updates some properties (JNDI name or credentials) for an existing XA data source.</description>
+            <description>This procedure can be used to either create a new XA data source or update certain properties of an existing XA data source.</description>
             <jobNameTemplate>jboss-create-or-update-xa-data-source-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3705,7 +3705,7 @@
             <formalParameter>
                 <formalParameterName>xaDataSourceProperties</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>A comma-separated list of XA data source properties in "key"=>"value" pair format. Note that the key value pairs are database dependent and at a minimum should contain the Database connection information. For example: "URL"=>"jdbc:oracle:oci8:@tc" for an Oracle database; "ServerName"=>"localhost","DatabaseName"=>"test","PortNumber"=>"3306","DriverType"=>"4" for a Mysql database</description>
+                <description>A comma-separated list of XA data source properties in "key"=>"value" pair format. Note that the key value pairs are database dependent and at a minimum should contain the database connection information. For example: "URL"=>"jdbc:oracle:oci8:@tc" for an Oracle database; "ServerName"=>"localhost","DatabaseName"=>"test","PortNumber"=>"3306","DriverType"=>"4" for a Mysql database</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -3733,7 +3733,7 @@
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating xa data source. For example: --min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select top 1 1 from some_table"</description>
+                <description>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating xa data source. For example: --min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select 1 from dual"</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
@@ -3837,7 +3837,7 @@
             <formalParameter>
                 <formalParameterName>dataSourceName</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS</description>
+                <description>Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
@@ -3885,7 +3885,7 @@
         </procedure>
         <procedure>
             <procedureName>StopDomain</procedureName>
-            <description>This procedure stops all servers within domain and if "All Controllers Shutdown" option is chosen then the procedure also performs shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage).</description>
+            <description>This procedure stops all servers within a managed domain and optionally shuts down all host controllers.</description>
             <jobNameTemplate>jboss-stop-domain-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -3960,14 +3960,14 @@
             <formalParameter>
                 <formalParameterName>jbossTimeout</formalParameterName>
                 <defaultValue>60</defaultValue>
-                <description>Supported starting from EAP 7.0, will be ignored for EAP 6.X. Timeout for stopping all servers within domain and for shutdown each host controller (if 'All Controllers Shutdown' is chosen). For example, the following CLI commands can be called: ':stop-servers(timeout=60)', 'shutdown --host=master --timeout=60'. According to JBoss documentation: "The shutdown timeout in seconds. If this is zero then the server will shutdown immediately. A value larger than zero means the server will wait up to this many seconds for all active requests to finish. A value smaller than zero means that the server will wait indefinitely for all active requests to finish."</description>
+                <description>Supported only for EAP 7.X and ignored for EAP 6.X. Timeout for stopping all servers within domain and for shutdown each host controller (if 'All Controllers Shutdown' is chosen). For example, the following CLI commands can be called: ':stop-servers(timeout=60)', 'shutdown --host=master --timeout=60'. According to JBoss documentation: "The shutdown timeout in seconds. If this is zero then the server will shutdown immediately. A value larger than zero means the server will wait up to this many seconds for all active requests to finish. A value smaller than zero means that the server will wait indefinitely for all active requests to finish."</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>allControllersShutdown</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Whether the procedure should perform shutdown of all controllers one by one (shutdown of a master host controller to be performed on final stage). By default - no shutdown (unchecked).</description>
+                <description>Whether the procedure should perform shutdown of controllers. If chosen all controllers are shutdown one by one with the master host controller being shut down the last. If after shutting down, some servers are still in STOPPING STATUS the procedure will return a status of warning. By default this option is No ie., no host controller is shut down.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
@@ -4008,7 +4008,7 @@
         </procedure>
         <procedure>
             <procedureName>GetEnvInfo</procedureName>
-            <description>This procedure retrieves requested information from JBoss via CLI and writes it to logs and property. There are the following 'Information Types' supported by the procedure which may be requested: System Dump; Profiles (for Domain only); Data Sources; XA Data Sources.</description>
+            <description>This procedure returns different types of information about a Jboss environment and writes it to property and logs.</description>
             <jobNameTemplate>jboss-get-env-info-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -4085,14 +4085,14 @@
             <formalParameter>
                 <formalParameterName>informationTypeContext</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Information Type Context. At current implementation it is considered only when Information Type is Data Sources or XA Data Sources and JBoss launched in Domain mode. In this case it is considered as profile where information about data sources to be gathered.</description>
+                <description>Optional parameter. Applies only when Information Type is "Data Sources" or "XA Data Sources". Information Type Context. Enter the name of the Profile for which Information Type is requested for. If none the procedure would return for all profiles.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>'Additional Options' can be included into CLI call, e.g.: '/:read-resource(include-runtime=true,include-defaults=true)' can be called instead of '/:read-resource' if 'include-runtime=true,include-defaults=true' is provided within 'Additional Options'.</description>
+                <description>'Additional Options' that can be included into CLI call to limit the information requested. For example, if you provide 'include-runtime=true,include-defaults=true' the procedure would call /:read-resource('include-runtime=true,include-defaults=true').</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>

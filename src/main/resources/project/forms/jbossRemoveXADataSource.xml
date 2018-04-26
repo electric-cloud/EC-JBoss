@@ -14,7 +14,7 @@
         <label>Data Source Name:</label>
         <property>dataSourceName</property>
         <required>1</required>
-        <documentation>Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS</documentation>
+        <documentation>Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
