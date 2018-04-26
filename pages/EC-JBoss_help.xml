@@ -1588,7 +1588,7 @@
                 <h2>RemoveXADataSource</h2>
                 This procedure removes an existing XA data source in the JBoss EAP 'datasources' subsystem.
                 <br/>
-                Unique identifier for a XA data source per operating mode are as follows:
+                The existence of a data source is determined based on Unique Identifier Comparison based on the operating mode as per follows:
                 <ul>
                     <li>For Standalone : 'Data Source Name'</li>
                     <li>For Domain : 'Data Source Name' and 'Profile'</li>
@@ -1597,7 +1597,7 @@
                 <br/>
                 If the specified XA data source exists it will be removed, else it will return a job status of warning.
                 <br/>
-                NOTE: procedure will have waning status and include JBoss response if JBoss replied that restart or reload of server(s) is needed after removing of XA data source.
+                NOTE: In addition procedure will have parse JBoss response and report is as part of step summary. If JBoss response indicated that a restart or reload of server(s) is needed, the step status would be a warning.
                 <br/>
                 The following is an example of how the procedure invokes this operation using jboss-cli
                 <br/>
@@ -1628,7 +1628,7 @@
                                     <td>
                                         Required parameter.
                                         <br />
-                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS
+                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS.
                                     </td>
                                 </tr>
                                 <tr>

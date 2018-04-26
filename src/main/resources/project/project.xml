@@ -3837,7 +3837,7 @@
             <formalParameter>
                 <formalParameterName>dataSourceName</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS</description>
+                <description>Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
