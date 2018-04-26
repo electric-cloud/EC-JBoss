@@ -2183,6 +2183,7 @@
 
             </div>
             <h1 id="known-issues">Known Issues</h1>
+            This section contains known limitations with different Jboss Server Versions that we found as part of System testing.
             <h2>Windows only. jboss-cli.bat from JBoss EAP 6 exits with wrong code.</h2>
             jboss-cli.bat does not exit with correct return code when calling it from a wrapper script. It always exits with 0, even if the operation failed.<br />
             For ElectricFlow it means that jboss-cli response may be interpreted wrong.<br />
@@ -2242,24 +2243,14 @@
                 JIRA ticket for JBoss Enterprise Application Platform: <a href="https://issues.jboss.org/browse/JBEAP-14659" target="_BLANK">https://issues.jboss.org/browse/JBEAP-14659</a>.<br />
             </p>
             <br />
-            <h2>JBoss EAP 6.3. Removing enabled XA data source failing.Standalone and Domain. Removing services has lead to unsatisfied dependencies</h2>
+            <h2>JBoss EAP 6.3. Removing enabled XA data source failing. Removing services has lead to unsatisfied dependencies</h2>
             Removing XA data sources can fail when call remove command with the following error, e.g.:
             "JBAS014762: Removing services has lead to unsatisfied dependencies:
             Service jboss.data-source.reference-factory.MysqlXADSC289546 was depended upon by service jboss.naming.context.java.MysqlXADS
-            Service jboss.xa-data-source-config.MysqlXADSC289546 was depended upon by service jboss.data-source.java:/MysqlXADS".
+            Service jboss.xa-data-source-config.MysqlXADSC289546 was depended upon by service jboss.data-source.java:/MysqlXADS" (in Standalone)
+            or
+            "JBAS010839: Operation failed or was rolled back on all servers." (in Domain)
             <br/>
-            Minor observation: if remove command called twice (e.g. via RemoveXADataSource procedure) data source may be removed
-            (first call will fail, second may succeed), but we cannot be sure in results of such manipulations.
-            <br/>
-            For Domain solution is not found.
-            Furthermore, if removing of data source was failed or succeed for domain
-            there can be unpredictable consequences afterwards when trying to create new data sources.
-            <br/>
-            There is a solution for Standalone where proposed to disable data source and reload the server before removing the data source.
-            <br/>
-            <p>
-                Solution for Standalone: <a href="https://access.redhat.com/solutions/907633" target="_BLANK">https://access.redhat.com/solutions/907633</a>.<br />
-            </p>
             <h1 id="rns">Release Notes</h1>
             <h2>@PLUGIN_KEY@ 2.5.0</h2>
             <ul>
@@ -2283,7 +2274,7 @@
                 <li>
                     <a href="#StartServers">StartServers</a> and <a href="#StopServers">StopServers</a>
                     <ul>
-                        <li>Fixed step summary by correct information if controller is not available</li>
+                        <li>Fixed step summary to show correct information if controller is not available</li>
                     </ul>
                 </li>
             </ul>
