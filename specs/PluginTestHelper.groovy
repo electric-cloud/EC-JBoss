@@ -454,19 +454,21 @@ class PluginTestHelper extends PluginSpockTestSupport {
         def isHostControllerRunning = true
         def attemptNumber = 0
         def attemptTotalCount = 10
-        def jbossDomainPath = EnvPropertiesHelper.getJbossDomainPath();
         while(isHostControllerRunning){
             try {
+                // this loop can be infinite, so I added a counter
                 if (attemptNumber == attemptTotalCount){
                     break
                 }
                 attemptNumber += 1 
+                // getHostStatus throws exception if Jboss is not running
                 if (runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getHostStatus(serverName)).result == 'running') {
                     isHostControllerRunning = false
                 }
                 sleep(15000)
             }
             catch (Exception e){
+                // if we found that server was not running, we would try to run it again
                 runCustomShellCommand(commandForStart, resName)
             }
         }
