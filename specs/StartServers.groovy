@@ -570,6 +570,6 @@ class StartServers extends PluginTestHelper {
      */
 
     void shutdownHost(String hostName) {
-        runCliCommand(CliCommandsGeneratorHelper.reloadHostDomain(hostName))
+        runCliCommand(CliCommandsGeneratorHelper.shutDownHostDomain(hostName))
     }
 }

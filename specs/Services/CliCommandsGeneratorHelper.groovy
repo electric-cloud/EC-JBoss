@@ -138,6 +138,14 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static String shutDownHostDomain(String hostName) {
+        String command = "/host=$hostName:shutdown"
+        if(EnvPropertiesHelper.getVersion() =~ '6.0'){
+            command = "/host=$hostName:shutdown"
+        }
+        return command
+    }
+
     static String getJMSQueueInfoStandalone(String queueName) {
         String subsystem = getJMSsubsystem();
         String command = "/$subsystem/jms-queue=$queueName:read-resource()"
