@@ -439,6 +439,40 @@ class PluginTestHelper extends PluginSpockTestSupport {
         return jobStatus(res.jobId).outcome == 'error'
     }
 
+    def startDomain(def hostName, def resName) {
+        def jbossDomainPath = EnvPropertiesHelper.getJbossDomainPath();
+        def commandForStart 
+        switch(hostName) {
+            case 'master': commandForStart = "nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &"; break;
+            case 'slave': commandForStart = "nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &"; break;   
+        }
+        runCustomShellCommand(commandForStart, resName)
+        waitUntilServerIsUp(hostName, commandForStart, resName)
+    }
+
+    def waitUntilServerIsUp(def serverName, def commandForStart, def resName){
+        def isHostControllerRunning = true
+        def attemptNumber = 0
+        def attemptTotalCount = 10
+        def jbossDomainPath = EnvPropertiesHelper.getJbossDomainPath();
+        while(isHostControllerRunning){
+            try {
+                if (attemptNumber == attemptTotalCount){
+                    break
+                }
+                attemptNumber += 1 
+                if (runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getHostStatus(serverName)).result == 'running') {
+                    isHostControllerRunning = false
+                }
+                sleep(15000)
+            }
+            catch (Exception e){
+                runCustomShellCommand(commandForStart, resName)
+            }
+        }
+
+    }
+
     class RunProcedureJob {
         private String jobId
         private String projectName
