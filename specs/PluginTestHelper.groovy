@@ -470,7 +470,6 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 runCustomShellCommand(commandForStart, resName)
             }
         }
-
     }
 
     class RunProcedureJob {
