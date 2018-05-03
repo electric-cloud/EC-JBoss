@@ -560,7 +560,7 @@ class StopServers extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == 'error'
-        assert runProcedureJob.getUpperStepSummary() =~ "Server group parameter is mandatory"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'serversgroup' is not provided"
     }
 
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
