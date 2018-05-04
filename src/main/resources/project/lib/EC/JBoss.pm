@@ -1157,7 +1157,7 @@ sub get_servergroup_status {
             my $status = $children_json->{result}->{$server_name}->{status};
             $servers->{$host_name}->{$server_name} = {status => $status};
             push @states, $status;
-            $self->out("Found server $server_name in state $status");
+            $self->log_info("Found server $server_name on host $host_name in state $status");
         }
     }
 

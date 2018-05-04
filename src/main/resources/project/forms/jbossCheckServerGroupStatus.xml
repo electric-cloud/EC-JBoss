@@ -43,7 +43,7 @@
             <value>STARTED</value>
         </option>
         <option>
-            <name>STOPPED</name>
+            <name>STOPPED (or DISABLED)</name>
             <value>STOPPED</value>
         </option>
     </formElement>
