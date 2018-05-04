@@ -18,11 +18,13 @@ class StartServers extends PluginTestHelper {
     String defaultCliPath = ''
     @Shared
     String defaultWaitTime = '100'
+    @Shared
+    def resName
 
     def doSetupSpec() {
         dsl 'setProperty(propertyName: "/plugins/EC-JBoss/project/ec_debug_logToProperty", value: "/myJob/debug_logs")'
         createDefaultConfiguration(defaultConfigName)
-        def resName = createJBossResource()
+        resName = createJBossResource()
         logger.info("Hello World! doSetupSpec")
 
         dslFile 'dsl/RunProcedure.dsl', [
@@ -541,7 +543,7 @@ class StartServers extends PluginTestHelper {
 
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     @Unroll
-    def "Negative. Controller is not available (C278096)"() { //shutdown host. After test need start server
+    def "Negative. Controller is not available (C278096)"() { 
         setup:
         String testCaseId = "C278096"
 
@@ -561,6 +563,9 @@ class StartServers extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == 'error'
         assert runProcedureJob.getUpperStepSummary() =~ "Failed to connect to the controller"
+        
+        cleanup:
+        startDomain('master', resName)
     }
 
 
@@ -570,6 +575,6 @@ class StartServers extends PluginTestHelper {
      */
 
     void shutdownHost(String hostName) {
-        runCliCommand(CliCommandsGeneratorHelper.reloadHostDomain(hostName))
+        runCliCommand(CliCommandsGeneratorHelper.shutDownHostDomain(hostName))
     }
 }
