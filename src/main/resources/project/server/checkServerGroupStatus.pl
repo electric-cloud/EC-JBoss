@@ -22,7 +22,7 @@ my $PARAM_CRITERIA_STARTED = 'STARTED';
 my $PARAM_CRITERIA_STOPPED_OR_DISABLED = 'STOPPED';
 
 my %PARAM_CRITERIA_LABELS = (
-    $PARAM_CRITERIA_STARTED  => "STARTED",
+    $PARAM_CRITERIA_STARTED             => "STARTED",
     $PARAM_CRITERIA_STOPPED_OR_DISABLED => "STOPPED (or DISABLED)",
 );
 
@@ -31,15 +31,15 @@ my $STATUS_DISABLED = 'DISABLED'; # stopped status for servers with auto-start f
 my $STATUS_STARTED = 'STARTED'; # started status for servers
 my $SLEEP_TIME = 5;
 
-$|=1;
+$| = 1;
 
 main();
 
 sub main {
     my $jboss = EC::JBoss->new(
-        project_name    =>  $PROJECT_NAME,
-        plugin_name     =>  $PLUGIN_NAME,
-        plugin_key      =>  $PLUGIN_KEY,
+        project_name => $PROJECT_NAME,
+        plugin_name  => $PLUGIN_NAME,
+        plugin_key   => $PLUGIN_KEY,
     );
 
     my $params = $jboss->get_params_as_hashref(
@@ -74,7 +74,7 @@ sub main {
 
     my $result = {
         error => 0,
-        msg => ''
+        msg   => ''
     };
 
     while (!$done) {
@@ -98,15 +98,15 @@ sub main {
 
         my $criteria_is_met;
         if ($param_criteria eq "STARTED") {
-            my @started_states = grep { $_ eq $STATUS_STARTED } @states;
+            my @started_states = grep {$_ eq $STATUS_STARTED} @states;
             $criteria_is_met = 1 if scalar @started_states == scalar @states;
         }
         else {
-            my @stopped_states = grep { $_ eq $STATUS_STOPPED || $_ eq $STATUS_DISABLED } @states;
+            my @stopped_states = grep {$_ eq $STATUS_STOPPED || $_ eq $STATUS_DISABLED} @states;
             $criteria_is_met = 1 if scalar @stopped_states == scalar @states;
         }
 
-        my %unique_states = map { $_ => 1 } @states;
+        my %unique_states = map {$_ => 1} @states;
         my $unique_states_str = join(', ', keys %unique_states);
 
         $jboss->set_property('server_group_status', $unique_states_str);
