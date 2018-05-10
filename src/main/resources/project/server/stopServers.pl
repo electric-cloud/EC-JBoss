@@ -33,6 +33,8 @@ sub main {
         'wait_time'
     );
 
+    $jboss->bail_out("Required parameter 'serversgroup' is not provided") unless $params->{serversgroup};
+
     my $wait_time = undef;
     $params->{wait_time} = $jboss->trim($params->{wait_time});
 

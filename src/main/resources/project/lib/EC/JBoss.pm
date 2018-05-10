@@ -1134,12 +1134,11 @@ Returns servergroup status in hashref format and statuses list in arrayref forma
 
 sub get_servergroup_status {
     my ($self, $server_group_name) = @_;
+    croak "required param is not provided (server group)" unless $server_group_name;
 
     my $servers = {};
     my @states = ();
-    if (!$server_group_name) {
-        $self->bail_out("Servergroup parameter is mandatory");
-    }
+
     my %hosts_response = $self->run_command_with_exiting_on_error(
         command => ':read-children-names(child-type=host)'
     );
