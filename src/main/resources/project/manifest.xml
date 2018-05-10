@@ -137,6 +137,10 @@
         <xpath>//procedure[procedureName=&quot;GetEnvInfo&quot;]/step[stepName=&quot;GetEnvInfo&quot;]/command</xpath>
     </file>
     <file>
+        <path>server/createOrUpdateDataSource.pl</path>
+        <xpath>//procedure[procedureName=&quot;CreateOrUpdateDataSource&quot;]/step[stepName=&quot;CreateOrUpdateDataSource&quot;]/command</xpath>
+    </file>
+    <file>
         <path>conf/createcfg.pl</path>
         <xpath>//procedure[procedureName=&quot;CreateConfiguration&quot;]/step[stepName=&quot;CreateConfiguration&quot;]/command</xpath>
     </file>
@@ -253,6 +257,10 @@
         <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;GetEnvInfo&quot;]/value</xpath>
     </file>
     <file>
+        <path>forms/jbossCreateOrUpdateDataSource.xml</path>
+        <xpath>//property[propertyName=&quot;ui_forms&quot;]/propertySheet/property[propertyName=&quot;CreateOrUpdateDataSource&quot;]/value</xpath>
+    </file>
+    <file>
         <path>forms/jbossEnableDeployForm.xml</path>
         <xpath>//procedure[procedureName=&quot;EnableDeploy&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
     </file>
@@ -351,5 +359,9 @@
     <file>
         <path>forms/jbossGetEnvInfo.xml</path>
         <xpath>//procedure[procedureName=&quot;GetEnvInfo&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
+    </file>
+    <file>
+        <path>forms/jbossCreateOrUpdateDataSource.xml</path>
+        <xpath>//procedure[procedureName=&quot;CreateOrUpdateDataSource&quot;]/propertySheet/property[propertyName=&quot;ec_parameterForm&quot;]/value</xpath>
     </file>
 </fileset>
