@@ -1,0 +1,70 @@
+<editor>
+    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#CreateOrUpdateDataSource</help>
+    <formElement>
+        <type>entry</type>
+        <label>Configuration name:</label>
+        <property>serverconfig</property>
+        <required>1</required>
+        <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <propertyReference>/plugins/@PLUGIN_NAME@/project/jboss_cfgs</propertyReference>
+        <htmlDocumentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Data Source Name:</label>
+        <property>dataSourceName</property>
+        <required>1</required>
+        <documentation>Name of the Data Source. This will also serve as the unique identifier for this resource. For example MySqlDS</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>JNDI Name:</label>
+        <property>jndiName</property>
+        <required>1</required>
+        <documentation>JNDI Name of the Data Source. For example java:/MySqlDS</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>JDBC Driver Name:</label>
+        <property>jdbcDriverName</property>
+        <required>1</required>
+        <documentation>Defines the JDBC driver the data source should use. It is a symbolic name matching the name of installed driver. For example mysql</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Connection URL:</label>
+        <property>connectionUrl</property>
+        <required>0</required>
+        <documentation>Required for JBoss EAP 6.X, 7.0. Not Required for 7.1. The JDBC driver connection URL. For example jdbc:mysql://localhost:3306/mysqldb</documentation>
+    </formElement>
+    <formElement>
+        <type>credential</type>
+        <label>Data Source Connection Credentials:</label>
+        <property>dataSourceConnectionCredentials</property>
+        <required>1</required>
+        <documentation>Credential that contains username and password used for the connection (need to be attached to step).</documentation>
+    </formElement>
+    <formElement>
+        <type>checkbox</type>
+        <label>Enabled:</label>
+        <property>enabled</property>
+        <checkedValue>1</checkedValue>
+        <uncheckedValue>0</uncheckedValue>
+        <initiallyChecked>1</initiallyChecked>
+        <documentation>If the created Data Source should be enabled or not. Default is true.</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Profile:</label>
+        <property>profile</property>
+        <required>0</required>
+        <documentation>Required for Domain, will be ignored for Standalone. Name of the Server Profile to which this Data Source applies to. For example: 'full', 'full-ha'</documentation>
+    </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Additional Options:</label>
+        <property>additionalOptions</property>
+        <required>0</required>
+        <documentation>'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating data source. For example: --min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select 1 from dual"</documentation>
+    </formElement>
+</editor>

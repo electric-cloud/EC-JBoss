@@ -20,7 +20,7 @@
                  ideas, examples, and so on. It is OK to copy them word-for-word only if it is appropriate, such as FOSS.
                  However, do not do this with commercial software. -->
 
-            <p>Revised on April 25, 2018</p>
+            <p>Revised on May 10, 2018</p>
 
             <h1>Contents</h1>
             <p>
@@ -33,6 +33,7 @@
                     <li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a> (Domain)</li>
                     <li><a href="#CheckServerStatus">CheckServerStatus</a> (Standalone/Domain)</li>
                     <li><a href="#CreateDatasource">CreateDatasource</a> (Standalone/Domain)</li>
+                    <li><a href="#CreateOrUpdateDataSource">CreateOrUpdateDataSource</a> (Standalone/Domain)</li>
                     <li><a href="#CreateOrUpdateJMSQueue">CreateOrUpdateJMSQueue</a> (Standalone/Domain)</li>
                     <li><a href="#CreateOrUpdateJMSTopic">CreateOrUpdateJMSTopic</a> (Standalone/Domain)</li>
                     <li><a href="#CreateOrUpdateXADataSource">CreateOrUpdateXADataSource</a> (Standalone/Domain)</li>
@@ -414,6 +415,144 @@
                 <img src="../../plugins/@PLUGIN_NAME@/images/CreateDatasource/ECJBossCreateDatasource4.png" />
                 <br />
                 -->
+            </div>
+            <div id="CreateOrUpdateDataSource"> <a name="CreateOrUpdateDataSource" id="CreateOrUpdateDataSource"></a>
+                <h2>CreateOrUpdateDataSource</h2>
+                This procedure can be used to either create a new data source or update certain properties (listed below) of an existing data source.
+                <br/><br/>
+                The procedure automatically figures out the context (i.e., Create or Update) based on a comparison between certain properties (aka Unique identifiers) in the Input and what exists in the System. The Unique Identifiers per operating mode are as follows:
+                <ul>
+                    <li>For Standalone, if the 'Data Source Name' in the Input exists in the System, it will result in an update.</li>
+                    <li>For Domain if the combination of both 'Data Source Name' and 'Profile' exists in the System, it will result in an update.</li>
+                </ul>
+                These are the updatable properties for an Update Scenario:
+                <ul>
+                    <li>JNDI name</li>
+                    <li>Credentials: username/password</li>
+                </ul>
+                The expected behavior of this procedure is described below
+                <ul>
+                    <li>
+                        If data source does not exist (based on Unique Identifier comparison mentioned above) it will be created.
+                        <br/>
+                        The following example shows how the procedure invokes the creation of data source:
+                        <br/>
+                        data-source --profile=full add --name=someDataSourceName --jndi-name=java:/test --driver-name=mysql --user-name=someUserName --password=somePassword --connection-url=jdbc:mysql://localhost:3306/mysqldb
+                    </li>
+                    <li>
+                        If data source exists (based on Unique Identifier comparison mentioned above) an update happens. The update makes sure that only when the Input value is different from the System value, the property is updated, else it is skipped.
+                        <br/>
+                        The following examples shows how the procedure invokes the updation of a data source
+                        <br/>
+                        /profile=full/subsystem=datasources/data-source=someDataSourceName/:write-attribute(name=jndi-name,value=java:/newTest)
+                    </li>
+
+                </ul>
+                NOTE: JBoss servers may require restart or reload after a data source is created or updated.
+                The JBoss Response would be parsed and reported as part of the step summary.
+                Where a reload or restart is required and status of the step will be a Warning.
+                The procedure will not perform the reload or restart.
+                <h3>Input</h3>
+                <ol>
+                    <li>Go to the CreateOrUpdateDataSource procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="required">Configuration Name</td>
+                                    <td> Required parameter. <br />
+                                        A unique name of the configuration to be used. URL, port and
+                                        credentials are retrieved from the given configuration. To
+                                        view or create a new configuration, go to the Administration
+                                        -&gt; Plugins tab, and select 'Configure' action for
+                                        @PLUGIN_KEY@ plugin. </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">Data Source Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        Name of the Data Source. This will also serve as the unique identifier for this resource. For example MySqlDS
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">JNDI Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        JNDI Name of the Data Source. For example java:/MySqlDS
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">JDBC Driver Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        Defines the JDBC driver the data source should use. It is a symbolic name matching the name of installed driver. For example mysql
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Connection URL</td>
+                                    <td>
+                                        Required for JBoss EAP 6.X, 7.0. Not Required for 7.1.
+                                        <br />
+                                        The JDBC driver connection URL. For example jdbc:mysql://localhost:3306/mysqldb
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">Data Source Connection Credentials</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        Credential that contains username and password used for the connection (need to be attached to step).
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="required">Enabled</td>
+                                    <td>
+                                        Required parameter.
+                                        <br />
+                                        If the created Data Source should be enabled or not. Default is true.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Profile (Domain only)</td>
+                                    <td>
+                                        Required for Domain, will be ignored for Standalone.
+                                        <br/>
+                                        Name of the Server Profile to which this Data Source applies to.
+                                        <br/>
+                                        For example: 'full', 'full-ha'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Additional Options</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br />
+                                        'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating data source. For example:
+                                        <br/>
+                                        --min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select 1 from dual"
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateDataSource/CreateOrUpdateDataSourceForm1.PNG" />
+                    </li>
+                </ol>
+                <h3>Output</h3>
+                <p> After the job runs, you can view the results on the Job Details page
+                    in ElectricFlow. In the <b>CreateOrUpdateDataSource</b> step, click the
+                    Log icon to see the diagnostic information. </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateDataSource/CreateOrUpdateDataSourceRunScenarios.PNG" />
             </div>
             <div id="CreateOrUpdateJMSQueue"> <a name="CreateOrUpdateJMSQueue" id="CreateOrUpdateJMSQueue"></a>
                 <h2>CreateOrUpdateJMSQueue</h2>

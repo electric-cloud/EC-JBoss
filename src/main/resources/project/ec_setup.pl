@@ -162,6 +162,13 @@ my %getEnvInfo = (
     category    => "Application Server"
 );
 
+my %createOrUpdateDataSource = (
+    label       => "JBoss - Create or Update Data Source",
+    procedure   => "CreateOrUpdateDataSource",
+    description => "Create or update data source",
+    category    => "Application Server"
+);
+
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
@@ -190,6 +197,7 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Up
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove XA Data Source");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Stop Domain");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Get Environment Information");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update Data Source");
 
 
 @::createStepPickerSteps = (
@@ -217,7 +225,8 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Get Environm
     \%createOrUpdateXADataSource,
     \%removeXADataSource,
     \%stopDomain,
-    \%getEnvInfo
+    \%getEnvInfo,
+    \%createOrUpdateDataSource
 );
 
 
@@ -406,6 +415,11 @@ if ($upgradeAction eq "upgrade") {
             $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
                     procedureName => 'GetEnvInfo',
                     stepName => 'GetEnvInfo'
+                });
+
+            $batch->attachCredential("\$[/plugins/$pluginName/project]", $cred, {
+                    procedureName => 'CreateOrUpdateDataSource',
+                    stepName => 'CreateOrUpdateDataSource'
                 });
         }
     }
