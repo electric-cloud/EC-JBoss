@@ -111,7 +111,7 @@ sub main {
 
         $jboss->set_property('server_group_status', $unique_states_str);
 
-        $jboss->log_info("Summarry log for server within '$server_group_name' server group:");
+        $jboss->log_info("Summarry log for servers within '$server_group_name' server group:");
         for my $host_name (keys %$servers) {
             for my $server_name (keys %{$servers->{$host_name}}) {
                 my $server_status = $servers->{$host_name}->{$server_name}->{status};
