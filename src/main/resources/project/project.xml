@@ -2716,7 +2716,7 @@
         </procedure>
         <procedure>
             <procedureName>CheckServerGroupStatus</procedureName>
-            <description>Checks server group status (started/stopped).</description>
+            <description>The CheckServerGroupStatus procedure gets the statuses of all servers in the specified group and compares them with the provided criteria.</description>
             <jobNameTemplate>jboss-check-server-group-status-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -2789,35 +2789,35 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the physical location of the admin script, i.e: 'jboss-admin.bat', '/path/to/jboss-admin.sh'.</description>
+                <description>Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>serversgroup</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Specifies the command to run.</description>
+                <description>The name of server group to be checked.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>criteria</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Specifies the criteria to check.</description>
+                <description>A desired status for all servers in the group. The procedure will fail if the criteria is not met. 'STARTED' criteria will be met in case if all servers within specified server group have 'STARTED' statuses. 'STOPPED' criteria will be met in case if all servers within specified server group have 'STOPPED' or 'DISABLED' statuses (similar statuses which indicate that servers are stopped, the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>wait_time</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Wait time.</description>
+                <description>Maximum duration (in seconds) of server group status check retries. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
