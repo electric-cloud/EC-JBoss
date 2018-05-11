@@ -2,7 +2,7 @@
     <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#CheckServerGroupStatus</help>
     <formElement>
         <type>entry</type>
-        <label>Configuration name:</label>
+        <label>Configuration Name:</label>
         <property>serverconfig</property>
         <required>1</required>
         <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
@@ -11,7 +11,7 @@
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Physical location of the jboss client script:</label>
+        <label>Physical Location of the JBoss Client Script:</label>
         <property>scriptphysicalpath</property>
         <required>0</required>
         <propertyReference type="property">/plugins/@PLUGIN_NAME@/project/jboss_cfgs/$serverconfig/scriptphysicalpath</propertyReference>
@@ -19,17 +19,17 @@
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Servers group:</label>
+        <label>Servers Group Name:</label>
         <property>serversgroup</property>
         <required>1</required>
         <documentation>The name of server group to be checked.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Wait time:</label>
+        <label>Wait Time:</label>
         <property>wait_time</property>
         <required>0</required>
-        <documentation>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</documentation>
+        <documentation>Maximum duration (in seconds) of server group status check retries. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</documentation>
         <value>300</value>
     </formElement>
     <formElement>
@@ -37,7 +37,7 @@
         <label>Criteria:</label>
         <property>criteria</property>
         <required>1</required>
-        <documentation>A desired status of all servers in the group. The procedure will fail if the criteria is not met.</documentation>
+        <documentation>A desired status for all servers in the group. The procedure will fail if the criteria is not met. 'STARTED' criteria will be met in case if all servers within specified server group have 'STARTED' statuses. 'STOPPED' criteria will be met in case if all servers within specified server group have 'STOPPED' or 'DISABLED' statuses (similar statuses which indicate that servers are stopped, the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).</documentation>
         <option>
             <name>STARTED</name>
             <value>STARTED</value>

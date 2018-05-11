@@ -283,6 +283,122 @@
                 <img src="../../plugins/@PLUGIN_NAME@/images/CheckHostControllerStatus/CheckHostControllerStatus4.png" />
                 <br />
             </div>
+            <div id="CheckServerGroupStatus"> <a name='CheckServerGroupStatus' id="CheckServerGroupStatus"></a>
+                <h2>CheckServerGroupStatus (Domain)</h2>
+                The CheckServerGroupStatus procedure gets the statuses of all servers in the specified group and compares them with the provided criteria.
+                <br/><br/>
+                There are the following criterias supported by the procedure:
+                <ol>
+                    <li>
+                        STARTED
+                    </li>
+                    <li>
+                        STOPPED
+                    </li>
+                </ol>
+                The procedure will have status success if success criteria is met:
+                <ol>
+                    <li>
+                        'STARTED' criteria will be met in case if all servers within specified server group have 'STARTED' statuses.
+                    </li>
+                    <li>
+                        'STOPPED' criteria will be met in case if all servers within specified server group have 'STOPPED' or 'DISABLED' statuses
+                        (similar statuses which indicate that servers are stopped,
+                        the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).
+                    </li>
+                </ol>
+                Retrieving of server statuses is performed via JBoss CLI by checking the 'status' attribute
+                under the following context /host=[host_name]/server-config=[server_name] for needed servers within server group.
+                <br/><br/>
+                List of all possible values of cli server statuses is the following (according to some WildFly open source code):
+                <ol>
+                    <li>STARTED - The server is started</li>
+                    <li>STOPPED - The server is stopped and configured to start automatically</li>
+                    <li>DISABLED - The server is stopped and configured not to start automatically</li>
+                    <li>STARTING - The server is starting</li>
+                    <li>STOPPING - The server is stopping</li>
+                    <li>FAILED - The server failed to start</li>
+                    <li>UNKNOWN - The status of the server is currently unknown. This is the status of any server whose host controller is currently unreachable</li>
+                    <li>DOES_NOT_EXIST - Status indicating the host controller does not recognize the server name</li>
+                </ol>
+                <h3>Input</h3>
+                <ol>
+                    <li>Go to the CheckServerGroupStatus procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class='required'>Configuration Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Physical Location of the JBoss Client Script</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br />
+                                        Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>Server Group Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        The name of server group to be checked.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Wait Time</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br />
+                                        Maximum duration (in seconds) of server group status check retries.
+                                        If not provided, only one check will be performed.
+                                        If 0, it will wait until criteria is met.
+                                        Default 300.
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>Criteria</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        A desired status for all servers in the group. The procedure will fail if the criteria is not met.
+                                        <ol>
+                                            <li>
+                                                'STARTED' criteria will be met in case if all servers within specified server group have 'STARTED' statuses.
+                                            </li>
+                                            <li>
+                                                'STOPPED' criteria will be met in case if all servers within specified server group have 'STOPPED' or 'DISABLED' statuses
+                                                (similar statuses which indicate that servers are stopped,
+                                                the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).
+                                            </li>
+                                        </ol>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/CheckServerGroupStatus/CheckServerGroupForm1.PNG" />
+                    </li>
+                </ol>
+                <h3>Output</h3>
+                <p> After the job runs, you can view the results on the Job Details page
+                    in ElectricFlow. In the <b>CheckServerGroupStatus</b> step, click the
+                    Log icon to see the diagnostic information. </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/CheckServerGroupStatus/CheckServerGroupStatusRunScenarios.PNG" />
+            </div>
             <div id="CheckServerStatus">
                 <h2>CheckServerStatus</h2>
                 <p>The CheckServerStatus procedure checks the status of the specified server.</p>
@@ -2139,48 +2255,6 @@
                 <img src="../../plugins/@PLUGIN_NAME@/images/UndeployApp/ECJBossUndeployApp4.png" />
                 <br />
                 -->
-            </div>
-            <div id="CheckServerGroupStatus"> <a name='CheckServerGroupStatus' id="CheckServerGroupStatus"></a>
-                <h2>CheckServerGroupStatus</h2>
-                <p>The CheckServerGroupStatus procedure gets the statuses of all servers in the specified group and compares it with the provided criteria.</p>
-                <h3>Input</h3>
-                <ol>
-                    <li>Go to the CheckServerGroupStatus procedure.</li>
-                    <li>Enter the following parameters:<br />
-                        <table class="grid">
-                            <thead>
-                                <tr>
-                                    <th>Parameter</th>
-                                    <th>Description</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
-                                </tr>
-                                <tr>
-                                    <td>Physical location of the jboss client script</td>
-                                    <td>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</td>
-                                </tr>
-                                <tr>
-                                    <td class='required'>Server group name</td>
-                                    <td>The name of server group to be checked.</td>
-                                </tr>
-                                <tr>
-                                    <td>Wait time</td>
-                                    <td>Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.</td>
-                                </tr>
-                                <tr>
-                                    <td class='required'>Criteria</td>
-                                    <td>A desired status for all servers in the group.</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </li>
-                    <img src="../../plugins/@PLUGIN_NAME@/images/CheckServerGroupStatus/CheckServerGroupStatus.png" />
-                </ol>
-
             </div>
             <h1 id="known-issues">Known Issues</h1>
             This section contains known limitations with different Jboss Server Versions that we found as part of System testing.
