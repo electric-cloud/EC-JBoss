@@ -23,7 +23,7 @@ my $PARAM_CRITERIA_STOPPED_OR_DISABLED = 'STOPPED';
 
 my %PARAM_CRITERIA_LABELS = (
     $PARAM_CRITERIA_STARTED             => "STARTED",
-    $PARAM_CRITERIA_STOPPED_OR_DISABLED => "STOPPED (or DISABLED)",
+    $PARAM_CRITERIA_STOPPED_OR_DISABLED => "STOPPED",
 );
 
 my $STATUS_STOPPED = 'STOPPED'; # stopped status for servers with auto-start true
@@ -110,6 +110,14 @@ sub main {
         my $unique_states_str = join(', ', keys %unique_states);
 
         $jboss->set_property('server_group_status', $unique_states_str);
+
+        $jboss->log_info("Summarry log for server within '$server_group_name' server group:");
+        for my $host_name ( keys %$servers ) {
+            for my $server_name ( keys %{$servers->{$host_name}}) {
+                my $server_status = $servers->{$host_name}->{$server_name}->{status};
+                $jboss->log_info("Server '$server_name' on host '$host_name' has status '$server_status'");
+            }
+        }
 
         if ($criteria_is_met) {
             $jboss->log_info("Criteria '$param_criteria_label' is met on this iteration. Servers in '$server_group_name' server group have statuses $unique_states_str");
