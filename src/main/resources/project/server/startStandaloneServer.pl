@@ -1,50 +1,35 @@
-# -------------------------------------------------------------------------
-# File
-#    startStandaloneServer.pl
-#
-# Dependencies
-#    None
-#
-# Template Version
-#    1.0
-#
-# Date
-#    08/31/2011
-#
-# Engineer
-#    Alonso Blanco
-#
-# Copyright (c) 2011 Electric Cloud, Inc.
-# All rights reserved
-# -------------------------------------------------------------------------
+# preamble.pl
+$[/myProject/procedure_helpers/preamble]
 
-# -------------------------------------------------------------------------
-# Includes
-# -------------------------------------------------------------------------
+my $PROJECT_NAME = '$[/myProject/projectName]';
+my $PLUGIN_NAME = '@PLUGIN_NAME@';
+my $PLUGIN_KEY = '@PLUGIN_KEY@';
 use ElectricCommander;
 use warnings;
 use strict;
 use Cwd;
 use File::Spec;
 use ElectricCommander::PropDB;
-$|=1;
+use File::Basename;
+$| = 1;
 
 # -------------------------------------------------------------------------
 # Constants
 # -------------------------------------------------------------------------
 use constant {
-    SUCCESS => 0,
-    ERROR   => 1,
-    SQUOTE => q{'},
-    DQUOTE => q{"},
-    BSLASH => q{\\},
-    PLUGIN_NAME => 'EC-JBoss',
-    WIN_IDENTIFIER => 'MSWin32',
-    CREDENTIAL_ID => 'credential',
-    MAX_ELAPSED_TEST_TIME => 30,
-    SLEEP_INTERVAL_TIME => 3,
-    SERVER_RESPONDING => 1,
-    SERVER_NOT_RESPONDING => 0,
+    SUCCESS                          => 0,
+    ERROR                            => 1,
+    SQUOTE                           => q{'},
+    DQUOTE                           => q{"},
+    BSLASH                           => q{\\},
+    PLUGIN_NAME                      => 'EC-JBoss',
+    WIN_IDENTIFIER                   => 'MSWin32',
+    CREDENTIAL_ID                    => 'credential',
+    MAX_ELAPSED_TEST_TIME            => 30,
+    SLEEP_INTERVAL_TIME              => 3,
+    EXPECTED_LOG_FILE_NAME           => 'server.log',
+    NUMBER_OF_LINES_TO_TAIL_FROM_LOG => 100,
+
 };
 ########################################################################
 # trim - deletes blank spaces before and after the entered value in 
@@ -76,10 +61,10 @@ sub trim($) {
 # -------------------------------------------------------------------------
 $::gEC = new ElectricCommander();
 $::gEC->abortOnError(0);
-$::gScriptPhysicalLocation = ($::gEC->getProperty("scriptphysicalpath") )->findvalue("//value");
-$::gAlternateJBossConfig = ($::gEC->getProperty("alternatejbossconfig") )->findvalue("//value");
+$::gScriptPhysicalLocation = ($::gEC->getProperty("scriptphysicalpath"))->findvalue("//value");
+$::gAlternateJBossConfig = ($::gEC->getProperty("alternatejbossconfig"))->findvalue("//value");
 
-$::gServerConfig = ($::gEC->getProperty("serverconfig") )->findvalue("//value");
+$::gServerConfig = ($::gEC->getProperty("serverconfig"))->findvalue("//value");
 
 my %tempConfig = &getConfiguration($::gServerConfig);
 
@@ -106,49 +91,21 @@ if ($tempConfig{java_opts}) {
 #
 ########################################################################
 sub main() {
-    my $cmdLine = '';
-    my %props;
-    # start admin server using ecdaemon
-    my %config = getConfiguration($::gServerConfig);
+    my $jboss = EC::JBoss->new(
+        project_name                    => $PROJECT_NAME,
+        plugin_name                     => $PLUGIN_NAME,
+        plugin_key                      => $PLUGIN_KEY,
+        no_cli_path_in_procedure_params => 1
+    );
 
-    if (!is_dryrun_enabled() && isServerAlreadyAlive(\%config)) {
-        print "Server is already alive on url $config{jboss_url}";
-        exit 0;
-    }
+    exit_if_jboss_is_already_started(jboss => $jboss);
+
     startServer($::gScriptPhysicalLocation, $::gAlternateJBossConfig);
-    verifyServerIsStarted($::gServerConfig);
-    setProperties(\%props);
+
+    verify_jboss_is_started(jboss => $jboss, startup_script => $::gScriptPhysicalLocation);
 }
 
-sub isServerAlreadyAlive {
-    my ($config) = @_;
-
-    my $url = $config->{jboss_url};
-    my $agent = LWP::UserAgent->new(env_proxy => 1,keep_alive => 1, timeout => 30);
-    my $header = HTTP::Request->new(GET => $url);
-    my $request = HTTP::Request->new('GET', $url, $header);
-
-    my $response = $agent->request($request);
-    if ($response->is_success()) {
-        return 1;
-    }
-    return 0;
-}
-########################################################################
-# startServer - uses ecdaemon for starting a Server
-#
-# Arguments:
-#   -jboss server script: absolute path to managed server script
-#   -server name: name of the instance of the managed server
-#   -URL: URL (including protocol and port) of the Admin Server of the domain
-#   -user: user of the admin server
-#   -password: password of the admin server
-#
-# Returns:
-#   none
-#
-########################################################################
-sub startServer($){
+sub startServer($) {
     my ($scriptPhysicalLocation, $alternateConfig) = @_;
     # $The quote and backslash constants are just a convenient way to represtent literal literal characters so it is obvious
     # in the concatentations. NOTE: BSLASH ends up being a single backslash, it needs to be doubled here so it does not
@@ -180,7 +137,7 @@ sub startServer($){
         }
         my $logfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".log";
         my $errfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".err";
-        $commandline = SQUOTE . $commandline .  " 1>" . $logfile . " 2>" . $errfile . SQUOTE;
+        $commandline = SQUOTE . $commandline . " 1>" . $logfile . " 2>" . $errfile . SQUOTE;
         $commandline = "exec(" . $commandline . ");";
         $commandline = DQUOTE . $commandline . DQUOTE;
         print "Command line: $commandline\n";
@@ -209,6 +166,7 @@ sub startServer($){
     print "Command line for ecdaemon: $cmdLine\n";
     system($cmdLine);
 }
+
 ########################################################################
 # createCommandLine - creates the command line for the invocation
 # of the program to be executed.
@@ -260,14 +218,14 @@ sub setProperties($) {
 #   -configToUse: hash containing the configuration information
 #
 #########################################################################
-sub getConfiguration($){
+sub getConfiguration($) {
     my ($configName) = @_;
     my %configToUse;
     my $proj = "$[/myProject/projectName]";
-    my $pluginConfigs = new ElectricCommander::PropDB($::gEC,"/projects/$proj/jboss_cfgs");
+    my $pluginConfigs = new ElectricCommander::PropDB($::gEC, "/projects/$proj/jboss_cfgs");
     my %configRow = $pluginConfigs->getRow($configName);
     # Check if configuration exists
-    unless(keys(%configRow)) {
+    unless (keys(%configRow)) {
         print 'Error: Configuration doesn\'t exist';
         exit ERROR;
     }
@@ -288,119 +246,253 @@ sub getConfiguration($){
     }
     return %configToUse;
 }
-##########################################################################
-# verifyServerIsStarted - verifies if the specified managed server is running.
-#
-# Arguments:
-#   -ServerName: name of the server instance
-#   -URL: Managed Server URL (including protocol and port)
-#   -User: user for logging into the admin server
-#   -Password: password for logging into the admin server
-#
-# Returns:
-#   none
-#
-#########################################################################
-sub verifyServerIsStarted {
-    my ($configName, $check_once) = @_;
-    # create args array
-    my @args = ();
-    my %props;
-    my $ec = new ElectricCommander();
-    $ec->abortOnError(0);
-    my $url = '';
-    my $user = '';
-    my $pass = '';
-    my %configuration;
+
+sub verify_jboss_is_started {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $startup_script = $args{startup_script} || croak "'startup_script' is required param";
+
+    $jboss->log_info(
+        sprintf(
+            "Checking whether JBoss is started by connecting to CLI. Max time - %s seconds, sleep between attempts - %s seconds",
+            MAX_ELAPSED_TEST_TIME,
+            SLEEP_INTERVAL_TIME
+        )
+    );
+
     my $elapsedTime = 0;
     my $startTimeStamp = time;
-    #getting all info from the configuration, url, user and pass
-    if ($configName ne '') {
-        %configuration = getConfiguration($configName);
-        $url = $configuration{'jboss_url'};
-    }
-    print "Checking status of $url\n";
-    #create all objects needed for response-request operations
-    my $agent = LWP::UserAgent->new(env_proxy => 1,keep_alive => 1, timeout => 30);
-    my $header = HTTP::Request->new(GET => $url);
-    my $request = HTTP::Request->new('GET', $url, $header);
-    # enter BASIC authentication
-    #$request->authorization_basic($user, $pass);
-    #setting variables for iterating
-    my $retries = 0;
     my $attempts = 0;
-    my $serverResponding = 0;
-    do {
-        $attempts++;
-        print "----\nAttempt $attempts\n";
-        #first attempt will always be done, no need to be forced to sleep
-        if($retries > 0) {
-            my $testtimestart = time;
-            #sleeping process during N seconds
-            sleep SLEEP_INTERVAL_TIME;
-            my $elapsedtesttime = time - $testtimestart;
-            print "Elapsed interval time on attempt $attempts: $elapsedtesttime seconds\n"
-        }
-        #execute check
-        my $response = $agent->request($request);
-        # Check the outcome of the response
-        if ($response->is_success){
-            #response was successful, server is responding and is available
-            #a HTTP 200 could be returned in the most common scenario
-            $serverResponding = SERVER_RESPONDING;
-        }
-        elsif ($response->is_error) {
-            #response was erroneus, either server doesn't exist, port is unavailable
-            #or server is overloaded. A HTTP 5XX response code can be expected
-            $serverResponding = SERVER_NOT_RESPONDING;
-        }
-        print "Status returned: Attempt $attempts -> ", $response->status_line(), "\n";
-        #get response code obtained
-        my $httpCode = $response->code();
-        print "HTTP code in attempt $attempts: $httpCode\n";
+    my $recent_message;
+    my $jboss_is_started;
+    my $jboss_cli_is_available;
+    while (!$jboss_is_started) {
         $elapsedTime = time - $startTimeStamp;
-        print "Elapsed time so far: $elapsedTime seconds\n";
-        $retries++;
-        print "\n";
-    } while ($serverResponding == SERVER_NOT_RESPONDING && $elapsedTime < MAX_ELAPSED_TEST_TIME);
-    #set any additional error or warning conditions here
-    #there may be cases in which an error occurs and the exit code is 0.
-    #we want to set to correct outcome for the running step
-    #verifying server actual state
-    if ($serverResponding == SERVER_RESPONDING){
-        #server is running
-        print "------------------------------------\n";
-        print "Server is up and running\n";
-        print "------------------------------------\n";
-        $ec->setProperty("/myJobStep/outcome", 'success');
-    }
-    else {
-        if($elapsedTime >= MAX_ELAPSED_TEST_TIME){
-            #server is not running
-            print "----------------------------------------\n";
-            print "Could not check if server was started, process timeout\n";
-            print "----------------------------------------\n";
-            $ec->setProperty("/myJobStep/outcome", 'error');
+        $jboss->log_info("Elapsed time so far: $elapsedTime seconds\n") if $attempts > 0;
+        last unless $elapsedTime < MAX_ELAPSED_TEST_TIME;
+        #sleep between attempts
+        sleep SLEEP_INTERVAL_TIME if $attempts > 0;
+
+        $attempts++;
+        $jboss->log_info("----Attempt $attempts----");
+
+        #execute check
+        my $cli_command = '/:read-attribute(name=server-state)';
+        my %result = $jboss->run_command($cli_command);
+        if ($result{code}) {
+            $recent_message = "JBoss is not started - failed to connect to CLI";
+            $jboss->log_info($recent_message);
+            next;
         }
         else {
-            #server is not running
-            print "----------------------------------------\n";
-            print "Server is not responding\n";
-            print "----------------------------------------\n";
-            $ec->setProperty("/myJobStep/outcome", 'error');
+            $jboss_cli_is_available = 1;
+            $jboss->process_response(%result);
+
+            my $json = $jboss->decode_answer($result{stdout});
+            if (!$json) {
+                $recent_message = "Cannot convert JBoss response into JSON";
+                $jboss->log_info($recent_message);
+                next;
+            }
+
+            my $server_state = lc $json->{result};
+            if (!$server_state || $server_state ne "running") {
+                $recent_message = "Connected to CLI, but server state is '$server_state' instead of 'running'";
+                $jboss->log_info($recent_message);
+                next;
+            }
+            else {
+                $jboss_is_started = 1;
+                $recent_message = "JBoss Standalone is up and running";
+                $jboss->log_info($recent_message);
+                last;
+            }
+        }
+    }
+
+    $jboss->log_info("--------$recent_message--------");
+    $jboss->set_property(summary => $recent_message);
+    $jboss->error() unless $jboss_is_started;
+
+    eval {
+        if ($jboss_cli_is_available) {
+            show_logs_via_cli(jboss => $jboss);
+            check_boot_errors_via_cli(jboss => $jboss);
+        }
+        else {
+            show_logs_via_file(jboss => $jboss, startup_script => $startup_script);
+        }
+    };
+    if ($@) {
+        $jboss->log_warning("Failed to read JBoss logs: $@");
+    }
+}
+
+sub exit_if_jboss_is_already_started {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+
+    $jboss->log_info("Checking whether JBoss Standalone is already started by connecting to CLI");
+    my $cli_command = ':read-attribute(name=launch-type)';
+    my %result = $jboss->run_command($cli_command);
+    if ($result{code}
+        && ($result{stdout} =~ m/The\scontroller\sis\snot\savailable/s
+        || $result{stderr} =~ m/The\scontroller\sis\snot\savailable/s)) {
+        $jboss->log_info("JBoss is not started - checked by attempt to connect to the cli");
+        return;
+    }
+    else {
+        $jboss->process_response(%result);
+
+        my $json = $jboss->decode_answer($result{stdout});
+        $jboss->bail_out("Cannot convert JBoss response into JSON") if !$json;
+
+        my $launch_type = lc $json->{result};
+        if (!$launch_type || $launch_type ne "standalone") {
+            $jboss->log_warning("JBoss is started, but operating mode is '$launch_type' instead of 'standalone'");
+            $jboss->bail_out("JBoss is started, but operating mode is '$launch_type' instead of 'standalone'");
+        }
+        else {
+            $jboss->log_warning("JBoss is already started in expected operating mode '$launch_type'");
+            $jboss->set_property(summary => "JBoss is already started in expected operating mode '$launch_type'");
+            $jboss->warning();
+            exit SUCCESS;
         }
     }
 }
 
+sub show_logs_via_cli {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
 
-sub is_dryrun_enabled {
-    my $dryrun = 0;
-    eval {
-        $dryrun = $::gEC->getProperty(
-            '/plugins/@PLUGIN_KEY@/project/dryrun'
-        )->findvalue('//value')->string_value();
-    };
-    return $dryrun;
+    my $assumption_sting = sprintf(
+        "assumption is that log file is %s, tailing %u lines",
+        EXPECTED_LOG_FILE_NAME,
+        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+    );
+
+    $jboss->log_info("Showing logs via CLI ($assumption_sting)");
+
+    my $cli_command = sprintf(
+        "/subsystem=logging/log-file=%s/:read-log-file(lines=%u,skip=0)",
+        EXPECTED_LOG_FILE_NAME,
+        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+    );
+
+    my %result = $jboss->run_command($cli_command);
+    if ($result{code}) {
+        $jboss->log_warning("Cannot read logs via CLI");
+    }
+    else {
+        $jboss->log_info("JBoss logs  ($assumption_sting): " . $result{stdout});
+    }
+}
+
+sub check_boot_errors_via_cli {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+
+    $jboss->log_info("Checking boot errors via CLI");
+
+    my $cli_command = '/core-service=management/:read-boot-errors';
+
+    my %result = $jboss->run_command($cli_command);
+    if ($result{code}) {
+        $jboss->log_warning("Cannot read boot errors via CLI");
+    }
+    else {
+        $jboss->process_response(%result);
+
+        my $json = $jboss->decode_answer($result{stdout});
+        $jboss->log_warning("Cannot convert JBoss response into JSON when reading boot errors") unless $json;
+        $jboss->log_warning("Unexpected JBoss response when reading boot errors") unless exists $json->{result};
+
+        my $boot_errors = $json->{result};
+
+        if (@$boot_errors) {
+            $jboss->log_warning("JBoss boot errors: " . $result{stdout});
+        }
+        else {
+            $jboss->log_info("No JBoss boot errors detected");
+        }
+    }
+}
+
+sub show_logs_via_file {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $startup_script = $args{startup_script} || croak "'startup_script' is required param";
+    my $jboss_cli_script = $jboss->{script_path};
+    my $log_file_path;
+
+    if ($startup_script =~ m/bin/) {
+        $log_file_path = File::Spec->catfile(dirname(dirname($startup_script)), 'standalone', 'log',
+            EXPECTED_LOG_FILE_NAME);
+    }
+    elsif ($jboss_cli_script =~ m/bin/) {
+        $log_file_path = File::Spec->catfile(dirname(dirname($startup_script)), 'standalone', 'log',
+            EXPECTED_LOG_FILE_NAME);
+    }
+    else {
+        $jboss->log_warning("Cannot find JBoss log file");
+        return;
+    }
+
+    my $assumption_sting = sprintf(
+        "assumption is that path log file is %s, tailing %u lines",
+        $log_file_path,
+        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+    );
+
+    $jboss->log_info("Showing logs from file system ($assumption_sting)");
+
+    if (-f $log_file_path) {
+        my $recent_log_lines = get_recent_log_lines(
+            jboss        => $jboss,
+            file         => $log_file_path,
+            num_of_lines => NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+        );
+        $jboss->log_info("JBoss logs  ($assumption_sting):\n   | " . join('   | ', @$recent_log_lines));
+    }
+    else {
+        $jboss->log_warning("Cannot find JBoss log file '$log_file_path'");
+    }
+}
+
+sub get_recent_log_lines {
+    my %args = @_;
+    my $file = $args{file} || croak "'file' is required param";
+    my $num_of_lines = $args{num_of_lines} || croak "'num_of_lines' is required param";
+
+    my @lines;
+
+    my $count = 0;
+    my $filesize = -s $file; # filesize used to control reaching the start of file while reading it backward
+    my $offset = - 2; # skip two last characters: \n and ^Z in the end of file
+
+    open F, $file or die "Can't read $file: $!\n";
+
+    while (abs($offset) < $filesize) {
+        my $line = "";
+        # we need to check the start of the file for seek in mode "2"
+        # as it continues to output data in revers order even when out of file range reached
+        while (abs($offset) < $filesize) {
+            seek F, $offset, 2;     # because of negative $offset & "2" - it will seek backward
+            $offset -= 1;           # move back the counter
+            my $char = getc F;
+            last if $char eq "\n"; # catch the whole line if reached
+            $line = $char . $line; # otherwise we have next character for current line
+        }
+
+        # got the next line!
+        unshift @lines, "$line\n";
+
+        # exit the loop if we are done
+        $count++;
+        last if $count > $num_of_lines;
+    }
+
+    return \@lines;
 }
 
 main();
