@@ -266,13 +266,12 @@ sub verify_jboss_is_started {
     my $recent_message;
     my $jboss_is_started;
     my $jboss_cli_is_available;
-    while (!$jboss_is_started && $elapsedTime < MAX_ELAPSED_TEST_TIME) {
+    while (!$jboss_is_started) {
+        $elapsedTime = time - $startTimeStamp;
+        $jboss->log_info("Elapsed time so far: $elapsedTime seconds\n") if $attempts > 0;
+        last unless $elapsedTime < MAX_ELAPSED_TEST_TIME;
         #sleep between attempts
-        if ($attempts > 0) {
-            sleep SLEEP_INTERVAL_TIME;
-            $elapsedTime = time - $startTimeStamp;
-            print "Elapsed time so far: $elapsedTime seconds\n";
-        }
+        sleep SLEEP_INTERVAL_TIME if $attempts > 0;
 
         $attempts++;
         $jboss->log_info("----Attempt $attempts----");
@@ -318,6 +317,7 @@ sub verify_jboss_is_started {
     eval {
         if ($jboss_cli_is_available) {
             show_logs_via_cli(jboss => $jboss);
+            check_boot_errors_via_cli(jboss => $jboss);
         }
         else {
             show_logs_via_file(jboss => $jboss, startup_script => $startup_script);
@@ -385,6 +385,36 @@ sub show_logs_via_cli {
     }
     else {
         $jboss->log_info("JBoss logs  ($assumption_sting): " . $result{stdout});
+    }
+}
+
+sub check_boot_errors_via_cli {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+
+    $jboss->log_info("Checking boot errors via CLI");
+
+    my $cli_command = '/core-service=management/:read-boot-errors';
+
+    my %result = $jboss->run_command($cli_command);
+    if ($result{code}) {
+        $jboss->log_warning("Cannot read boot errors via CLI");
+    }
+    else {
+        $jboss->process_response(%result);
+
+        my $json = $jboss->decode_answer($result{stdout});
+        $jboss->log_warning("Cannot convert JBoss response into JSON when reading boot errors") unless $json;
+        $jboss->log_warning("Unexpected JBoss response when reading boot errors") unless exists $json->{result};
+
+        my $boot_errors = $json->{result};
+
+        if (@$boot_errors) {
+            $jboss->log_warning("JBoss boot errors: " . $result{stdout});
+        }
+        else {
+            $jboss->log_info("No JBoss boot errors detected");
+        }
     }
 }
 
