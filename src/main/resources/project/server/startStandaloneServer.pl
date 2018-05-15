@@ -10,22 +10,26 @@ use strict;
 use Cwd;
 use File::Spec;
 use ElectricCommander::PropDB;
+use File::Basename;
 $| = 1;
 
 # -------------------------------------------------------------------------
 # Constants
 # -------------------------------------------------------------------------
 use constant {
-    SUCCESS               => 0,
-    ERROR                 => 1,
-    SQUOTE                => q{'},
-    DQUOTE                => q{"},
-    BSLASH                => q{\\},
-    PLUGIN_NAME           => 'EC-JBoss',
-    WIN_IDENTIFIER        => 'MSWin32',
-    CREDENTIAL_ID         => 'credential',
-    MAX_ELAPSED_TEST_TIME => 30,
-    SLEEP_INTERVAL_TIME   => 3,
+    SUCCESS                          => 0,
+    ERROR                            => 1,
+    SQUOTE                           => q{'},
+    DQUOTE                           => q{"},
+    BSLASH                           => q{\\},
+    PLUGIN_NAME                      => 'EC-JBoss',
+    WIN_IDENTIFIER                   => 'MSWin32',
+    CREDENTIAL_ID                    => 'credential',
+    MAX_ELAPSED_TEST_TIME            => 30,
+    SLEEP_INTERVAL_TIME              => 3,
+    EXPECTED_LOG_FILE_NAME           => 'server.log',
+    NUMBER_OF_LINES_TO_TAIL_FROM_LOG => 100,
+
 };
 ########################################################################
 # trim - deletes blank spaces before and after the entered value in 
@@ -98,7 +102,7 @@ sub main() {
 
     startServer($::gScriptPhysicalLocation, $::gAlternateJBossConfig);
 
-    verify_jboss_is_started(jboss => $jboss);
+    verify_jboss_is_started(jboss => $jboss, startup_script => $::gScriptPhysicalLocation);
 }
 
 sub startServer($) {
@@ -246,6 +250,7 @@ sub getConfiguration($) {
 sub verify_jboss_is_started {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $startup_script = $args{startup_script} || croak "'startup_script' is required param";
 
     $jboss->log_info(
         sprintf(
@@ -260,6 +265,7 @@ sub verify_jboss_is_started {
     my $attempts = 0;
     my $recent_message;
     my $jboss_is_started;
+    my $jboss_cli_is_available;
     while (!$jboss_is_started && $elapsedTime < MAX_ELAPSED_TEST_TIME) {
         #sleep between attempts
         if ($attempts > 0) {
@@ -280,6 +286,7 @@ sub verify_jboss_is_started {
             next;
         }
         else {
+            $jboss_cli_is_available = 1;
             $jboss->process_response(%result);
 
             my $json = $jboss->decode_answer($result{stdout});
@@ -307,6 +314,18 @@ sub verify_jboss_is_started {
     $jboss->log_info("--------$recent_message--------");
     $jboss->set_property(summary => $recent_message);
     $jboss->error() unless $jboss_is_started;
+
+    eval {
+        if ($jboss_cli_is_available) {
+            show_logs_via_cli(jboss => $jboss);
+        }
+        else {
+            show_logs_via_file(jboss => $jboss, startup_script => $startup_script);
+        }
+    };
+    if ($@) {
+        $jboss->log_warning("Failed to read JBoss logs: $@");
+    }
 }
 
 sub exit_if_jboss_is_already_started {
@@ -340,6 +359,110 @@ sub exit_if_jboss_is_already_started {
             exit SUCCESS;
         }
     }
+}
+
+sub show_logs_via_cli {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+
+    my $assumption_sting = sprintf(
+        "assumption is that log file is %s, tailing %u lines",
+        EXPECTED_LOG_FILE_NAME,
+        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+    );
+
+    $jboss->log_info("Showing logs via CLI ($assumption_sting)");
+
+    my $cli_command = sprintf(
+        "/subsystem=logging/log-file=%s/:read-log-file(lines=%u,skip=0)",
+        EXPECTED_LOG_FILE_NAME,
+        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+    );
+
+    my %result = $jboss->run_command($cli_command);
+    if ($result{code}) {
+        $jboss->log_warning("Cannot read logs via CLI");
+    }
+    else {
+        $jboss->log_info("JBoss logs  ($assumption_sting): " . $result{stdout});
+    }
+}
+
+sub show_logs_via_file {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $startup_script = $args{startup_script} || croak "'startup_script' is required param";
+    my $jboss_cli_script = $jboss->{script_path};
+    my $log_file_path;
+
+    if ($startup_script =~ m/bin/) {
+        $log_file_path = File::Spec->catfile(dirname(dirname($startup_script)), 'standalone', 'log',
+            EXPECTED_LOG_FILE_NAME);
+    }
+    elsif ($jboss_cli_script =~ m/bin/) {
+        $log_file_path = File::Spec->catfile(dirname(dirname($startup_script)), 'standalone', 'log',
+            EXPECTED_LOG_FILE_NAME);
+    }
+    else {
+        $jboss->log_warning("Cannot find JBoss log file");
+        return;
+    }
+
+    my $assumption_sting = sprintf(
+        "assumption is that path log file is %s, tailing %u lines",
+        $log_file_path,
+        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+    );
+
+    $jboss->log_info("Showing logs from file system ($assumption_sting)");
+
+    if (-f $log_file_path) {
+        my $recent_log_lines = get_recent_log_lines(
+            jboss        => $jboss,
+            file         => $log_file_path,
+            num_of_lines => NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+        );
+        $jboss->log_info("JBoss logs  ($assumption_sting):\n   | " . join('   | ', @$recent_log_lines));
+    }
+    else {
+        $jboss->log_warning("Cannot find JBoss log file '$log_file_path'");
+    }
+}
+
+sub get_recent_log_lines {
+    my %args = @_;
+    my $file = $args{file} || croak "'file' is required param";
+    my $num_of_lines = $args{num_of_lines} || croak "'num_of_lines' is required param";
+
+    my @lines;
+
+    my $count = 0;
+    my $filesize = -s $file; # filesize used to control reaching the start of file while reading it backward
+    my $offset = - 2; # skip two last characters: \n and ^Z in the end of file
+
+    open F, $file or die "Can't read $file: $!\n";
+
+    while (abs($offset) < $filesize) {
+        my $line = "";
+        # we need to check the start of the file for seek in mode "2"
+        # as it continues to output data in revers order even when out of file range reached
+        while (abs($offset) < $filesize) {
+            seek F, $offset, 2;     # because of negative $offset & "2" - it will seek backward
+            $offset -= 1;           # move back the counter
+            my $char = getc F;
+            last if $char eq "\n"; # catch the whole line if reached
+            $line = $char . $line; # otherwise we have next character for current line
+        }
+
+        # got the next line!
+        unshift @lines, "$line\n";
+
+        # exit the loop if we are done
+        $count++;
+        last if $count > $num_of_lines;
+    }
+
+    return \@lines;
 }
 
 main();
