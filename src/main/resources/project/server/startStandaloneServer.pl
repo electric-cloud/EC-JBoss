@@ -337,7 +337,7 @@ sub exit_if_jboss_is_already_started {
             $jboss->log_warning("JBoss is already started in expected operating mode '$launch_type'");
             $jboss->set_property(summary => "JBoss is already started in expected operating mode '$launch_type'");
             $jboss->warning();
-            exit 0;
+            exit SUCCESS;
         }
     }
 }
