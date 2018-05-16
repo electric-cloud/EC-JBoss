@@ -91,7 +91,7 @@ sub startServer {
         # using the sysinternals procmon tool.
         my $commandline = BSLASH . BSLASH . BSLASH . DQUOTE . $scriptPhysicalLocation . BSLASH . BSLASH . BSLASH . DQUOTE;
         if ($alternateConfig && $alternateConfig ne '') {
-            $commandline .= " --server-config=" . BSLASH . BSLASH . BSLASH . DQUOTE . $alternateConfig . BSLASH . BSLASH . BSLASH . DQUOTE;
+            $commandline .= " --server-config=" . BSLASH . DQUOTE . $alternateConfig . BSLASH . DQUOTE;
         }
         my $logfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".log";
         my $errfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".err";
