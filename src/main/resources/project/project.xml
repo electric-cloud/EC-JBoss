@@ -496,7 +496,6 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-                <postProcessor>postp --loadProperty /myProject/startstandaloneserver_matchers</postProcessor>
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName/>
                 <retries>0</retries>
