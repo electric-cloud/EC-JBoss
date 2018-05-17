@@ -51,12 +51,12 @@ sub main {
     my $param_additional_options = $params->{additionalOptions};
 
     if (!$param_startup_script) {
-        $jboss->bail_out("Required parameter 'applicationContentSourcePath' is not provided");
+        $jboss->bail_out("Required parameter 'scriptphysicalpath' is not provided");
     }
 
     exit_if_jboss_is_already_started(jboss => $jboss);
 
-    startServer(
+    start_standalone_server(
         startup_script     => $param_startup_script,
         optional_config    => $param_optional_config,
         additional_options => $param_additional_options,
@@ -65,7 +65,7 @@ sub main {
     verify_jboss_is_started(jboss => $jboss, startup_script => $param_startup_script);
 }
 
-sub startServer {
+sub start_standalone_server {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
     my $scriptPhysicalLocation = $args{startup_script} || croak "'startup_script' is required param";
@@ -131,25 +131,13 @@ sub startServer {
         @systemcall = ("ecdaemon", "--", "sh", "-c", $commandline);
     }
 
-    my $cmdLine = createCommandLine(\@systemcall);
+    my $cmdLine = create_command_line(\@systemcall);
     $jboss->set_property(startStandaloneServerLine => $cmdLine);
     $jboss->log_info("Command line for ecdaemon: $cmdLine");
     system($cmdLine);
 }
 
-########################################################################
-# createCommandLine - creates the command line for the invocation
-# of the program to be executed.
-#
-# Arguments:
-#   -arr: array containing the command name (must be the first element) 
-#         and the arguments entered by the user in the UI
-#
-# Returns:
-#   -the command line to be executed by the plugin
-#
-########################################################################
-sub createCommandLine {
+sub create_command_line {
     my ($arr) = @_;
     my $commandName = @$arr[0];
     my $command = $commandName;
