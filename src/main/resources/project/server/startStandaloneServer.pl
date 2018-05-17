@@ -43,10 +43,12 @@ sub main {
     my $params = $jboss->get_params_as_hashref(qw/
         scriptphysicalpath
         alternatejbossconfig
+        additionalOptions
         /);
 
     my $param_startup_script = $params->{scriptphysicalpath};
     my $param_optional_config = $params->{alternatejbossconfig};
+    my $param_additional_options = $params->{additionalOptions};
 
     if (!$param_startup_script) {
         $jboss->bail_out("Required parameter 'applicationContentSourcePath' is not provided");
@@ -54,7 +56,11 @@ sub main {
 
     exit_if_jboss_is_already_started(jboss => $jboss);
 
-    startServer(startup_script => $param_startup_script, optional_config => $param_optional_config, jboss => $jboss);
+    startServer(
+        startup_script     => $param_startup_script,
+        optional_config    => $param_optional_config,
+        additional_options => $param_additional_options,
+        jboss              => $jboss);
 
     verify_jboss_is_started(jboss => $jboss, startup_script => $param_startup_script);
 }
@@ -64,6 +70,7 @@ sub startServer {
     my $jboss = $args{jboss} || croak "'jboss' is required param";
     my $scriptPhysicalLocation = $args{startup_script} || croak "'startup_script' is required param";
     my $alternateConfig = $args{optional_config};
+    my $additional_options = $args{additional_options};
 
     # $The quote and backslash constants are just a convenient way to represtent literal literal characters so it is obvious
     # in the concatentations. NOTE: BSLASH ends up being a single backslash, it needs to be doubled here so it does not
@@ -93,6 +100,10 @@ sub startServer {
         if ($alternateConfig && $alternateConfig ne '') {
             $commandline .= " --server-config=" . BSLASH . DQUOTE . $alternateConfig . BSLASH . DQUOTE;
         }
+        if ($additional_options) {
+            my $escaped_additional_options = escape_additional_options_for_windows($additional_options);
+            $commandline .= " $escaped_additional_options";
+        }
         my $logfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".log";
         my $errfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".err";
         $commandline = SQUOTE . $commandline . " 1>" . $logfile . " 2>" . $errfile . SQUOTE;
@@ -111,6 +122,9 @@ sub startServer {
         my $commandline = DQUOTE . $scriptPhysicalLocation . DQUOTE;
         if ($alternateConfig && $alternateConfig ne '') {
             $commandline .= " --server-config=" . DQUOTE . $alternateConfig . DQUOTE . " ";
+        }
+        if ($additional_options) {
+            $commandline .= " $additional_options";
         }
         $commandline = SQUOTE . $commandline . SQUOTE;
         print "Command line: $commandline\n";
@@ -397,6 +411,14 @@ sub get_recent_log_lines {
     }
 
     return \@lines;
+}
+
+sub escape_additional_options_for_windows {
+    my $additional_options = shift || croak "required param is not provided (additional_options)";
+
+    $additional_options =~ s|"|\"|gs;
+
+    return $additional_options;
 }
 
 1;

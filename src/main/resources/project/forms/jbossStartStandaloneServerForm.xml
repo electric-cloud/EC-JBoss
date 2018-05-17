@@ -22,5 +22,12 @@
 		<property>alternatejbossconfig</property>
 		<required>0</required>
 		<documentation>Provide the XML config file if you want to start your server with a different configuration.</documentation>
-	</formElement>		
+	</formElement>
+	<formElement>
+		<type>entry</type>
+		<label>Additional options:</label>
+		<property>additionalOptions</property>
+		<required>0</required>
+		<documentation>Additional options.</documentation>
+	</formElement>
 </editor>

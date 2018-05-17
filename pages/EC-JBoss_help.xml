@@ -2141,6 +2141,10 @@
                                     <td>Optional configuration name</td>
                                     <td>The name of the XML configuration file used when you start the server with a different configuration.</td>
                                 </tr>
+                                <tr>
+                                    <td>Additional options</td>
+                                    <td>Additional options.</td>
+                                </tr>
                             </tbody>
                         </table>
                     </li>
