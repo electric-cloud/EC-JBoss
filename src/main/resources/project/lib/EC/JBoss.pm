@@ -1570,6 +1570,32 @@ sub run_command_with_exiting_on_error {
     return %result;
 }
 
+sub add_summary {
+    my $self = shift;
+    my $summary = shift || croak "required param (summary) is not provided";
+
+    push @{$self->{summaries}}, $summary;
+    my $summaries = join("\n", @{$self->{summaries}});
+
+    $self->set_property(summary => $summaries);
+}
+
+sub add_status_warning {
+    my $self = shift;
+    return if $self->{recent_status}
+        && ($self->{recent_status} eq "error"
+        || $self->{recent_status} eq "warning");
+
+    $self->{recent_status} = "warning";
+    $self->warning();
+}
+
+sub add_status_error {
+    my $self = shift;
+    $self->{recent_status} = "error";
+    $self->error();
+}
+
 1;
 
 =back

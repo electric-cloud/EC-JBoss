@@ -450,6 +450,16 @@
                                     </propertySheet>
                                 </property>
                                 <property>
+                                    <propertyName>additionalOptions</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
                                         <property>
@@ -479,6 +489,13 @@
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
+                <formalParameterName>additionalOptions</formalParameterName>
+                <defaultValue/>
+                <description>Additional options.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
                 <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
@@ -496,7 +513,6 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-                <postProcessor>postp --loadProperty /myProject/startstandaloneserver_matchers</postProcessor>
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName/>
                 <retries>0</retries>
