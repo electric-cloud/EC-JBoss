@@ -200,6 +200,8 @@ class PluginTestHelper extends PluginSpockTestSupport {
     RunProcedureJob runProcedureDsl(String projectName, String procedureName, def parameters, def credential) {
         String parametersString = parameters.collect { k, v -> "$k: '$v'" }.join(', ')
         String dslString = ''
+        def listProceduresWithCredentials = ["CreateOrUpdateXADataSource", "CreateOrUpdateDataSource"]
+        def procedureWithCredentials =  procedureName in listProceduresWithCredentials
         if(procedureName == "CreateConfiguration"){
         String credentialString = credential.collect { k, v -> "$k: '$v'" }.join(', ')
         dslString = """
@@ -215,7 +217,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 )
         """
         }
-            else if(procedureName == "CreateOrUpdateXADataSource"){
+        else if(procedureWithCredentials){
             String credentialString = credential.collect { k, v -> "$k: '$v'" }.join(', ')
             dslString = """
                 runProcedure(
