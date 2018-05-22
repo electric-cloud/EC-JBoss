@@ -24,6 +24,9 @@ use constant {
     WIN_IDENTIFIER        => 'MSWin32',
     MAX_ELAPSED_TEST_TIME => 60,
     SLEEP_INTERVAL_TIME   => 3,
+    STATUS_ERROR          => "error",
+    STATUS_WARNING        => "warning",
+    STATUS_SUCCESS        => "success",
 };
 
 main();
@@ -131,9 +134,7 @@ sub start_host_controller {
             $commandline .= " $escaped_additional_options";
         }
 
-        my $logfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".log";
-        my $errfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".err";
-        $commandline = SQUOTE . $commandline . " 1>" . $logfile . " 2>" . $errfile . SQUOTE;
+        $commandline = SQUOTE . $commandline . SQUOTE;
         $commandline = "exec(" . $commandline . ");";
         $commandline = DQUOTE . $commandline . DQUOTE;
         print "Command line: $commandline\n";
@@ -236,10 +237,6 @@ sub verify_host_controller_is_started {
     my $startup_script = $args{startup_script} || croak "'startup_script' is required param";
     my $host_name = $args{host_name};
 
-    my $master_cli_is_available;
-    my $host_controller_is_connected;
-    my $host_controller_is_connected_and_running;
-
     if ($host_name) {
         $jboss->log_info("Checking whether JBoss Host Controller '$host_name' is started via master CLI.");
     }
@@ -259,8 +256,12 @@ sub verify_host_controller_is_started {
     my $elapsedTime = 0;
     my $startTimeStamp = time;
     my $attempts = 0;
-    my $recent_message;
-    while (!$host_controller_is_connected_and_running) {
+    my %check_result = (
+        summary            => "Verification via CLI that host controller started was not performed",
+        status             => STATUS_ERROR,
+        check_logs_via_cli => 0,
+    );
+    while (1) {
         $elapsedTime = time - $startTimeStamp;
         $jboss->log_info("Elapsed time so far: $elapsedTime seconds\n") if $attempts > 0;
         last unless $elapsedTime < MAX_ELAPSED_TEST_TIME;
@@ -274,66 +275,113 @@ sub verify_host_controller_is_started {
         my $cli_command = qq|/:read-children-names(child-type=host)|;
         my %result = $jboss->run_command($cli_command);
         if ($result{code}) {
-            $recent_message = "Failed to connect to Master CLI for verication of Host Controller '$host_name' state";
-            $jboss->log_info($recent_message);
+            my $summary = "Failed to connect to Master CLI"
+                . ($host_name ? "for verication of Host Controller '$host_name' state"
+                              : "for retrieving list of available Host Controllers");
+            %check_result = (
+                summary            => $summary,
+                status             => STATUS_ERROR,
+                check_logs_via_cli => 0,
+            );
+            $jboss->log_info($summary);
             next;
         }
         else {
-            $master_cli_is_available = 1;
-
             my $json = $jboss->decode_answer($result{stdout});
             if (!$json || !$json->{result}) {
-                $recent_message = "Failed to read list of host controllers within Master CLI";
-                $jboss->log_info($recent_message);
+                my $summary = "Failed to read list of host controllers via Master CLI";
+                %check_result = (
+                    summary            => $summary,
+                    status             => STATUS_ERROR,
+                    check_logs_via_cli => 0,
+                );
+                $jboss->log_info($summary);
                 next;
             }
 
             my @all_hosts = @{ $json->{result} };
             my %all_hosts_hash = map {$_ => 1} @all_hosts;
+
+            if (!$host_name) {
+                my $summary = "JBoss Host Controller has been launched, but verification that it is started is not performed (due to 'hostName' parameter is not provided).";
+                $summary .= "\nList of host controllers within Domain: " . join(", ", @all_hosts);
+                %check_result = (
+                    summary            => $summary,
+                    status             => STATUS_WARNING,
+                    check_logs_via_cli => 1,
+                );
+                $jboss->log_info($summary);
+                last;
+            }
+
             if ($all_hosts_hash{$host_name}) {
-                $host_controller_is_connected = 1;
                 my $host_state = run_command_and_get_json_result_with_exiting_on_non_success(
                     command => "/host=$host_name/:read-attribute(name=host-state)",
                     jboss   => $jboss
                 );
                 if ($host_state eq "running") {
-                    $host_controller_is_connected_and_running = 1;
-                    $recent_message = "JBoss Host Controller '$host_name' has been launched, host state is '$host_state'";
-                    $jboss->log_info($recent_message);
+                    my $summary = "JBoss Host Controller '$host_name' has been launched, host state is '$host_state'";
+                    %check_result = (
+                        summary            => $summary,
+                        status             => STATUS_SUCCESS,
+                        check_logs_via_cli => 1,
+                    );
+                    $jboss->log_info($summary);
                     last;
                 }
                 else {
-                    $recent_message = "State of JBoss Host Controller '$host_name' is '$host_state' instead of 'running'";
-                    $jboss->log_info($recent_message);
+                    my $summary = "State of JBoss Host Controller '$host_name' is '$host_state' instead of 'running'";
+                    %check_result = (
+                        summary            => $summary,
+                        status             => STATUS_ERROR,
+                        check_logs_via_cli => 1,
+                    );
+                    $jboss->log_info($summary);
                     next;
                 }
 
             }
             else {
-                $recent_message = "JBoss Host Controller '$host_name' is not started (or not connected to Master)";
-                $jboss->log_info($recent_message);
+                my $summary = "JBoss Host Controller '$host_name' is not started (or not connected to Master)";
+                %check_result = (
+                    summary            => $summary,
+                    status             => STATUS_ERROR,
+                    check_logs_via_cli => 0,
+                );
+                $jboss->log_info($summary);
                 next;
             }
         }
     }
 
-    $jboss->log_info("--------$recent_message--------");
-    $jboss->add_summary($recent_message);
-    $jboss->add_status_error() unless $host_controller_is_connected_and_running;
+    if ($check_result{status} eq STATUS_ERROR) {
+        $jboss->log_warning("--------$check_result{summary}--------");
+        $jboss->add_status_error();
+    }
+    elsif ($check_result{status} eq STATUS_WARNING) {
+        $jboss->log_warning("--------$check_result{summary}--------");
+        $jboss->add_status_warning();
+    }
+    else {
+        $jboss->log_info("--------$check_result{summary}--------");
+    }
+
+    $jboss->add_summary($check_result{summary});
 
     eval {
-        if ($host_name && $host_controller_is_connected) {
+        if ($host_name && $check_result{check_logs_via_cli}) {
             check_boot_errors_via_cli_for_host_cotroller(jboss => $jboss, host_name => $host_name);
             show_logs_via_cli_for_host_cotroller(jboss => $jboss, host_name => $host_name);
         }
         else {
-            show_logs_via_file_for_host_cotroller(jboss => $jboss, startup_script => $startup_script);
+            $jboss->log_info("Please refer to JBoss logs on file system for more information");
         }
     };
     if ($@) {
         $jboss->log_warning("Failed to read information about startup: $@");
         $jboss->add_summary("Failed to read information about startup");
-        $jboss->add_status_warning()
+        $jboss->add_status_warning();
+        $jboss->log_info("Please refer to JBoss logs on file system for more information");
     }
 }
 
@@ -378,11 +426,7 @@ sub run_command_and_get_json_with_exiting_on_non_success {
         jboss   => $jboss
     );
     if ($json->{outcome} ne "success") {
-        my $summary = "JBoss replied with outcome other than success: " . (encode_json $json);
-        $jboss->log_warning($summary);
-        die "Error when converting JBoss response into JSON";
-
-        $jboss->add_summary();
+        $jboss->add_summary("JBoss replied with outcome other than success: " . (encode_json $json));
         $jboss->add_status_error();
         exit ERROR;
     }
@@ -390,7 +434,7 @@ sub run_command_and_get_json_with_exiting_on_non_success {
     return $json;
 }
 
-sub run_command_and_get_json_with_failing_on_error {
+sub run_command_and_get_json_with_exiting_on_error {
     my %args = @_;
     my $command = $args{command} || croak "'command' is required param";
     my $jboss = $args{jboss} || croak "'jboss' is required param";
@@ -399,14 +443,15 @@ sub run_command_and_get_json_with_failing_on_error {
 
     my $json = $jboss->decode_answer($result{stdout});
     if (!$json) {
-        $jboss->log_warning("Error when converting JBoss response into JSON");
-        die "Error when converting JBoss response into JSON";
+        $jboss->add_summary("Error when converting JBoss response into JSON");
+        $jboss->add_status_error();
+        exit ERROR;
     }
 
     return $json;
 }
 
-sub run_command_with_failing_on_error {
+sub run_command_with_exiting_on_error {
     my %args = @_;
     my $command = $args{command} || croak "'command' is required param";
     my $jboss = $args{jboss} || croak "'jboss' is required param";
@@ -414,50 +459,15 @@ sub run_command_with_failing_on_error {
     my %result = $jboss->run_command($command);
 
     if ($result{code}) {
-        my $jboss_response_failure_description = $jboss->get_jboss_response_failure_description(jboss_response =>
-            \%result);
-        $jboss->log_warning("Error when running CLI command: $jboss_response_failure_description");
-        die "Error when running CLI command: $jboss_response_failure_description";
+        my $jboss_response_failure_description = $jboss->get_jboss_response_failure_description(
+            jboss_response => \%result
+        );
+        $jboss->add_summary("Error when running CLI command: $jboss_response_failure_description");
+        $jboss->add_status_error();
+        exit ERROR;
     }
 
     return %result;
-}
-
-sub get_error_summary {
-
-}
-
-sub show_logs_via_cli_for_host_cotroller {
-    my %args = @_;
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $host_name = $args{host_name} || croak "'host_name' is required param";
-
-    my $host_state = run_command_and_get_json_result_with_exiting_on_non_success(
-        command => "/host=$host_name/:read-children-names(child-type=server)",
-        jboss   => $jboss
-    );
-
-    my $assumption_sting = sprintf(
-        "assumption is that log file is %s, tailing %u lines",
-        EXPECTED_LOG_FILE_NAME,
-        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
-    );
-
-    $jboss->log_info("Showing logs via CLI ($assumption_sting)");
-
-    my $cli_command = sprintf(
-        "/subsystem=logging/log-file=%s/:read-log-file(lines=%u,skip=0)",
-        EXPECTED_LOG_FILE_NAME,
-        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
-    );
-
-    my %result = $jboss->run_command($cli_command);
-    if ($result{code}) {
-        $jboss->log_warning("Cannot read logs via CLI");
-    }
-    else {
-        $jboss->log_info("JBoss logs ($assumption_sting): " . $result{stdout});
-    }
 }
 
 sub check_boot_errors_via_cli_for_host_cotroller {
@@ -495,81 +505,68 @@ sub check_boot_errors_via_cli_for_host_cotroller {
     }
 }
 
-sub show_logs_via_file_for_host_cotroller {
+sub show_logs_via_cli_for_host_cotroller {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $startup_script = $args{startup_script} || croak "'startup_script' is required param";
-    my $jboss_cli_script = $jboss->{script_path};
-    my $log_file_path;
+    my $host_name = $args{host_name} || croak "'host_name' is required param";
 
-    if ($startup_script =~ m/bin/) {
-        $log_file_path = File::Spec->catfile(dirname(dirname($startup_script)), 'standalone', 'log',
-            EXPECTED_LOG_FILE_NAME);
-    }
-    elsif ($jboss_cli_script =~ m/bin/) {
-        $log_file_path = File::Spec->catfile(dirname(dirname($startup_script)), 'standalone', 'log',
-            EXPECTED_LOG_FILE_NAME);
-    }
-    else {
-        $jboss->log_warning("Cannot find JBoss log file");
-        return;
-    }
+    my @all_servers = @{ run_command_and_get_json_result_with_exiting_on_non_success(
+        command => "/host=$host_name/:read-children-names(child-type=server)",
+        jboss   => $jboss
+    ) };
 
-    my $assumption_sting = sprintf(
-        "assumption is that path log file is %s, tailing %u lines",
-        $log_file_path,
-        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
-    );
-
-    $jboss->log_info("Showing logs from file system ($assumption_sting)");
-
-    if (-f $log_file_path) {
-        my $recent_log_lines = get_recent_log_lines(
-            jboss        => $jboss,
-            file         => $log_file_path,
-            num_of_lines => NUMBER_OF_LINES_TO_TAIL_FROM_LOG
-        );
-        $jboss->log_info("JBoss logs  ($assumption_sting):\n   | " . join('   | ', @$recent_log_lines));
-    }
-    else {
-        $jboss->log_warning("Cannot find JBoss log file '$log_file_path'");
+    foreach my $server (@all_servers) {
+        my $server_status = @{ run_command_and_get_json_result_with_exiting_on_non_success(
+            command => "/host=$host_name/server-config=$server/:read-attribute(name=status)",
+            jboss   => $jboss
+        ) };
+        if ($server_status eq "DISABLED" || $server_status eq "STOPPED") {
+            $jboss->log_info("Server '$server' on host '$host_name' has status '$server_status', reading of logs via CLI will not be performed for this server");
+        }
+        elsif ($server_status eq "STARTED") {
+            show_logs_via_cli_for_server(
+                jboss       => $jboss,
+                host_name   => $host_name,
+                server_name => $server
+            );
+        }
+        else {
+            $jboss->log_warning("Server '$server' on host '$host_name' has status '$server_status', please refer to the JBoss logs on file system for more information");
+            $jboss->add_summary("Server '$server' on host '$host_name' has status '$server_status'");
+            $jboss->add_status_warning();
+        }
     }
 }
 
-sub get_recent_log_lines {
+sub show_logs_via_cli_for_server {
     my %args = @_;
-    my $file = $args{file} || croak "'file' is required param";
-    my $num_of_lines = $args{num_of_lines} || croak "'num_of_lines' is required param";
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $host_name = $args{host_name} || croak "'host_name' is required param";
+    my $server_name = $args{server_name} || croak "'server_name' is required param";
 
-    my @lines;
+    my $assumption_sting = sprintf(
+        "assumption is that log file is %s, tailing %u lines",
+        EXPECTED_LOG_FILE_NAME,
+        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+    );
 
-    my $count = 0;
-    my $filesize = -s $file; # filesize used to control reaching the start of file while reading it backward
-    my $offset = - 2; # skip two last characters: \n and ^Z in the end of file
+    $jboss->log_info("Showing logs via CLI for server '$server_name' on host '$host_name' ($assumption_sting)");
 
-    open F, $file or die "Can't read $file: $!\n";
+    my $cli_command = sprintf(
+        "/host=%s/server=%s/subsystem=logging/log-file=%s/:read-log-file(lines=%u,skip=0)",
+        $host_name,
+        $server_name,
+        EXPECTED_LOG_FILE_NAME,
+        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+    );
 
-    while (abs($offset) < $filesize) {
-        my $line = "";
-        # we need to check the start of the file for seek in mode "2"
-        # as it continues to output data in revers order even when out of file range reached
-        while (abs($offset) < $filesize) {
-            seek F, $offset, 2;     # because of negative $offset & "2" - it will seek backward
-            $offset -= 1;           # move back the counter
-            my $char = getc F;
-            last if $char eq "\n"; # catch the whole line if reached
-            $line = $char . $line; # otherwise we have next character for current line
-        }
-
-        # got the next line!
-        unshift @lines, "$line\n";
-
-        # exit the loop if we are done
-        $count++;
-        last if $count > $num_of_lines;
+    my %result = $jboss->run_command($cli_command);
+    if ($result{code}) {
+        $jboss->log_warning("Cannot read logs via CLI for server '$server_name' on host '$host_name', please refer to JBoss logs on file system for more details");
     }
-
-    return \@lines;
+    else {
+        $jboss->log_info("JBoss logs for server '$server_name' on host '$host_name' ($assumption_sting): " . $result{stdout});
+    }
 }
 
 sub escape_additional_options_for_windows {
