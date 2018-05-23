@@ -33,7 +33,7 @@
     <formElement>
         <type>entry</type>
         <label>Host Name:</label>
-        <property>hostName</property>
+        <property>jbossHostName</property>
         <required>0</required>
         <documentation>Host name for verification via master CLI that host controller is started</documentation>
     </formElement>

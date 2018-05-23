@@ -4433,7 +4433,7 @@
                                     </propertySheet>
                                 </property>
                                 <property>
-                                    <propertyName>hostName</propertyName>
+                                    <propertyName>jbossHostName</propertyName>
                                     <propertySheet>
                                         <property>
                                             <propertyName>formType</propertyName>
@@ -4486,7 +4486,7 @@
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
-                <formalParameterName>hostName</formalParameterName>
+                <formalParameterName>jbossHostName</formalParameterName>
                 <defaultValue/>
                 <description>Host name for verification via master CLI that host controller is started</description>
                 <required>0</required>

@@ -16,17 +16,19 @@ use File::Basename;
 $| = 1;
 
 use constant {
-    SUCCESS               => 0,
-    ERROR                 => 1,
-    SQUOTE                => q{'},
-    DQUOTE                => q{"},
-    BSLASH                => q{\\},
-    WIN_IDENTIFIER        => 'MSWin32',
-    MAX_ELAPSED_TEST_TIME => 60,
-    SLEEP_INTERVAL_TIME   => 3,
-    STATUS_ERROR          => "error",
-    STATUS_WARNING        => "warning",
-    STATUS_SUCCESS        => "success",
+    SUCCESS                          => 0,
+    ERROR                            => 1,
+    SQUOTE                           => q{'},
+    DQUOTE                           => q{"},
+    BSLASH                           => q{\\},
+    WIN_IDENTIFIER                   => 'MSWin32',
+    MAX_ELAPSED_TEST_TIME            => 60,
+    SLEEP_INTERVAL_TIME              => 3,
+    EXPECTED_SERVER_LOG_FILE_NAME    => 'server.log',
+    NUMBER_OF_LINES_TO_TAIL_FROM_LOG => 100,
+    STATUS_ERROR                     => "error",
+    STATUS_WARNING                   => "warning",
+    STATUS_SUCCESS                   => "success",
 };
 
 main();
@@ -43,14 +45,14 @@ sub main {
         startupScript
         domainConfig
         hostConfig
-        hostName
+        jbossHostName
         additionalOptions
         /);
 
     my $param_startup_script = $params->{startupScript};
     my $param_domain_config = $params->{domainConfig};
     my $param_host_config = $params->{hostConfig};
-    my $param_host_name = $params->{hostName};
+    my $param_host_name = $params->{jbossHostName};
     my $param_additional_options = $params->{additionalOptions};
 
     if (!$param_startup_script) {
@@ -58,7 +60,7 @@ sub main {
     }
 
     if (!$param_host_name) {
-        $jboss->log_warning("Verification via master CLI that host contoller is started will not be performed due to 'hostName' parameter is not provided");
+        $jboss->log_warning("Verification via master CLI that host contoller is started will not be performed due to 'jbossHostName' parameter is not provided");
     }
 
     if ($param_host_name) {
@@ -134,7 +136,9 @@ sub start_host_controller {
             $commandline .= " $escaped_additional_options";
         }
 
-        $commandline = SQUOTE . $commandline . SQUOTE;
+        my $logfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".log";
+        my $errfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".err";
+        $commandline = SQUOTE . $commandline . " 1>" . $logfile . " 2>" . $errfile . SQUOTE;
         $commandline = "exec(" . $commandline . ");";
         $commandline = DQUOTE . $commandline . DQUOTE;
         print "Command line: $commandline\n";
@@ -241,7 +245,7 @@ sub verify_host_controller_is_started {
         $jboss->log_info("Checking whether JBoss Host Controller '$host_name' is started via master CLI.");
     }
     else {
-        $jboss->log_warning("Verification via master CLI that host contoller is started will not be performed due to 'hostName' parameter is not provided");
+        $jboss->log_warning("Verification via master CLI that host contoller is started will not be performed due to 'jbossHostName' parameter is not provided");
         $jboss->log_info("Retrieving list of host controllers via master CLI");
     }
 
@@ -276,8 +280,8 @@ sub verify_host_controller_is_started {
         my %result = $jboss->run_command($cli_command);
         if ($result{code}) {
             my $summary = "Failed to connect to Master CLI"
-                . ($host_name ? "for verication of Host Controller '$host_name' state"
-                              : "for retrieving list of available Host Controllers");
+                . ($host_name ? " for verication of Host Controller '$host_name' state"
+                              : " for retrieving list of available Host Controllers");
             %check_result = (
                 summary            => $summary,
                 status             => STATUS_ERROR,
@@ -303,7 +307,7 @@ sub verify_host_controller_is_started {
             my %all_hosts_hash = map {$_ => 1} @all_hosts;
 
             if (!$host_name) {
-                my $summary = "JBoss Host Controller has been launched, but verification that it is started is not performed (due to 'hostName' parameter is not provided).";
+                my $summary = "JBoss Host Controller has been launched, but verification that it is started is not performed (due to 'jbossHostName' parameter is not provided).";
                 $summary .= "\nList of host controllers within Domain: " . join(", ", @all_hosts);
                 %check_result = (
                     summary            => $summary,
@@ -343,6 +347,7 @@ sub verify_host_controller_is_started {
             }
             else {
                 my $summary = "JBoss Host Controller '$host_name' is not started (or not connected to Master)";
+                $summary .= "\nList of host controllers within Domain: " . join(", ", @all_hosts);
                 %check_result = (
                     summary            => $summary,
                     status             => STATUS_ERROR,
@@ -370,8 +375,8 @@ sub verify_host_controller_is_started {
 
     eval {
         if ($host_name && $check_result{check_logs_via_cli}) {
-            check_boot_errors_via_cli_for_host_cotroller(jboss => $jboss, host_name => $host_name);
-            show_logs_via_cli_for_host_cotroller(jboss => $jboss, host_name => $host_name);
+            check_host_cotroller_boot_errors_via_cli(jboss => $jboss, host_name => $host_name);
+            check_boot_errores_and_show_logs_of_servers_via_cli(jboss => $jboss, host_name => $host_name);
         }
         else {
             $jboss->log_info("Please refer to JBoss logs on file system for more information");
@@ -470,7 +475,7 @@ sub run_command_with_exiting_on_error {
     return %result;
 }
 
-sub check_boot_errors_via_cli_for_host_cotroller {
+sub check_host_cotroller_boot_errors_via_cli {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
     my $host_name = $args{host_name} || croak "'host_name' is required param";
@@ -482,8 +487,8 @@ sub check_boot_errors_via_cli_for_host_cotroller {
     my %result = $jboss->run_command($cli_command);
 
     if ($result{code}) {
-        $jboss->log_warning("Cannot read boot errors via CLI");
-        $jboss->add_summary("Cannot read boot errors via CLI");
+        $jboss->log_warning("Cannot read boot errors of host controller '$host_name' via CLI");
+        $jboss->add_summary("Cannot read boot errors of host controller '$host_name' via CLI");
         $jboss->add_status_warning();
         return;
     }
@@ -492,20 +497,20 @@ sub check_boot_errors_via_cli_for_host_cotroller {
         if ($json && exists $json->{result}) {
             my $boot_errors_result = $json->{result};
             if (!@$boot_errors_result) {
-                $jboss->log_info("No boot errors detected via CLI");
-                $jboss->add_summary("No boot errors detected via CLI");
+                $jboss->log_info("No boot errors of host controller '$host_name'");
+                $jboss->add_summary("No boot errors of host controller '$host_name'");
                 return;
             }
         }
 
-        $jboss->log_warning("JBoss boot errors: " . $result{stdout});
-        $jboss->add_summary("Detected boot errors via CLI, see log for details");
+        $jboss->log_warning("Detected boot errors of host controller '$host_name': " . $result{stdout});
+        $jboss->add_summary("Detected boot errors of host controller '$host_name', see log for details");
         $jboss->add_status_warning();
         return;
     }
 }
 
-sub show_logs_via_cli_for_host_cotroller {
+sub check_boot_errores_and_show_logs_of_servers_via_cli {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
     my $host_name = $args{host_name} || croak "'host_name' is required param";
@@ -516,14 +521,23 @@ sub show_logs_via_cli_for_host_cotroller {
     ) };
 
     foreach my $server (@all_servers) {
-        my $server_status = @{ run_command_and_get_json_result_with_exiting_on_non_success(
+        my $server_status = run_command_and_get_json_result_with_exiting_on_non_success(
             command => "/host=$host_name/server-config=$server/:read-attribute(name=status)",
             jboss   => $jboss
-        ) };
+        );
         if ($server_status eq "DISABLED" || $server_status eq "STOPPED") {
             $jboss->log_info("Server '$server' on host '$host_name' has status '$server_status', reading of logs via CLI will not be performed for this server");
+            $jboss->add_summary("Server '$server' on host '$host_name' has status '$server_status'");
+
         }
         elsif ($server_status eq "STARTED") {
+            $jboss->log_info("Server '$server' on host '$host_name' has status '$server_status', reading logs via CLI");
+            $jboss->add_summary("Server '$server' on host '$host_name' has status '$server_status'");
+            check_server_boot_errors_via_cli(
+                jboss       => $jboss,
+                host_name   => $host_name,
+                server_name => $server
+            );
             show_logs_via_cli_for_server(
                 jboss       => $jboss,
                 host_name   => $host_name,
@@ -532,9 +546,45 @@ sub show_logs_via_cli_for_host_cotroller {
         }
         else {
             $jboss->log_warning("Server '$server' on host '$host_name' has status '$server_status', please refer to the JBoss logs on file system for more information");
-            $jboss->add_summary("Server '$server' on host '$host_name' has status '$server_status'");
+            $jboss->add_summary("Server '$server' on host '$host_name' has status '$server_status', please refer to the JBoss logs on file system for more information");
             $jboss->add_status_warning();
         }
+    }
+}
+
+sub check_server_boot_errors_via_cli {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $host_name = $args{host_name} || croak "'host_name' is required param";
+    my $server_name = $args{server_name} || croak "'server_name' is required param";
+
+    $jboss->log_info("Checking boot errors of server '$server_name' on host '$host_name' via CLI");
+
+    my $cli_command = "/host=$host_name/server=$server_name/core-service=management/:read-boot-errors";
+
+    my %result = $jboss->run_command($cli_command);
+
+    if ($result{code}) {
+        $jboss->log_warning("Cannot read boot errors of server '$server_name' on host '$host_name' via CLI");
+        $jboss->add_summary("Cannot read boot errors of server '$server_name' on host '$host_name' via CLI");
+        $jboss->add_status_warning();
+        return;
+    }
+    else {
+        my $json = $jboss->decode_answer($result{stdout});
+        if ($json && exists $json->{result}) {
+            my $boot_errors_result = $json->{result};
+            if (!@$boot_errors_result) {
+                $jboss->log_info("No boot errors of server '$server_name' on host '$host_name'");
+                $jboss->add_summary("No boot errors of server '$server_name' on host '$host_name'");
+                return;
+            }
+        }
+
+        $jboss->log_warning("Detected boot errors of server '$server_name' on host '$host_name': " . $result{stdout});
+        $jboss->add_summary("Detected boot errors of server '$server_name' on host '$host_name', see log for details");
+        $jboss->add_status_warning();
+        return;
     }
 }
 
@@ -546,7 +596,7 @@ sub show_logs_via_cli_for_server {
 
     my $assumption_sting = sprintf(
         "assumption is that log file is %s, tailing %u lines",
-        EXPECTED_LOG_FILE_NAME,
+        EXPECTED_SERVER_LOG_FILE_NAME,
         NUMBER_OF_LINES_TO_TAIL_FROM_LOG
     );
 
@@ -556,7 +606,7 @@ sub show_logs_via_cli_for_server {
         "/host=%s/server=%s/subsystem=logging/log-file=%s/:read-log-file(lines=%u,skip=0)",
         $host_name,
         $server_name,
-        EXPECTED_LOG_FILE_NAME,
+        EXPECTED_SERVER_LOG_FILE_NAME,
         NUMBER_OF_LINES_TO_TAIL_FROM_LOG
     );
 
