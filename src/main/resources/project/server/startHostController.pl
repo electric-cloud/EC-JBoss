@@ -11,7 +11,6 @@ use strict;
 use Cwd;
 use File::Spec;
 use ElectricCommander::PropDB;
-use File::Basename;
 
 $| = 1;
 
