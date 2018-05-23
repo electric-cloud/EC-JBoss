@@ -2,7 +2,7 @@
     <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#StartHostController</help>
     <formElement>
         <type>entry</type>
-        <label>Configuration name:</label>
+        <label>Configuration Name:</label>
         <property>serverconfig</property>
         <required>1</required>
         <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
@@ -11,7 +11,7 @@
     </formElement>
 	<formElement>
         <type>entry</type>
-        <label>Startup Scipt:</label>
+        <label>Startup Script:</label>
         <property>startupScript</property>
         <required>1</required>
         <documentation>Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</documentation>
