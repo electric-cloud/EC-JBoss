@@ -379,6 +379,7 @@ sub verify_host_controller_is_started {
         }
         else {
             $jboss->log_info("Please refer to JBoss logs on file system for more information");
+            $jboss->add_summary("Please refer to JBoss logs on file system for more information");
         }
     };
     if ($@) {
