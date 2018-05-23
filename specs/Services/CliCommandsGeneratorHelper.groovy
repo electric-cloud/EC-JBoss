@@ -244,6 +244,14 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static def getDatasourceInfo(nameDatasource, def profile=null){
+        def command = "/subsystem=datasources/data-source=$nameDatasource:read-resource"
+        if (profile){
+            command = "/profile=$profile/subsystem=datasources/data-source=$nameDatasource:read-resource"
+        }
+        return command
+    }
+
     static String getXADatasourceProperties(String property, String xaDataSourece){
         String command = "/subsystem=datasources/xa-data-source=$xaDataSourece/xa-datasource-properties=$property:read-attribute(name=value)"
         return command
