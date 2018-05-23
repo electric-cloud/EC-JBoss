@@ -220,7 +220,13 @@ sub verify_jboss_is_started {
             show_logs_via_cli(jboss => $jboss);
         }
         else {
-            show_logs_via_file(jboss => $jboss, startup_script => $startup_script);
+            # too many options of how log file location can be overriden, so let's do not guess where the logs are (at least for now)
+            # also, we are not going to read logs by redirection of console output to files (like it is done for startup in case of Windows)
+            # due to JBoss has good handling of logs by itself and it is not good idea to keep extra redirection of logs to EF workout etc.
+            # show_logs_via_file(jboss => $jboss, startup_script => $startup_script);
+
+            $jboss->log_info("Please refer to JBoss logs on file system for more information");
+            $jboss->add_summary("Please refer to JBoss logs on file system for more information");
         }
     };
     if ($@) {
