@@ -244,8 +244,11 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
-    def getDatasourceInfo(nameDatasource){
+    static def getDatasourceInfo(nameDatasource, def profile=null){
         def command = "/subsystem=datasources/data-source=$nameDatasource:read-resource"
+        if (profile){
+            command = "/profile=$profile/subsystem=datasources/data-source=$nameDatasource:read-resource"
+        }
         return command
     }
 
