@@ -64,7 +64,7 @@ $| = 1;
             );
     }
 
-    ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::Bootstrap.pm");
+    ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::Bootstrap");
 };
 
 =item B<new>
