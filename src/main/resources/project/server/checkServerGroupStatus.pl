@@ -31,6 +31,10 @@ my $STATUS_DISABLED = 'DISABLED'; # stopped status for servers with auto-start f
 my $STATUS_STARTED = 'STARTED'; # started status for servers
 my $SLEEP_TIME = 5;
 
+my $OUTPUT_PARAM_CRITERIA_MET = 'servergroupstatus';
+my $CRITERIA_MET_TRUE = 'TRUE';
+my $CRITERIA_MET_FALSE = 'FALSE';
+
 $| = 1;
 
 main();
@@ -73,8 +77,9 @@ sub main {
     my $time_start = time();
 
     my $result = {
-        error => 0,
-        msg   => ''
+        error                      => 0,
+        msg                        => '',
+        $OUTPUT_PARAM_CRITERIA_MET => ''
     };
 
     while (!$done) {
@@ -123,6 +128,7 @@ sub main {
             $jboss->log_info("Criteria '$param_criteria_label' is met on this iteration. Servers in '$server_group_name' server group have statuses $unique_states_str");
             $result->{msg} = "Criteria '$param_criteria_label' is met.\nServers in '$server_group_name' server group have statuses $unique_states_str";
             $result->{error} = 0;
+            $result->{$OUTPUT_PARAM_CRITERIA_MET} = $CRITERIA_MET_TRUE;
             $done = 1;
             last;
         }
@@ -130,9 +136,14 @@ sub main {
             $jboss->log_info("Criteria '$param_criteria_label' is not met on this iteration. Servers in '$server_group_name' server group have statuses $unique_states_str");
             $result->{msg} = "Criteria '$param_criteria_label' is not met.\nServers in '$server_group_name' server group have statuses $unique_states_str";
             $result->{error} = 1;
+            $result->{$OUTPUT_PARAM_CRITERIA_MET} = $CRITERIA_MET_FALSE;
         }
 
         sleep $SLEEP_TIME;
+    }
+
+    if ($result->{$OUTPUT_PARAM_CRITERIA_MET}) {
+        $jboss->set_output_parameter($OUTPUT_PARAM_CRITERIA_MET, $result->{$OUTPUT_PARAM_CRITERIA_MET});
     }
 
     if ($result->{error}) {
