@@ -229,6 +229,12 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Up
     \%createOrUpdateDataSource
 );
 
+my @formalOutputParameters = (
+    {
+        formalOutputParameterName => 'servergroupstatus',
+        procedureName             => 'CheckServerGroupStatus'
+    }
+);
 
 if ($upgradeAction eq "upgrade") {
     my $query = $commander->newBatch();
@@ -425,3 +431,102 @@ if ($upgradeAction eq "upgrade") {
     }
 }
 
+if ($promoteAction eq 'promote') {
+
+    ## Check if agent supports formalOutputParameters API,
+    if (exists $ElectricCommander::Arguments{getFormalOutputParameters}) {
+        my $versions = $commander->getVersions();
+
+        if (my $version = $versions->findvalue('//version')) {
+            my ( $major, $minor ) = split('\.', $version);
+
+            if ($major >= 8 && $minor >= 3) {
+                checkAndSetOutputParameters(@formalOutputParameters);
+            }
+        }
+    }
+}
+
+sub checkAndSetOutputParameters {
+    my (@parameters) = @_;
+
+    # Form flatten unique list of procedureNames
+    # and get all parameters for defined procedures
+    my $query = $commander->newBatch();
+    my %subs = ();
+    foreach my $param (@parameters) {
+        my $proc_name = $param->{procedureName};
+        $subs{$proc_name} = 1;
+    };
+
+    foreach (keys %subs) {
+        $subs{$_} = $query->getFormalOutputParameters($otherPluginName, {
+                procedureName => $_
+            });
+    }
+    $query->submit();
+
+    my @params_to_create = ();
+    foreach my $proc_name (keys %subs) {
+        my $response_for_params = $query->find($proc_name);
+
+        push @params_to_create, checkMissingOutputParameters( \@parameters, $response_for_params );
+    }
+
+    createMissingOutputParameters(@params_to_create);
+}
+
+sub checkMissingOutputParameters {
+    my ($parameters, $response) = @_;
+    my @parameters = @{$parameters};
+
+    # This is list of keys to build unique parameter's indices
+    my @key_parts = ('formalOutputParameterName', 'procedureName');
+    my @params_to_create = ();
+
+    my %parsed_parameters = ();
+    if ($response) {
+        my @defined_params = ($response->findnodes('formalOutputParameter'));
+
+        if (@defined_params) {
+            for my $param (@defined_params) {
+                my $key = join('_', map {
+                        $param->find($_)->string_value()
+                    } @key_parts
+                );
+
+                # Setting a flag parameter that parameter is already created
+                $parsed_parameters{$key} = 1;
+            }
+        }
+    }
+
+    foreach my $param (@parameters) {
+        my $key = join('_', map {$param->{$_} || ''} @key_parts);
+
+        if (!exists $parsed_parameters{$key}) {
+            push(@params_to_create, [
+                    $pluginName,
+                    $param->{formalOutputParameterName},
+                    {
+                        procedureName => $param->{procedureName}
+                    }
+                ]);
+        }
+    }
+
+    return @params_to_create;
+}
+
+sub createMissingOutputParameters {
+    my (@params_to_create) = @_;
+
+    my @responses = ();
+    if (@params_to_create) {
+        my $create_batch = $commander->newBatch();
+        push @responses, $create_batch->createFormalOutputParameter(@$_) foreach (@params_to_create);
+        $create_batch->submit();
+    }
+    # print Dumper \@responses
+    return 1;
+}

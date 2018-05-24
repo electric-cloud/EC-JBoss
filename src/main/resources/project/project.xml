@@ -78,6 +78,12 @@
                         <value></value>
                     </property>
                     <property>
+                        <propertyName>EC::Bootstrap</propertyName>
+                        <description>Bootstrap.pm</description>
+                        <expandable>0</expandable>
+                        <value></value>
+                    </property>
+                    <property>
                         <propertyName>File::Path</propertyName>
                         <description>Newest File::Path.</description>
                         <expandable>0</expandable>
