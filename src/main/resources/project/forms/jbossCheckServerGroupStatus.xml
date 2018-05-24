@@ -37,7 +37,7 @@
         <label>Criteria:</label>
         <property>criteria</property>
         <required>1</required>
-        <documentation>A desired status for all servers in the group. The procedure will fail if the criteria is not met. 'STARTED' criteria will be met in case if all servers within specified server group have 'STARTED' statuses. 'STOPPED' criteria will be met in case if all servers within specified server group have 'STOPPED' or 'DISABLED' statuses (similar statuses which indicate that servers are stopped, the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).</documentation>
+        <documentation>A desired status for all servers in the group. Possible options: 'STARTED', 'STOPPED', 'DISABLED', 'STOPPED or DISABLED'. The procedure will have status success if criteria is met. For Electric Flow 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".</documentation>
         <option>
             <name>STARTED</name>
             <value>STARTED</value>
@@ -45,6 +45,14 @@
         <option>
             <name>STOPPED</name>
             <value>STOPPED</value>
+        </option>
+        <option>
+            <name>DISABLED</name>
+            <value>DISABLED</value>
+        </option>
+        <option>
+            <name>STOPPED or DISABLED</name>
+            <value>STOPPED_OR_DISABLED</value>
         </option>
     </formElement>
 </editor>

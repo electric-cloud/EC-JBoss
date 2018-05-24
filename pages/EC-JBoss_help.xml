@@ -286,7 +286,9 @@
             </div>
             <div id="CheckServerGroupStatus"> <a name='CheckServerGroupStatus' id="CheckServerGroupStatus"></a>
                 <h2>CheckServerGroupStatus (Domain)</h2>
-                The CheckServerGroupStatus procedure gets the statuses of all servers in the specified group and compares them with the provided criteria.
+                The CheckServerGroupStatus procedure checks if the Status of all servers in the Server Group is equal to the Status mentioned in the Criteria field.
+                The procedure will have status success if criteria is met.
+                For Electric Flow 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".
                 <br/><br/>
                 There are the following criterias supported by the procedure:
                 <ol>
@@ -296,16 +298,11 @@
                     <li>
                         STOPPED
                     </li>
-                </ol>
-                The procedure will have status success if success criteria is met:
-                <ol>
                     <li>
-                        'STARTED' criteria will be met in case if all servers within specified server group have 'STARTED' statuses.
+                        DISABLED
                     </li>
                     <li>
-                        'STOPPED' criteria will be met in case if all servers within specified server group have 'STOPPED' or 'DISABLED' statuses
-                        (similar statuses which indicate that servers are stopped,
-                        the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).
+                        STOPPED or DISABLED
                     </li>
                 </ol>
                 Retrieving of server statuses is performed via JBoss CLI by checking the 'status' attribute
@@ -374,17 +371,23 @@
                                     <td>
                                         Required parameter.
                                         <br/>
-                                        A desired status for all servers in the group. The procedure will fail if the criteria is not met.
+                                        A desired status for all servers in the group. Possible options:
                                         <ol>
                                             <li>
-                                                'STARTED' criteria will be met in case if all servers within specified server group have 'STARTED' statuses.
+                                                STARTED
                                             </li>
                                             <li>
-                                                'STOPPED' criteria will be met in case if all servers within specified server group have 'STOPPED' or 'DISABLED' statuses
-                                                (similar statuses which indicate that servers are stopped,
-                                                the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).
+                                                STOPPED
+                                            </li>
+                                            <li>
+                                                DISABLED
+                                            </li>
+                                            <li>
+                                                STOPPED or DISABLED
                                             </li>
                                         </ol>
+                                        The procedure will have status success if criteria is met.
+                                        For Electric Flow 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".
                                     </td>
                                 </tr>
                             </tbody>
