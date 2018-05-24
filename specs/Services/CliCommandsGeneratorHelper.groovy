@@ -144,7 +144,7 @@ class CliCommandsGeneratorHelper {
     }
 
     static def shutDownStandalone(){
-        def command = "/shutdown"
+        def command = "shutdown"
         return command
     }
 
