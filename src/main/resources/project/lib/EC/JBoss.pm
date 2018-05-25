@@ -241,19 +241,13 @@ sub run_command {
 
     $command .= " -c controller=$controller_address ";
 
-    if ($credentials->{user}) {
+    if ($credentials->{user} || $credentials->{password}) {
         if (is_win) {
             $command .= " --user=$credentials->{user} ";
-        }
-        else {
-            $command .= " --user='$credentials->{user}' ";
-        }
-    }
-    if ($credentials->{password}) {
-        if (is_win) {
             $command .= " --password=$credentials->{password} ";
         }
         else {
+            $command .= " --user='$credentials->{user}' ";
             $command .= " --password='$credentials->{password}' ";
         }
     }
