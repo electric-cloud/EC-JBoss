@@ -8,6 +8,8 @@ use ElectricCommander::Arguments;
 
 use Data::Dumper;
 
+our $VERSION = 0.02;
+
 sub import {
     my $ec_version = $ElectricCommander::VERSION;
 
@@ -87,7 +89,7 @@ sub default_exit_error {
 
 =head1 NAME
 
-ElectricCommander
+EC::Bootstrap
 
 =head1 DESCRIPTION
 
