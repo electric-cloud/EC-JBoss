@@ -84,8 +84,8 @@ class StartServers extends PluginTestHelper {
 
            then:
            assert runProcedureJob.getStatus() == "success"
-           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 in state STOPPED.*Found server $serverName1 in state STARTED/
-           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 in state STOPPED.*Found server $serverName1 in state STARTED/
+           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state STOPPED.*Found server $serverName1 on host $hostName in state STARTED/
+           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state STOPPED.*Found server $serverName1 on host $hostName in state STARTED/
            assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
            assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).result == "STARTED"
 
@@ -130,8 +130,8 @@ class StartServers extends PluginTestHelper {
 
            then:
            assert runProcedureJob.getStatus() == 'success'
-           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 in state DISABLED.*Found server $serverName1 in state STARTED/
-           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName2 in state STOPPED.*Found server $serverName2 in state STARTED/
+           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state DISABLED.*Found server $serverName1 on host $hostName in state STARTED/
+           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName2 on host $hostName in state STOPPED.*Found server $serverName2 on host $hostName in state STARTED/
            assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
            assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).result == "STARTED"
 
@@ -181,8 +181,8 @@ class StartServers extends PluginTestHelper {
            assert runProcedureJob.getUpperStepSummary() =~ /Warning: Server $serverName2 on $hostName is already in STARTED state/
            assert runProcedureJob.getLowerStepSummary() =~ /Warning: Server $serverName1 on $hostName is already in STARTED state/
            assert runProcedureJob.getLowerStepSummary() =~ /Warning: Server $serverName2 on $hostName is already in STARTED state/
-           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 in state STARTED.*Found server $serverName1 in state STARTED/
-           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName2 in state STARTED.*Found server $serverName2 in state STARTED/
+           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state STARTED.*Found server $serverName1 on host $hostName in state STARTED/
+           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName2 on host $hostName in state STARTED.*Found server $serverName2 on host $hostName in state STARTED/
            assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
            assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).result == "STARTED"
 
@@ -229,8 +229,8 @@ class StartServers extends PluginTestHelper {
            assert runProcedureJob.getStatus() == 'warning'
            assert runProcedureJob.getUpperStepSummary() =~ /Warning: Server $serverName1 on $hostName is already in STARTED state/
            assert runProcedureJob.getLowerStepSummary() =~ /Warning: Server $serverName1 on $hostName is already in STARTED state/
-           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 in state STARTED.*Found server $serverName1 in state STARTED/
-           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName2 in state STOPPED.*Found server $serverName2 in state STARTED/
+           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state STARTED.*Found server $serverName1 on host $hostName in state STARTED/
+           assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName2 on host $hostName in state STOPPED.*Found server $serverName2 on host $hostName in state STARTED/
            assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
            assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).result == "STARTED"
 
@@ -296,10 +296,10 @@ class StartServers extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == 'success'
-        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverMasterName1 in state STOPPED.*Found server $serverMasterName1 in state STARTED/
-        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverMasterName2 in state STOPPED.*Found server $serverMasterName2 in state STARTED/
-        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverSlaveName1 in state STOPPED.*Found server $serverSlaveName1 in state STARTED/
-        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverSlaveName2 in state STOPPED.*Found server $serverSlaveName2 in state STARTED/
+        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverMasterName1 on host $hostName in state STOPPED.*Found server $serverMasterName1 on host $hostName in state STARTED/
+        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverMasterName2 on host $hostName in state STOPPED.*Found server $serverMasterName2 on host $hostName in state STARTED/
+        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverSlaveName1 on host $hostName in state STOPPED.*Found server $serverSlaveName1 on host $hostName in state STARTED/
+        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverSlaveName2 on host $hostName in state STOPPED.*Found server $serverSlaveName2 on host $hostName in state STARTED/
 
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(serverMaster1)).result == "STARTED"
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(serverMaster2)).result == "STARTED"
@@ -348,7 +348,7 @@ class StartServers extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == 'success'
-        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 in state STOPPED.*Found server $serverName1 in state STARTED/
+        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state STOPPED.*Found server $serverName1 on host $hostName in state STARTED/
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
 
         cleanup:
@@ -386,7 +386,7 @@ class StartServers extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == 'success'
-        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 in state STOPPED.*Found server $serverName1 in state STARTED/
+        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state STOPPED.*Found server $serverName1 on host $hostName in state STARTED/
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
 
         cleanup:
