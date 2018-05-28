@@ -232,7 +232,28 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
     def drivers = [
         h2: 'h2',
         mariadb: 'mariadb',
-        wrong: 'h2_wrong'
+        mysql: 'mysql',
+        wrong: 'h2_wrong',
+    ]
+
+    @Shared
+    def link = [
+        /**
+         * Required
+         */
+        empty: '',
+        mysql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/mysql/mysql-connector-java-5.1.36.jar",
+        postgresql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/postgresql/postgresql-42.2.2.jar",
+    ]
+
+    @Shared
+    def xml = [
+        /**
+         * Required
+         */
+        empty: '',
+        mysql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/mysql/module.xml",
+        postgresql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/postgresql/module.xml",
     ]
 
     @Shared
@@ -285,11 +306,18 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         createHelperProject(resName, defaultConfigName)
         createCredential(projectName, dataSourceConnectionCredentials, userNames.defaultUserName, passwords.defaultPassword)
         attachCredential(projectName, dataSourceConnectionCredentials, procName)
+        addJDBCMySQL(drivers.mysql)
     }
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
         deleteProject(projectName)
+        if (EnvPropertiesHelper.getMode() == 'standalone') {
+            runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(drivers.mysql))
+        }
+        else {
+            runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(profiles.'full', drivers.mysql))
+        }
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -353,8 +381,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest1.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
         testCases.systemTest2.name      | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
         testCases.systemTest3.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'false' | profiles.empty  | additionalOptions.'empty'
-        // doesn't work yet
-        // testCases.systemTest4.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.mariadb | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
+        testCases.systemTest4.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.mysql   | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
         testCases.systemTest5.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'empty'   | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'url'
         testCases.systemTest6.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.empty           | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
         testCases.systemTest7.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.empty           | passwords.empty           | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
@@ -419,8 +446,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest24.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'
         testCases.systemTest26.name     | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'
         testCases.systemTest27.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'false' | profiles.'full' | additionalOptions.'empty'
-        // doesn't work yet
-        // testCases.systemTest28.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.mariadb | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'
+        testCases.systemTest28.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.mysql   | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'
         testCases.systemTest29.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'empty'   | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'url'
         testCases.systemTest30.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.empty           | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'
         testCases.systemTest31.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.empty           | passwords.empty           | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'
@@ -775,6 +801,30 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
 
     }
 
+    static String getPathToMain(String path, String domain) {
+        String pathForJar = ''
+        if(EnvPropertiesHelper.getVersion() == "6.0"){
+            pathForJar = "/opt/jboss/modules/$domain/$path/main"
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path\\\\main" : pathForJar
+        } else {
+            pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path/main"
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path\\\\main" : pathForJar
+        }
+        return  pathForJar
+    }
+
+    static String getPath(String path, String domain) {
+        String pathForJar = ''
+        if(EnvPropertiesHelper.getVersion() == "6.0"){
+            pathForJar = "/opt/jboss/modules/$domain/$path"
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path" : pathForJar
+        } else {
+            pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path"
+            EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path" : pathForJar
+        }
+        return  pathForJar
+    }
+
     void addJDBCMySQL(String jdbcDriverName){
         String path = getPathToMain("mysql", "com")
         createDir(getPath("mysql", "com"))
@@ -782,8 +832,36 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
         downloadArtifact(xml.mysql, path+"/module.xml")
         // if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
-        addModuleXADatasource(jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
+        if (EnvPropertiesHelper.getMode() == 'standalone') {
+            addModuleXADatasource(jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
+        }
+        else {
+            addModuleXADatasource(jdbcDriverName, "org.postgresql.xa.PGXADataSource")
+        }
         // }
+    }
+
+    void addModuleXADatasource(String driver, String DSclass){
+        if (EnvPropertiesHelper.getMode() == 'standalone') {
+            if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
+                // https://issues.jboss.org/browse/JBPAPP6-944
+                reloadServer()
+                runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
+            } 
+            else {
+                runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
+            }
+        }
+        else {
+            if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
+            // https://issues.jboss.org/browse/JBPAPP6-944
+            reloadServer('master')
+            runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profiles.'full', driver, DSclass))
+        } 
+        else {
+            runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasource(profiles.'full', driver, DSclass))
+            }
+        }
     }
 
 }
