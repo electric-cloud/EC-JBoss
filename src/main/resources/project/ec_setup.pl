@@ -169,6 +169,13 @@ my %createOrUpdateDataSource = (
     category    => "Application Server"
 );
 
+my %startHostController = (
+    label       => "JBoss - Start Host Controller",
+    procedure   => "StartHostController",
+    description => "Start a master or slave host controller for JBoss Domain",
+    category    => "Application Server"
+);
+
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Check Server Status");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Deploy App");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Shutdown Standalone Server");
@@ -198,6 +205,7 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Remove XA Da
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Stop Domain");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Get Environment Information");
 $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Update Data Source");
+$batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Start Host Controller");
 
 
 @::createStepPickerSteps = (
@@ -226,7 +234,8 @@ $batch->deleteProperty("/server/ec_customEditors/pickerStep/JBoss - Create or Up
     \%removeXADataSource,
     \%stopDomain,
     \%getEnvInfo,
-    \%createOrUpdateDataSource
+    \%createOrUpdateDataSource,
+    \%startHostController
 );
 
 my @formalOutputParameters = (

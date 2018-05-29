@@ -49,6 +49,7 @@
                     <li><a href="#RunCustomCommand">RunCustomCommand</a> (Standalone/Domain)</li>
                     <li><a href="#ShutdownStandaloneServer">ShutdownStandaloneServer</a> (Standalone)</li>
                     <li><a href="#StartDomainServer">StartDomainServer</a> (Domain)</li>
+                    <li><a href="#StartHostController">StartHostController</a> (Domain)</li>
                     <li><a href="#StartServers">StartServers</a> (Domain)</li>
                     <li><a href="#StartStandaloneServer">StartStandaloneServer</a> (Standalone)</li>
                     <li><a href="#StopDomain">StopDomain</a> (Domain)</li>
@@ -2029,6 +2030,58 @@
                     following diagnostic report:</p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/StartDomainServer/ECJBossStartDomain4.png" />
+                <br />
+            </div>
+            <div id="StartHostController"> <a name='StartHostController' id="StartHostController"></a>
+                <h2>StartHostController</h2>
+                <p>This procedure can be used for starting a master or slave host controller for JBoss Domain.</p>
+                <h3>Input</h3>
+                <ol>
+                    <li>Go to the StartHostController procedure.</li>
+                    <li>Enter the following parameters:<br />
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th>Parameter</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class='required'>Configuration Name</td>
+                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                </tr>
+                                <tr>
+                                    <td class='required'>Startup Script</td>
+                                    <td>Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</td>
+                                </tr>
+                                <tr>
+                                    <td>Domain Config</td>
+                                    <td>For domain controllers only. Name of the domain configuration file that ElectricFlow uses to start the domain controller with a different domain configuration (--domain-config). By default domain.xml is used.</td>
+                                </tr>
+                                <tr>
+                                    <td>Host Config</td>
+                                    <td>For domain and host controllers. Name of the host configuration file that ElectricFlow uses to start the domain or host controller with a different host configuration (--host-config). By default host.xml is used.</td>
+                                </tr>
+                                <tr>
+                                    <td>Host Name</td>
+                                    <td>Host name for verification via master CLI that host controller is started</td>
+                                </tr>
+                                <tr>
+                                    <td>Additional Options</td>
+                                    <td>Additional options</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/StartHostController/StartHostControllerForm1.PNG" />
+                        <br />
+                    </li>
+                </ol>
+                <h3>Output</h3>
+                <p>After the job runs, you can view the results, including the following job details, which show that the server is up:</p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StartHostController/StartHostControllerRun1.PNG" />
                 <br />
             </div>
             <div id="StartServers"> <a name='StartServers' id="StartServers"></a>
