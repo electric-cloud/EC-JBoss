@@ -24,6 +24,9 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         empty: ''
         ]
 
+    @Shared
+    def jbossVersion = EnvPropertiesHelper.getVersion()
+
     //https://ecflow.testrail.net/index.php?/suites/view/27&group_by=cases:section_id&group_order=asc&group_id=82570
     @Shared
     def testCases = [
@@ -184,11 +187,11 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         emptyDSName: "Required parameter 'dataSourceName' is not provided",
         emptyJNDIName: "Required parameter 'jndiName' is not provided",
         emptyDriver: "Required parameter 'jdbcDriverName' is not provided",
-        emptyUrl: EnvPropertiesHelper.getVersion() == '7.1' ? "Unable to start the ds because it generated more than one cf" : 'Required parameter \'connectionUrl\' is not provided \\(parameter required for JBoss EAP 6.X and 7.0\\)',
+        emptyUrl: jbossVersion == '7.1' ? "Unable to start the ds because it generated more than one cf" : 'Required parameter \'connectionUrl\' is not provided \\(parameter required for JBoss EAP 6.X and 7.0\\)',
         wrongJNDI: "Jndi name have to start with java:/ or java:jboss/",
         wrongConfig: "Configuration WrongConfig doesn't exist.",
-        wrongDriver: EnvPropertiesHelper.getVersion() in ['7.0', '6.4', '6.3'] ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
-        wrongOptions: EnvPropertiesHelper.getVersion() in ['7.0', '6.4', '6.3'] ? "Unrecognized argument --min-poolzzz for command 'add'" : "Unrecognized arguments: [--min-poolzzz]",
+        wrongDriver: (jbossVersion == '6.1' && EnvPropertiesHelper.getMode() == 'domain' ) ? "Operation failed or was rolled back on all servers" : jbossVersion != '7.1' ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
+        wrongOptions: jbossVersion != '7.1' ? "Unrecognized argument --min-poolzzz for command 'add'" : "Unrecognized arguments: [--min-poolzzz]",
         wrongProfile: /porfile.*not found/,   
     ]
 
@@ -203,11 +206,11 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         emptyDSName: "Setting property 'summary' = 'Required parameter 'dataSourceName' is not provided",
         emptyJNDIName: "Setting property 'summary' = 'Required parameter 'jndiName' is not provided",
         emptyDriver: "Setting property 'summary' = 'Required parameter 'jdbcDriverName' is not provided",
-        emptyUrl: EnvPropertiesHelper.getVersion() == '7.1' ? "Unable to start the ds because it generated more than one cf" : 'Required parameter \'connectionUrl\' is not provided \\(parameter required for JBoss EAP 6.X and 7.0\\)',
+        emptyUrl: jbossVersion == '7.1' ? "Unable to start the ds because it generated more than one cf" : 'Required parameter \'connectionUrl\' is not provided \\(parameter required for JBoss EAP 6.X and 7.0\\)',
         wrongJNDI: "Jndi name have to start with java:/ or java:jboss/",
         wrongConfig: "Configuration WrongConfig doesn't exist.",
-        wrongDriver: EnvPropertiesHelper.getVersion() in ['7.0', '6.4', '6.3'] ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
-        wrongOptions: EnvPropertiesHelper.getVersion() in ['7.0', '6.4', '6.3'] ? "Unrecognized argument --min-poolzzz for command 'add'" : "Unrecognized arguments: [--min-poolzzz]",
+        wrongDriver: (jbossVersion == '6.1' && EnvPropertiesHelper.getMode() == 'domain' ) ? "Operation failed or was rolled back on all servers" : jbossVersion != '7.1' ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
+        wrongOptions: jbossVersion != '7.1' ? "Unrecognized argument --min-poolzzz for command 'add'" : "Unrecognized arguments: [--min-poolzzz]",
         wrongProfile: /porfile.*not found/,       
     ]
 
@@ -312,13 +315,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
-        // if (EnvPropertiesHelper.getMode() == 'standalone') {
-        //     runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(drivers.mysql))
-        // }
-        // else {
-        //     runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(profiles.'full', drivers.mysql))
-        // }
+        // deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -357,7 +354,16 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
                 password: password
         ]
         when:
+        // Jboss 6.1 removes driver after its reboot
+        if (jbossVersion == '6.1' && testCaseId == testCases.systemTest4.name) {
+                addJDBCMySQL(drivers.mysql) 
+            } 
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+        // we should reboot Jboss after adding of DS in version 6.1 
+        // Jboss 6.1 has next logic: after a creation all DS's have status "is enabled-false", after Jboss was rebooted, all DS's  have status "is enabled-true" 
+        if (jbossVersion == '6.1') {
+                reloadServer()
+            }
         // we expect "success" or "warning"
         // "success": if the server does not need reloading
         // "warning": if server needs reloading, and this case we throw text "reload-required" or
@@ -384,22 +390,25 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         where: 'The following params will be: '
         testCaseId                      | configName         | dsName                                 | jndiName                         | jdbcDriverName  | url            | creds                            | userName                  | password                  | enabled                 | profile         | additionalOption                 | shouldBeIgnored
         testCases.systemTest1.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false     
-        testCases.systemTest2.name      | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | EnvPropertiesHelper.getVersion() in ['6.4']         
-        testCases.systemTest3.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'false' | profiles.empty  | additionalOptions.'empty'        | false
+        testCases.systemTest2.name      | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | jbossVersion in ['6.4']         
+        testCases.systemTest3.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'false' | profiles.empty  | additionalOptions.'empty'        | jbossVersion == '6.1'
         testCases.systemTest4.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.mysql   | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false
-        testCases.systemTest5.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'empty'   | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'url'          | EnvPropertiesHelper.getVersion() != '7.1' 
+        testCases.systemTest5.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'empty'   | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'url'          | jbossVersion != '7.1' 
         testCases.systemTest6.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.empty           | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false
         testCases.systemTest7.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.empty           | passwords.empty           | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false
         testCases.systemTest8.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.full   | additionalOptions.'empty'        | false
         testCases.systemTest9.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'min size'     | false
         testCases.systemTest10.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'minmax size'  | false     
         testCases.systemTest11.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'simple sql'   | false 
-        testCases.systemTest12.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'complex sql'  | EnvPropertiesHelper.getVersion() in ['7.0', '6.4']     
+        testCases.systemTest12.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'complex sql'  | jbossVersion in ['7.0', '6.4']     
     }
 
     @Requires({ env.JBOSS_MODE == 'domain' })
     @Unroll
     def "CreateorUpdateXADataSource - domain - create DS - positive"() {
+        // should be test ignored ? 
+        // if "shouldBeIgnored" is true, test will be skipped
+        assumeFalse(shouldBeIgnored)
         // modify credentialds for tests: C323784, C323785
         if (testCaseId in [testCases.systemTest30.name, testCases.systemTest31.name]){
             modifyCredential(projectName, creds, userName, password)
@@ -423,7 +432,16 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
                 password: password
         ]
         when:
+        // Jboss 6.1 removes driver after its reboot
+        if (jbossVersion == '6.1' && testCaseId == testCases.systemTest28.name) {
+                addJDBCMySQL(drivers.mysql) 
+            } 
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+        // we should reboot Jboss after adding of DS in version 6.1 
+        // Jboss 6.1 has next logic: after a creation all DS's have status "is enabled-false", after Jboss was rebooted, all DS's  have status "is enabled-true" 
+        if (jbossVersion == '6.1') {
+                reloadServer('master')
+            }
         // we expect "success" or "warning"
         // "success": if the server does not need reloading
         // "warning": if server needs reloading, and this case we throw text "reload-required" or
@@ -449,16 +467,16 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         where: 'The following params will be: '
         testCaseId                      | configName         | dsName                                 | jndiName                         | jdbcDriverName  | url            | creds                            | userName                  | password                  | enabled                 | profile         | additionalOption                   | shouldBeIgnored
         testCases.systemTest24.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'          | false
-        testCases.systemTest26.name     | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'          | false 
-        testCases.systemTest27.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'false' | profiles.'full' | additionalOptions.'empty'          | false
+        testCases.systemTest26.name     | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'          | jbossVersion in ['6.4'] 
+        testCases.systemTest27.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'false' | profiles.'full' | additionalOptions.'empty'          | jbossVersion == '6.1'
         testCases.systemTest28.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.mysql   | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'          | false
-        testCases.systemTest29.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'empty'   | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'url'            | EnvPropertiesHelper.getVersion() != '7.1'
+        testCases.systemTest29.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'empty'   | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'url'            | jbossVersion != '7.1'
         testCases.systemTest30.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.empty           | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'          | false
         testCases.systemTest31.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.empty           | passwords.empty           | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'          | false
         testCases.systemTest32.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'min size'       | false
         testCases.systemTest33.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'minmax size'    | false
         testCases.systemTest34.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'simple sql'     | false
-        testCases.systemTest35.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'complex sql'    | EnvPropertiesHelper.getVersion() in ['7.0', '6.4']
+        testCases.systemTest35.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'complex sql'    | jbossVersion in ['7.0', '6.4']
     }
 
     @Requires({ env.JBOSS_MODE == 'standalone' })
@@ -494,6 +512,11 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         }
 
         runProcedureJob = runProcedureUnderTest(runParams, credential)
+        // we should reboot Jboss after adding of DS in version 6.1 
+        // Jboss 6.1 has next logic: after a creation all DS's have status "is enabled-false", after Jboss was rebooted, all DS's  have status "is enabled-true" 
+        if (jbossVersion == '6.1') {
+                reloadServer()
+            }
         // we expect "success" or "warning"
         // "success": if the server does not need reloading
         // "warning": if server needs reloading, and this case we throw text "reload-required" or
@@ -558,6 +581,11 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         }
 
         runProcedureJob = runProcedureUnderTest(runParams, credential)
+        // we should reboot Jboss after adding of DS in version 6.1 
+        // Jboss 6.1 has next logic: after a creation all DS's have status "is enabled-false", after Jboss was rebooted, all DS's  have status "is enabled-true" 
+        if (jbossVersion == '6.1') {
+                reloadServer('master')
+            }
         // we expect "success" or "warning"
         // "success": if the server does not need reloading
         // "warning": if server needs reloading, and this case we throw text "reload-required" or
@@ -680,7 +708,6 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest46.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'wrong'  | jobLogs.wrongOptions  | summaries.wrongOptions
     }
 
-
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
     def "CreateorUpdateXADataSource - standalone - Update DS - negative"() {
@@ -719,8 +746,8 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         checkCreateDataSource(dsName, jndiName, jdbcDriverName, enabled, password, userName, url, additionalOption)
 
         where: 'The following params will be: '
-        testCaseId                      | configName         | dsName                                 | jndiName                         | jndiNameNew                     | jdbcDriverName  | url            | creds                            | userName                  | userNameNew       | password                  | passwordNew       | enabled                 | profile         | additionalOption            |   logs              | summary
-        testCases.systemTest24.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | jndiNames.'wrong'               | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | userName          | passwords.defaultPassword | password          | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'   | jobLogs.wrongJNDI   | summaries.wrongJNDI
+        testCaseId                      | configName         | dsName                                 | jndiName                         | jndiNameNew                     | jdbcDriverName  | url            | creds                            | userName                  | userNameNew       | password                  | passwordNew       | enabled                  | profile         | additionalOption            |   logs              | summary
+        testCases.systemTest24.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | jndiNames.'wrong'               | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | userName          | passwords.defaultPassword | password          | statusOfEnabled.'false'  | profiles.empty  | additionalOptions.'empty'   | jobLogs.wrongJNDI   | summaries.wrongJNDI
    }
 
     @Requires({ env.JBOSS_MODE == 'domain' })
@@ -761,8 +788,8 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         checkCreateDataSource(dsName, jndiName, jdbcDriverName, enabled, password, userName, url, additionalOption, profile)
 
         where: 'The following params will be: '
-        testCaseId                      | configName         | dsName                                 | jndiName                         | jndiNameNew                     | jdbcDriverName  | url            | creds                            | userName                  | userNameNew       | password                  | passwordNew       | enabled                 | profile         | additionalOption            |   logs              | summary
-        testCases.systemTest47.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | jndiNames.'wrong'               | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | userName          | passwords.defaultPassword | password          | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'   | jobLogs.wrongJNDI   | summaries.wrongJNDI
+        testCaseId                      | configName         | dsName                                 | jndiName                         | jndiNameNew                     | jdbcDriverName  | url            | creds                            | userName                  | userNameNew       | password                  | passwordNew       | enabled                  | profile         | additionalOption            |   logs              | summary
+        testCases.systemTest47.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | jndiNames.'wrong'               | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | userName          | passwords.defaultPassword | password          | statusOfEnabled.'false'  | profiles.'full' | additionalOptions.'empty'   | jobLogs.wrongJNDI   | summaries.wrongJNDI
    }
 
     void checkCreateDataSource(def nameDatasource, def jndiNames, def jdbcDriverName, def enabled, def password, def userName, def url, def additionalOption, def profile=null){
@@ -836,30 +863,49 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         createDir(path)
         downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
         downloadArtifact(xml.mysql, path+"/module.xml")
-        // if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
-        if (EnvPropertiesHelper.getMode() == 'standalone') {
-            addModuleXADatasource(jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
-        }
-        else {
-            addModuleXADatasource(jdbcDriverName, "org.postgresql.xa.PGXADataSource")
-        }
-        // }
+        addModuleXADatasource(jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
     }
 
     void addModuleXADatasource(String driver, String DSclass){
         if (EnvPropertiesHelper.getMode() == 'standalone') {
-            if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
+            if (jbossVersion in ['6.0','6.1','6.2','6.3']) {
                 // https://issues.jboss.org/browse/JBPAPP6-944
                 reloadServer()
             }
             runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
         }
         else {
-            if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
+            if (jbossVersion in ['6.0','6.1','6.2','6.3']) {
                 // https://issues.jboss.org/browse/JBPAPP6-944
                 reloadServer('master')
             } 
             runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profiles.'full', driver, DSclass))
+        }
+    }
+
+    void reloadServer(host=null) {
+        def reloadCommand
+        def getStatusCommand
+        if (host){
+            reloadCommand = CliCommandsGeneratorHelper.reloadHostDomain(host)
+            getStatusCommand = CliCommandsGeneratorHelper.getHostStatus(host)
+        }
+        else{
+            reloadCommand = CliCommandsGeneratorHelper.reloadStandalone()
+            getStatusCommand = CliCommandsGeneratorHelper.getStandaloneStatus()
+        }
+        runCliCommandAnyResult(reloadCommand)
+        def cond = true
+        while(cond){
+            try {
+                sleep(3000)
+                if (runCliCommandAndGetJBossReply(getStatusCommand).result == 'running') {
+                    cond = false
+                }
+            }
+            catch (Exception e){
+                println e.getMessage()
+            }
         }
     }
 
