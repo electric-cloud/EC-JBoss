@@ -143,6 +143,11 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
+    static def shutDownStandalone(){
+        def command = "shutdown"
+        return command
+    }
+
     static String getJMSQueueInfoStandalone(String queueName) {
         String subsystem = getJMSsubsystem();
         String command = "/$subsystem/jms-queue=$queueName:read-resource()"
