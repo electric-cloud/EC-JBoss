@@ -77,4 +77,8 @@ class EnvPropertiesHelper {
     public static String getVersion() {
         return System.getenv('JBOSS_VERSION')
     }
+
+    public static String getMode() {
+        return System.getenv('JBOSS_MODE')
+    }
 }
