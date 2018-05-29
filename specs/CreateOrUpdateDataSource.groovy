@@ -187,8 +187,8 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         emptyUrl: EnvPropertiesHelper.getVersion() == '7.1' ? "Unable to start the ds because it generated more than one cf" : 'Required parameter \'connectionUrl\' is not provided \\(parameter required for JBoss EAP 6.X and 7.0\\)',
         wrongJNDI: "Jndi name have to start with java:/ or java:jboss/",
         wrongConfig: "Configuration WrongConfig doesn't exist.",
-        wrongDriver: EnvPropertiesHelper.getVersion() in ['7.0'] ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
-        wrongOptions:  EnvPropertiesHelper.getVersion() in ['7.0'] ? "Unrecognized argument --min-poolzzz for command 'add'" : "Unrecognized arguments: [--min-poolzzz]",
+        wrongDriver: EnvPropertiesHelper.getVersion() in ['7.0', '6.4', '6.3'] ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
+        wrongOptions: EnvPropertiesHelper.getVersion() in ['7.0', '6.4', '6.3'] ? "Unrecognized argument --min-poolzzz for command 'add'" : "Unrecognized arguments: [--min-poolzzz]",
         wrongProfile: /porfile.*not found/,   
     ]
 
@@ -206,8 +206,8 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         emptyUrl: EnvPropertiesHelper.getVersion() == '7.1' ? "Unable to start the ds because it generated more than one cf" : 'Required parameter \'connectionUrl\' is not provided \\(parameter required for JBoss EAP 6.X and 7.0\\)',
         wrongJNDI: "Jndi name have to start with java:/ or java:jboss/",
         wrongConfig: "Configuration WrongConfig doesn't exist.",
-        wrongDriver: EnvPropertiesHelper.getVersion() in ['7.0'] ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
-        wrongOptions:  EnvPropertiesHelper.getVersion() in ['7.0'] ? "Unrecognized argument --min-poolzzz for command 'add'" : "Unrecognized arguments: [--min-poolzzz]",
+        wrongDriver: EnvPropertiesHelper.getVersion() in ['7.0', '6.4', '6.3'] ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
+        wrongOptions: EnvPropertiesHelper.getVersion() in ['7.0', '6.4', '6.3'] ? "Unrecognized argument --min-poolzzz for command 'add'" : "Unrecognized arguments: [--min-poolzzz]",
         wrongProfile: /porfile.*not found/,       
     ]
 
@@ -384,7 +384,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         where: 'The following params will be: '
         testCaseId                      | configName         | dsName                                 | jndiName                         | jdbcDriverName  | url            | creds                            | userName                  | password                  | enabled                 | profile         | additionalOption                 | shouldBeIgnored
         testCases.systemTest1.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false     
-        testCases.systemTest2.name      | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false         
+        testCases.systemTest2.name      | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | EnvPropertiesHelper.getVersion() in ['6.4']         
         testCases.systemTest3.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'false' | profiles.empty  | additionalOptions.'empty'        | false
         testCases.systemTest4.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.mysql   | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false
         testCases.systemTest5.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'empty'   | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'url'          | EnvPropertiesHelper.getVersion() != '7.1' 
@@ -394,7 +394,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest9.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'min size'     | false
         testCases.systemTest10.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'minmax size'  | false     
         testCases.systemTest11.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'simple sql'   | false 
-        testCases.systemTest12.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'complex sql'  | EnvPropertiesHelper.getVersion() in ['7.0']     
+        testCases.systemTest12.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'complex sql'  | EnvPropertiesHelper.getVersion() in ['7.0', '6.4']     
     }
 
     @Requires({ env.JBOSS_MODE == 'domain' })
@@ -458,7 +458,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest32.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'min size'       | false
         testCases.systemTest33.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'minmax size'    | false
         testCases.systemTest34.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'simple sql'     | false
-        testCases.systemTest35.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'complex sql'    | EnvPropertiesHelper.getVersion() in ['7.0']
+        testCases.systemTest35.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'complex sql'    | EnvPropertiesHelper.getVersion() in ['7.0', '6.4']
     }
 
     @Requires({ env.JBOSS_MODE == 'standalone' })
