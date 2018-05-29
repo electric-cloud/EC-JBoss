@@ -78,6 +78,12 @@
                         <value></value>
                     </property>
                     <property>
+                        <propertyName>EC::Bootstrap</propertyName>
+                        <description>Bootstrap.pm</description>
+                        <expandable>0</expandable>
+                        <value></value>
+                    </property>
+                    <property>
                         <propertyName>File::Path</propertyName>
                         <description>Newest File::Path.</description>
                         <expandable>0</expandable>
@@ -2732,7 +2738,7 @@
         </procedure>
         <procedure>
             <procedureName>CheckServerGroupStatus</procedureName>
-            <description>The CheckServerGroupStatus procedure gets the statuses of all servers in the specified group and compares them with the provided criteria.</description>
+            <description>The CheckServerGroupStatus procedure checks if the Status of all servers in the Server Group is equal to the Status mentioned in the Criteria field.</description>
             <jobNameTemplate>jboss-check-server-group-status-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -2826,7 +2832,7 @@
             <formalParameter>
                 <formalParameterName>criteria</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>A desired status for all servers in the group. The procedure will fail if the criteria is not met. 'STARTED' criteria will be met in case if all servers within specified server group have 'STARTED' statuses. 'STOPPED' criteria will be met in case if all servers within specified server group have 'STOPPED' or 'DISABLED' statuses (similar statuses which indicate that servers are stopped, the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).</description>
+                <description>A desired status for all servers in the group. Possible options: 'STARTED', 'STOPPED', 'DISABLED', 'STOPPED or DISABLED'. The procedure will have status success if criteria is met. For Electric Flow 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>

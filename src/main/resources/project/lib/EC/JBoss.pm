@@ -64,6 +64,7 @@ $| = 1;
             );
     }
 
+    ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::Bootstrap");
 };
 
 =item B<new>
@@ -1589,6 +1590,40 @@ sub add_status_error {
     $self->{recent_status} = "error";
     $self->error();
 }
+
+# Sets output parameter safely: $jboss->set_output_parameter("someparamname", "someValue");
+sub set_output_parameter {
+    my ($self, $name, $value, $attach_params) = @_;
+
+    if (!defined $value){
+        $self->log_debug("Will not save undefined value for outputParameter '$name'");
+        return;
+    };
+
+    # Will fall if parameter does not exists
+    eval {
+        if ($value && (ref $value eq 'HASH' || ref $value eq 'ARRAY')){
+            require JSON unless $JSON::VERSION;
+            $value = JSON::encode_json($value);
+        }
+
+        my $is_set = $self->ec()->setOutputParameter($name, $value, $attach_params);
+
+        # 0E0 can be returned by EC::Bootstrap function and means parameter was not really set
+        if ($is_set && !$is_set eq '0E0'){
+            $self->log_info("Output parameter '$name' has been set to '$value'"
+                . (defined $attach_params ? "and attached to " . Dumper($attach_params) : ''));
+        }
+
+        1;
+    } or do {
+        $self->log_debug("Output parameter '$name' can't be saved : $@");
+        return 0;
+    };
+
+    return 1;
+}
+
 
 1;
 
