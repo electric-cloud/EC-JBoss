@@ -1,6 +1,7 @@
 import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
+import static org.junit.Assume.*
 
 class CreateOrUpdateDataSource extends PluginTestHelper {
 
@@ -183,11 +184,11 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         emptyDSName: "Required parameter 'dataSourceName' is not provided",
         emptyJNDIName: "Required parameter 'jndiName' is not provided",
         emptyDriver: "Required parameter 'jdbcDriverName' is not provided",
-        emptyUrl: "Unable to start the ds because it generated more than one cf",
+        emptyUrl: EnvPropertiesHelper.getVersion() == '7.1' ? "Unable to start the ds because it generated more than one cf" : 'Required parameter \'connectionUrl\' is not provided \\(parameter required for JBoss EAP 6.X and 7.0\\)',
         wrongJNDI: "Jndi name have to start with java:/ or java:jboss/",
         wrongConfig: "Configuration WrongConfig doesn't exist.",
-        wrongDriver: "Required services that are not installed",
-        wrongOptions: "Unrecognized arguments: [--min-poolzzz]",
+        wrongDriver: EnvPropertiesHelper.getVersion() in ['7.0'] ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
+        wrongOptions:  EnvPropertiesHelper.getVersion() in ['7.0'] ? "Unrecognized argument --min-poolzzz for command 'add'" : "Unrecognized arguments: [--min-poolzzz]",
         wrongProfile: /porfile.*not found/,   
     ]
 
@@ -202,11 +203,11 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         emptyDSName: "Setting property 'summary' = 'Required parameter 'dataSourceName' is not provided",
         emptyJNDIName: "Setting property 'summary' = 'Required parameter 'jndiName' is not provided",
         emptyDriver: "Setting property 'summary' = 'Required parameter 'jdbcDriverName' is not provided",
-        emptyUrl: "Unable to start the ds because it generated more than one cf",
+        emptyUrl: EnvPropertiesHelper.getVersion() == '7.1' ? "Unable to start the ds because it generated more than one cf" : 'Required parameter \'connectionUrl\' is not provided \\(parameter required for JBoss EAP 6.X and 7.0\\)',
         wrongJNDI: "Jndi name have to start with java:/ or java:jboss/",
         wrongConfig: "Configuration WrongConfig doesn't exist.",
-        wrongDriver: "Required services that are not installed",
-        wrongOptions: "Unrecognized arguments: [--min-poolzzz]",
+        wrongDriver: EnvPropertiesHelper.getVersion() in ['7.0'] ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
+        wrongOptions:  EnvPropertiesHelper.getVersion() in ['7.0'] ? "Unrecognized argument --min-poolzzz for command 'add'" : "Unrecognized arguments: [--min-poolzzz]",
         wrongProfile: /porfile.*not found/,       
     ]
 
@@ -312,12 +313,12 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
         deleteProject(projectName)
-        if (EnvPropertiesHelper.getMode() == 'standalone') {
-            runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(drivers.mysql))
-        }
-        else {
-            runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(profiles.'full', drivers.mysql))
-        }
+        // if (EnvPropertiesHelper.getMode() == 'standalone') {
+        //     runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone(drivers.mysql))
+        // }
+        // else {
+        //     runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(profiles.'full', drivers.mysql))
+        // }
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -329,6 +330,10 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
     def "CreateorUpdateXADataSource - standalone - create DS - positive"() {
+        // should be test ignored ? 
+        // if "shouldBeIgnored" is true, test will be skipped
+        assumeFalse(shouldBeIgnored)
+
         // modify credentialds for tests: C323744, C323745
         if (testCaseId in [testCases.systemTest6.name, testCases.systemTest7.name]){
             modifyCredential(projectName, creds, userName, password)
@@ -377,19 +382,19 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         }
 
         where: 'The following params will be: '
-        testCaseId                      | configName         | dsName                                 | jndiName                         | jdbcDriverName  | url            | creds                            | userName                  | password                  | enabled                 | profile         | additionalOption 
-        testCases.systemTest1.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
-        testCases.systemTest2.name      | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
-        testCases.systemTest3.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'false' | profiles.empty  | additionalOptions.'empty'
-        testCases.systemTest4.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.mysql   | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
-        testCases.systemTest5.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'empty'   | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'url'
-        testCases.systemTest6.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.empty           | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
-        testCases.systemTest7.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.empty           | passwords.empty           | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'
-        testCases.systemTest8.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.full   | additionalOptions.'empty'
-        testCases.systemTest9.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'min size'
-        testCases.systemTest10.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'minmax size'
-        testCases.systemTest11.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'simple sql'
-        testCases.systemTest12.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'complex sql'
+        testCaseId                      | configName         | dsName                                 | jndiName                         | jdbcDriverName  | url            | creds                            | userName                  | password                  | enabled                 | profile         | additionalOption                 | shouldBeIgnored
+        testCases.systemTest1.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false     
+        testCases.systemTest2.name      | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false         
+        testCases.systemTest3.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'false' | profiles.empty  | additionalOptions.'empty'        | false
+        testCases.systemTest4.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.mysql   | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false
+        testCases.systemTest5.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'empty'   | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'url'          | false
+        testCases.systemTest6.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.empty           | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false
+        testCases.systemTest7.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.empty           | passwords.empty           | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false
+        testCases.systemTest8.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.full   | additionalOptions.'empty'        | false
+        testCases.systemTest9.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'min size'     | false
+        testCases.systemTest10.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'minmax size'  | false     
+        testCases.systemTest11.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'simple sql'   | false 
+        testCases.systemTest12.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'complex sql'  | EnvPropertiesHelper.getVersion() in ['7.0']     
     }
 
     @Requires({ env.JBOSS_MODE == 'domain' })
@@ -583,6 +588,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest39.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | jndiNames.'default'+testCaseId  | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | userName          | passwords.defaultPassword | password          | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'   | jobLogs.notUpdate                                                                     | summaries.notUpdate.replace("dsName1", dsName)
     }
 
+    @IgnoreRest
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
     def "CreateorUpdateXADataSource - standalone - create DS - negative"() {
@@ -617,15 +623,15 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
 
         where: 'The following params will be: '
         testCaseId                      | configName         | dsName                                 | jndiName                         | jdbcDriverName  | url            | creds                            | userName                  | password                  | enabled                 | profile         | additionalOption           | logs                  | summary
-        testCases.systemTest17.name     | ""                 | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.emptyConfig   | summaries.emptyConfig
-        testCases.systemTest17.name     | defaultConfigName  | ""                                     | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.emptyDSName   | summaries.emptyDSName
-        testCases.systemTest17.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | ""                               | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.emptyJNDIName | summaries.emptyJNDIName
-        testCases.systemTest17.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | ""              | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.emptyDriver   | summaries.emptyDriver
-        testCases.systemTest18.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | ""             | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.emptyUrl      | summaries.emptyUrl
-        testCases.systemTest19.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'wrong'+testCaseId     | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.wrongJNDI     | summaries.wrongJNDI
-        testCases.systemTest20.name     | "WrongConfig"      | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.wrongConfig   | summaries.wrongConfig
+        // testCases.systemTest17.name     | ""                 | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.emptyConfig   | summaries.emptyConfig
+        // testCases.systemTest17.name     | defaultConfigName  | ""                                     | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.emptyDSName   | summaries.emptyDSName
+        // testCases.systemTest17.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | ""                               | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.emptyJNDIName | summaries.emptyJNDIName
+        // testCases.systemTest17.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | ""              | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.emptyDriver   | summaries.emptyDriver
+        // testCases.systemTest18.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | ""             | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.emptyUrl      | summaries.emptyUrl
+        // testCases.systemTest19.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'wrong'+testCaseId     | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.wrongJNDI     | summaries.wrongJNDI
+        // testCases.systemTest20.name     | "WrongConfig"      | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.wrongConfig   | summaries.wrongConfig
         testCases.systemTest21.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.'wrong' | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'  | jobLogs.wrongDriver   | summaries.wrongDriver
-        testCases.systemTest23.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'wrong'  | jobLogs.wrongOptions  | summaries.wrongOptions
+        // testCases.systemTest23.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'wrong'  | jobLogs.wrongOptions  | summaries.wrongOptions
     }
 
     @Requires({ env.JBOSS_MODE == 'domain' })
@@ -846,21 +852,15 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
             if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
                 // https://issues.jboss.org/browse/JBPAPP6-944
                 reloadServer()
-                runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
-            } 
-            else {
-                runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
             }
+            runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
         }
         else {
             if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
-            // https://issues.jboss.org/browse/JBPAPP6-944
-            reloadServer('master')
+                // https://issues.jboss.org/browse/JBPAPP6-944
+                reloadServer('master')
+            } 
             runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profiles.'full', driver, DSclass))
-        } 
-        else {
-            runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasource(profiles.'full', driver, DSclass))
-            }
         }
     }
 
