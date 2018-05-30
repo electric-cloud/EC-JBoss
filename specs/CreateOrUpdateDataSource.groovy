@@ -217,7 +217,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
     @Shared
     def dataSourceNames = [
         'default': 'testDS',
-        'escape': 'test\\\\ DS'
+        'escape': EnvPropertiesHelper.getOS() == "WINDOWS" ? 'test\\\\\\\\ DS' : 'test\\\\ DS'
     ]
 
     @Shared
