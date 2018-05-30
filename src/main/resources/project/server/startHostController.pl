@@ -213,7 +213,7 @@ sub exit_if_host_controller_is_already_started {
         my $launch_type = lc $json->{result};
         if (!$launch_type || $launch_type ne "domain") {
             $jboss->log_warning("JBoss is started, but operating mode is '$launch_type' instead of 'domain'");
-            $jboss->add_summary("JBoss is started, but operating mode is '$launch_type' instead of 'domain'");
+            $jboss->add_error_summary("JBoss is started, but operating mode is '$launch_type' instead of 'domain'");
             $jboss->add_status_error();
             exit ERROR;
         }
@@ -222,7 +222,7 @@ sub exit_if_host_controller_is_already_started {
             my %all_hosts_hash = map {$_ => 1} @all_hosts;
             if ($all_hosts_hash{$host_name}) {
                 $jboss->log_warning("JBoss Host Controller '$host_name' is already started");
-                $jboss->add_summary("JBoss Host Controller '$host_name' is already started");
+                $jboss->add_warning_summary("JBoss Host Controller '$host_name' is already started");
                 $jboss->add_status_warning();
                 exit SUCCESS;
             }
@@ -376,17 +376,18 @@ sub verify_host_controller_is_started {
 
     if ($check_result{status} eq STATUS_ERROR) {
         $jboss->log_warning("--------$check_result{summary}--------");
+        $jboss->add_error_summary($check_result{summary});
         $jboss->add_status_error();
     }
     elsif ($check_result{status} eq STATUS_WARNING) {
         $jboss->log_warning("--------$check_result{summary}--------");
+        $jboss->add_warning_summary($check_result{summary});
         $jboss->add_status_warning();
     }
     else {
         $jboss->log_info("--------$check_result{summary}--------");
+        $jboss->add_summary($check_result{summary});
     }
-
-    $jboss->add_summary($check_result{summary});
 
     eval {
         if ($host_name && $check_result{check_logs_via_cli}) {
@@ -400,7 +401,7 @@ sub verify_host_controller_is_started {
     };
     if ($@) {
         $jboss->log_warning("Failed to read information about startup: $@");
-        $jboss->add_summary("Failed to read information about startup");
+        $jboss->add_warning_summary("Failed to read information about startup");
         $jboss->add_status_warning();
         $jboss->log_info("Please refer to JBoss logs on file system for more information");
     }
@@ -450,7 +451,7 @@ sub check_host_cotroller_boot_errors_via_cli {
 
     if ($result{code}) {
         $jboss->log_warning("Cannot read boot errors of host controller '$host_name' via CLI");
-        $jboss->add_summary("Cannot read boot errors of host controller '$host_name' via CLI");
+        $jboss->add_warning_summary("Cannot read boot errors of host controller '$host_name' via CLI");
         $jboss->add_status_warning();
         return;
     }
@@ -466,7 +467,7 @@ sub check_host_cotroller_boot_errors_via_cli {
         }
 
         $jboss->log_warning("Detected boot errors of host controller '$host_name': " . $result{stdout});
-        $jboss->add_summary("Detected boot errors of host controller '$host_name', see log for details");
+        $jboss->add_warning_summary("Detected boot errors of host controller '$host_name', see log for details");
         $jboss->add_status_warning();
         return;
     }
@@ -508,7 +509,7 @@ sub check_boot_errores_and_show_logs_of_servers_via_cli {
         }
         else {
             $jboss->log_warning("Server '$server' on host '$host_name' has status '$server_status', please refer to the JBoss logs on file system for more information");
-            $jboss->add_summary("Server '$server' on host '$host_name' has status '$server_status', please refer to the JBoss logs on file system for more information");
+            $jboss->add_warning_summary("Server '$server' on host '$host_name' has status '$server_status', please refer to the JBoss logs on file system for more information");
             $jboss->add_status_warning();
         }
     }
@@ -528,7 +529,7 @@ sub check_server_boot_errors_via_cli {
 
     if ($result{code}) {
         $jboss->log_warning("Cannot read boot errors of server '$server_name' on host '$host_name' via CLI");
-        $jboss->add_summary("Cannot read boot errors of server '$server_name' on host '$host_name' via CLI");
+        $jboss->add_warning_summary("Cannot read boot errors of server '$server_name' on host '$host_name' via CLI");
         $jboss->add_status_warning();
         return;
     }
@@ -544,7 +545,7 @@ sub check_server_boot_errors_via_cli {
         }
 
         $jboss->log_warning("Detected boot errors of server '$server_name' on host '$host_name': " . $result{stdout});
-        $jboss->add_summary("Detected boot errors of server '$server_name' on host '$host_name', see log for details");
+        $jboss->add_warning_summary("Detected boot errors of server '$server_name' on host '$host_name', see log for details");
         $jboss->add_status_warning();
         return;
     }
