@@ -329,11 +329,11 @@ sub verify_host_controller_is_started {
                     # 'Failed to get the list of the operation properties: "WFLYCTL0379: System boot is in process; execution of remote management operations is not currently available'
                     my $failure_description = $@;
                     my $summary = "Failed to check state of JBoss Host Controller '$host_name': $failure_description";
+                    # most likely it is not possible to check logs or boot errors via CLI if we cannot check host state
                     %check_result = (
                         summary            => $summary,
                         status             => STATUS_ERROR,
-                        check_logs_via_cli =>
-                        0, # most likely it is not possible to check logs or boot errors via CLI if we cannot check host state
+                        check_logs_via_cli => 0,
                     );
                     $jboss->log_info($summary);
                     next
