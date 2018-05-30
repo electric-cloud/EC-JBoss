@@ -1708,7 +1708,7 @@ sub run_command_and_get_json_result_with_failing_on_error {
         command => $command
     );
     if (!defined $json->{result}) {
-        die "JBoss replied with undefined result when expectation was to verify the result";
+        die "JBoss replied with undefined result when expectation was to verify the result\n";
     }
 
     return $json->{result};
@@ -1723,10 +1723,10 @@ sub run_command_and_get_json_with_failing_on_error {
 
     my $json = $self->decode_answer($result{stdout});
     if (!$json) {
-        die "Error when converting JBoss response into JSON";
+        die "Error when converting JBoss response into JSON\n";
     }
     if ($json->{outcome} ne "success") {
-        die "JBoss replied with outcome other than success"
+        die "JBoss replied with outcome other than success\n"
     }
 
     return $json;
@@ -1742,7 +1742,7 @@ sub run_command_with_failing_on_error {
     if ($self->check_reponse_has_error(response => \%result)) {
         my $response_failure_description = $self->get_response_failure_description(response => \%result);
         $response_failure_description = "No failure description available" unless $response_failure_description;
-        die $response_failure_description;
+        die "$response_failure_description\n";
     }
 
     return %result;
