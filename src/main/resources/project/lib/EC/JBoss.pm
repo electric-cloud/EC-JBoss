@@ -1575,6 +1575,22 @@ sub add_summary {
     $self->set_property(summary => $summaries);
 }
 
+sub add_warning_summary {
+    my $self = shift;
+    my $summary = shift || croak "required param (summary) is not provided";
+
+    $summary = "Warning: $summary";
+    $self->add_summary($summary)
+}
+
+sub add_error_summary {
+    my $self = shift;
+    my $summary = shift || croak "required param (summary) is not provided";
+
+    $summary = "Error: $summary";
+    $self->add_summary($summary)
+}
+
 sub add_status_warning {
     my $self = shift;
     return if $self->{recent_status}
@@ -1595,14 +1611,14 @@ sub add_status_error {
 sub set_output_parameter {
     my ($self, $name, $value, $attach_params) = @_;
 
-    if (!defined $value){
+    if (!defined $value) {
         $self->log_debug("Will not save undefined value for outputParameter '$name'");
         return;
     };
 
     # Will fall if parameter does not exists
     eval {
-        if ($value && (ref $value eq 'HASH' || ref $value eq 'ARRAY')){
+        if ($value && (ref $value eq 'HASH' || ref $value eq 'ARRAY')) {
             require JSON unless $JSON::VERSION;
             $value = JSON::encode_json($value);
         }
@@ -1610,7 +1626,7 @@ sub set_output_parameter {
         my $is_set = $self->ec()->setOutputParameter($name, $value, $attach_params);
 
         # 0E0 can be returned by EC::Bootstrap function and means parameter was not really set
-        if ($is_set && !$is_set eq '0E0'){
+        if ($is_set && !$is_set eq '0E0') {
             $self->log_info("Output parameter '$name' has been set to '$value'"
                 . (defined $attach_params ? "and attached to " . Dumper($attach_params) : ''));
         }
@@ -1624,6 +1640,113 @@ sub set_output_parameter {
     return 1;
 }
 
+sub save_history {
+    my $self = shift;
+    $self->set_property('commands_history', encode_json($self->{history}));
+}
+
+sub check_response_format_is_correct {
+    my $self = shift;
+    my %args = @_;
+    my $response = $args{response} || croak "'response' is required param";
+
+    return 1 if exists $response->{code} && exists $response->{stdout} && exists $response->{stderr};
+    return 0;
+}
+
+sub check_reponse_has_error {
+    my $self = shift;
+    my %args = @_;
+    my $response = $args{response} || croak "'response' is required param";
+    croak "Incorrect format of param 'response', expecting hashref with the following keys: code, stdout, stderr"
+        unless $self->check_response_format_is_correct(response => $response);
+
+    return 1 if $response->{code} || $response->{stderr};
+    return 0;
+}
+
+sub get_response_failure_description {
+    my $self = shift;
+    my %args = @_;
+    my $response = $args{response} || croak "'response' is required param";
+    croak "Incorrect format of param 'response', expecting hashref with the following keys: code, stdout, stderr"
+        unless $self->check_response_format_is_correct(response => $response);
+
+    return unless $self->check_reponse_has_error(
+        response => $response
+    );
+
+    my $failure_description;
+
+    if ($response->{stdout}) {
+        my $json = $self->decode_answer($response->{stdout});
+        if ($json && $json->{'failure-description'}) {
+            if (ref $json->{'failure-description'}) {
+                $failure_description = $json->{'failure-description'}->{'domain-failure-description'}
+            }
+            else {
+                $failure_description = $json->{'failure-description'};
+            }
+        }
+        else {
+            $failure_description = $response->{stdout};
+        }
+    }
+    else {
+        $failure_description = $response->{stderr};
+    }
+
+    return $failure_description;
+}
+
+sub run_command_and_get_json_result_with_failing_on_error {
+    my $self = shift;
+    my %args = @_;
+    my $command = $args{command} || croak "'command' is required param";
+
+    my $json = $self->run_command_and_get_json_with_failing_on_error(
+        command => $command
+    );
+    if (!defined $json->{result}) {
+        die "JBoss replied with undefined result when expectation was to verify the result\n";
+    }
+
+    return $json->{result};
+}
+
+sub run_command_and_get_json_with_failing_on_error {
+    my $self = shift;
+    my %args = @_;
+    my $command = $args{command} || croak "'command' is required param";
+
+    my %result = $self->run_command_with_failing_on_error(command => $command);
+
+    my $json = $self->decode_answer($result{stdout});
+    if (!$json) {
+        die "Error when converting JBoss response into JSON\n";
+    }
+    if ($json->{outcome} ne "success") {
+        die "JBoss replied with outcome other than success\n"
+    }
+
+    return $json;
+}
+
+sub run_command_with_failing_on_error {
+    my $self = shift;
+    my %args = @_;
+    my $command = $args{command} || croak "'command' is required param";
+
+    my %result = $self->run_command($command);
+    $self->save_history();
+    if ($self->check_reponse_has_error(response => \%result)) {
+        my $response_failure_description = $self->get_response_failure_description(response => \%result);
+        $response_failure_description = "No failure description available" unless $response_failure_description;
+        die "$response_failure_description\n";
+    }
+
+    return %result;
+}
 
 1;
 

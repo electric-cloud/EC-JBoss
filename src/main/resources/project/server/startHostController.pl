@@ -213,7 +213,7 @@ sub exit_if_host_controller_is_already_started {
         my $launch_type = lc $json->{result};
         if (!$launch_type || $launch_type ne "domain") {
             $jboss->log_warning("JBoss is started, but operating mode is '$launch_type' instead of 'domain'");
-            $jboss->add_summary("JBoss is started, but operating mode is '$launch_type' instead of 'domain'");
+            $jboss->add_error_summary("JBoss is started, but operating mode is '$launch_type' instead of 'domain'");
             $jboss->add_status_error();
             exit ERROR;
         }
@@ -222,7 +222,7 @@ sub exit_if_host_controller_is_already_started {
             my %all_hosts_hash = map {$_ => 1} @all_hosts;
             if ($all_hosts_hash{$host_name}) {
                 $jboss->log_warning("JBoss Host Controller '$host_name' is already started");
-                $jboss->add_summary("JBoss Host Controller '$host_name' is already started");
+                $jboss->add_warning_summary("JBoss Host Controller '$host_name' is already started");
                 $jboss->add_status_warning();
                 exit SUCCESS;
             }
@@ -318,10 +318,26 @@ sub verify_host_controller_is_started {
             }
 
             if ($all_hosts_hash{$host_name}) {
-                my $host_state = run_command_and_get_json_result_with_exiting_on_non_success(
-                    command => "/host=$host_name/:read-attribute(name=host-state)",
-                    jboss   => $jboss
-                );
+                my $host_state;
+                eval {
+                    $host_state = $jboss->run_command_and_get_json_result_with_failing_on_error(
+                        command => "/host=$host_name/:read-attribute(name=host-state)"
+                    );
+                };
+                if ($@) {
+                    # e.g. usual error when host controller is connecting to the master (when it is already in the list of hosts within domain):
+                    # 'Failed to get the list of the operation properties: "WFLYCTL0379: System boot is in process; execution of remote management operations is not currently available'
+                    my $failure_description = $@;
+                    my $summary = "Failed to check state of JBoss Host Controller '$host_name': $failure_description";
+                    # most likely it is not possible to check logs or boot errors via CLI if we cannot check host state
+                    %check_result = (
+                        summary            => $summary,
+                        status             => STATUS_ERROR,
+                        check_logs_via_cli => 0,
+                    );
+                    $jboss->log_info($summary);
+                    next
+                }
                 if ($host_state eq "running") {
                     my $summary = "JBoss Host Controller '$host_name' has been launched, host state is '$host_state'";
                     %check_result = (
@@ -360,17 +376,18 @@ sub verify_host_controller_is_started {
 
     if ($check_result{status} eq STATUS_ERROR) {
         $jboss->log_warning("--------$check_result{summary}--------");
+        $jboss->add_error_summary($check_result{summary});
         $jboss->add_status_error();
     }
     elsif ($check_result{status} eq STATUS_WARNING) {
         $jboss->log_warning("--------$check_result{summary}--------");
+        $jboss->add_warning_summary($check_result{summary});
         $jboss->add_status_warning();
     }
     else {
         $jboss->log_info("--------$check_result{summary}--------");
+        $jboss->add_summary($check_result{summary});
     }
-
-    $jboss->add_summary($check_result{summary});
 
     eval {
         if ($host_name && $check_result{check_logs_via_cli}) {
@@ -384,7 +401,7 @@ sub verify_host_controller_is_started {
     };
     if ($@) {
         $jboss->log_warning("Failed to read information about startup: $@");
-        $jboss->add_summary("Failed to read information about startup");
+        $jboss->add_warning_summary("Failed to read information about startup");
         $jboss->add_status_warning();
         $jboss->log_info("Please refer to JBoss logs on file system for more information");
     }
@@ -408,71 +425,17 @@ sub run_command_and_get_json_result_with_exiting_on_non_success {
     my $command = $args{command} || croak "'command' is required param";
     my $jboss = $args{jboss} || croak "'jboss' is required param";
 
-    my $json = run_command_and_get_json_with_exiting_on_non_success(
-        command => $command,
-        jboss   => $jboss
-    );
-    if (!defined $json->{result}) {
-        $jboss->add_summary("JBoss replied with undefined result when expectation was to verify the result: " . (encode_json $json));
+    my $json_result;
+    eval {
+        $json_result = $jboss->run_command_and_get_json_result_with_failing_on_error(command => $command);
+    };
+    if ($@) {
+        my $failure_description = $@;
+        $jboss->add_error_summary($failure_description);
         $jboss->add_status_error();
         exit ERROR;
     }
-
-    return $json->{result};
-}
-
-sub run_command_and_get_json_with_exiting_on_non_success {
-    my %args = @_;
-    my $command = $args{command} || croak "'command' is required param";
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-
-    my $json = run_command_and_get_json_with_exiting_on_error(
-        command => $command,
-        jboss   => $jboss
-    );
-    if ($json->{outcome} ne "success") {
-        $jboss->add_summary("JBoss replied with outcome other than success: " . (encode_json $json));
-        $jboss->add_status_error();
-        exit ERROR;
-    }
-
-    return $json;
-}
-
-sub run_command_and_get_json_with_exiting_on_error {
-    my %args = @_;
-    my $command = $args{command} || croak "'command' is required param";
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-
-    my %result = run_command_with_exiting_on_error(command => $command, jboss => $jboss);
-
-    my $json = $jboss->decode_answer($result{stdout});
-    if (!$json) {
-        $jboss->add_summary("Error when converting JBoss response into JSON");
-        $jboss->add_status_error();
-        exit ERROR;
-    }
-
-    return $json;
-}
-
-sub run_command_with_exiting_on_error {
-    my %args = @_;
-    my $command = $args{command} || croak "'command' is required param";
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-
-    my %result = $jboss->run_command($command);
-
-    if ($result{code}) {
-        my $jboss_response_failure_description = $jboss->get_jboss_response_failure_description(
-            jboss_response => \%result
-        );
-        $jboss->add_summary("Error when running CLI command: $jboss_response_failure_description");
-        $jboss->add_status_error();
-        exit ERROR;
-    }
-
-    return %result;
+    return $json_result;
 }
 
 sub check_host_cotroller_boot_errors_via_cli {
@@ -488,7 +451,7 @@ sub check_host_cotroller_boot_errors_via_cli {
 
     if ($result{code}) {
         $jboss->log_warning("Cannot read boot errors of host controller '$host_name' via CLI");
-        $jboss->add_summary("Cannot read boot errors of host controller '$host_name' via CLI");
+        $jboss->add_warning_summary("Cannot read boot errors of host controller '$host_name' via CLI");
         $jboss->add_status_warning();
         return;
     }
@@ -504,7 +467,7 @@ sub check_host_cotroller_boot_errors_via_cli {
         }
 
         $jboss->log_warning("Detected boot errors of host controller '$host_name': " . $result{stdout});
-        $jboss->add_summary("Detected boot errors of host controller '$host_name', see log for details");
+        $jboss->add_warning_summary("Detected boot errors of host controller '$host_name', see log for details");
         $jboss->add_status_warning();
         return;
     }
@@ -546,7 +509,7 @@ sub check_boot_errores_and_show_logs_of_servers_via_cli {
         }
         else {
             $jboss->log_warning("Server '$server' on host '$host_name' has status '$server_status', please refer to the JBoss logs on file system for more information");
-            $jboss->add_summary("Server '$server' on host '$host_name' has status '$server_status', please refer to the JBoss logs on file system for more information");
+            $jboss->add_warning_summary("Server '$server' on host '$host_name' has status '$server_status', please refer to the JBoss logs on file system for more information");
             $jboss->add_status_warning();
         }
     }
@@ -566,7 +529,7 @@ sub check_server_boot_errors_via_cli {
 
     if ($result{code}) {
         $jboss->log_warning("Cannot read boot errors of server '$server_name' on host '$host_name' via CLI");
-        $jboss->add_summary("Cannot read boot errors of server '$server_name' on host '$host_name' via CLI");
+        $jboss->add_warning_summary("Cannot read boot errors of server '$server_name' on host '$host_name' via CLI");
         $jboss->add_status_warning();
         return;
     }
@@ -582,7 +545,7 @@ sub check_server_boot_errors_via_cli {
         }
 
         $jboss->log_warning("Detected boot errors of server '$server_name' on host '$host_name': " . $result{stdout});
-        $jboss->add_summary("Detected boot errors of server '$server_name' on host '$host_name', see log for details");
+        $jboss->add_warning_summary("Detected boot errors of server '$server_name' on host '$host_name', see log for details");
         $jboss->add_status_warning();
         return;
     }
