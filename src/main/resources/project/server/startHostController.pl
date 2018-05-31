@@ -46,6 +46,7 @@ sub main {
         hostConfig
         jbossHostName
         additionalOptions
+        logFileLocation
         /);
 
     my $param_startup_script = $params->{startupScript};
@@ -53,6 +54,7 @@ sub main {
     my $param_host_config = $params->{hostConfig};
     my $param_host_name = $params->{jbossHostName};
     my $param_additional_options = $params->{additionalOptions};
+    my $log_file_location = $params->{logFileLocation};
 
     if (!$param_startup_script) {
         $jboss->bail_out("Required parameter 'startupScript' is not provided");
@@ -82,6 +84,13 @@ sub main {
         startup_script => $param_startup_script,
         host_name      => $param_host_name
     );
+
+    if ($log_file_location) {
+        show_jboss_logs_from_requested_file(
+            jboss => $jboss,
+            log_file_location => $log_file_location
+        );
+    }
 
 }
 
@@ -625,6 +634,26 @@ sub escape_additional_options_for_windows {
     $additional_options =~ s|"|\"|gs;
 
     return $additional_options;
+}
+
+sub show_jboss_logs_from_requested_file {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $log_file_location = $args{log_file_location} || croak "'log_file_location' is required param";
+
+    if (-f $log_file_location) {
+        my $num_of_lines = NUMBER_OF_LINES_TO_TAIL_FROM_LOG;
+        my $recent_log_lines = get_recent_log_lines(
+            file         => $log_file_location,
+            num_of_lines => $num_of_lines
+        );
+        $jboss->log_info("JBoss logs from file '$log_file_location' (showing recent $num_of_lines lines) :\n   | " . join('   | ', @$recent_log_lines));
+    }
+    else {
+        $jboss->log_warning("Cannot find JBoss log file '$log_file_location'");
+        $jboss->add_warning_summary("Cannot find JBoss log file '$log_file_location'");
+        $jboss->add_status_warning();
+    }
 }
 
 1;

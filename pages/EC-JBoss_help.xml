@@ -2071,6 +2071,10 @@
                                     <td>Additional Options</td>
                                     <td>Additional options</td>
                                 </tr>
+                                <tr>
+                                    <td>Log File Location</td>
+                                    <td>Log file location - is used for just showing tailing lines from the log file within procedure logs.</td>
+                                </tr>
                             </tbody>
                         </table>
                         <br />
@@ -2200,6 +2204,10 @@
                                 <tr>
                                     <td>Additional options</td>
                                     <td>Additional options.</td>
+                                </tr>
+                                <tr>
+                                    <td>Log File Location</td>
+                                    <td>Log file location - is used for just showing tailing lines from the log file within procedure logs.</td>
                                 </tr>
                             </tbody>
                         </table>
