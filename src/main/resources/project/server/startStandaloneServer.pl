@@ -64,14 +64,10 @@ sub main {
         additional_options => $param_additional_options,
         jboss              => $jboss);
 
-    verify_jboss_is_started(jboss => $jboss, startup_script => $param_startup_script);
-
-    if ($log_file_location) {
-        show_jboss_logs_from_requested_file(
-            jboss => $jboss,
-            log_file_location => $log_file_location
-        );
-    }
+    verify_jboss_is_started_and_show_startup_info(
+        jboss => $jboss,
+        log_file_location => $log_file_location
+    );
 }
 
 sub start_standalone_server {
@@ -157,10 +153,10 @@ sub create_command_line {
     return $command;
 }
 
-sub verify_jboss_is_started {
+sub verify_jboss_is_started_and_show_startup_info {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $startup_script = $args{startup_script} || croak "'startup_script' is required param";
+    my $log_file_location = $args{log_file_location};
 
     $jboss->log_info(
         sprintf(
@@ -224,15 +220,21 @@ sub verify_jboss_is_started {
     $jboss->add_status_error() unless $jboss_cli_is_available && $jboss_is_started;
 
     eval {
+        if ($log_file_location) {
+            show_jboss_logs_from_requested_file(
+                jboss => $jboss,
+                log_file_location => $log_file_location
+            );
+        }
+
         if ($jboss_cli_is_available) {
             check_boot_errors_via_cli(jboss => $jboss);
             show_logs_via_cli(jboss => $jboss);
         }
-        else {
+        elsif (!$log_file_location) {
             # too many options of how log file location can be overriden, so let's do not guess where the logs are (at least for now)
             # also, we are not going to read logs by redirection of console output to files (like it is done for startup in case of Windows)
             # due to JBoss has good handling of logs by itself and it is not good idea to keep extra redirection of logs to EF workout etc.
-            # show_logs_via_file(jboss => $jboss, startup_script => $startup_script);
 
             $jboss->log_info("Please refer to JBoss logs on file system for more information");
             $jboss->add_summary("Please refer to JBoss logs on file system for more information");
@@ -242,6 +244,7 @@ sub verify_jboss_is_started {
         $jboss->log_warning("Failed to read information about startup: $@");
         $jboss->add_summary("Failed to read information about startup");
         $jboss->add_status_warning();
+        $jboss->log_info("Please refer to JBoss logs on file system for more information");
     }
 }
 
@@ -336,47 +339,6 @@ sub check_boot_errors_via_cli {
         $jboss->add_summary("Detected boot errors via CLI, see log for details");
         $jboss->add_status_warning();
         return;
-    }
-}
-
-sub show_logs_via_file {
-    my %args = @_;
-    my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $startup_script = $args{startup_script} || croak "'startup_script' is required param";
-    my $jboss_cli_script = $jboss->{script_path};
-    my $log_file_path;
-
-    if ($startup_script =~ m/bin/) {
-        $log_file_path = File::Spec->catfile(dirname(dirname($startup_script)), 'standalone', 'log',
-            EXPECTED_LOG_FILE_NAME);
-    }
-    elsif ($jboss_cli_script =~ m/bin/) {
-        $log_file_path = File::Spec->catfile(dirname(dirname($startup_script)), 'standalone', 'log',
-            EXPECTED_LOG_FILE_NAME);
-    }
-    else {
-        $jboss->log_warning("Cannot find JBoss log file");
-        return;
-    }
-
-    my $assumption_sting = sprintf(
-        "assumption is that path log file is %s, tailing %u lines",
-        $log_file_path,
-        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
-    );
-
-    $jboss->log_info("Showing logs from file system ($assumption_sting)");
-
-    if (-f $log_file_path) {
-        my $recent_log_lines = get_recent_log_lines(
-            jboss        => $jboss,
-            file         => $log_file_path,
-            num_of_lines => NUMBER_OF_LINES_TO_TAIL_FROM_LOG
-        );
-        $jboss->log_info("JBoss logs  ($assumption_sting):\n   | " . join('   | ', @$recent_log_lines));
-    }
-    else {
-        $jboss->log_warning("Cannot find JBoss log file '$log_file_path'");
     }
 }
 
