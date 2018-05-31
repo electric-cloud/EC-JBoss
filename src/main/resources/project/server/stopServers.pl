@@ -67,6 +67,7 @@ sub main {
             );
             $jboss->log_warning($message);
             $jboss->add_warning_summary($message);
+            $jboss->add_status_warning();
         }
     }
     my $command = sprintf '/server-group=%s:stop-servers', $params->{serversgroup};
