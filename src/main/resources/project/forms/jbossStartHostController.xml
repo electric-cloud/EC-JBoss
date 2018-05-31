@@ -44,4 +44,11 @@
         <required>0</required>
         <documentation>Additional options</documentation>
     </formElement>
+    <formElement>
+        <type>entry</type>
+        <label>Log File Location:</label>
+        <property>logFileLocation</property>
+        <required>0</required>
+        <documentation>Log file location - is used for just showing tailing lines from the log file within procedure logs.</documentation>
+    </formElement>
 </editor>

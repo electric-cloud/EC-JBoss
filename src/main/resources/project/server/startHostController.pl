@@ -46,6 +46,7 @@ sub main {
         hostConfig
         jbossHostName
         additionalOptions
+        logFileLocation
         /);
 
     my $param_startup_script = $params->{startupScript};
@@ -53,6 +54,7 @@ sub main {
     my $param_host_config = $params->{hostConfig};
     my $param_host_name = $params->{jbossHostName};
     my $param_additional_options = $params->{additionalOptions};
+    my $log_file_location = $params->{logFileLocation};
 
     if (!$param_startup_script) {
         $jboss->bail_out("Required parameter 'startupScript' is not provided");
@@ -77,12 +79,11 @@ sub main {
         jboss              => $jboss
     );
 
-    verify_host_controller_is_started(
+    verify_host_controller_is_started_and_show_startup_info(
         jboss          => $jboss,
-        startup_script => $param_startup_script,
-        host_name      => $param_host_name
+        host_name      => $param_host_name,
+        log_file_location => $log_file_location
     );
-
 }
 
 sub start_host_controller {
@@ -234,11 +235,11 @@ sub exit_if_host_controller_is_already_started {
     }
 }
 
-sub verify_host_controller_is_started {
+sub verify_host_controller_is_started_and_show_startup_info {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
-    my $startup_script = $args{startup_script} || croak "'startup_script' is required param";
     my $host_name = $args{host_name};
+    my $log_file_location = $args{log_file_location};
 
     if ($host_name) {
         $jboss->log_info("Checking whether JBoss Host Controller '$host_name' is started via master CLI.");
@@ -390,11 +391,18 @@ sub verify_host_controller_is_started {
     }
 
     eval {
+        if ($log_file_location) {
+            show_jboss_logs_from_requested_file(
+                jboss => $jboss,
+                log_file_location => $log_file_location
+            );
+        }
+
         if ($host_name && $check_result{check_logs_via_cli}) {
             check_host_cotroller_boot_errors_via_cli(jboss => $jboss, host_name => $host_name);
             check_boot_errores_and_show_logs_of_servers_via_cli(jboss => $jboss, host_name => $host_name);
         }
-        else {
+        elsif (!$log_file_location) {
             $jboss->log_info("Please refer to JBoss logs on file system for more information");
             $jboss->add_summary("Please refer to JBoss logs on file system for more information");
         }
@@ -588,6 +596,62 @@ sub escape_additional_options_for_windows {
     $additional_options =~ s|"|\"|gs;
 
     return $additional_options;
+}
+
+sub get_recent_log_lines {
+    my %args = @_;
+    my $file = $args{file} || croak "'file' is required param";
+    my $num_of_lines = $args{num_of_lines} || croak "'num_of_lines' is required param";
+
+    my @lines;
+
+    my $count = 0;
+    my $filesize = -s $file; # filesize used to control reaching the start of file while reading it backward
+    my $offset = - 2; # skip two last characters: \n and ^Z in the end of file
+
+    open F, $file or die "Can't read $file: $!\n";
+
+    while (abs($offset) < $filesize) {
+        my $line = "";
+        # we need to check the start of the file for seek in mode "2"
+        # as it continues to output data in revers order even when out of file range reached
+        while (abs($offset) < $filesize) {
+            seek F, $offset, 2;     # because of negative $offset & "2" - it will seek backward
+            $offset -= 1;           # move back the counter
+            my $char = getc F;
+            last if $char eq "\n"; # catch the whole line if reached
+            $line = $char . $line; # otherwise we have next character for current line
+        }
+
+        # got the next line!
+        unshift @lines, "$line\n";
+
+        # exit the loop if we are done
+        $count++;
+        last if $count > $num_of_lines;
+    }
+
+    return \@lines;
+}
+
+sub show_jboss_logs_from_requested_file {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $log_file_location = $args{log_file_location} || croak "'log_file_location' is required param";
+
+    if (-f $log_file_location) {
+        my $num_of_lines = NUMBER_OF_LINES_TO_TAIL_FROM_LOG;
+        my $recent_log_lines = get_recent_log_lines(
+            file         => $log_file_location,
+            num_of_lines => $num_of_lines
+        );
+        $jboss->log_info("JBoss logs from file '$log_file_location' (showing recent $num_of_lines lines) :\n   | " . join('   | ', @$recent_log_lines));
+    }
+    else {
+        $jboss->log_warning("Cannot find JBoss log file '$log_file_location'");
+        $jboss->add_warning_summary("Cannot find JBoss log file '$log_file_location'");
+        $jboss->add_status_warning();
+    }
 }
 
 1;

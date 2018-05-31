@@ -466,6 +466,16 @@
                                     </propertySheet>
                                 </property>
                                 <property>
+                                    <propertyName>logFileLocation</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
                                     <propertyName>serverconfig</propertyName>
                                     <propertySheet>
                                         <property>
@@ -498,6 +508,13 @@
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue/>
                 <description>Additional options.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>logFileLocation</formalParameterName>
+                <defaultValue/>
+                <description>Log file location - is used for just showing tailing lines from the log file within procedure logs.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
@@ -4458,6 +4475,16 @@
                                         </property>
                                     </propertySheet>
                                 </property>
+                                <property>
+                                    <propertyName>logFileLocation</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -4502,6 +4529,13 @@
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue/>
                 <description>Additional options</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>logFileLocation</formalParameterName>
+                <defaultValue/>
+                <description>Log file location - is used for just showing tailing lines from the log file within procedure logs.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
