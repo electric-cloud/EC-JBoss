@@ -59,19 +59,22 @@ sub main {
     $jboss->{silent} = 0;
     if (@$servers_with_terminal_status) {
         for my $server_record (@$servers_with_terminal_status) {
-            $jboss->out_warning(
-                sprintf(
-                    "Server %s on %s is already in %s state",
-                    $server_record->{server},
-                    $server_record->{host},
-                    $server_record->{status}
-                )
+            my $message = sprintf(
+                "Server %s on %s is already in %s state",
+                $server_record->{server},
+                $server_record->{host},
+                $server_record->{status}
             );
+            $jboss->log_warning($message);
+            $jboss->add_warning_summary($message);
+            $jboss->add_status_warning();
         }
     }
     my $command = sprintf '/server-group=%s:start-servers', $params->{serversgroup};
     $jboss->out("Starting serversgroup: $params->{serversgroup}");
-    my %result = $jboss->run_command($command);
+    my %result = $jboss->run_command_with_exiting_on_error(
+        command => $command
+    );
 
     my $res = {
         error => 0,
@@ -113,9 +116,9 @@ sub main {
         sleep 5;
     }
     if ($res->{error}) {
-        $jboss->bail_out($res->{msg});
+        $jboss->add_error_summary($res->{msg});
+        $jboss->add_status_error();
     }
-    $jboss->process_response(%result);
     return 1;
 }
 
