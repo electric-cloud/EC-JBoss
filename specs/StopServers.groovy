@@ -231,8 +231,6 @@ class StopServers extends PluginTestHelper {
         assert runProcedureJob.getStatus() == 'warning'
         assert runProcedureJob.getUpperStepSummary() =~ /Warning: Server $serverName1 on $hostName is already in STOPPED state/
         assert runProcedureJob.getUpperStepSummary() =~ /Warning: Server $serverName2 on $hostName is already in STOPPED state/
-        assert runProcedureJob.getLowerStepSummary() =~ /Warning: Server $serverName1 on $hostName is already in STOPPED state/
-        assert runProcedureJob.getLowerStepSummary() =~ /Warning: Server $serverName2 on $hostName is already in STOPPED state/
         assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state STOPPED.*Found server $serverName1 on host $hostName in state STOPPED/
         assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName2 on host $hostName in state STOPPED.*Found server $serverName2 on host $hostName in state STOPPED/
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STOPPED"
@@ -278,8 +276,6 @@ class StopServers extends PluginTestHelper {
         assert runProcedureJob.getStatus() == 'warning'
         assert runProcedureJob.getUpperStepSummary() =~ /Warning: Server $serverName1 on $hostName is already in DISABLED state/
         assert runProcedureJob.getUpperStepSummary() =~ /Warning: Server $serverName2 on $hostName is already in STOPPED state/
-        assert runProcedureJob.getLowerStepSummary() =~ /Warning: Server $serverName1 on $hostName is already in DISABLED state/
-        assert runProcedureJob.getLowerStepSummary() =~ /Warning: Server $serverName2 on $hostName is already in STOPPED state/
         assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state DISABLED.*Found server $serverName1 on host $hostName in state DISABLED/
         assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName2 on host $hostName in state STOPPED.*Found server $serverName2 on host $hostName in state STOPPED/
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "DISABLED"
@@ -325,7 +321,6 @@ class StopServers extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == 'warning'
         assert runProcedureJob.getUpperStepSummary() =~ /Warning: Server $serverName2 on $hostName is already in STOPPED state/
-        assert runProcedureJob.getLowerStepSummary() =~ /Warning: Server $serverName2 on $hostName is already in STOPPED state/
         assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state STARTED.*Found server $serverName1 on host $hostName in state STOPPED/
         assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName2 on host $hostName in state STOPPED.*Found server $serverName2 on host $hostName in state STOPPED/
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STOPPED"

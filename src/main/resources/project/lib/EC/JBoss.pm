@@ -1556,12 +1556,16 @@ sub run_command_with_exiting_on_error {
     my %args = @_;
     my $command = $args{command} || croak "'command' is required param";
 
-    my %result = $self->run_command($command);
-    if ($result{code}) {
-        $self->process_response(%result);
+    my %result;
+    eval {
+        %result = $self->run_command_with_failing_on_error(command => $command);
+    };
+    if ($@) {
+        my $failure_description = $@;
+        $self->add_error_summary($failure_description);
+        $self->add_status_error();
         exit 1;
     }
-
     return %result;
 }
 
