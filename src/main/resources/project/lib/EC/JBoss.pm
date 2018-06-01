@@ -67,6 +67,23 @@ $| = 1;
     ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::Bootstrap");
 };
 
+my $LOG_LEVEL_OLD_API_VALUE_DEBUG = 4;
+my $LOG_LEVEL_OLD_API_VALUE_INFO = 1;
+my $LOG_LEVEL_OLD_API_VALUE_WARNING = 2;
+my $LOG_LEVEL_OLD_API_VALUE_ERROR = 3;
+
+my $LOG_LEVEL_PRIORITY_INT_DEBUG = 10000;
+my $LOG_LEVEL_PRIORITY_INT_INFO = 20000;
+my $LOG_LEVEL_PRIORITY_INT_WARNING = 30000;
+my $LOG_LEVEL_PRIORITY_INT_ERROR = 40000;
+
+my %LOG_LEVEL_PRIORITY_RESOLVER_FOR_OLD_API = (
+    $LOG_LEVEL_OLD_API_VALUE_DEBUG   => $LOG_LEVEL_PRIORITY_INT_DEBUG,
+    $LOG_LEVEL_OLD_API_VALUE_INFO    => $LOG_LEVEL_PRIORITY_INT_INFO,
+    $LOG_LEVEL_OLD_API_VALUE_WARNING => $LOG_LEVEL_PRIORITY_INT_WARNING,
+    $LOG_LEVEL_OLD_API_VALUE_ERROR   => $LOG_LEVEL_PRIORITY_INT_ERROR,
+);
+
 =item B<new>
 
 Constructor. Returns EC::JBoss object.
@@ -502,7 +519,7 @@ sub get_param {
         $retval = $ec->getProperty($param)->findvalue('//value') . '';
         1;
     } or do {
-        $self->logit(3, "Error '$@' was occured while getting property: $param");
+        $self->logit($LOG_LEVEL_OLD_API_VALUE_ERROR, "Error '$@' was occured while getting property: $param");
         $retval = undef;
     };
 
@@ -928,7 +945,9 @@ Newline will be added automatically.
 sub logit {
     my ($self, $level, @msg) = @_;
 
-    return 0 if ($self->{log_level} < $level);
+    return 0 unless $self->logger_is_enabled_for_level(
+        level => $level
+    );
 
     my $msg = join '', @msg;
 
@@ -981,7 +1000,7 @@ sub out {
     my ($self, @msg) = @_;
 
     return 1 if ($self->{silent});
-    return $self->logit(1, @msg);
+    return $self->logit($LOG_LEVEL_OLD_API_VALUE_INFO, @msg);
 }
 
 
@@ -1022,7 +1041,7 @@ sub log_warning {
 
     return 1 if ($self->{silent});
     unshift @msg, 'WARNING: ';
-    return $self->logit(2, @msg);
+    return $self->logit($LOG_LEVEL_OLD_API_VALUE_WARNING, @msg);
 }
 
 
@@ -1043,7 +1062,7 @@ sub log_error {
 
     return 1 if ($self->{silent});
     unshift @msg, 'ERROR: ';
-    return $self->logit(3, @msg);
+    return $self->logit($LOG_LEVEL_OLD_API_VALUE_ERROR, @msg);
 }
 
 
@@ -1063,7 +1082,7 @@ sub log_debug {
     my ($self, @msg) = @_;
 
     unshift @msg, 'DEBUG: ';
-    return $self->logit(3, @msg);
+    return $self->logit($LOG_LEVEL_OLD_API_VALUE_DEBUG, @msg);
 }
 
 
@@ -1750,6 +1769,19 @@ sub run_command_with_failing_on_error {
     }
 
     return %result;
+}
+
+sub logger_is_enabled_for_level {
+    my $self = shift;
+    my %args = @_;
+    my $checked_log_level = $args{level} || croak "'level' is required param";
+    my $current_log_level = $self->{log_level};
+
+    my $checked_log_level_priority_int = $LOG_LEVEL_PRIORITY_RESOLVER_FOR_OLD_API{$checked_log_level};
+    my $current_log_level_priority_int = $LOG_LEVEL_PRIORITY_RESOLVER_FOR_OLD_API{$current_log_level};
+
+    return 1 if $checked_log_level_priority_int >= $current_log_level_priority_int;
+    return 0;
 }
 
 1;
