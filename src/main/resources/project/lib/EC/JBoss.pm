@@ -1631,7 +1631,7 @@ sub set_output_parameter {
         my $is_set = $self->ec()->setOutputParameter($name, $value, $attach_params);
 
         # 0E0 can be returned by EC::Bootstrap function and means parameter was not really set
-        if ($is_set && !$is_set eq '0E0') {
+        if ($is_set && $is_set ne '0E0') {
             $self->log_info("Output parameter '$name' has been set to '$value'"
                 . (defined $attach_params ? "and attached to " . Dumper($attach_params) : ''));
         }
