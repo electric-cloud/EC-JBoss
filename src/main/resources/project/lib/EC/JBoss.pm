@@ -65,6 +65,7 @@ $| = 1;
     }
 
     ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::Bootstrap");
+    EC::Bootstrap->import();
 };
 
 =item B<new>
@@ -1633,6 +1634,10 @@ sub set_output_parameter {
         if ($is_set && !$is_set eq '0E0') {
             $self->log_info("Output parameter '$name' has been set to '$value'"
                 . (defined $attach_params ? "and attached to " . Dumper($attach_params) : ''));
+        }
+        else {
+            $self->log_warning("Cannot set output parameter '$name' to '$value'"
+                . (defined $attach_params ? " with the following attached params: " . Dumper($attach_params) : ''));
         }
 
         1;
