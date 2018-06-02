@@ -992,6 +992,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Configuration jboss_conf_not_existing doesn't exist."
     }
 
+    @Ignore
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Data Source Name' ( C289570)"() {
         String testCaseId = "C289570"
@@ -1000,7 +1001,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         def runParams = [
                 additionalOptions               : '',
                 dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : 'Mysql XA@DS',
+                dataSourceName                  : 'Mysql32XA@DS',
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
@@ -1059,7 +1060,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : 'wrong_driver',
-                jndiName                        : jndiName.mysql,
+                jndiName                        : jndiName.mysql+testCaseId,
                 profile                         : '',
                 serverconfig                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
