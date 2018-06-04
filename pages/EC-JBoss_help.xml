@@ -2176,7 +2176,32 @@
             </div>
             <div id="StartStandaloneServer"> <a name="StartStandaloneServer" id="StartStandaloneServer"></a>
                 <h2>StartStandaloneServer</h2>
-                <p>The StartStandaloneServer procedure starts a server in <i>standalone</i> mode. In this mode, each instance is an independent process.</p>
+                <p>
+                    This procedure can be used for starting JBoss as a Standalone Server.
+                    <br/><br/>
+                    Path to startup script (e.g. standalone.sh) and optionally additional options are expected to be passed as input parameters.
+                    Example of startup call:
+                    '/tmp/jboss/bin/standalone.sh --server-config=standalone-full.xml -b=0.0.0.0 -bmanagement=0.0.0.0'
+                    Furthermore, configuration should be provided in order to perform checks via CLI that JBoss started correctly.
+                    <br/><br/>
+                    If JBoss Standalone Server is already started then there will be no attempt to start it again and job status will be Warning.
+                    <br/><br/>
+                    Once startup script is called by the procedure there will be recurring check whether it is possible to connect to CLI
+                    and check that server state is 'running'
+                    CLI command for this: '/:read-attribute(name=server-state)').
+                    Timeout for recurring check is defined in the code as constant and is equal to 60 seconds.
+                    If during this time procedure fail to indicate server state as 'running' then job status will be Error.
+                    <br/><br/>
+                    In case if CLI is available as a final step of the procedure there will be performed
+                    reading of boot errors (CLI command for this: '/core-service=management/:read-boot-errors').
+                    If any boot errors are detected then job Status will be Warning.
+                    <br/><br/>
+                    In addition, the procedure will try to provide more information within its logs by
+                    reading recent logs via CLI (tail 100 lines from default file server.log)
+                    and reading recent logs (tail 100 lines) from the 'Log File Location' (if it was specified within input parameters).
+                    PS. There are no attempts to figure out logs location on the file system
+                    due to the fact that there are too many options of how log file location can be configured in JBoss.
+                </p>
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the StartStandaloneSever procedure.</li>
@@ -2190,42 +2215,65 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td class='required'>Configuration name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td class='required'>Configuration Name</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td class='required'>Physical location of the standalone script</td>
-                                    <td>Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'.</td>
+                                    <td class='required'>Startup Script</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'.
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Optional configuration name</td>
-                                    <td>The name of the XML configuration file used when you start the server with a different configuration.</td>
+                                    <td>Server Configuration File</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br/>
+                                        Name of the server configuration file to use
+                                        (stands for '--server-config' option for standalone startup script).
+                                        For example: standalone-full.xml, standalone-full-ha.xml.
+                                        By default standalone.xml is used.
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Additional options</td>
-                                    <td>Additional options.</td>
+                                    <td>Additional Options</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br/>
+                                        'Additional options' to be passed on to standalone startup script.
+                                        The parameters mentioned in this string will be concatenated to already generated command line for starting JBoss as a Standalone Server.
+                                        For example:
+                                        -b=0.0.0.0 -bmanagement=0.0.0.0
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Log File Location</td>
-                                    <td>Log file location - is used for just showing tailing lines from the log file within procedure logs.</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br/>
+                                        To be used for providing more information about startup within procedure logs.
+                                        If provided then the procedure will read recent 100 log lines
+                                        from the specified file and include them into its own logs.
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
+                        <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/StartStandaloneSever/StartStandaloneSeverForm1.PNG" />
                     </li>
-                    <br />
-                    <img src="../../plugins/@PLUGIN_NAME@/images/StartStandalone/ECJBossStartStandalone2.png" />
-                    <br />
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results, including the following job details, which show that the job was completed:</p>
+                <p> After the job runs, you can view the results on the Job Details page
+                    in ElectricFlow. In the <b>StopDomain</b> step, click the
+                    Log icon to see the diagnostic information. </p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StartStandalone/ECJBossStartStandalone3.png" />
-                <br />
-                <p>In the <b>StartStandaloneServer</b> step, click the Log icon to see the diagnostic information. The output is
-                    similar to the following diagnostic report:</p>
-                <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StartStandalone/ECJBossStartStandalone4.png" />
-                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StartStandaloneSever/StartStandaloneSeverRun1.PNG" />
             </div>
             <div id="StopDomain"> <a name="StopDomain" id="StopDomain"></a>
                 <h2>StopDomain</h2>
