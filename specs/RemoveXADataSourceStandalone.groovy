@@ -65,7 +65,8 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         ]
 
         createHelperProject(resName, defaultConfigName)
-
+        addJDBCMySQL("mysql")
+        addJDBCPostgres("postgresql")
     }
 
     def doCleanupSpec() {
@@ -112,7 +113,6 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
                 dataSourceName   : 'MysqlXADS',
         ]
         setup:
-        addJDBCMySQL("mysql")
         def dataSourceName = runParams.dataSourceName
         addXADatasource(dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource')
         when:
@@ -125,7 +125,6 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
 
         cleanup:
         reloadServer()
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone("mysql"))
     }
 
     @Ignore
@@ -139,7 +138,6 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
                 dataSourceName   : 'MysqlXADS',
         ]
         setup:
-        addJDBCMySQL("mysql")
         def dataSourceName = runParams.dataSourceName
         addXADatasource(dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource', true)
         reloadServer()
@@ -153,7 +151,6 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
 
         cleanup:
         reloadServer()
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone("mysql"))
     }
 
 
@@ -169,11 +166,6 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         ]
         setup:
         String path = getPathToMain("postgresql", "org")
-        createDir(getPath("postgresql", "org"))
-        createDir(path)
-        downloadArtifact(link.postgresql, path+"/postgresql-42.2.2.jar")
-        downloadArtifact(xml.postgresql, path+"/module.xml")
-        addModuleXADatasource(jdbcDriverName, "org.postgresql.xa.PGXADataSource")
         def dataSourceName = runParams.dataSourceName
         addXADatasource(dataSourceName, jndiName.postgresql, jdbcDriverName, 'org.postgresql.xa.PGXADataSource')
         when:
@@ -186,7 +178,6 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
 
         cleanup:
         reloadServer()
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInStandalone("postgresql"))
     }
 
     @Unroll
@@ -325,11 +316,8 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
             // https://issues.jboss.org/browse/JBPAPP6-944
             reloadServer()
-            runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
         } 
-        else {
-            runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
-        }
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
     }
 
     void addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass, def enabled=false){

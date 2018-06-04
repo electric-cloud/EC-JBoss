@@ -115,7 +115,8 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         createHelperProject(resName, defaultConfigName)
         createCredential(projectName, "dataSourceConnectionCredentials",defaultUserName, defaultPassword)
         attachCredential(projectName, "dataSourceConnectionCredentials", procName)
-
+        addJDBCMySQL("mysql")
+        addJDBCPostgres("postgresql")
     }
 
     def doCleanupSpec() {
@@ -176,8 +177,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
 
-        setup:
-        addJDBCMySQL(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
@@ -193,7 +192,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName)
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -220,8 +218,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
 
-        setup:
-        addJDBCMySQL(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
 
@@ -236,7 +232,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3']})
@@ -263,8 +258,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
 
-        setup:
-        addJDBCPostgres(jdbcDriverName)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
@@ -277,7 +270,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -302,7 +294,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: 'changeme'
         ]
         setup:
-        addJDBCMySQL(jdbcDriverName)
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         when:
         //change JNDI 
@@ -323,7 +314,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -349,7 +339,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: 'changeme'
         ]
         setup:
-        addJDBCMySQL(jdbcDriverName)
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         when:
         //change JNDI 
@@ -368,7 +357,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -396,7 +384,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: 'root'
         ]
         setup:
-        addJDBCMySQL(jdbcDriverName)
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         modifyCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, newPassword)
         when:
@@ -415,7 +402,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -443,7 +429,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: 'root'
         ]
         setup:
-        addJDBCMySQL(jdbcDriverName)
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         modifyCredential(projectName, "dataSourceConnectionCredentials", newUserName, newPassword)
         when:
@@ -462,7 +447,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -487,8 +471,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 userName: 'admin',
                 password: 'changeme'
         ]
-        setup:
-        addJDBCMySQL(jdbcDriverName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -503,7 +485,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
           // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -530,9 +511,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
 
-        setup:
-        addJDBCMySQL(jdbcDriverName, runParams.profile)
-
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
@@ -548,7 +526,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain('full-ha', jdbcDriverName))
     }
 
     @Unroll
@@ -575,7 +552,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
         setup:
-        addJDBCMySQL(jdbcDriverName, runParams.profile)
         RunProcedureJob runProcedureJob0 = runProcedureUnderTest(runParams, credential)
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -592,7 +568,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
           // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -619,9 +594,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
 
-        setup:
-        addJDBCMySQL(jdbcDriverName)
-
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
@@ -637,7 +609,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
           // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -664,9 +635,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
 
-        setup:
-        addJDBCMySQL(jdbcDriverName)
-
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
@@ -682,7 +650,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
           // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @IgnoreIf({EnvPropertiesHelper.getVersion() in ['7.0', '6.4']})
@@ -709,9 +676,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
 
-        setup:
-        addJDBCMySQL(jdbcDriverName)
-
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
@@ -727,7 +691,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
           // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -753,9 +716,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
 
-        setup:
-        addJDBCMySQL(jdbcDriverName)
-
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
@@ -771,7 +731,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
           // remove XA datasource
         runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(defaultProfile, runParams.dataSourceName)) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -797,9 +756,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
 
-        setup:
-        addJDBCMySQL(jdbcDriverName)
-
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
@@ -815,7 +771,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
           // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -841,9 +796,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
                 password: defaultPassword
         ]
 
-        setup:
-        addJDBCMySQL(jdbcDriverName)
-
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
@@ -859,7 +811,6 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
           // remove XA datasource
         removeXADatasource(runParams.profile, xaDataSourceName) 
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, jdbcDriverName))
     }
 
     @Unroll
@@ -1273,11 +1224,8 @@ class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {
         if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
             // https://issues.jboss.org/browse/JBPAPP6-944
             reloadServer('master')
-            runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
         } 
-        else {
-            runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
-        }
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
     }
 
     void checkCreateXADataSourceAdditionalOptions(String nameDatasource, String profile, String jndiNames, String jdbcDriverName,

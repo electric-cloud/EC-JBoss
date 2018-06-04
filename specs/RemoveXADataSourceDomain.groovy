@@ -67,6 +67,8 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         ]
 
         createHelperProject(resName, defaultConfigName)
+        addJDBCMySQL("mysql")
+        addJDBCPostgres("postgresql")
 
     }
 
@@ -114,7 +116,6 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
                 dataSourceName   : 'MysqlXADS',
         ]
         setup:
-        addJDBCMySQL(jdbcDriverName)
         def dataSourceName = runParams.dataSourceName
         addXADatasource(defaultProfile, dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource')
         when:
@@ -127,7 +128,6 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
 
         cleanup:
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "mysql"))
     }
 
     @Ignore
@@ -141,7 +141,6 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
                 dataSourceName   : 'MysqlXADS',
         ]
         setup:
-        addJDBCMySQL(jdbcDriverName)
         def dataSourceName = runParams.dataSourceName
         addXADatasource(defaultProfile, dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource', true)
         reloadServer('master')
@@ -155,7 +154,6 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
 
         cleanup:
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "mysql"))
     }
 
     @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3']})
@@ -169,7 +167,6 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
                 dataSourceName   : 'PostgresXADS',
         ]
         setup:
-        addJDBCPostgres(jdbcDriverName)
         def dataSourceName = runParams.dataSourceName
         addXADatasource(defaultProfile, dataSourceName, jndiName.postgresql, jdbcDriverName, 'org.postgresql.xa.PGXADataSource')
         when:
@@ -182,7 +179,6 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
 
         cleanup:
         reloadServer('master')
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.deleteJDBCDriverInDomain(defaultProfile, "postgresql"))
     }
 
     @Unroll
@@ -330,11 +326,8 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
             // https://issues.jboss.org/browse/JBPAPP6-944
             reloadServer('master')
-            runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
         } 
-        else {
-            runCliCommand(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
-        }
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasource(profile, driver, DSclass))
     }
 
 }
