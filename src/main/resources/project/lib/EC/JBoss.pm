@@ -65,6 +65,7 @@ $| = 1;
     }
 
     ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::Bootstrap");
+    EC::Bootstrap->import();
 };
 
 my $LOG_LEVEL_OLD_API_VALUE_DEBUG = 4;
@@ -1648,10 +1649,18 @@ sub set_output_parameter {
 
         my $is_set = $self->ec()->setOutputParameter($name, $value, $attach_params);
 
-        # 0E0 can be returned by EC::Bootstrap function and means parameter was not really set
-        if ($is_set && !$is_set eq '0E0') {
-            $self->log_info("Output parameter '$name' has been set to '$value'"
-                . (defined $attach_params ? "and attached to " . Dumper($attach_params) : ''));
+        my $output_param_summary = "name: '$name', value: '$value'";
+        $output_param_summary .= ", attach params: " . Dumper($attach_params) if defined $attach_params;
+
+        if (!$is_set) {
+            $self->log_warning("Failed to set output parameter. Output parameter details: $output_param_summary");
+        }
+        elsif ($is_set eq '0E0') {
+            # 0E0 can be returned by EC::Bootstrap function and means parameter was not really set
+            $self->log_warning("Failed to set output parameter: the agent version does not support this API. Output parameter details: $output_param_summary");
+        }
+        else {
+            $self->log_info("Output parameter has been set. Output parameter details: $output_param_summary");
         }
 
         1;
