@@ -2,39 +2,39 @@
 	<help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#StartStandaloneServer</help>
     <formElement>
         <type>entry</type>
-        <label>Configuration name:</label>
+        <label>Configuration Name:</label>
         <property>serverconfig</property>
         <required>1</required>
-        <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <documentation>Required parameter. Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
         <propertyReference>/plugins/@PLUGIN_NAME@/project/jboss_cfgs</propertyReference>
-        <htmlDocumentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
+        <htmlDocumentation>Required parameter. Name of the configuration to be used. URL and credentials are retrieved from the given configuration.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
     </formElement>	
 	<formElement>
 		<type>entry</type>
-		<label>Physical location of the standalone script:</label>
+		<label>Startup Script:</label>
 		<property>scriptphysicalpath</property>
 		<required>1</required>
-		<documentation>Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'.</documentation>
+		<documentation>Required parameter. Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'.</documentation>
 	</formElement>		
 	<formElement>
 		<type>entry</type>
-		<label>Optional configuration name:</label>
+		<label>Server Configuration File:</label>
 		<property>alternatejbossconfig</property>
 		<required>0</required>
-		<documentation>Provide the XML config file if you want to start your server with a different configuration.</documentation>
+		<documentation>Optional parameter. Name of the server configuration file to use (stands for '--server-config' option for standalone startup script). For example: standalone-full.xml, standalone-full-ha.xml. By default standalone.xml is used.</documentation>
 	</formElement>
 	<formElement>
 		<type>entry</type>
-		<label>Additional options:</label>
+		<label>Additional Options:</label>
 		<property>additionalOptions</property>
 		<required>0</required>
-		<documentation>Additional options.</documentation>
+		<documentation>Optional parameter. 'Additional options' to be passed on to standalone startup script. The parameters mentioned in this string will be concatenated to already generated command line for starting JBoss as a Standalone Server. For example: -b=0.0.0.0 -bmanagement=0.0.0.0</documentation>
 	</formElement>
 	<formElement>
 		<type>entry</type>
 		<label>Log File Location:</label>
 		<property>logFileLocation</property>
 		<required>0</required>
-		<documentation>Log file location - is used for just showing tailing lines from the log file within procedure logs.</documentation>
+		<documentation>Optional parameter. To be used for providing more information about startup within procedure logs. If provided then the procedure will read recent 100 log lines from the specified file and include them into its own logs.</documentation>
 	</formElement>
 </editor>

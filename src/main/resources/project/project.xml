@@ -420,7 +420,7 @@
         </procedure>
         <procedure>
             <procedureName>StartStandaloneServer</procedureName>
-            <description>Start a Server in "standalone" mode</description>
+            <description>This procedure can be used for starting JBoss as a Standalone Server.</description>
             <jobNameTemplate>jboss-startstandaloneserver-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -493,35 +493,35 @@
             <formalParameter>
                 <formalParameterName>scriptphysicalpath</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'.</description>
+                <description>Required parameter. Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>alternatejbossconfig</formalParameterName>
                 <defaultValue/>
-                <description>Provide the XML config file if you want to start your server with a different configuration.</description>
+                <description>Optional parameter. Name of the server configuration file to use (stands for '--server-config' option for standalone startup script). For example: standalone-full.xml, standalone-full-ha.xml. By default standalone.xml is used.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue/>
-                <description>Additional options.</description>
+                <description>Optional parameter. 'Additional options' to be passed on to standalone startup script. The parameters mentioned in this string will be concatenated to already generated command line for starting JBoss as a Standalone Server. For example: -b=0.0.0.0 -bmanagement=0.0.0.0</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>logFileLocation</formalParameterName>
                 <defaultValue/>
-                <description>Log file location - is used for just showing tailing lines from the log file within procedure logs.</description>
+                <description>Optional parameter. To be used for providing more information about startup within procedure logs. If provided then the procedure will read recent 100 log lines from the specified file and include them into its own logs.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>Supply the configuration name of the JBoss server. This configuration will hold information about the standalone server you want to start.</description>
+                <description>Required parameter. A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
