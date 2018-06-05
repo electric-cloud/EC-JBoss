@@ -414,7 +414,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
 
         assert result.jobId
         waitUntil {
-            jobCompleted result.jobId
+            jobCompleted result
         }
     }
 
