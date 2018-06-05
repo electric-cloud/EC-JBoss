@@ -2581,6 +2581,10 @@
             "JBAS010839: Operation failed or was rolled back on all servers." (in Domain)
             <br/>
             <h1 id="rns">Release Notes</h1>
+            <h2>@PLUGIN_KEY@ 2.6.0</h2>
+            <ul>
+                <li>Configured the plugin to allow the ElectricFlow UI to create configs inline of procedure form.</li>
+            </ul>
             <h2>@PLUGIN_KEY@ 2.5.0</h2>
             <ul>
                 <li>

@@ -3,6 +3,9 @@
     <formElement>
         <type>entry</type>
         <label>Configuration Name:</label>
+        <!-- Improvements for CEV-18687 -->
+        <configuration>1</configuration>
+        <!-- End of improvements for CEV-18687 -->
         <property>serverconfig</property>
         <required>1</required>
         <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
