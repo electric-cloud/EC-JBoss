@@ -155,7 +155,7 @@ class StartHostController extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        // deleteProject(projectName)
+        deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -308,7 +308,7 @@ class StartHostController extends PluginTestHelper {
         cleanup:
         runParams = [
             additionalOptions: additionalOptions.'slave',
-            domainConfig: 'empty',
+            domainConfig: domainConfigs.'empty',
             hostConfig: hostConfigs.'slave',
             jbossHostName: jbossHostNames.'slave',
             logFileLocation: logFileLocations.'empty',
