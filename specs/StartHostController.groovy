@@ -266,7 +266,7 @@ class StartHostController extends PluginTestHelper {
         cleanup:
         runParams = [
             additionalOptions: additionalOptions.'docker',
-            domainConfig: 'empty',
+            domainConfig: domainConfigs.'default',
             hostConfig: hostConfigs.'default',
             jbossHostName: jbossHostNames.'master',
             logFileLocation: logFileLocations.'empty',
@@ -309,7 +309,7 @@ class StartHostController extends PluginTestHelper {
         cleanup:
         runParams = [
             additionalOptions: additionalOptions.'slave',
-            domainConfig: domainConfigs.'empty',
+            domainConfig: domainConfigs.'default',
             hostConfig: hostConfigs.'slave',
             jbossHostName: jbossHostNames.'slave',
             logFileLocation: logFileLocations.'empty',
