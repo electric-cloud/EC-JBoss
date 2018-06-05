@@ -81,4 +81,8 @@ class EnvPropertiesHelper {
     public static String getMode() {
         return System.getenv('JBOSS_MODE')
     }
+
+    public static String getTopology() {
+        return System.getenv('JBOSS_TOPOLOGY')
+    }
 }
