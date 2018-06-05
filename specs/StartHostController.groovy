@@ -2,6 +2,7 @@ import Services.CliCommandsGeneratorHelper
 import Utils.EnvPropertiesHelper
 import spock.lang.*
 
+@Requires({ env.OS == 'UNIX' && env.JBOSS_VERSION in ['7.0', '7.1']})
 class StartHostController extends PluginTestHelper {
 
     @Shared
