@@ -1795,7 +1795,7 @@ sub logger_is_enabled_for_level {
 
 sub is_cli_command_supported_read_boot_errors {
     my $self = shift;
-    my $product_version = $self->{get_jboss_product_version};
+    my $product_version = $self->get_jboss_product_version();
     # read-boot-errors was introduced in JBoss EAP 6.4
     if ($product_version !~ m/^6/ || $product_version =~ m/^6\.4/) {
         return 1;
@@ -1805,7 +1805,7 @@ sub is_cli_command_supported_read_boot_errors {
 
 sub is_cli_command_supported_read_log_file {
     my $self = shift;
-    my $product_version = $self->{get_jboss_product_version};
+    my $product_version = $self->get_jboss_product_version();
     # read-log-file was introduced in JBoss EAP 6.4
     if ($product_version !~ m/^6/ || $product_version =~ m/^6\.4/) {
         return 1;
