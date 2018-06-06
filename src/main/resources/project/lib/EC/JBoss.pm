@@ -1793,6 +1793,36 @@ sub logger_is_enabled_for_level {
     return 0;
 }
 
+sub is_cli_command_supported_read_boot_errors {
+    my $self = shift;
+    my $product_version = $self->{get_jboss_product_version};
+    # read-boot-errors was introduced in JBoss EAP 6.4
+    if ($product_version !~ m/^6/ || $product_version =~ m/^6\.4/) {
+        return 1;
+    }
+    return 0;
+}
+
+sub is_cli_command_supported_read_log_file {
+    my $self = shift;
+    my $product_version = $self->{get_jboss_product_version};
+    # read-log-file was introduced in JBoss EAP 6.4
+    if ($product_version !~ m/^6/ || $product_version =~ m/^6\.4/) {
+        return 1;
+    }
+    return 0;
+}
+
+sub get_jboss_product_version {
+    my $self = shift;
+    if (!$self->{jboss_product_version}) {
+        my $version = $self->get_jboss_server_version();
+        my $product_version = $version->{product_version};
+        $self->{jboss_product_version} = $product_version;
+    }
+    return $self->{jboss_product_version};
+}
+
 1;
 
 =back

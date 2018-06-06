@@ -80,8 +80,8 @@ sub main {
     );
 
     verify_host_controller_is_started_and_show_startup_info(
-        jboss          => $jboss,
-        host_name      => $param_host_name,
+        jboss             => $jboss,
+        host_name         => $param_host_name,
         log_file_location => $log_file_location
     );
 }
@@ -393,14 +393,17 @@ sub verify_host_controller_is_started_and_show_startup_info {
     eval {
         if ($log_file_location) {
             show_jboss_logs_from_requested_file(
-                jboss => $jboss,
+                jboss             => $jboss,
                 log_file_location => $log_file_location
             );
         }
 
         if ($host_name && $check_result{check_logs_via_cli}) {
-            check_host_cotroller_boot_errors_via_cli(jboss => $jboss, host_name => $host_name);
-            check_boot_errores_and_show_logs_of_servers_via_cli(jboss => $jboss, host_name => $host_name);
+            check_host_cotroller_boot_errors_via_cli(
+                jboss     => $jboss,
+                host_name => $host_name
+            ) if $jboss->is_cli_command_supported_read_boot_errors();
+            check_servers(jboss => $jboss, host_name => $host_name);
         }
         elsif (!$log_file_location) {
             $jboss->log_info("Please refer to JBoss logs on file system for more information");
@@ -481,7 +484,7 @@ sub check_host_cotroller_boot_errors_via_cli {
     }
 }
 
-sub check_boot_errores_and_show_logs_of_servers_via_cli {
+sub check_servers {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
     my $host_name = $args{host_name} || croak "'host_name' is required param";
@@ -508,12 +511,12 @@ sub check_boot_errores_and_show_logs_of_servers_via_cli {
                 jboss       => $jboss,
                 host_name   => $host_name,
                 server_name => $server
-            );
+            ) if $jboss->is_cli_command_supported_read_boot_errors();
             show_logs_via_cli_for_server(
                 jboss       => $jboss,
                 host_name   => $host_name,
                 server_name => $server
-            );
+            ) if $jboss->is_cli_command_supported_read_log_file();
         }
         else {
             $jboss->log_warning("Server '$server' on host '$host_name' has status '$server_status', please refer to the JBoss logs on file system for more information");
@@ -645,7 +648,8 @@ sub show_jboss_logs_from_requested_file {
             file         => $log_file_location,
             num_of_lines => $num_of_lines
         );
-        $jboss->log_info("JBoss logs from file '$log_file_location' (showing recent $num_of_lines lines) :\n   | " . join('   | ', @$recent_log_lines));
+        $jboss->log_info("JBoss logs from file '$log_file_location' (showing recent $num_of_lines lines) :\n   | "
+            . join('   | ', @$recent_log_lines));
     }
     else {
         $jboss->log_warning("Cannot find JBoss log file '$log_file_location'");

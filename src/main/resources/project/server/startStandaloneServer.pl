@@ -65,7 +65,7 @@ sub main {
         jboss              => $jboss);
 
     verify_jboss_is_started_and_show_startup_info(
-        jboss => $jboss,
+        jboss             => $jboss,
         log_file_location => $log_file_location
     );
 }
@@ -222,14 +222,14 @@ sub verify_jboss_is_started_and_show_startup_info {
     eval {
         if ($log_file_location) {
             show_jboss_logs_from_requested_file(
-                jboss => $jboss,
+                jboss             => $jboss,
                 log_file_location => $log_file_location
             );
         }
 
         if ($jboss_cli_is_available) {
-            check_boot_errors_via_cli(jboss => $jboss);
-            show_logs_via_cli(jboss => $jboss);
+            check_boot_errors_via_cli(jboss => $jboss) if $jboss->is_cli_command_supported_read_boot_errors();
+            show_logs_via_cli(jboss => $jboss) if $jboss->is_cli_command_supported_read_log_file();
         }
         elsif (!$log_file_location) {
             # too many options of how log file location can be overriden, so let's do not guess where the logs are (at least for now)
@@ -397,7 +397,8 @@ sub show_jboss_logs_from_requested_file {
             file         => $log_file_location,
             num_of_lines => $num_of_lines
         );
-        $jboss->log_info("JBoss logs from file '$log_file_location' (showing recent $num_of_lines lines) :\n   | " . join('   | ', @$recent_log_lines));
+        $jboss->log_info("JBoss logs from file '$log_file_location' (showing recent $num_of_lines lines) :\n   | "
+            . join('   | ', @$recent_log_lines));
     }
     else {
         $jboss->log_warning("Cannot find JBoss log file '$log_file_location'");
