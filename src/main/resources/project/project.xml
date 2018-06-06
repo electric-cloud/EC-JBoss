@@ -514,7 +514,7 @@
             <formalParameter>
                 <formalParameterName>logFileLocation</formalParameterName>
                 <defaultValue/>
-                <description>Optional parameter. To be used for providing more information about startup within procedure logs. If provided then the procedure will read recent 100 log lines from the specified file and include them into its own logs.</description>
+                <description>Optional parameter. To be used for providing more information about startup within procedure logs. If provided then the procedure will read recent 100 log lines from the specified file and include them into its own logs. For example: /opt/jboss/standalone/log/server.log</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
