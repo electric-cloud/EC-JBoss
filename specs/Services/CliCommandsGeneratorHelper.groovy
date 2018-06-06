@@ -145,6 +145,9 @@ class CliCommandsGeneratorHelper {
 
     static def shutDownStandalone(){
         def command = "shutdown"
+        if(EnvPropertiesHelper.getVersion() =~ '6.0'){
+            command = "/:shutdown"
+        }
         return command
     }
 
