@@ -2034,7 +2034,63 @@
             </div>
             <div id="StartHostController"> <a name='StartHostController' id="StartHostController"></a>
                 <h2>StartHostController</h2>
-                <p>This procedure can be used for starting a master or slave host controller for JBoss Domain.</p>
+                This procedure can be used to either start a domain (master) host controller or start a slave host controller within Managed Domain.
+                <br/><br/>
+                Path to startup script (e.g. domain.sh) and optionally additional options are expected to be passed as input parameters.
+                Furthermore, configuration for connecting to master CLI and preferably host name are expected to be provided in order to perform checks via Master CLI that host controller started correctly.
+                <br/><br/>
+                Master host controller is expected to be started before slave host controllers.
+                Example of startup call for master host controller:
+                <br/>
+                '/opt/jboss/bin/domain.sh --host-config=host-master.xml -Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0'
+                <br/><br/>
+                Example of startup call for slave host controller:
+                <br/>
+                '/opt/jboss/bin/domain.sh --host-config=host-slave.xml -Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0'
+                <br/><br/>
+                NOTE: Recommended is to provide 'Host Name' parameter in order
+                to perform needed checks via Master CLI about requested host controller startup
+                (including a very important check of host state).
+                Logic of the procedure is slightly different for cases when 'Host Name' is provided or is not.
+                <br/><br/>
+                If host controller with specified 'Host Name' is already started within Managed Domain
+                then there will be no attempt to start it again and job status will be Warning.
+                NOTE: if 'Host Name' is not provided this step will be missed.
+                <br/><br/>
+                Once startup script is called by the procedure there will be recurring check whether it is possible to connect to Master CLI
+                and check that state of host controller with specified 'Host Name' is 'running'
+                (CLI command for this: '/host=some_host_name/:read-attribute(name=host-state)').
+                Timeout for recurring check is defined in the code as constant and is equal to 60 seconds.
+                If during this time procedure fail to indicate host state as 'running' then job status will be Error.
+                NOTE: if 'Host Name' is not provided then there will be just gathering information
+                about list of connected host controllers within Managed Domain and reporting it as part of step summary
+                instead of checking state of specific host.
+                <br/><br/>
+                Furthermore, in case if 'Host Name' is provided and CLI is available there will be performed the following extra checks as a final step of the procedure:
+                <ul>
+                    <li>
+                        Reading states of all servers within specified host controller and reporting it as part of step summary
+                        (CLI command for this: '/host=some_host_name/server-config=some_server_name/:read-attribute(name=status)').
+                        Job will have status warning in case if detected servers with statuses other than STARTED, STOPPED or DISABLED.
+                    </li>
+                    <li>
+                        For JBoss EAP 6.4 and later versions: reading host controller boot errors
+                        (CLI command for this: '/host=some_host_name/core-service=management/:read-boot-errors').
+                        If any boot errors are detected then job Status will be Warning.
+                    </li>
+                    <li>
+                        For JBoss EAP 6.4 and later versions: reading boot errors of all servers with statuses STARTED within specified host controller
+                        (CLI command for this: '/host=some_host_name/server=some_server_name/core-service=management/:read-boot-errors').
+                        If any boot errors are detected then job Status will be Warning.
+                    </li>
+                </ul>
+                <br/><br/>
+                In addition, the procedure will try to provide more information within its logs by
+                reading recent logs (tail 100 lines) from the 'Log File Location' (if it was specified within input parameters)
+                and (for JBoss EAP 6.4 and later versions) reading recent logs via CLI of all servers with statuses STARTED within host controller
+                (if it was specified within 'Host Name', tail 100 lines from default files with name server.log for each STARTED server).
+                PS. There are no attempts to figure out logs location on the file system
+                due to the fact that there are too many options of how log file location can be configured in JBoss.
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the StartHostController procedure.</li>
@@ -2049,44 +2105,105 @@
                             <tbody>
                                 <tr>
                                     <td class='required'>Configuration Name</td>
-                                    <td>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.
+                                        NOTE: information for connecting to Master CLI should be provided within the specified configuration,
+                                        even for stating slave host controllers.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td class='required'>Startup Script</td>
-                                    <td>Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</td>
+                                    <td>
+                                        Required parameter.
+                                        <br/>
+                                        Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Domain Config</td>
-                                    <td>For domain controllers only. Name of the domain configuration file that ElectricFlow uses to start the domain controller with a different domain configuration (--domain-config). By default domain.xml is used.</td>
+                                    <td>Domain Configuration File</td>
+                                    <td>
+                                        Optional parameter. For master host controllers only.
+                                        <br/>
+                                        Name of the domain configuration file to use
+                                        (stands for '--domain-config' option for domain startup script).
+                                        By default domain.xml is used.
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Host Config</td>
-                                    <td>For domain and host controllers. Name of the host configuration file that ElectricFlow uses to start the domain or host controller with a different host configuration (--host-config). By default host.xml is used.</td>
+                                    <td>Host Configuration File</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br/>
+                                        Name of the host configuration file to use
+                                        (stands for '--host-config' option for domain startup script).
+                                        For example: host-master.xml, host-slave.xml.
+                                        By default host.xml is used.
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Host Name</td>
-                                    <td>Host name for verification via master CLI that host controller is started</td>
+                                    <td>
+                                        Optional parameter. Recommended to use.
+                                        <br/>
+                                        NOTE: Recommended is to provide 'Host Name' parameter in order
+                                        to perform needed checks via Master CLI about requested host controller startup,
+                                        including a very important check of host state
+                                        and (for JBoss EAP 6.4 and later versions) extra checks of boot errors.
+                                        Logic of the procedure is slightly different for cases when 'Host Name' is provided or is not.
+                                        <br/>
+                                        For example: master, slave-1
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Additional Options</td>
-                                    <td>Additional options</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br/>
+                                        'Additional options' to be passed on to domain startup script.
+                                        The parameters mentioned in this string will be concatenated to already generated command line for starting master or slave host controller.
+                                        <br/>
+                                        For example for starting master host controller:
+                                        '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0'
+                                        <br/>
+                                        For example for starting slave host controller:
+                                        '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0'
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Log File Location</td>
-                                    <td>Log file location - is used for just showing tailing lines from the log file within procedure logs.</td>
+                                    <td>
+                                        Optional parameter.
+                                        <br/>
+                                        To be used for providing more information about startup within procedure logs.
+                                        If provided then the procedure will read recent 100 log lines
+                                        from the specified file and include them into its own logs.
+                                        For example: /opt/jboss/domain-copied-for-slave-1/log/host-controller.log
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                         <br />
                         <img src="../../plugins/@PLUGIN_NAME@/images/StartHostController/StartHostControllerForm1.PNG" />
                         <br />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/StartHostController/StartHostControllerForm2.PNG" />
                     </li>
                 </ol>
                 <h3>Output</h3>
-                <p>After the job runs, you can view the results, including the following job details, which show that the server is up:</p>
+                <p>After the job runs, you can view the results, including the following job details, which show that host controller is started (in case if 'Host Name parameter was provided'):</p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/StartHostController/StartHostControllerRun1.PNG" />
                 <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StartHostController/StartHostControllerRun2.PNG" />
+                <br />
+                <p>
+                    And one more example of cases when 'Host Name' parameter was not provided
+                    (NOTE: recommended is to provide 'Host Name' parameter in order
+                    to perform needed checks via Master CLI about requested host controller startup)
+                </p>
+                <br />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StartHostController/StartHostControllerRun3.PNG" />
             </div>
             <div id="StartServers"> <a name='StartServers' id="StartServers"></a>
                 <h2>StartServers (Domain)</h2>
@@ -2188,17 +2305,17 @@
                     <br/><br/>
                     Once startup script is called by the procedure there will be recurring check whether it is possible to connect to CLI
                     and check that server state is 'running'
-                    CLI command for this: '/:read-attribute(name=server-state)').
+                    (CLI command for this: '/:read-attribute(name=server-state)').
                     Timeout for recurring check is defined in the code as constant and is equal to 60 seconds.
                     If during this time procedure fail to indicate server state as 'running' then job status will be Error.
                     <br/><br/>
-                    In case if CLI is available as a final step of the procedure there will be performed
+                    For JBoss EAP 6.4 and later versions: in case if CLI is available as a final step of the procedure there will be performed
                     reading of boot errors (CLI command for this: '/core-service=management/:read-boot-errors').
                     If any boot errors are detected then job Status will be Warning.
                     <br/><br/>
                     In addition, the procedure will try to provide more information within its logs by
-                    reading recent logs via CLI (tail 100 lines from default file server.log)
-                    and reading recent logs (tail 100 lines) from the 'Log File Location' (if it was specified within input parameters).
+                    reading recent logs (tail 100 lines) from the 'Log File Location' (if it was specified within input parameters)
+                    and (for JBoss EAP 6.4 and later versions) reading recent logs via CLI (tail 100 lines from default file server.log).
                     PS. There are no attempts to figure out logs location on the file system
                     due to the fact that there are too many options of how log file location can be configured in JBoss.
                 </p>
