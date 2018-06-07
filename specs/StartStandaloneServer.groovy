@@ -11,6 +11,9 @@ class StartStandaloneServer extends PluginTestHelper {
     @Shared
     String defaultConfigName = 'specConfig'
 
+    @Shared
+    def jbossVersion = EnvPropertiesHelper.getVersion()
+
     // https://ecflow.testrail.net/index.php?/suites/view/27&group_by=cases:section_id&group_order=asc&group_id=62921
     @Shared
     def testCases = [
@@ -67,12 +70,12 @@ class StartStandaloneServer extends PluginTestHelper {
 
     @Shared
     def summaries = [
-        'default': "JBoss Standalone has been launched, server state is 'running'\nNo boot errors detected via CLI",
+        'default': jbossVersion in ['7.1', '7.0', '6.4'] ? "JBoss Standalone has been launched, server state is 'running'\nNo boot errors detected via CLI" : "JBoss Standalone has been launched, server state is 'running'",
         'started': "JBoss is already started in expected operating mode 'standalone'",
         'emptyConfig': "Configuration WrongConfig doesn't exist",
         'error': "Failed to connect to CLI for verication of server state",
         'wrongScript': "Failed to connect to CLI for verication of server state\nPlease refer to JBoss logs on file system for more information",
-        'wrongLogs': "JBoss Standalone has been launched, server state is 'running'\nWarning: Cannot find JBoss log file '/tmp/wrong/server.log'\nNo boot errors detected via CLI",
+        'wrongLogs': jbossVersion in ['7.1', '7.0', '6.4'] ? "JBoss Standalone has been launched, server state is 'running'\nWarning: Cannot find JBoss log file '/tmp/wrong/server.log'\nNo boot errors detected via CLI" : "JBoss Standalone has been launched, server state is 'running'\nWarning: Cannot find JBoss log file '/tmp/wrong/server.log'",
     ]
 
 
@@ -85,10 +88,10 @@ class StartStandaloneServer extends PluginTestHelper {
 
     @Shared
     def jobLogs = [
-        'default': ["JBoss Standalone has been launched, server state is 'running'", "No boot errors detected via CLI", "Admin console listening on http://0.0.0.0:9990", "\"${scriptPaths.'default'}\" -b 0.0.0.0 -bmanagement 0.0.0.0"],
+        'default': ["JBoss Standalone has been launched, server state is 'running'", jbossVersion in ['7.1', '7.0', '6.4'] ? "No boot errors detected via CLI" : '', jbossVersion in ['7.1', '7.0', '6.4'] ? "Admin console listening on http://0.0.0.0:9990" : "", "\"${scriptPaths.'default'}\" -b 0.0.0.0 -bmanagement 0.0.0.0"],
         'started': ["JBoss is already started in expected operating mode 'standalone'"],
-        'full config': ["JBoss Standalone has been launched, server state is 'running'", "No boot errors detected via CLI", "Admin console listening on http://0.0.0.0:9990", "\"${scriptPaths.'default'}\" --server-config=\"standalone-full.xml\"  -b 0.0.0.0 -bmanagement 0.0.0.0'"], 
-    	'custom logs': ["JBoss Standalone has been launched, server state is 'running'", "No boot errors detected via CLI", "Admin console listening on http://0.0.0.0:9990", "\"${scriptPaths.'default'}\" -Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement 0.0.0.0"],
+        'full config': ["JBoss Standalone has been launched, server state is 'running'", jbossVersion in ['7.1', '7.0', '6.4'] ? "No boot errors detected via CLI" : '', jbossVersion in ['7.1', '7.0', '6.4'] ? "Admin console listening on http://0.0.0.0:9990" : "", "\"${scriptPaths.'default'}\" --server-config=\"standalone-full.xml\"  -b 0.0.0.0 -bmanagement 0.0.0.0'"], 
+    	'custom logs': ["JBoss Standalone has been launched, server state is 'running'", jbossVersion in ['7.1', '7.0', '6.4'] ? "No boot errors detected via CLI" : '', jbossVersion in ['7.1', '7.0', '6.4'] ? "Admin console listening on http://0.0.0.0:9990" : "", "\"${scriptPaths.'default'}\" -Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement 0.0.0.0"],
     	'emptyConfig': ["Configuration WrongConfig doesn't exist"],
     	'error': ["Failed to connect to CLI for verication of server state", "\"${scriptPaths.'default'}\" -b 0.0.0.0 -bmanagement error"],
     	'error and custom path': ["Failed to connect to CLI for verication of server state", "\"${scriptPaths.'default'}\" -Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement error"],
@@ -99,7 +102,7 @@ class StartStandaloneServer extends PluginTestHelper {
 
     def doSetupSpec() {
         logger.info("Hello World! doSetupSpec")
-        redirectLogs()
+        redirectLogs('')
         createDefaultConfiguration(defaultConfigName)
         def resName = createJBossResource()
 
@@ -121,7 +124,7 @@ class StartStandaloneServer extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        // deleteProject(projectName)
+        deleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
@@ -129,7 +132,6 @@ class StartStandaloneServer extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-    @IgnoreRest
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
     def "StartStandaloneServer - positive"() {
@@ -155,16 +157,18 @@ class StartStandaloneServer extends PluginTestHelper {
         assert jobUpperStepSummary =~ summary
         for (log in logs){
         	assert procedureLogs =~ log
-        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getStandaloneStatus()).result == "running"
-    	}
+        }
+        if (jbossVersion in ['7.1', '7.0', '6.4']){
+            assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getStandaloneStatus()).result == "running"
+        }
         where: 'The following params will be: '
         testCaseId                 | configName         | scriptPath             | standaloneConfig             | additionalOption          	      | jbossShouldBeStopped | logs      			    | summary 				| jobExpectedStatus  | logFileLocation
         testCases.systemTest1.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'docker'	      | true                 | jobLogs.'default'		| summaries.'default'	|	"success"        | logFileLocations.'empty'
-        // testCases.systemTest2.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'docker'	      | false                | jobLogs.'started'		| summaries.'started'	|	"warning"        | logFileLocations.'empty'
-        // testCases.systemTest3.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'full'     | additionalOptions.'docker'	      | true                 | jobLogs.'full config'	| summaries.'default'	|	"success"        | logFileLocations.'empty'
-        // testCases.systemTest4.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'custom path'     | true                 | jobLogs.'custom logs'	| summaries.'default'	|	"success"        | logFileLocations.'empty'
-        // testCases.systemTest4.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'custom path'     | true                 | jobLogs.'custom logs'    | summaries.'default'   |   "success"        | logFileLocations.'custom'
-        // testCases.systemTest4.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'custom path'     | true                 | jobLogs.'wrongLogs'      | summaries.'wrongLogs' |   "warning"        | logFileLocations.'wrong'
+        testCases.systemTest2.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'docker'	      | false                | jobLogs.'started'		| summaries.'started'	|	"warning"        | logFileLocations.'empty'
+        testCases.systemTest3.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'full'     | additionalOptions.'docker'	      | true                 | jobLogs.'full config'	| summaries.'default'	|	"success"        | logFileLocations.'empty'
+        testCases.systemTest4.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'custom path'     | true                 | jobLogs.'custom logs'	| summaries.'default'	|	"success"        | logFileLocations.'empty'
+        testCases.systemTest4.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'custom path'     | true                 | jobLogs.'custom logs'    | summaries.'default'   |   "success"        | logFileLocations.'custom'
+        testCases.systemTest4.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'custom path'     | true                 | jobLogs.'wrongLogs'      | summaries.'wrongLogs' |   "warning"        | logFileLocations.'wrong'
     }
 
     @Requires({ env.JBOSS_MODE == 'standalone' })
@@ -200,8 +204,10 @@ class StartStandaloneServer extends PluginTestHelper {
                 serverconfig: defaultConfigName,
                 logFileLocation: logFileLocation,
             ] 
-        runProcedureJob = runProcedureUnderTest(runParams)
-        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getStandaloneStatus()).result == "running"
+            runProcedureJob = runProcedureUnderTest(runParams)
+            if (jbossVersion in ['7.1', '7.0', '6.4']){
+                assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getStandaloneStatus()).result == "running"
+            }
         }
         where: 'The following params will be: '
         testCaseId                 | configName         | scriptPath             | standaloneConfig             | additionalOption          	 			| jbossShouldBeStopped | jbossShouldBeStarted | logs      						  | summary 				| jobExpectedStatus  | logFileLocation
@@ -210,6 +216,6 @@ class StartStandaloneServer extends PluginTestHelper {
         testCases.systemTest7.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'error and custom path'	| false                | false                |jobLogs.'error and custom path'    | summaries.'error' 	    | "error"            | logFileLocations.'empty'
         testCases.systemTest8.name | defaultConfigName  | scriptPaths.'wrong'    | standaloneConfigs.'empty'    | additionalOptions.'docker'                | false                | false                |jobLogs.'wrongScript'              | summaries.'wrongScript' | "error"            | logFileLocations.'empty'
         testCases.systemTest9.name | defaultConfigName  | scriptPaths.'wrong'    | standaloneConfigs.'empty'    | additionalOptions.'custom path'           | false                | true                 |jobLogs.'wrongScript custom logs'  | summaries.'wrongScript' | "error"            | logFileLocations.'empty'
-  }
+    }
 
 }
