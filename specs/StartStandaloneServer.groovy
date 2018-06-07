@@ -95,7 +95,7 @@ class StartStandaloneServer extends PluginTestHelper {
     	'error': ["Failed to connect to CLI for verication of server state", "\"${scriptPaths.'default'}\" -b 0.0.0.0 -bmanagement error"],
     	'error and custom path': ["Failed to connect to CLI for verication of server state", "\"${scriptPaths.'default'}\" -Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement error"],
         'wrongScript': ["\"${scriptPaths.'wrong'}\" -b 0.0.0.0 -bmanagement 0.0.0.0", "Failed to connect to CLI for verication of server state", "Please refer to JBoss logs on file system for more information"],
-        'wrongScript custom logs': ["\"${scriptPaths.'wrong'}\" -Djboss.server.log.dir=C:/tmp/qa -b 0.0.0.0 -bmanagement 0.0.0.0", "Failed to connect to CLI for verication of server state", "Please refer to JBoss logs on file system for more information"],
+        'wrongScript custom logs': ["\"${scriptPaths.'wrong'}\" -Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement 0.0.0.0", "Failed to connect to CLI for verication of server state", "Please refer to JBoss logs on file system for more information"],
         'wrongLogs': ["Warning: Cannot find JBoss log file '${logFileLocations.wrong}'"],
     ]
 
