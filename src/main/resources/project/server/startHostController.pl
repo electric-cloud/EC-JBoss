@@ -490,9 +490,14 @@ sub check_servers {
     my $host_name = $args{host_name} || croak "'host_name' is required param";
 
     my @all_servers = @{ run_command_and_get_json_result_with_exiting_on_non_success(
-        command => "/host=$host_name/:read-children-names(child-type=server)",
+        command => "/host=$host_name/:read-children-names(child-type=server-config)",
         jboss   => $jboss
     ) };
+
+    if (!@all_servers) {
+        $jboss->log_info("There are no servers on host '$host_name'");
+        $jboss->add_summary("There are no servers on host '$host_name'");
+    }
 
     foreach my $server (@all_servers) {
         my $server_status = run_command_and_get_json_result_with_exiting_on_non_success(
