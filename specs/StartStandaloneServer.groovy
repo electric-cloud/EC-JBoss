@@ -149,10 +149,15 @@ class StartStandaloneServer extends PluginTestHelper {
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
         def jobUpperStepSummary = runProcedureJob.getUpperStepSummary()
+        def procedureLogs = runProcedureJob.getLogs()
         
         then:
         assert runProcedureJob.getStatus() == jobExpectedStatus
         assert jobUpperStepSummary =~ summary
+        for (log in logs){
+           assert procedureLogs =~ log
+        }
+
         if (jbossVersion in ['7.1', '7.0', '6.4']){
             assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getStandaloneStatus()).result == "running"
         }
@@ -182,11 +187,14 @@ class StartStandaloneServer extends PluginTestHelper {
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
         def jobUpperStepSummary = runProcedureJob.getUpperStepSummary()
+        def procedureLogs = runProcedureJob.getLogs()
         
         then:
         assert runProcedureJob.getStatus() == jobExpectedStatus
         assert jobUpperStepSummary =~ summary
-
+        for (log in logs){
+           assert procedureLogs =~ log
+        }
         cleanup:
         if (jbossShouldBeStarted){
             runParams = [
