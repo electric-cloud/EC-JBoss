@@ -8,50 +8,50 @@
         <!-- End of improvements for CEV-18687 -->
         <property>serverconfig</property>
         <required>1</required>
-        <documentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin.</documentation>
+        <documentation>Required parameter. Name of the configuration to be used. URL and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for @PLUGIN_KEY@ plugin. NOTE: information for connecting to Master CLI should be provided within the specified configuration, even for stating slave host controllers.</documentation>
         <propertyReference>/plugins/@PLUGIN_NAME@/project/jboss_cfgs</propertyReference>
-        <htmlDocumentation>Name of the configuration to be used. URL and credentials are retrieved from the given configuration.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>.</htmlDocumentation>
+        <htmlDocumentation>Required parameter. Name of the configuration to be used. URL and credentials are retrieved from the given configuration.<br/><br/>A Configuration defines connection details and can be created by going to plugin <a style="text-decoration: none !important; border-bottom-style: dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family: inherit; border-color: #d8d8d8; border-spacing: 2px;" target="_blank" href="/commander/pages/@PLUGIN_NAME@/configurations">configuration page</a>. NOTE: information for connecting to Master CLI should be provided within the specified configuration, even for stating slave host controllers.</htmlDocumentation>
     </formElement>
 	<formElement>
         <type>entry</type>
         <label>Startup Script:</label>
         <property>startupScript</property>
         <required>1</required>
-        <documentation>Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</documentation>
+        <documentation>Required parameter. Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Domain Config:</label>
+        <label>Domain Configuration File:</label>
         <property>domainConfig</property>
         <required>0</required>
-        <documentation>For domain controllers only. Name of the domain configuration file that ElectricFlow uses to start the domain controller with a different domain configuration (--domain-config). By default domain.xml is used.</documentation>
+        <documentation>Optional parameter. For master host controllers only. Name of the domain configuration file to use (stands for '--domain-config' option for domain startup script). By default domain.xml is used.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Host Config:</label>
+        <label>Host Configuration File:</label>
         <property>hostConfig</property>
         <required>0</required>
-        <documentation>For domain and host controllers. Name of the host configuration file that ElectricFlow uses to start the domain or host controller with a different host configuration (--host-config). By default host.xml is used.</documentation>
+        <documentation>Optional parameter. Name of the host configuration file to use (stands for '--host-config' option for domain startup script). For example: host-master.xml, host-slave.xml. By default host.xml is used.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Host Name:</label>
         <property>jbossHostName</property>
         <required>0</required>
-        <documentation>Host name for verification via master CLI that host controller is started</documentation>
+        <documentation>Optional parameter. Recommended to use. NOTE: Recommended is to provide 'Host Name' parameter in order to perform needed checks via Master CLI about requested host controller startup, including a very important check of host state and (for JBoss EAP 6.4 and later versions) extra checks of boot errors. Logic of the procedure is slightly different for cases when 'Host Name' is provided or is not. For example: master, slave-1</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Additional Options:</label>
         <property>additionalOptions</property>
         <required>0</required>
-        <documentation>Additional options</documentation>
+        <documentation>Optional parameter. 'Additional options' to be passed on to domain startup script. The parameters mentioned in this string will be concatenated to already generated command line for starting master or slave host controller. For example for starting slave host controller: '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0'</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
         <label>Log File Location:</label>
         <property>logFileLocation</property>
         <required>0</required>
-        <documentation>Log file location - is used for just showing tailing lines from the log file within procedure logs.</documentation>
+        <documentation>Optional parameter. To be used for providing more information about startup within procedure logs. If provided then the procedure will read recent 100 log lines from the specified file and include them into its own logs. For example: /opt/jboss/domain-copied-for-slave-1/log/host-controller.log</documentation>
     </formElement>
 </editor>

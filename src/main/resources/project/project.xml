@@ -514,7 +514,7 @@
             <formalParameter>
                 <formalParameterName>logFileLocation</formalParameterName>
                 <defaultValue/>
-                <description>Optional parameter. To be used for providing more information about startup within procedure logs. If provided then the procedure will read recent 100 log lines from the specified file and include them into its own logs.</description>
+                <description>Optional parameter. To be used for providing more information about startup within procedure logs. If provided then the procedure will read recent 100 log lines from the specified file and include them into its own logs. For example: /opt/jboss/standalone/log/server.log</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
@@ -4398,7 +4398,7 @@
         </procedure>
         <procedure>
             <procedureName>StartHostController</procedureName>
-            <description>This procedure can be used for starting a master or slave host controller for JBoss Domain.</description>
+            <description>This procedure can be used to either start a domain (master) host controller or start a slave host controller within Managed Domain.</description>
             <jobNameTemplate>jboss-start-host-controller-$[jobId]</jobNameTemplate>
             <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
             <propertySheet>
@@ -4491,49 +4491,49 @@
             <formalParameter>
                 <formalParameterName>serverconfig</formalParameterName>
                 <defaultValue/>
-                <description>A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin.</description>
+                <description>Required parameter. A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for the plugin. NOTE: information for connecting to Master CLI should be provided within the specified configuration, even for stating slave host controllers.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>startupScript</formalParameterName>
                 <defaultValue></defaultValue>
-                <description>Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</description>
+                <description>Required parameter. Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.</description>
                 <required>1</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>domainConfig</formalParameterName>
                 <defaultValue/>
-                <description>For domain controllers only. Name of the domain configuration file that ElectricFlow uses to start the domain controller with a different domain configuration (--domain-config). By default domain.xml is used.</description>
+                <description>Optional parameter. For master host controllers only. Name of the domain configuration file to use (stands for '--domain-config' option for domain startup script). By default domain.xml is used.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>hostConfig</formalParameterName>
                 <defaultValue/>
-                <description>For domain and host controllers. Name of the host configuration file that ElectricFlow uses to start the domain or host controller with a different host configuration (--host-config). By default host.xml is used.</description>
+                <description>Optional parameter. Name of the host configuration file to use (stands for '--host-config' option for domain startup script). For example: host-master.xml, host-slave.xml. By default host.xml is used.</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>jbossHostName</formalParameterName>
                 <defaultValue/>
-                <description>Host name for verification via master CLI that host controller is started</description>
+                <description>Optional parameter. Recommended to use. NOTE: Recommended is to provide 'Host Name' parameter in order to perform needed checks via Master CLI about requested host controller startup, including a very important check of host state and (for JBoss EAP 6.4 and later versions) extra checks of boot errors. Logic of the procedure is slightly different for cases when 'Host Name' is provided or is not. For example: master, slave-1</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>additionalOptions</formalParameterName>
                 <defaultValue/>
-                <description>Additional options</description>
+                <description>Optional parameter. 'Additional options' to be passed on to domain startup script. The parameters mentioned in this string will be concatenated to already generated command line for starting master or slave host controller. For example for starting slave host controller: '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0'</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
             <formalParameter>
                 <formalParameterName>logFileLocation</formalParameterName>
                 <defaultValue/>
-                <description>Log file location - is used for just showing tailing lines from the log file within procedure logs.</description>
+                <description>Optional parameter. To be used for providing more information about startup within procedure logs. If provided then the procedure will read recent 100 log lines from the specified file and include them into its own logs. For example: /opt/jboss/domain-copied-for-slave-1/log/host-controller.log</description>
                 <required>0</required>
                 <type>entry</type>
             </formalParameter>
