@@ -69,21 +69,20 @@ class StartStandaloneServer extends PluginTestHelper {
     ]
 
     @Shared
+    def logFileLocations = [
+        'empty': '',
+        'custom': (EnvPropertiesHelper.getOS()=='UNIX') ? '/tmp/qa/server.log' : 'C:/tmp/qa/server.log',
+        'wrong': (EnvPropertiesHelper.getOS()=='UNIX') ? '/tmp/wrong/server.log' : 'C:/tmp/wrong/server.log',
+    ]
+
+    @Shared
     def summaries = [
         'default': jbossVersion in ['7.1', '7.0', '6.4'] ? "JBoss Standalone has been launched, server state is 'running'\nNo boot errors detected via CLI" : "JBoss Standalone has been launched, server state is 'running'",
         'started': "JBoss is already started in expected operating mode 'standalone'",
         'emptyConfig': "Configuration WrongConfig doesn't exist",
         'error': "Failed to connect to CLI for verication of server state",
         'wrongScript': "Failed to connect to CLI for verication of server state\nPlease refer to JBoss logs on file system for more information",
-        'wrongLogs': jbossVersion in ['7.1', '7.0', '6.4'] ? "JBoss Standalone has been launched, server state is 'running'\nWarning: Cannot find JBoss log file '/tmp/wrong/server.log'\nNo boot errors detected via CLI" : "JBoss Standalone has been launched, server state is 'running'\nWarning: Cannot find JBoss log file '/tmp/wrong/server.log'",
-    ]
-
-
-    @Shared
-    def logFileLocations = [
-        'empty': '',
-        'custom': (EnvPropertiesHelper.getOS()=='UNIX') ? '/tmp/qa/server.log' : 'C:/tmp/qa/server.log',
-        'wrong': (EnvPropertiesHelper.getOS()=='UNIX') ? '/tmp/wrong/server.log' : 'C:/tmp/wrong/server.log',
+        'wrongLogs': jbossVersion in ['7.1', '7.0', '6.4'] ? "JBoss Standalone has been launched, server state is 'running'\nWarning: Cannot find JBoss log file '${logFileLocations.wrong}'\nNo boot errors detected via CLI" : "JBoss Standalone has been launched, server state is 'running'\nWarning: Cannot find JBoss log file '${logFileLocations.wrong}'",
     ]
 
     @Shared
@@ -96,13 +95,13 @@ class StartStandaloneServer extends PluginTestHelper {
     	'error': ["Failed to connect to CLI for verication of server state", "\"${scriptPaths.'default'}\" -b 0.0.0.0 -bmanagement error"],
     	'error and custom path': ["Failed to connect to CLI for verication of server state", "\"${scriptPaths.'default'}\" -Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement error"],
         'wrongScript': ["\"${scriptPaths.'wrong'}\" -b 0.0.0.0 -bmanagement 0.0.0.0", "Failed to connect to CLI for verication of server state", "Please refer to JBoss logs on file system for more information"],
-        'wrongScript custom logs': ["\"${scriptPaths.'wrong'}\" -Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement 0.0.0.0", "Failed to connect to CLI for verication of server state", "Please refer to JBoss logs on file system for more information"],
+        'wrongScript custom logs': ["\"${scriptPaths.'wrong'}\" -Djboss.server.log.dir=C:/tmp/qa -b 0.0.0.0 -bmanagement 0.0.0.0", "Failed to connect to CLI for verication of server state", "Please refer to JBoss logs on file system for more information"],
         'wrongLogs': ["Warning: Cannot find JBoss log file '${logFileLocations.wrong}'"],
     ]
 
     def doSetupSpec() {
         logger.info("Hello World! doSetupSpec")
-        redirectLogs('')
+        redirectLogs()
         createDefaultConfiguration(defaultConfigName)
         def resName = createJBossResource()
 
@@ -150,14 +149,10 @@ class StartStandaloneServer extends PluginTestHelper {
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
         def jobUpperStepSummary = runProcedureJob.getUpperStepSummary()
-        def procedureLogs = runProcedureJob.getLogs()
         
         then:
         assert runProcedureJob.getStatus() == jobExpectedStatus
         assert jobUpperStepSummary =~ summary
-        for (log in logs){
-        	assert procedureLogs =~ log
-        }
         if (jbossVersion in ['7.1', '7.0', '6.4']){
             assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getStandaloneStatus()).result == "running"
         }
@@ -187,14 +182,11 @@ class StartStandaloneServer extends PluginTestHelper {
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
         def jobUpperStepSummary = runProcedureJob.getUpperStepSummary()
-        def procedureLogs = runProcedureJob.getLogs()
         
         then:
         assert runProcedureJob.getStatus() == jobExpectedStatus
         assert jobUpperStepSummary =~ summary
-        for (log in logs){
-        	assert procedureLogs =~ log
-    	}
+
         cleanup:
         if (jbossShouldBeStarted){
             runParams = [

@@ -143,10 +143,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
 
 
     def redirectLogs(String parentProperty = '/myJob') {
-        def propertyLogName = ""
-        if (!parentProperty.equals('')) {
-            propertyLogName = parentProperty + '/debug_logs'
-        } 
+        def propertyLogName = parentProperty + '/debug_logs'
         dsl """
             setProperty(
                 propertyName: "/plugins/EC-JBoss/project/ec_debug_logToProperty",
@@ -154,18 +151,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
             )
         """
         return propertyLogName
-        }
-
-
-    //     def propertyLogName = parentProperty + '/debug_logs'
-    //     dsl """
-    //         setProperty(
-    //             propertyName: "/plugins/EC-JBoss/project/ec_debug_logToProperty",
-    //             value: "$propertyLogName"
-    //         )
-    //     """
-    //     return propertyLogName
-    // }
+    }
 
     def redirectLogsToPipeline() {
         def propertyName = '/myPipelineRuntime/debugLogs'
@@ -259,7 +245,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         """
         }
 
-        // redirectLogs()
+        redirectLogs()
 
         def result = dsl(dslString)
         String jobId = result.jobId
