@@ -28,33 +28,68 @@
                 <a href="#setupconfig">Setting Up the Plugin Configuration</a><br />
                 <a href="#procedures">Plugin Procedures</a><br />
                 <ul>
-                    <li><a href="#CheckDeployStatus">CheckDeployStatus</a> (Standalone/Domain)</li>
-                    <li><a href="#CheckHostControllerStatus">CheckHostControllerStatus</a> (Domain)</li>
-                    <li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a> (Domain)</li>
-                    <li><a href="#CheckServerStatus">CheckServerStatus</a> (Standalone/Domain)</li>
-                    <li><a href="#CreateDatasource">CreateDatasource</a> (Standalone/Domain)</li>
-                    <li><a href="#CreateOrUpdateDataSource">CreateOrUpdateDataSource</a> (Standalone/Domain)</li>
-                    <li><a href="#CreateOrUpdateJMSQueue">CreateOrUpdateJMSQueue</a> (Standalone/Domain)</li>
-                    <li><a href="#CreateOrUpdateJMSTopic">CreateOrUpdateJMSTopic</a> (Standalone/Domain)</li>
-                    <li><a href="#CreateOrUpdateXADataSource">CreateOrUpdateXADataSource</a> (Standalone/Domain)</li>
-                    <li><a href="#DeleteDatasource">DeleteDatasource</a> (Standalone/Domain)</li>
-                    <li><a href="#DeployApp">DeployApp</a> (Standalone/Domain)</li>
-                    <li><a href="#DeployApplication">DeployApplication</a> (Standalone/Domain)</li>
-                    <li><a href="#DisableDeploy">DisableDeploy</a> (Standalone/Domain)</li>
-                    <li><a href="#EnableDeploy">EnableDeploy</a> (Standalone/Domain)</li>
-                    <li><a href="#GetEnvInfo">GetEnvInfo</a> (Standalone/Domain)</li>
-                    <li><a href="#RemoveJMSQueue">RemoveJMSQueue</a> (Standalone/Domain)</li>
-                    <li><a href="#RemoveJMSTopic">RemoveJMSTopic</a> (Standalone/Domain)</li>
-                    <li><a href="#RemoveXADataSource">RemoveXADataSource</a> (Standalone/Domain)</li>
-                    <li><a href="#RunCustomCommand">RunCustomCommand</a> (Standalone/Domain)</li>
-                    <li><a href="#ShutdownStandaloneServer">ShutdownStandaloneServer</a> (Standalone)</li>
-                    <li><a href="#StartDomainServer">StartDomainServer</a> (Domain)</li>
-                    <li><a href="#StartHostController">StartHostController</a> (Domain)</li>
-                    <li><a href="#StartServers">StartServers</a> (Domain)</li>
-                    <li><a href="#StartStandaloneServer">StartStandaloneServer</a> (Standalone)</li>
-                    <li><a href="#StopDomain">StopDomain</a> (Domain)</li>
-                    <li><a href="#StopServers">StopServers</a> (Domain)</li>
-                    <li><a href="#UndeployApp">UndeployApp</a> (Standalone/Domain)</li>
+                    <li>
+                        Server Management
+                        <ul>
+                            <li><a href="#StartStandaloneServer">StartStandaloneServer</a> (Standalone)</li>
+                            <li><a href="#StartHostController">StartHostController</a> (Domain)</li>
+                            <li><a href="#ShutdownStandaloneServer">ShutdownStandaloneServer</a> (Standalone)</li>
+                            <li><a href="#StopDomain">StopDomain</a> (Domain)</li>
+                            <li><a href="#StartServers">StartServers</a> (Domain)</li>
+                            <li><a href="#StopServers">StopServers</a> (Domain)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        JMS Resource Deployment
+                        <ul>
+                            <li><a href="#CreateOrUpdateJMSQueue">CreateOrUpdateJMSQueue</a> (Standalone/Domain)</li>
+                            <li><a href="#CreateOrUpdateJMSTopic">CreateOrUpdateJMSTopic</a> (Standalone/Domain)</li>
+                            <li><a href="#RemoveJMSQueue">RemoveJMSQueue</a> (Standalone/Domain)</li>
+                            <li><a href="#RemoveJMSTopic">RemoveJMSTopic</a> (Standalone/Domain)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Datasource Deployment
+                        <ul>
+                            <li><a href="#CreateOrUpdateDataSource">CreateOrUpdateDataSource</a> (Standalone/Domain)</li>
+                            <li><a href="#CreateOrUpdateXADataSource">CreateOrUpdateXADataSource</a> (Standalone/Domain)</li>
+                            <li><a href="#DeleteDatasource">DeleteDatasource</a> (Standalone/Domain)</li>
+                            <li><a href="#RemoveXADataSource">RemoveXADataSource</a> (Standalone/Domain)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Application Deployment
+                        <ul>
+                            <li><a href="#DeployApplication">DeployApplication</a> (Standalone/Domain)</li>
+                            <li><a href="#DisableDeploy">DisableDeploy</a> (Standalone/Domain)</li>
+                            <li><a href="#EnableDeploy">EnableDeploy</a> (Standalone/Domain)</li>
+                            <li><a href="#UndeployApp">UndeployApp</a> (Standalone/Domain)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Check Status
+                        <ul>
+                            <li><a href="#CheckDeployStatus">CheckDeployStatus</a> (Standalone/Domain)</li>
+                            <li><a href="#CheckHostControllerStatus">CheckHostControllerStatus</a> (Domain)</li>
+                            <li><a href="#CheckServerGroupStatus">CheckServerGroupStatus</a> (Domain)</li>
+                            <li><a href="#CheckServerStatus">CheckServerStatus</a> (Standalone/Domain)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Utility Procedures
+                        <ul>
+                            <li><a href="#GetEnvInfo">GetEnvInfo</a> (Standalone/Domain)</li>
+                            <li><a href="#RunCustomCommand">RunCustomCommand</a> (Standalone/Domain)</li>
+                        </ul>
+                    </li>
+                    <li>
+                        Legacy Procedures
+                        <ul>
+                            <li><a href="#CreateDatasource">CreateDatasource</a> (Standalone/Domain)</li>
+                            <li><a href="#DeployApp">DeployApp</a> (Standalone/Domain)</li>
+                            <li><a href="#StartDomainServer">StartDomainServer</a> (Domain)</li>
+                        </ul>
+                    </li>
                 </ul>
                 <a href="#known-issues">Known Issues</a><br />
                 <a href="#rns">Release Notes</a>
@@ -2781,6 +2816,7 @@
                 <li>Fixed logging for log levels INFO, WARNING, ERROR</li>
                 <li>Improved passing of credentials to JBoss CLI</li>
                 <li>Configured the plugin to allow the ElectricFlow UI to create configs inline of procedure form.</li>
+                <li>Added classification of procedures in the top section of Help File</li>
             </ul>
             <h2>@PLUGIN_KEY@ 2.5.0</h2>
             <ul>
