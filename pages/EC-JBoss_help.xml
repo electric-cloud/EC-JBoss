@@ -2321,7 +2321,7 @@
                 </p>
                 <h3>Input</h3>
                 <ol>
-                    <li>Go to the StartStandaloneSever procedure.</li>
+                    <li>Go to the StartStandaloneServer procedure.</li>
                     <li>Enter the following parameters:<br />
                         <table class="grid">
                             <thead>
@@ -2383,7 +2383,7 @@
                             </tbody>
                         </table>
                         <br />
-                        <img src="../../plugins/@PLUGIN_NAME@/images/StartStandaloneSever/StartStandaloneSeverForm1.PNG" />
+                        <img src="../../plugins/@PLUGIN_NAME@/images/StartStandaloneServer/StartStandaloneServerForm1.PNG" />
                     </li>
                 </ol>
                 <h3>Output</h3>
@@ -2391,7 +2391,7 @@
                     in ElectricFlow. In the <b>StopDomain</b> step, click the
                     Log icon to see the diagnostic information. </p>
                 <br />
-                <img src="../../plugins/@PLUGIN_NAME@/images/StartStandaloneSever/StartStandaloneSeverRun1.PNG" />
+                <img src="../../plugins/@PLUGIN_NAME@/images/StartStandaloneServer/StartStandaloneServerRun1.PNG" />
             </div>
             <div id="StopDomain"> <a name="StopDomain" id="StopDomain"></a>
                 <h2>StopDomain</h2>
@@ -2701,6 +2701,85 @@
             <h1 id="rns">Release Notes</h1>
             <h2>@PLUGIN_KEY@ 2.6.0</h2>
             <ul>
+                <li>
+                    Following procedures have been added
+                    <ul>
+                        <li>
+                            <a href="#CreateOrUpdateDataSource">CreateOrUpdateDataSource</a>
+                        </li>
+                        <li>
+                            <a href="#StartHostController">StartHostController</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    Following procedures have become legacy procedures
+                    <ul>
+                        <li>
+                            <a href="#CreateDatasource">CreateDatasource</a>
+                            (recommended is to use
+                            <a href="#CreateOrUpdateDataSource">CreateOrUpdateDataSource</a>
+                            or
+                            <a href="#CreateOrUpdateXADataSource">CreateOrUpdateXADataSource</a> instead)
+                        </li>
+                        <li>
+                            <a href="#StartDomainServer">StartDomainServer</a>
+                            (recommended is to use
+                            <a href="#StartHostController">StartHostController</a> instead)
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StartStandaloneServer">StartStandaloneServer</a>
+                    <br/><br/>
+                    Compatibility Change:
+                    information for connecting to JBoss CLI is now required to be provided within the specified configuration
+                    due to the fact that verification of JBoss is started is now performed via JBoss CLI.
+                    <br/><br/>
+                    The procedure has been improved significantly by the following changes:
+                    <ul>
+                        <li>Improved documentation, improved step summary, renamed the following parameter labels:
+                            <ul>
+                                <li>'Physical location of the standalone script' to 'Startup Script'</li>
+                                <li>'Optional configuration name' to 'Server Configuration File'</li>
+                            </ul>
+                        </li>
+                        <li>Added 'Additional Options' parameter</li>
+                        <li>Added 'Log File Location' parameter</li>
+                        <li>Fixed handling of 'Server Configuration File' in Windows</li>
+                        <li>Verification of JBoss is started is now performed via JBoss CLI</li>
+                        <li>
+                            Added the following functionality for JBoss EAP 6.4 and later:
+                            <ul>
+                                <li>Reading of boot errors via CLI and setting status to Warning in case if any errors detected</li>
+                                <li>Reading of server logs via CLI and showing them within procedure logs</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#CheckServerGroupStatus">CheckServerGroupStatus</a>
+                    <ul>
+                        <li>Improved documentation, improved step summary</li>
+                        <li>Added new 'Criteria' options: 'DISABLED' and 'STOPPED or DISABLED'</li>
+                        <li>
+                            For ElectricFlow 8.3 and later versions:
+                            added output parameter 'servergroupstatus' with possible values 'TRUE'/'FALSE'
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#StartServers">StartServers</a> and <a href="#StopServers">StopServers</a>
+                    <ul>
+                        <li>Improved/fixed step summary for some specific cases</li>
+                        <li>
+                            Standardized approach for writing step summary:
+                            it is now to be included only into '/myCall/summary' context
+                        </li>
+                    </ul>
+                </li>
+                <li>Fixed logging for log levels INFO, WARNING, ERROR</li>
+                <li>Improved passing of credentials to JBoss CLI</li>
                 <li>Configured the plugin to allow the ElectricFlow UI to create configs inline of procedure form.</li>
             </ul>
             <h2>@PLUGIN_KEY@ 2.5.0</h2>
