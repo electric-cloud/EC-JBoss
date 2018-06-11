@@ -84,10 +84,22 @@
                     </li>
                     <li>
                         Legacy Procedures
+                        <br/><br/>
+                        These procedures have been replaced by more robust procedures and are retained for backwards compatibility.
+                        It is strongly recommended that new implementations not use these procedures. Their replacements are in parentheses.
                         <ul>
-                            <li><a href="#CreateDatasource">CreateDatasource</a> (Standalone/Domain)</li>
-                            <li><a href="#DeployApp">DeployApp</a> (Standalone/Domain)</li>
-                            <li><a href="#StartDomainServer">StartDomainServer</a> (Domain)</li>
+                            <li>
+                                <a href="#CreateDatasource">CreateDatasource</a>
+                                (Use <a href="#CreateOrUpdateDataSource">CreateOrUpdateDataSource</a> instead)
+                            </li>
+                            <li>
+                                <a href="#DeployApp">DeployApp</a>
+                                (Use <a href="#DeployApplication">DeployApplication</a> instead)
+                            </li>
+                            <li>
+                                <a href="#StartDomainServer">StartDomainServer</a>
+                                (Use <a href="#StartHostController">StartHostController</a> instead)
+                            </li>
                         </ul>
                     </li>
                 </ul>
@@ -2069,63 +2081,16 @@
             </div>
             <div id="StartHostController"> <a name='StartHostController' id="StartHostController"></a>
                 <h2>StartHostController</h2>
-                This procedure can be used to either start a domain (master) host controller or start a slave host controller within Managed Domain.
+                This procedure can be used to start any of the Host Controllers (Master or Slave) in a managed domain.
                 <br/><br/>
-                Path to startup script (e.g. domain.sh) and optionally additional options are expected to be passed as input parameters.
-                Furthermore, configuration for connecting to master CLI and preferably host name are expected to be provided in order to perform checks via Master CLI that host controller started correctly.
+                This procedure is typically used in a Scenario where an entire Domain has been stopped using StopDomain, which
+                shuts down all Server Groups and Host Controllers. In that scenario this procedure can be invoked multiple times
+                (i.e., once per Host Controller to start each of them), followed by multiple invocations of StartServers procedure
+                (i.e, once per ServerGroup to start each of them), thus starting the entire Domain.
                 <br/><br/>
-                Master host controller is expected to be started before slave host controllers.
-                Example of startup call for master host controller:
-                <br/>
-                '/opt/jboss/bin/domain.sh --host-config=host-master.xml -Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0'
-                <br/><br/>
-                Example of startup call for slave host controller:
-                <br/>
-                '/opt/jboss/bin/domain.sh --host-config=host-slave.xml -Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0'
-                <br/><br/>
-                NOTE: Recommended is to provide 'Host Name' parameter in order
-                to perform needed checks via Master CLI about requested host controller startup
-                (including a very important check of host state).
-                Logic of the procedure is slightly different for cases when 'Host Name' is provided or is not.
-                <br/><br/>
-                If host controller with specified 'Host Name' is already started within Managed Domain
-                then there will be no attempt to start it again and job status will be Warning.
-                NOTE: if 'Host Name' is not provided this step will be missed.
-                <br/><br/>
-                Once startup script is called by the procedure there will be recurring check whether it is possible to connect to Master CLI
-                and check that state of host controller with specified 'Host Name' is 'running'
-                (CLI command for this: '/host=some_host_name/:read-attribute(name=host-state)').
-                Timeout for recurring check is defined in the code as constant and is equal to 60 seconds.
-                If during this time procedure fail to indicate host state as 'running' then job status will be Error.
-                NOTE: if 'Host Name' is not provided then there will be just gathering information
-                about list of connected host controllers within Managed Domain and reporting it as part of step summary
-                instead of checking state of specific host.
-                <br/><br/>
-                Furthermore, in case if 'Host Name' is provided and CLI is available there will be performed the following extra checks as a final step of the procedure:
-                <ul>
-                    <li>
-                        Reading states of all servers within specified host controller and reporting it as part of step summary
-                        (CLI command for this: '/host=some_host_name/server-config=some_server_name/:read-attribute(name=status)').
-                        Job will have status warning in case if detected servers with statuses other than STARTED, STOPPED or DISABLED.
-                    </li>
-                    <li>
-                        For JBoss EAP 6.4 and later versions: reading host controller boot errors
-                        (CLI command for this: '/host=some_host_name/core-service=management/:read-boot-errors').
-                        If any boot errors are detected then job Status will be Warning.
-                    </li>
-                    <li>
-                        For JBoss EAP 6.4 and later versions: reading boot errors of all servers with statuses STARTED within specified host controller
-                        (CLI command for this: '/host=some_host_name/server=some_server_name/core-service=management/:read-boot-errors').
-                        If any boot errors are detected then job Status will be Warning.
-                    </li>
-                </ul>
-                <br/><br/>
-                In addition, the procedure will try to provide more information within its logs by
-                reading recent logs (tail 100 lines) from the 'Log File Location' (if it was specified within input parameters)
-                and (for JBoss EAP 6.4 and later versions) reading recent logs via CLI of all servers with statuses STARTED within host controller
-                (if it was specified within 'Host Name', tail 100 lines from default files with name server.log for each STARTED server).
-                PS. There are no attempts to figure out logs location on the file system
-                due to the fact that there are too many options of how log file location can be configured in JBoss.
+                In addition, the procedure surfaces server logs and boot errors upon startup (based on optional parameters
+                being provided) as well as providing an ability to over-ride defaults (such as host.xml, domain.xml etc.)
+                required for startup.
                 <h3>Input</h3>
                 <ol>
                     <li>Go to the StartHostController procedure.</li>
@@ -2159,36 +2124,30 @@
                                 <tr>
                                     <td>Domain Configuration File</td>
                                     <td>
-                                        Optional parameter. For master host controllers only.
+                                        Optional Parameter.
+                                        Applies only to master host controllers.
                                         <br/>
-                                        Name of the domain configuration file to use
-                                        (stands for '--domain-config' option for domain startup script).
-                                        By default domain.xml is used.
+                                        Use this parameter only if you have a need to override the default domain.xml
+                                        by a different file which stores your domain configuration.
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Host Configuration File</td>
                                     <td>
-                                        Optional parameter.
+                                        Optional Parameter.
                                         <br/>
-                                        Name of the host configuration file to use
-                                        (stands for '--host-config' option for domain startup script).
-                                        For example: host-master.xml, host-slave.xml.
-                                        By default host.xml is used.
+                                        Use this parameter only if you have a need to override the default host.xml
+                                        by a different file which stores your host configuration.
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>Host Name</td>
                                     <td>
-                                        Optional parameter. Recommended to use.
+                                        Optional parameter.
                                         <br/>
-                                        NOTE: Recommended is to provide 'Host Name' parameter in order
-                                        to perform needed checks via Master CLI about requested host controller startup,
-                                        including a very important check of host state
-                                        and (for JBoss EAP 6.4 and later versions) extra checks of boot errors.
-                                        Logic of the procedure is slightly different for cases when 'Host Name' is provided or is not.
-                                        <br/>
-                                        For example: master, slave-1
+                                        Host Name of the started Host Controller.
+                                        If provided this parameter would be used to connect using the Master Host Controller
+                                        Jboss-cli and surface any boot errors upon startup.
                                     </td>
                                 </tr>
                                 <tr>
@@ -2196,14 +2155,16 @@
                                     <td>
                                         Optional parameter.
                                         <br/>
-                                        'Additional options' to be passed on to domain startup script.
-                                        The parameters mentioned in this string will be concatenated to already generated command line for starting master or slave host controller.
-                                        <br/>
-                                        For example for starting master host controller:
-                                        '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0'
-                                        <br/>
-                                        For example for starting slave host controller:
-                                        '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0'
+                                        'Additional options' to be passed on to domain startup script. If provided parameters will be concatenated AS IS
+                                        to already generated command line for starting master or slave host controller. These are some examples.
+                                        <ul>
+                                            <li>
+                                                '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0'
+                                            </li>
+                                            <li>
+                                                '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0'
+                                            </li>
+                                        </ul>
                                     </td>
                                 </tr>
                                 <tr>
@@ -2211,10 +2172,10 @@
                                     <td>
                                         Optional parameter.
                                         <br/>
-                                        To be used for providing more information about startup within procedure logs.
-                                        If provided then the procedure will read recent 100 log lines
-                                        from the specified file and include them into its own logs.
-                                        For example: /opt/jboss/domain-copied-for-slave-1/log/host-controller.log
+                                        Absolute path location to Host controller log file.
+                                        For example, /opt/jboss/domain-copied-for-slave-1/log/host-controller.log .
+                                        If provided the procedure will read recent 100 log lines from the specified file surface them as
+                                        part of the procedure summary logs.
                                     </td>
                                 </tr>
                             </tbody>
@@ -2329,30 +2290,14 @@
             <div id="StartStandaloneServer"> <a name="StartStandaloneServer" id="StartStandaloneServer"></a>
                 <h2>StartStandaloneServer</h2>
                 <p>
-                    This procedure can be used for starting JBoss as a Standalone Server.
-                    <br/><br/>
-                    Path to startup script (e.g. standalone.sh) and optionally additional options are expected to be passed as input parameters.
-                    Example of startup call:
-                    '/tmp/jboss/bin/standalone.sh --server-config=standalone-full.xml -b=0.0.0.0 -bmanagement=0.0.0.0'
-                    Furthermore, configuration should be provided in order to perform checks via CLI that JBoss started correctly.
+                    The StartStandaloneServer procedure starts a JBoss server in standalone mode.
                     <br/><br/>
                     If JBoss Standalone Server is already started then there will be no attempt to start it again and job status will be Warning.
+                    Upon startup procedure will try to connect using JBOSS CLI to perform a recurring check if server state is Running
+                    upto 60 seconds. Any status other than Running would be deemed as an Error.
                     <br/><br/>
-                    Once startup script is called by the procedure there will be recurring check whether it is possible to connect to CLI
-                    and check that server state is 'running'
-                    (CLI command for this: '/:read-attribute(name=server-state)').
-                    Timeout for recurring check is defined in the code as constant and is equal to 60 seconds.
-                    If during this time procedure fail to indicate server state as 'running' then job status will be Error.
-                    <br/><br/>
-                    For JBoss EAP 6.4 and later versions: in case if CLI is available as a final step of the procedure there will be performed
-                    reading of boot errors (CLI command for this: '/core-service=management/:read-boot-errors').
-                    If any boot errors are detected then job Status will be Warning.
-                    <br/><br/>
-                    In addition, the procedure will try to provide more information within its logs by
-                    reading recent logs (tail 100 lines) from the 'Log File Location' (if it was specified within input parameters)
-                    and (for JBoss EAP 6.4 and later versions) reading recent logs via CLI (tail 100 lines from default file server.log).
-                    PS. There are no attempts to figure out logs location on the file system
-                    due to the fact that there are too many options of how log file location can be configured in JBoss.
+                    The procedure will server will surface any boot errors upon startup and if logfile location is provided in addition,
+                    it will surface the last 100 lines of the server log file in the procedure summary logs.
                 </p>
                 <h3>Input</h3>
                 <ol>
@@ -2409,10 +2354,10 @@
                                     <td>
                                         Optional parameter.
                                         <br/>
-                                        To be used for providing more information about startup within procedure logs.
-                                        If provided then the procedure will read recent 100 log lines
-                                        from the specified file and include them into its own logs.
-                                        For example: /opt/jboss/standalone/log/server.log
+                                        Absolute path location to server log file.
+                                        For example, /opt/jboss/standalone/log/server.log .
+                                        If provided the procedure will the most recent 100 log lines from the specified file and
+                                        surface them in the procedure summary logs.
                                     </td>
                                 </tr>
                             </tbody>
@@ -2748,48 +2693,23 @@
                     </ul>
                 </li>
                 <li>
-                    Following procedures have become legacy procedures
-                    <ul>
-                        <li>
-                            <a href="#CreateDatasource">CreateDatasource</a>
-                            (recommended is to use
-                            <a href="#CreateOrUpdateDataSource">CreateOrUpdateDataSource</a>
-                            or
-                            <a href="#CreateOrUpdateXADataSource">CreateOrUpdateXADataSource</a> instead)
-                        </li>
-                        <li>
-                            <a href="#StartDomainServer">StartDomainServer</a>
-                            (recommended is to use
-                            <a href="#StartHostController">StartHostController</a> instead)
-                        </li>
-                    </ul>
-                </li>
-                <li>
                     <a href="#StartStandaloneServer">StartStandaloneServer</a>
                     <br/><br/>
-                    Compatibility Change:
-                    information for connecting to JBoss CLI is now required to be provided within the specified configuration
-                    due to the fact that verification of JBoss is started is now performed via JBoss CLI.
-                    <br/><br/>
-                    The procedure has been improved significantly by the following changes:
+                    The procedure has been improved significantly. The following are the changes:
                     <ul>
-                        <li>Improved documentation, improved step summary, renamed the following parameter labels:
+                        <li>Improved step summary</li>
+                        <li>Following parameter labels were relabeled:
                             <ul>
                                 <li>'Physical location of the standalone script' to 'Startup Script'</li>
                                 <li>'Optional configuration name' to 'Server Configuration File'</li>
                             </ul>
                         </li>
-                        <li>Added 'Additional Options' parameter</li>
-                        <li>Added 'Log File Location' parameter</li>
-                        <li>Fixed handling of 'Server Configuration File' in Windows</li>
-                        <li>Verification of JBoss is started is now performed via JBoss CLI</li>
-                        <li>
-                            Added the following functionality for JBoss EAP 6.4 and later:
-                            <ul>
-                                <li>Reading of boot errors via CLI and setting status to Warning in case if any errors detected</li>
-                                <li>Reading of server logs via CLI and showing them within procedure logs</li>
-                            </ul>
-                        </li>
+                        <li>New optional parameter 'Additional Options' for changing startup behavior</li>
+                        <li>New optional parameter 'Log File Location' which will be used to surface server logs.</li>
+                        <li>Fixed handling of 'Server Configuration File' in Windows for overriding the default standalone.xml by a different file which stores server configuration.</li>
+                        <li>Verification of Server Startup is verified through connecting JBOSS CLI successfully to Server.</li>
+                        <li>Boot errors upon start up are surfaced.</li>
+                        <li>The most recent 100 lines of Server logs are shown if log file location is specified.</li>
                     </ul>
                 </li>
                 <li>
@@ -2798,8 +2718,8 @@
                         <li>Improved documentation, improved step summary</li>
                         <li>Added new 'Criteria' options: 'DISABLED' and 'STOPPED or DISABLED'</li>
                         <li>
-                            For ElectricFlow 8.3 and later versions:
-                            added output parameter 'servergroupstatus' with possible values 'TRUE'/'FALSE'
+                            For ElectricFlow 8.3 and later versions added an output parameter to capture if the Criteria checked by this procedure
+                            returns TRUE/FALSE
                         </li>
                     </ul>
                 </li>
