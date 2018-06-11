@@ -19,6 +19,9 @@
         <property>scriptphysicalpath</property>
         <required>0</required>
         <propertyReference type="property">/plugins/@PLUGIN_NAME@/project/jboss_cfgs/$serverconfig/scriptphysicalpath</propertyReference>
+        <!-- Improvements for ECPAPPSERVERJBOSS-773 -->
+        <dependsOn>serverconfig</dependsOn>
+        <!-- End of improvements for ECPAPPSERVERJBOSS-773 -->
         <documentation>Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.</documentation>
     </formElement>
     <formElement>
