@@ -2694,7 +2694,7 @@
                 </li>
                 <li>
                     <a href="#StartStandaloneServer">StartStandaloneServer</a>
-                    <br/><br/>
+                    <br/>
                     The procedure has been improved significantly. The following are the changes:
                     <ul>
                         <li>Improved step summary</li>
