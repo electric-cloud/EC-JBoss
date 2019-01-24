@@ -20,7 +20,7 @@
                  ideas, examples, and so on. It is OK to copy them word-for-word only if it is appropriate, such as FOSS.
                  However, do not do this with commercial software. -->
 
-            <p>Revised on June 8, 2018</p>
+            <p>Revised on January 24, 2019</p>
 
             <h1>Contents</h1>
             <p>
@@ -2679,6 +2679,10 @@
             "JBAS010839: Operation failed or was rolled back on all servers." (in Domain)
             <br/>
             <h1 id="rns">Release Notes</h1>
+            <h2>@PLUGIN_KEY@ 2.6.1</h2>
+            <ul>
+                <li>The plugin icon has been updated.</li>
+            </ul>
             <h2>@PLUGIN_KEY@ 2.6.0</h2>
             <ul>
                 <li>
