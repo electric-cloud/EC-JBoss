@@ -447,9 +447,10 @@ if ($promoteAction eq 'promote') {
         my $versions = $commander->getVersions();
 
         if (my $version = $versions->findvalue('//version')) {
-            my ( $major, $minor ) = split('\.', $version);
+            require ElectricCommander::Util;
+            ElectricCommander::Util->import('compareMinor');
 
-            if ($major >= 8 && $minor >= 3) {
+            if (compareMinor($version, '8.3') >= 0) {
                 checkAndSetOutputParameters(@formalOutputParameters);
             }
         }
