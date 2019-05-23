@@ -4,7 +4,7 @@
     <version>@PLUGIN_VERSION@</version>
     <label>@PLUGIN_KEY@</label>
     <description>JBoss Application Server integration</description>
-    <author>Electric Cloud</author>
+    <author>CloudBees</author>
     <configure>configurations.xml</configure>
     <help>EC-JBoss_help.xml</help>
     <authorUrl>http://www.electric-cloud.com/support</authorUrl>
