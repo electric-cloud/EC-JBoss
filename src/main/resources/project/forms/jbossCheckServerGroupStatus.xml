@@ -43,7 +43,7 @@
         <label>Criteria:</label>
         <property>criteria</property>
         <required>1</required>
-        <documentation>A desired status for all servers in the group. Possible options: 'STARTED', 'STOPPED', 'DISABLED', 'STOPPED or DISABLED'. The procedure will have status success if criteria is met. For Electric Flow 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".</documentation>
+        <documentation>A desired status for all servers in the group. Possible options: 'STARTED', 'STOPPED', 'DISABLED', 'STOPPED or DISABLED'. The procedure will have status success if criteria is met. For CloudBees Flow 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".</documentation>
         <option>
             <name>STARTED</name>
             <value>STARTED</value>
