@@ -1,7 +1,7 @@
 EC-JBoss
 ============
 
-The ElectricFlow JBoss integration
+The CloudBees Flow JBoss integration
 
 ## Compile ##
 
