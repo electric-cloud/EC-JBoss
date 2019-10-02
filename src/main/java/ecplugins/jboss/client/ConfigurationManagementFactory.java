@@ -11,13 +11,13 @@ package ecplugins.jboss.client;
 
 import ecinternal.client.InternalComponentBaseFactory;
 import ecinternal.client.InternalFormBase;
-import ecinternal.client.PropertySheetEditor;
 
 import com.electriccloud.commander.gwt.client.BrowserContext;
 import com.electriccloud.commander.gwt.client.Component;
 import com.electriccloud.commander.gwt.client.ComponentContext;
 import org.jetbrains.annotations.NotNull;
 
+import ecplugins.jboss.client.EditConfigPropertySheetEditor;
 import static com.electriccloud.commander.gwt.client.util.CommanderUrlBuilder.createPageUrl;
 
 public class ConfigurationManagementFactory
@@ -38,14 +38,15 @@ public class ConfigurationManagementFactory
         else if ("edit".equals(panel)) {
             String configName    = BrowserContext.getInstance()
                                                  .getGetParameter("configName");
-            String propSheetPath = "/plugins/" + getPluginName()
-                    + "/project/jboss_cfgs/" + configName;
+            String projectName = "/plugins/" + getPluginName() + "/project";
+            String propSheetPath = projectName
+                    + "/jboss_cfgs/" + configName;
             String formXmlPath   = "/plugins/" + getPluginName()
                     + "/project/ui_forms/JBossEditConfigForm";
 
-            component = new PropertySheetEditor("ecgc",
+            component = new EditConfigPropertySheetEditor("ecgc",
                     "Edit JBoss Configuration", configName, propSheetPath,
-                    formXmlPath, getPluginName());
+                    formXmlPath, projectName, getPluginName());
 
             ((InternalFormBase) component).setDefaultRedirectToUrl(
                 createPageUrl(getPluginName(), "configurations").buildString());
