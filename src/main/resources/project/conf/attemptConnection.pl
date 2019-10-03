@@ -7,13 +7,11 @@ use ElectricCommander::PropMod;
 
 use Data::Dumper;
 
-#*****************************************************************************
 use constant {
     SUCCESS => 0,
     ERROR   => 1,
 };
 
-#*****************************************************************************
 my $ec = ElectricCommander->new();
 
 my $PROJECT_NAME = '$[/myProject/projectName]';
@@ -27,6 +25,7 @@ my $jboss = EC::JBoss->new(
     plugin_name                     => $PLUGIN_NAME,
     plugin_key                      => $PLUGIN_KEY,
     no_cli_path_in_procedure_params => 1,
+    config_name                     => '$[config]',
     _credentials                    => {
         config              => '$[config]',
         jboss_url           => '$[jboss_url]',
@@ -45,9 +44,7 @@ my $stderr;
 my $code;
 
 eval {
-    %result = $jboss->run_command(
-        command => ":read-attribute(name=product-version)"
-    );
+    %result = $jboss->run_command(":read-attribute(name=product-version)");
 };
 
 if ($@) {

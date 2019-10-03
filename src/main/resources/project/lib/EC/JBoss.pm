@@ -141,6 +141,10 @@ sub new {
         $self->{config_name} = $params{config_name};
     }
 
+    if ($params{_credentials}) {
+        $self->{_credentials} = $params{_credentials};
+    }
+
     my $creds = $self->get_plugin_configuration();
 
     if ($creds->{log_level} && is_positive_int($creds->{log_level})) {
