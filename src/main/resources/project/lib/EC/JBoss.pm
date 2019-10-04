@@ -1827,6 +1827,48 @@ sub get_jboss_product_version {
     return $self->{jboss_product_version};
 }
 
+sub logInfoDiag {
+    my ($self, @params) = @_;
+
+    return $self->printDiagMessage('INFO', @params);
+}
+
+sub logErrorDiag {
+    my ($self, @params) = @_;
+
+    return $self->printDiagMessage('ERROR', @params);
+}
+
+sub logWarningDiag {
+    my ($self, @params) = @_;
+
+    return $self->printDiagMessage('WARNING', @params);
+}
+
+sub printDiagMessage {
+    my ($self, @params) = @_;
+
+    my $level = shift @params;
+
+    if (!$level || !@params) {
+        return 0;
+    }
+
+    $level = uc $level;
+    if ($level !~ m/^(?:ERROR|WARNING|INFO)$/s) {
+        return 0;
+    }
+
+    # \n[OUT][%s]: %s :[%s][OUT]\n
+    my $begin = "\n[OUT][$level]: ";
+    my $end   = " :[$level][OUT]\n";
+
+    my $msg = join '', @params;
+    $msg = $begin . $msg . $end;
+
+    return $self->log_info($msg);
+}
+
 1;
 
 =back

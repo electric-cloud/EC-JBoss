@@ -68,6 +68,11 @@
             </property>
             <!-- End of CEV-17558 improvements -->
             <property>
+                <propertyName>postp_loader</propertyName>
+                <value>ec-perl -MElectricCommander -MElectricCommander::PropMod -e "ElectricCommander::PropMod::loadPerlCodeFromProperty(ElectricCommander->new(), '/projects/@PLUGIN_KEY@-@PLUGIN_VERSION@/jboss_driver/EC::POSTP');EC::POSTP->run(\@ARGV)";</value>
+                <expandable>0</expandable>
+            </property>
+            <property>
                 <propertyName>jboss_driver</propertyName>
                 <description>Home for perl code</description>
                 <propertySheet>
@@ -94,6 +99,11 @@
                         <description>Newest File::Path.</description>
                         <expandable>0</expandable>
                         <value/>
+                    </property>
+                    <property>
+                        <propertyName>EC::POSTP</propertyName>
+                        <value/>
+                        <expandable>0</expandable>
                     </property>
                 </propertySheet>
             </property>
@@ -324,7 +334,7 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-                <postProcessor/>
+                <postProcessor>$[/myProject/postp_loader]</postProcessor>
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName>$[test_connection_res]</resourceName>
                 <retries>0</retries>
@@ -362,7 +372,7 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-                <postProcessor>postp</postProcessor>
+                <postProcessor>$[/myProject/postp_loader]</postProcessor>
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName>local</resourceName>
                 <retries>0</retries>
@@ -584,7 +594,7 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-                <postProcessor/>
+                <postProcessor>$[/myProject/postp_loader]</postProcessor>
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName>$[test_connection_res]</resourceName>
                 <retries>0</retries>
@@ -657,7 +667,7 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-                <postProcessor>postp</postProcessor>
+                <postProcessor>$[/myProject/postp_loader]</postProcessor>
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName>local</resourceName>
                 <retries>0</retries>

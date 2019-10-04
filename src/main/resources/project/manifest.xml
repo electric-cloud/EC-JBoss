@@ -5,6 +5,10 @@
         <xpath>//property[propertyName=&quot;EC::JBoss&quot;]/value</xpath>
     </file>
     <file>
+        <path>lib/EC/POSTP.pm</path>
+        <xpath>//property[propertyName="EC::POSTP"]/value</xpath>
+    </file>
+    <file>
         <path>lib/EC/LogTrapper.pm</path>
         <xpath>//property[propertyName=&quot;EC::LogTrapper&quot;]/value</xpath>
     </file>
