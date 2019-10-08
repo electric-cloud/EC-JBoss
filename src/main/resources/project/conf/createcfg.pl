@@ -39,9 +39,9 @@ my $PLUGIN_KEY = '@PLUGIN_KEY@';
 my $ec = ElectricCommander->new();
 $ec->abortOnError(0);
 
-ElectricCommander::PropMod::loadPerlCodeFromProperty($ec, '/myProject/jboss_driver/FlowPDF::Log');
+ElectricCommander::PropMod::loadPerlCodeFromProperty($ec, '/myProject/jboss_driver/EC::Logger');
 
-my $logger = FlowPDF::Log->new();
+my $logger = EC::Logger->new(log_level_old_api_value => '$[log_level]');
 
 #*****************************************************************************
 sub configurationError {
@@ -51,7 +51,9 @@ sub configurationError {
     $ec->setProperty('/myJobStep/summary', $errmsg);
     $ec->setProperty('/myJobStep/outcome', 'error');
 
-    $logger->logErrorDiag("Create Configuration failed.\n\n$errmsg");
+    $logger->diagnostic_error("Create Configuration failed.\n\n$errmsg");
+
+    $logger->error("Create configuration failed");
 
     return;
 }
@@ -91,6 +93,6 @@ foreach my $key (keys %{$opts}) {
     $cfg->setCol("$opts->{config}", $key, "$opts->{$key}");
 }
 
-print "Configuration \"$opts->{config}\" created.\n";
+$logger->info("Configuration \"$opts->{config}\" created.\n");
 
 exit(SUCCESS);

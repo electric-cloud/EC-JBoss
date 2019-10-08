@@ -9,8 +9,8 @@
         <xpath>//property[propertyName="EC::POSTP"]/value</xpath>
     </file>
     <file>
-        <path>lib/FlowPDF/Log.pm</path>
-        <xpath>//property[propertyName=&quot;FlowPDF::Log&quot;]/value</xpath>
+        <path>lib/EC/Logger.pm</path>
+        <xpath>//property[propertyName=&quot;EC::Logger&quot;]/value</xpath>
     </file>
     <file>
         <path>lib/EC/LogTrapper.pm</path>

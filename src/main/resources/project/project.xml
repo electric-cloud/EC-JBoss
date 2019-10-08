@@ -101,7 +101,7 @@
                         <value/>
                     </property>
                     <property>
-                        <propertyName>FlowPDF::Log</propertyName>
+                        <propertyName>EC::Logger</propertyName>
                         <expandable>0</expandable>
                         <value/>
                     </property>

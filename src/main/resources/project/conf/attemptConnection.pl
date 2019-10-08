@@ -19,9 +19,9 @@ my $PLUGIN_NAME = '@PLUGIN_NAME@';
 my $PLUGIN_KEY = '@PLUGIN_KEY@';
 
 ElectricCommander::PropMod::loadPerlCodeFromProperty($ec, '/myProject/jboss_driver/EC::JBoss');
-ElectricCommander::PropMod::loadPerlCodeFromProperty($ec, '/myProject/jboss_driver/FlowPDF::Log');
+ElectricCommander::PropMod::loadPerlCodeFromProperty($ec, '/myProject/jboss_driver/EC::Logger');
 
-my $logger = FlowPDF::Log->new();
+my $logger = EC::Logger->new(log_level_old_api_value => '$[log_level]');
 
 my %result;
 
@@ -60,16 +60,16 @@ my $suggestions_on_warning = q{Connection to JBoss CLI can be establised but err
 my $plugin_error = $@;
 if ($plugin_error) {
     my $summary .= "Error reported during plugin usage: [$plugin_error]";
-    $logger->logInfo("Error reported during plugin usage: $summary");
+    $logger->info("Error reported during plugin usage: $summary");
 
     $ec->setProperty('/myJob/configError', $summary . "\n\n" . $suggestions_on_error);
     $ec->setProperty('/myJobStep/summary', $summary . "\n\n" . $suggestions_on_error);
     $ec->setProperty('/myJobStep/outcome', 'error');
 
-    $logger->logErrorDiag("Create Configuration failed.\n\n$summary");
-    $logger->logInfoDiag($suggestions_on_error);
+    $logger->diagnostic_error("Create Configuration failed.\n\n$summary");
+    $logger->diagnostic_info($suggestions_on_error);
 
-    $logger->logError("Cannot test connection to JBoss");
+    $logger->error("Cannot test connection to JBoss");
 
     exit(ERROR);
 }
@@ -82,17 +82,17 @@ my $summary = "";
 $summary .= "Output: [$stdout]\n" if ($stdout);
 $summary .= "Error output: [$stderr]\n" if ($stderr);
 $summary .= "Return code: $code";
-$logger->logInfo("Test command run summary: $summary");
+$logger->info("Test command run summary: $summary");
 
 if ($code) {
     $ec->setProperty('/myJob/configError', $summary . "\n\n" . $suggestions_on_error);
     $ec->setProperty('/myJobStep/summary', $summary . "\n\n" . $suggestions_on_error);
     $ec->setProperty('/myJobStep/outcome', 'error');
 
-    $logger->logErrorDiag("Create Configuration failed.\n\n$summary");
-    $logger->logInfoDiag($suggestions_on_error);
+    $logger->diagnostic_error("Create Configuration failed.\n\n$summary");
+    $logger->diagnostic_info($suggestions_on_error);
 
-    $logger->logError("Connection failed");
+    $logger->error("Connection failed");
 
     exit(ERROR);
 }
@@ -102,13 +102,13 @@ else {
         $ec->setProperty('/myJobStep/summary', $summary . "\n\n" . $suggestions_on_warning);
         $ec->setProperty('/myJobStep/outcome', 'warning');
 
-        $logger->logWarningDiag("Connection succeeded but error output is catched during command run.\n\n$summary");
-        $logger->logInfoDiag($suggestions_on_warning);
+        $logger->diagnostic_warning("Connection succeeded but error output is catched during command run.\n\n$summary");
+        $logger->diagnostic_info($suggestions_on_warning);
 
-        $logger->logWarning("Connection succeeded but error output is catched during command run");
+        $logger->warning("Connection succeeded but error output is catched during command run");
     }
     else {
-        $logger->logInfo("Connection succeeded");
+        $logger->info("Connection succeeded");
     }
 
     exit(SUCCESS);
