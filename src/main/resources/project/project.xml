@@ -101,9 +101,14 @@
                         <value/>
                     </property>
                     <property>
-                        <propertyName>EC::POSTP</propertyName>
-                        <value/>
+                        <propertyName>FlowPDF::Log</propertyName>
                         <expandable>0</expandable>
+                        <value/>
+                    </property>
+                    <property>
+                        <propertyName>EC::POSTP</propertyName>
+                        <expandable>0</expandable>
+                        <value/>
                     </property>
                 </propertySheet>
             </property>

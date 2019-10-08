@@ -39,37 +39,19 @@ my $PLUGIN_KEY = '@PLUGIN_KEY@';
 my $ec = ElectricCommander->new();
 $ec->abortOnError(0);
 
-ElectricCommander::PropMod::loadPerlCodeFromProperty($ec, '/myProject/jboss_driver/EC::JBoss');
+ElectricCommander::PropMod::loadPerlCodeFromProperty($ec, '/myProject/jboss_driver/FlowPDF::Log');
 
-my $jboss = EC::JBoss->new(
-    project_name                    => $PROJECT_NAME,
-    plugin_name                     => $PLUGIN_NAME,
-    plugin_key                      => $PLUGIN_KEY,
-    no_cli_path_in_procedure_params => 1,
-    config_name                     => '$[config]',
-    _credentials                    => {
-        config              => '$[config]',
-        jboss_url           => '$[jboss_url]',
-        scriptphysicalpath  => '$[scriptphysicalpath]',
-        credential          => '$[credential]',
-        test_connection     => '$[test_connection]',
-        test_connection_res => '$[test_connection_res]',
-        log_level           => '$[log_level]',
-        java_opts           => '$[java_opts]'
-    }
-);
+my $logger = FlowPDF::Log->new();
 
 #*****************************************************************************
 sub configurationError {
     my ($errmsg) = @_;
 
     $ec->setProperty('/myJob/configError', $errmsg);
+    $ec->setProperty('/myJobStep/summary', $errmsg);
+    $ec->setProperty('/myJobStep/outcome', 'error');
 
-    $jboss->add_error_summary($errmsg);
-
-    $jboss->logErrorDiag("Create Configuration failed.\n\n$errmsg");
-
-    $jboss->add_status_error();
+    $logger->logErrorDiag("Create Configuration failed.\n\n$errmsg");
 
     return;
 }
