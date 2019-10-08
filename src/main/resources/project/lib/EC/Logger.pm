@@ -3,6 +3,8 @@ package EC::Logger;
 use strict;
 use warnings;
 
+use Carp;
+
 my $LOG_LEVEL_OLD_API_VALUE_DEBUG = 4;
 my $LOG_LEVEL_OLD_API_VALUE_INFO = 1;
 my $LOG_LEVEL_OLD_API_VALUE_WARNING = 2;
