@@ -68,6 +68,11 @@
             </property>
             <!-- End of CEV-17558 improvements -->
             <property>
+                <propertyName>postp_loader</propertyName>
+                <value>ec-perl -MElectricCommander -MElectricCommander::PropMod -e "ElectricCommander::PropMod::loadPerlCodeFromProperty(ElectricCommander->new(), '/projects/@PLUGIN_KEY@-@PLUGIN_VERSION@/jboss_driver/EC::POSTP');EC::POSTP->run(\@ARGV)";</value>
+                <expandable>0</expandable>
+            </property>
+            <property>
                 <propertyName>jboss_driver</propertyName>
                 <description>Home for perl code</description>
                 <propertySheet>
@@ -92,6 +97,16 @@
                     <property>
                         <propertyName>File::Path</propertyName>
                         <description>Newest File::Path.</description>
+                        <expandable>0</expandable>
+                        <value/>
+                    </property>
+                    <property>
+                        <propertyName>EC::Logger</propertyName>
+                        <expandable>0</expandable>
+                        <value/>
+                    </property>
+                    <property>
+                        <propertyName>EC::POSTP</propertyName>
                         <expandable>0</expandable>
                         <value/>
                     </property>
@@ -230,6 +245,26 @@
                                         </property>
                                     </propertySheet>
                                 </property>
+                                <property>
+                                    <propertyName>test_connection</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>test_connection_res</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
                             </propertySheet>
                         </property>
                     </propertySheet>
@@ -277,6 +312,60 @@
                 <required>0</required>
                 <type>credential</type>
             </formalParameter>
+            <formalParameter>
+                <formalParameterName>test_connection</formalParameterName>
+                <defaultValue/>
+                <description>
+                    Check if connection should be established during config creation to validate credentials.
+                </description>
+                <required>0</required>
+                <type>checkbox</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>test_connection_res</formalParameterName>
+                <defaultValue/>
+                <description>A resource which is used for the testing connection.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <step>
+                <stepName>AttemptConnection</stepName>
+                <alwaysRun>0</alwaysRun>
+                <broadcast>0</broadcast>
+                <command/>
+                <condition>$[test_connection]</condition>
+                <description/>
+                <errorHandling>abortJob</errorHandling>
+                <exclusive>0</exclusive>
+                <logFileName/>
+                <parallel>0</parallel>
+                <postProcessor>$[/myProject/postp_loader]</postProcessor>
+                <releaseExclusive>0</releaseExclusive>
+                <resourceName>$[test_connection_res]</resourceName>
+                <retries>0</retries>
+                <shell>ec-perl</shell>
+                <timeLimit/>
+                <timeLimitUnits>minutes</timeLimitUnits>
+                <workingDirectory/>
+                <workspaceName/>
+                <procedureName>CreateConfiguration</procedureName>
+                <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
+                <propertySheet>
+                    <property>
+                        <propertyName>ec_customEditorData</propertyName>
+                        <propertySheet>
+                            <property>
+                                <propertyName>formType</propertyName>
+                                <expandable>1</expandable>
+                                <value>command</value>
+                            </property>
+                        </propertySheet>
+                    </property>
+                </propertySheet>
+                <attachedParameters>
+                    <formalParameterName>credential</formalParameterName>
+                </attachedParameters>
+            </step>
             <step>
                 <stepName>CreateConfiguration</stepName>
                 <alwaysRun>0</alwaysRun>
@@ -288,7 +377,7 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-                <postProcessor>postp</postProcessor>
+                <postProcessor>$[/myProject/postp_loader]</postProcessor>
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName>local</resourceName>
                 <retries>0</retries>
@@ -355,6 +444,190 @@
             </step>
         </procedure>
         <procedure>
+            <procedureName>EditConfiguration</procedureName>
+            <description>Edit a JBoss configuration</description>
+            <jobNameTemplate>jboss-cfg-$[jobId]</jobNameTemplate>
+            <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
+            <propertySheet>
+                <property>
+                    <propertyName>ec_customEditorData</propertyName>
+                    <propertySheet>
+                        <property>
+                            <propertyName>parameters</propertyName>
+                            <propertySheet>
+                                <property>
+                                    <propertyName>jboss_url</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>scriptphysicalpath</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>java_opts</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>log_level</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>credential</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>test_connection</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                                <property>
+                                    <propertyName>test_connection_res</propertyName>
+                                    <propertySheet>
+                                        <property>
+                                            <propertyName>formType</propertyName>
+                                            <expandable>1</expandable>
+                                            <value>standard</value>
+                                        </property>
+                                    </propertySheet>
+                                </property>
+                            </propertySheet>
+                        </property>
+                    </propertySheet>
+                </property>
+            </propertySheet>
+            <formalParameter>
+                <formalParameterName>config</formalParameterName>
+                <defaultValue/>
+                <description>Configuration Name</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>jboss_url</formalParameterName>
+                <defaultValue/>
+                <description>IP Address of JBoss AS.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>scriptphysicalpath</formalParameterName>
+                <defaultValue/>
+                <description>Physical path to jboss-cli.</description>
+                <required>1</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>java_opts</formalParameterName>
+                <defaultValue/>
+                <description>Additional JAVA_OPTS</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>log_level</formalParameterName>
+                <defaultValue/>
+                <description>Log level.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>credential</formalParameterName>
+                <defaultValue/>
+                <description/>
+                <required>0</required>
+                <type>credential</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>test_connection</formalParameterName>
+                <defaultValue/>
+                <description>
+                    Check if connection should be established during config edition to validate credentials.
+                </description>
+                <required>0</required>
+                <type>checkbox</type>
+            </formalParameter>
+            <formalParameter>
+                <formalParameterName>test_connection_res</formalParameterName>
+                <defaultValue/>
+                <description>A resource which is used for the testing connection.</description>
+                <required>0</required>
+                <type>entry</type>
+            </formalParameter>
+            <step>
+                <stepName>AttemptConnection</stepName>
+                <alwaysRun>0</alwaysRun>
+                <broadcast>0</broadcast>
+                <command/>
+                <condition>$[test_connection]</condition>
+                <description/>
+                <errorHandling>abortJob</errorHandling>
+                <exclusive>0</exclusive>
+                <logFileName/>
+                <parallel>0</parallel>
+                <postProcessor>$[/myProject/postp_loader]</postProcessor>
+                <releaseExclusive>0</releaseExclusive>
+                <resourceName>$[test_connection_res]</resourceName>
+                <retries>0</retries>
+                <shell>ec-perl</shell>
+                <timeLimit/>
+                <timeLimitUnits>minutes</timeLimitUnits>
+                <workingDirectory/>
+                <workspaceName/>
+                <procedureName>EditConfiguration</procedureName>
+                <projectName>@PLUGIN_KEY@-@PLUGIN_VERSION@</projectName>
+                <propertySheet>
+                    <property>
+                        <propertyName>ec_customEditorData</propertyName>
+                        <propertySheet>
+                            <property>
+                                <propertyName>formType</propertyName>
+                                <expandable>1</expandable>
+                                <value>command</value>
+                            </property>
+                        </propertySheet>
+                    </property>
+                </propertySheet>
+                <attachedParameters>
+                    <formalParameterName>credential</formalParameterName>
+                </attachedParameters>
+            </step>
+        </procedure>
+        <procedure>
             <procedureName>DeleteConfiguration</procedureName>
             <description>Delete an JBoss configuration</description>
             <jobNameTemplate>jboss-cfg-$[jobId]</jobNameTemplate>
@@ -399,7 +672,7 @@
                 <exclusive>0</exclusive>
                 <logFileName/>
                 <parallel>0</parallel>
-                <postProcessor>postp</postProcessor>
+                <postProcessor>$[/myProject/postp_loader]</postProcessor>
                 <releaseExclusive>0</releaseExclusive>
                 <resourceName>local</resourceName>
                 <retries>0</retries>

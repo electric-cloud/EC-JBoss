@@ -195,6 +195,18 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td >Test Connection?</td>
+                                <td>Check if connection should be established during config creation to validate credentials.</td>
+                            </tr>
+                            <tr>
+                                <td >Test Connection Resource</td>
+                                <td>A resource which is used for the testing connection.</td>
+                            </tr>
+                            <tr>
+                                <td >Log Level</td>
+                                <td>Log level to use for logging output. INFO=1, WARNING=2, ERROR=3, DEBUG=4.</td>
+                            </tr>
+                            <tr>
                                 <td>Additional Java options</td>
                                 <td>Additional java options. This line will be added to the value of JAVA_OPTS environment variable.</td>
                             </tr>
@@ -2680,9 +2692,29 @@
             <br/>
             <h1 id="rns">Release Notes</h1>
 
-    <h2 id="2.6.3">@PLUGIN_KEY@ 2.6.3</h2>
-    <p>Renaming from "Electric Cloud" to "CloudBees"</p>
-
+            <h2 id="2.7.0">@PLUGIN_KEY@ 2.7.0</h2>
+            <ul>
+                <li>
+                    Updated create and edit plugin configuration procedures by the following
+                    <ul>
+                        <li>
+                            Added possibility to test connection with JBoss within provided resource
+                        </li>
+                        <li>
+                            Added more logging and diagnostic messages
+                        </li>
+                        <li>
+                            Jobs with successful run for creating or editing configuration will not be removed automatically
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <h2 id="2.6.3">@PLUGIN_KEY@ 2.6.3</h2>
+            <ul>
+                <li>
+                    Renaming from "Electric Cloud" to "CloudBees"
+                </li>
+            </ul>
             <h2>@PLUGIN_KEY@ 2.6.2</h2>
             <ul>
                 <li>Fixed the issue with lost output parameters for 9.0: upon upgrade or clean install of 9.0 output parameters were not created for the plugin's procedures.</li>
