@@ -2692,9 +2692,29 @@
             <br/>
             <h1 id="rns">Release Notes</h1>
 
-    <h2 id="2.6.3">@PLUGIN_KEY@ 2.6.3</h2>
-    <p>Renaming from "Electric Cloud" to "CloudBees"</p>
-
+            <h2 id="2.7.0">@PLUGIN_KEY@ 2.7.0</h2>
+            <ul>
+                <li>
+                    Update create and edit configuration procedures by the following
+                    <ul>
+                        <li>
+                            Added possibility to test connection with JBoss within provided resource
+                        </li>
+                        <li>
+                            Added more logging and diagnostic messages
+                        </li>
+                        <li>
+                            Jobs with successful run are now preserved.
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <h2 id="2.6.3">@PLUGIN_KEY@ 2.6.3</h2>
+            <ul>
+                <li>
+                    Renaming from "Electric Cloud" to "CloudBees"
+                </li>
+            </ul>
             <h2>@PLUGIN_KEY@ 2.6.2</h2>
             <ul>
                 <li>Fixed the issue with lost output parameters for 9.0: upon upgrade or clean install of 9.0 output parameters were not created for the plugin's procedures.</li>
