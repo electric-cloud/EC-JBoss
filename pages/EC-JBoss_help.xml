@@ -2695,7 +2695,7 @@
             <h2 id="2.7.0">@PLUGIN_KEY@ 2.7.0</h2>
             <ul>
                 <li>
-                    Update create and edit configuration procedures by the following
+                    Updated create and edit plugin configuration procedures by the following
                     <ul>
                         <li>
                             Added possibility to test connection with JBoss within provided resource
@@ -2704,7 +2704,7 @@
                             Added more logging and diagnostic messages
                         </li>
                         <li>
-                            Jobs with successful run are now preserved.
+                            Jobs with successful run for creating or editing configuration will not be removed automatically
                         </li>
                     </ul>
                 </li>
