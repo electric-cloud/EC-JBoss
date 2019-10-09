@@ -195,6 +195,18 @@
                                 </td>
                             </tr>
                             <tr>
+                                <td >Test Connection?</td>
+                                <td>Check if connection should be established during config creation to validate credentials.</td>
+                            </tr>
+                            <tr>
+                                <td >Test Connection Resource</td>
+                                <td>A resource which is used for the testing connection.</td>
+                            </tr>
+                            <tr>
+                                <td >Log Level</td>
+                                <td>Log level to use for logging output. INFO=1, WARNING=2, ERROR=3, DEBUG=4.</td>
+                            </tr>
+                            <tr>
                                 <td>Additional Java options</td>
                                 <td>Additional java options. This line will be added to the value of JAVA_OPTS environment variable.</td>
                             </tr>

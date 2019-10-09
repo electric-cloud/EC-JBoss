@@ -37,23 +37,23 @@ sub new {
 
 sub info {
     my ($self, @messages) = @_;
-    $self->_log($LOG_LEVEL_PRIORITY_INT_INFO, '[INFO] ', @messages);
+    $self->_log($LOG_LEVEL_PRIORITY_INT_INFO, 'INFO: ', @messages);
 }
 
 sub debug {
     my ($self, @messages) = @_;
-    $self->_log($LOG_LEVEL_PRIORITY_INT_DEBUG, '[DEBUG] ', @messages);
+    $self->_log($LOG_LEVEL_PRIORITY_INT_DEBUG, 'DEBUG: ', @messages);
 }
 
 sub warning {
     my ($self, @messages) = @_;
 
-    $self->_log($LOG_LEVEL_PRIORITY_INT_WARNING, '[WARNING] ', @messages);
+    $self->_log($LOG_LEVEL_PRIORITY_INT_WARNING, 'WARNING: ', @messages);
 }
 
 sub error {
     my ($self, @messages) = @_;
-    $self->_log($LOG_LEVEL_PRIORITY_INT_ERROR, '[ERROR] ', @messages);
+    $self->_log($LOG_LEVEL_PRIORITY_INT_ERROR, 'ERROR: ', @messages);
 }
 
 sub _log {
