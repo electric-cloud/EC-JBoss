@@ -53,7 +53,7 @@ my $suggestions_on_error = q{Connection to JBoss CLI cannot be establised. Reaso
 4. Credentials - Are credentials correct? Is it possible to use these credentials to log in to JBoss using its console or CLI?
 };
 
-my $suggestions_on_warning = q{Connection to JBoss CLI can be establised but error output is catched during command run:
+my $suggestions_on_warning = q{Connection to JBoss CLI can be establised but error output is caught during command run:
 1. It is suggested to investigate possible reasons why error output is present during command run
 };
 
@@ -102,10 +102,10 @@ else {
         $ec->setProperty('/myJobStep/summary', $summary . "\n\n" . $suggestions_on_warning);
         $ec->setProperty('/myJobStep/outcome', 'warning');
 
-        $logger->diagnostic_warning("Connection succeeded but error output is catched during command run.\n\n$summary");
+        $logger->diagnostic_warning("Connection succeeded but error output is caught during command run.\n\n$summary");
         $logger->diagnostic_info($suggestions_on_warning);
 
-        $logger->warning("Connection succeeded but error output is catched during command run");
+        $logger->warning("Connection succeeded but error output is caught during command run");
     }
     else {
         $logger->info("Connection succeeded");
