@@ -23,6 +23,10 @@ ElectricCommander::PropMod::loadPerlCodeFromProperty($ec, '/myProject/jboss_driv
 
 my $logger = EC::Logger->new(log_level_old_api_value => '$[log_level]');
 
+my $cred_xpath = $ec->getFullCredential('$[credential]');
+my $username = $cred_xpath->findvalue("//userName");
+my $password = $cred_xpath->findvalue("//password");
+
 my %result;
 
 eval {
@@ -37,6 +41,8 @@ eval {
             jboss_url           => '$[jboss_url]',
             scriptphysicalpath  => '$[scriptphysicalpath]',
             credential          => '$[credential]',
+            user                => $username,
+            password            => $password,
             test_connection     => '$[test_connection]',
             test_connection_res => '$[test_connection_res]',
             log_level           => '$[log_level]',
