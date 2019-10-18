@@ -195,15 +195,15 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td >Check Connection?</td>
+                                <td>Check Connection?</td>
                                 <td>If checked, the configuration will be saved only if connection with JBoss can be established with given configuration.</td>
                             </tr>
                             <tr>
-                                <td >Check Connection Resource</td>
+                                <td>Check Connection Resource</td>
                                 <td>A resource which is used for checking connection.</td>
                             </tr>
                             <tr>
-                                <td >Log Level</td>
+                                <td>Log Level</td>
                                 <td>Log level to use for logging output. INFO=1, WARNING=2, ERROR=3, DEBUG=4.</td>
                             </tr>
                             <tr>
