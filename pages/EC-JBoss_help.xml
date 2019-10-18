@@ -20,7 +20,7 @@
                  ideas, examples, and so on. It is OK to copy them word-for-word only if it is appropriate, such as FOSS.
                  However, do not do this with commercial software. -->
 
-            <p>Revised on May 27, 2019</p>
+            <p>Revised on October 18, 2019</p>
 
             <h1>Contents</h1>
             <p>
@@ -195,15 +195,15 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td >Test Connection?</td>
-                                <td>Check if connection should be established during config creation to validate credentials.</td>
+                                <td>Check Connection?</td>
+                                <td>If checked, the configuration will be saved only if connection with JBoss can be established with given configuration.</td>
                             </tr>
                             <tr>
-                                <td >Test Connection Resource</td>
-                                <td>A resource which is used for the testing connection.</td>
+                                <td>Check Connection Resource</td>
+                                <td>A resource which is used for checking connection.</td>
                             </tr>
                             <tr>
-                                <td >Log Level</td>
+                                <td>Log Level</td>
                                 <td>Log level to use for logging output. INFO=1, WARNING=2, ERROR=3, DEBUG=4.</td>
                             </tr>
                             <tr>
@@ -2698,7 +2698,7 @@
                     Updated create and edit plugin configuration procedures by the following
                     <ul>
                         <li>
-                            Added possibility to test connection with JBoss within provided resource
+                            Added possibility to check connection with JBoss within provided resource
                         </li>
                         <li>
                             Added more logging and diagnostic messages

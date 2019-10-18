@@ -52,14 +52,14 @@ eval {
     %result = $jboss->run_command(":read-attribute(name=product-version)");
 };
 
-my $suggestions_on_error = q{Connection to JBoss CLI cannot be establised. Reasons could be due to one or more of the following. Please ensure the following are correct and try again:
+my $suggestions_on_error = q{Connection to JBoss CLI cannot be established. Reasons could be due to one or more of the following. Please ensure the following are correct and try again:
 1. JBoss controller location (JBoss URL) - Is JBoss URL complete and reachable from the agent?
 2. Physical location of the jboss client script (JBoss CLI script path)  - Is JBoss CLI script path correct?
-3. Test Connection Resource - Is test resource correctly wired with Flow?  Is test resource correctly setup with JBoss?
+3. Check Connection Resource - Is the resource correctly wired with Flow?  Is the resource correctly setup with JBoss?
 4. Credentials - Are credentials correct? Is it possible to use these credentials to log in to JBoss using its console or CLI?
 };
 
-my $suggestions_on_warning = q{Connection to JBoss CLI can be establised but error output is caught during command run:
+my $suggestions_on_warning = q{Connection to JBoss CLI can be established but error output is caught during command run:
 1. It is suggested to investigate possible reasons why error output is present during command run
 };
 
@@ -75,7 +75,7 @@ if ($plugin_error) {
     $logger->diagnostic_error("Create Configuration failed.\n\n$summary");
     $logger->diagnostic_info($suggestions_on_error);
 
-    $logger->error("Cannot test connection to JBoss");
+    $logger->error("Cannot check connection to JBoss");
 
     exit(ERROR);
 }
