@@ -25,19 +25,19 @@
     </formElement>
     <formElement>
         <type>checkbox</type>
-        <label>Test Connection?:</label>
+        <label>Check Connection?:</label>
         <property>test_connection</property>
         <checkedValue>1</checkedValue>
         <uncheckedValue>0</uncheckedValue>
         <required>0</required>
-        <documentation>Check if connection should be established during config creation to validate credentials.</documentation>
+        <documentation>If checked, the configuration will be saved only if connection with JBoss can be established with given configuration.</documentation>
     </formElement>
     <formElement>
         <type>entry</type>
-        <label>Test Connection Resource:</label>
+        <label>Check Connection Resource:</label>
         <property>test_connection_res</property>
         <value></value>
-        <documentation>A resource which is used for the testing connection.</documentation>
+        <documentation>A resource which is used for checking connection.</documentation>
         <dependsOn>test_connection</dependsOn>
         <condition>${test_connection} == 1</condition>
         <required>0</required>
