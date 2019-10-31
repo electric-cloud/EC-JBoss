@@ -11,7 +11,7 @@ defaultTasks 'test'
 
 repositories {
     jcenter()
-//    mavenCentral()
+    mavenCentral()
     maven {
         url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
@@ -25,6 +25,7 @@ dependencies {
     compile 'org.spockframework:spock-core:1.1-groovy-2.4-SNAPSHOT'
     compile 'com.electriccloud:commander-spec-tests:latest.release'
     compile 'com.jayway.restassured:rest-assured:2.4.0'
+    compile 'com.electriccloud:ec-specs-plugins-core:1.9.1'
 
     compile( 'com.athaydes:spock-reports:1.6.0' ) {
         transitive = false // this avoids affecting your version of Groovy/Spock
