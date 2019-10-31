@@ -4,6 +4,8 @@ import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 import spock.lang.*
 import static org.junit.Assume.*
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 
 class CreateOrUpdateDataSource extends PluginTestHelper {
 
@@ -326,6 +328,77 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters, credential)
     }
 
+    @Sanity
+    @Requires({ env.JBOSS_MODE == 'standalone' })
+    @Unroll
+    def "Sanity"() {
+        // should be test ignored ?
+        // if "shouldBeIgnored" is true, test will be skipped
+        assumeFalse(shouldBeIgnored)
+
+        // modify credentialds for tests: C323744, C323745
+        if (testCaseId in [testCases.systemTest6.name, testCases.systemTest7.name]){
+            modifyCredential(projectName, creds, userName, password)
+        }
+
+        def runParams = [
+                additionalOptions: additionalOption,
+                connectionUrl: url,
+                dataSourceConnectionCredentials: creds,
+                dataSourceName: dsName,
+                enabled: enabled,
+                jdbcDriverName: jdbcDriverName,
+                jndiName: jndiName,
+                profile: profile,
+                serverconfig: configName
+
+        ]
+        def credential = [
+                credentialName: creds,
+                userName: userName,
+                password: password
+        ]
+        when:
+        // Jboss 6.1 removes driver after its reboot
+        if (jbossVersion == '6.1' && testCaseId == testCases.systemTest4.name) {
+            addJDBCMySQL(drivers.mysql)
+        }
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+        // we should reboot Jboss after adding of DS in version 6.1
+        // Jboss 6.1 has next logic: after a creation all DS's have status "is enabled-false", after Jboss was rebooted, all DS's  have status "is enabled-true"
+        if (jbossVersion == '6.1') {
+            reloadServer()
+        }
+        // we expect "success" or "warning"
+        // "success": if the server does not need reloading
+        // "warning": if server needs reloading, and this case we throw text "reload-required" or
+        // "restart-required" (it depends on jboss version).
+        def jobUpperStepSummary = runProcedureJob.getUpperStepSummary()
+        def procedureLogs = runProcedureJob.getLogs()
+        def jobExpectedStatus = "success"
+        if (jobUpperStepSummary.contains("reload-required") || jobUpperStepSummary.contains("restart-required")) {
+            jobExpectedStatus = "warning"
+        }
+        then:
+        assert runProcedureJob.getStatus() == jobExpectedStatus
+        assert jobUpperStepSummary =~ summaries.'default'.replace("dsName1", dsName)
+        assert procedureLogs =~ jobLogs.'default'.replace("dsName1", dsName)
+        assert !(procedureLogs.contains("profile"))
+        checkCreateDataSource(dsName, jndiName, jdbcDriverName, enabled, password, userName, url, additionalOption)
+
+        cleanup:
+        // put credentialds in the proper state after execution of tests: C323744, C323745
+        if (testCaseId in [testCases.systemTest6.name, testCases.systemTest7.name]){
+            modifyCredential(projectName, creds, userNames.defaultUserName, passwords.defaultPassword)
+        }
+
+        where: 'The following params will be: '
+        testCaseId                      | configName         | dsName                                 | jndiName                         | jdbcDriverName  | url            | creds                            | userName                  | password                  | enabled                 | profile         | additionalOption                 | shouldBeIgnored
+        testCases.systemTest1.name      | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | false
+        testCases.systemTest2.name      | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | !(jbossVersion in ['7.1', '7.0'])
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
     def "CreateorUpdateXADataSource - standalone - create DS - positive"() {
@@ -405,6 +478,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest12.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'complex sql'  | jbossVersion in ['7.0', '6.4']     
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'domain' })
     @Unroll
     def "CreateorUpdateXADataSource - domain - create DS - positive"() {
@@ -481,6 +555,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest35.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'complex sql'    | jbossVersion in ['7.0', '6.4']
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
     def "CreateorUpdateXADataSource - standalone - Update DS - positive"() {
@@ -550,6 +625,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest16.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | jndiNames.'default'+testCaseId  | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | userName          | passwords.defaultPassword | password          | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'   | jobLogs.notUpdate                                                                     | summaries.notUpdate.replace("dsName1", dsName)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'domain' })
     @Unroll
     def "CreateorUpdateXADataSource - domain - Update DS - positive"() {
@@ -618,6 +694,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest39.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | jndiNames.'default'+testCaseId  | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | userName          | passwords.defaultPassword | password          | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'   | jobLogs.notUpdate                                                                     | summaries.notUpdate.replace("dsName1", dsName)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
     def "CreateorUpdateXADataSource - standalone - create DS - negative"() {
@@ -663,6 +740,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest23.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'wrong'  | jobLogs.wrongOptions  | summaries.wrongOptions
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'domain' })
     @Unroll
     def "CreateorUpdateXADataSource - domain - create DS - negative"() {
@@ -710,6 +788,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest46.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'wrong'  | jobLogs.wrongOptions  | summaries.wrongOptions
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
     def "CreateorUpdateXADataSource - standalone - Update DS - negative"() {
@@ -752,6 +831,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest24.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | jndiNames.'wrong'               | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | userName          | passwords.defaultPassword | password          | statusOfEnabled.'false'  | profiles.empty  | additionalOptions.'empty'   | jobLogs.wrongJNDI   | summaries.wrongJNDI
    }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'domain' })
     @Unroll
     def "CreateorUpdateXADataSource - domain - Update DS - negative"() {

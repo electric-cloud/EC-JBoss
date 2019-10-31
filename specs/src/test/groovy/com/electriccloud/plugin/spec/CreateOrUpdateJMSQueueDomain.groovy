@@ -1,5 +1,7 @@
 package com.electriccloud.plugin.spec
 
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 import spock.lang.*
@@ -63,6 +65,37 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C278706"
+
+        def runParams = [
+                additionalOptions    : '',
+                durable              : '',
+                jndiNames            : defaultJndiNames,
+                messageSelector      : '',
+                profile              : defaultProfile,
+                queueName            : "testQueue-$testCaseId",
+                serverconfig         : defaultConfigName
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
+
+        String queueName = "testQueue-$testCaseId"
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
+
+        cleanup:
+        queueName = "testQueue-$testCaseId"
+        removeJMSQueue(queueName, defaultProfile)
+    }
+
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create JMS Queue with minimum parameters (C278706)"() {
         String testCaseId = "C278706"
@@ -91,6 +124,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         removeJMSQueue(queueName, defaultProfile)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create JMS Queue with 'Durable=true' (C278382)"() {
         String testCaseId = "C278382"
@@ -119,6 +153,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         removeJMSQueue(queueName, defaultProfile)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create JMS Queue with message selector (C278385)"() {
         String testCaseId = "C278385"
@@ -147,6 +182,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         removeJMSQueue(queueName, defaultProfile)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create JMS Queue, --durable=true in additional option (C278390)"() {
         String testCaseId = "C278390"
@@ -175,6 +211,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         removeJMSQueue(queueName, defaultProfile)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create JMS Queue with all completed field (C278391)"() {
         String testCaseId = "C278391"
@@ -205,6 +242,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
 
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Update JMS Queue, ignored change 'Durable' (C278387)"() {
         String testCaseId = "C278387"
@@ -236,6 +274,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         removeJMSQueue(queueName, defaultProfile)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Update JMS Queue, ignored change 'Message Selector' (C278388)"() {
         String testCaseId = "C278388"
@@ -268,6 +307,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Update JMS Queue, on other profile with the same parameters (C278409)"() {
         String testCaseId = "C278409"
@@ -302,6 +342,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         removeJMSQueue(queueName, "full-ha")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.1' })
     def "Create JMS Queue with 'message selector' with whitespace (C278436)"() {
@@ -333,6 +374,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Update JMS Queue, ignored change 'Message Selector' on another (C278438)"() {
         String testCaseId = "C278438"
@@ -365,6 +407,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. Create JMS Queue without 'Queue Name' (C278396)"() {
         String testCaseId = "C278396"
@@ -387,6 +430,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'queueName' is not provided"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. Create JMS Queue without 'JNDI Names' (C278397)"() {
         String testCaseId = "C278397"
@@ -409,6 +453,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'jndiNames' is not provided"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. Create JMS Queue, with non-existing 'Configuration Name' (C278370)"() {
         String testCaseId = "C278370"
@@ -431,6 +476,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.serverconfig} doesn't exist."
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create JMS Queue, with 'Durable=true' and --durable=true in additional options (C278401)"() {
         String testCaseId = "C278401"
@@ -460,6 +506,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         removeJMSQueue(queueName, defaultProfile)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.0' })
     def "Negative. Create JMS Queue with wrong additional option (C278402)"() {
@@ -484,6 +531,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized argument ${runParams.additionalOptions} for command '$command'."
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. Create JMS Queue without 'Profile' (C278412)"() {
         String testCaseId = "C278412"
@@ -506,6 +554,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'profile' is not provided \\(parameter required for JBoss domain\\)"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. Update JMS Queue without 'Profile' (C278413)"() {
         String testCaseId = "C278413"
@@ -534,6 +583,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         removeJMSQueue(queueName, defaultProfile)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Create JMS Queue with additional option --legacy-entries (C278381)"() {
@@ -565,6 +615,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Update JMS Queue, change 'JNDI Names' (C278386)"() { //need manual check with app
         String testCaseId = "C278386"
@@ -607,6 +658,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Update JMS Queue with all completed field, change JNDI, ignored other fileds (C278392)"() {
         String testCaseId = "C278392"

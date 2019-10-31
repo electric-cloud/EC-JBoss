@@ -2,6 +2,8 @@ package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
@@ -47,6 +49,34 @@ class RemoveJMSTopicStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C278481"
+
+        def runParams = [
+                profile          : '',
+                serverconfig     : defaultConfigName,
+                topicName        : '',
+        ]
+
+        setup:
+        String topicName = "testTopic-$testCaseId"
+        addJMSTopicDefaultStandalone(topicName, defaultJndiNames)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
+
+        cleanup:
+        topicName = "testTopic-$testCaseId"
+        removeJMSTopic(topicName)
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Remove JMS Topic without 'Topic Name' (C278481)"() {
         String testCaseId = "C278481"
@@ -73,6 +103,7 @@ class RemoveJMSTopicStandalone extends PluginTestHelper {
         removeJMSTopic(topicName)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Remove JMS Topic, non existing Topic Name (C278482)"() {
         String testCaseId = "C278482"

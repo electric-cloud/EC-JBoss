@@ -2,6 +2,8 @@ package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
 @Requires({ env.OS == 'UNIX' && env.JBOSS_VERSION in ['7.0', '7.1']})
@@ -167,6 +169,41 @@ class StartHostController extends PluginTestHelper {
     }
 
     @Requires({ env.JBOSS_TOPOLOGY == 'master' })
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        def runParams = [
+                additionalOptions: additionalOption,
+                domainConfig: domainConfig,
+                hostConfig: hostConfig,
+                jbossHostName: jbossHostName,
+                logFileLocation: logFileLocation,
+                serverconfig: serverconfig,
+                startupScript: startupScript,
+        ]
+        setup:
+        runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.shutDownHostDomain(jbossHostNames.'master'))
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        def jobUpperStepSummary = runProcedureJob.getUpperStepSummary()
+        def procedureLogs = runProcedureJob.getLogs()
+
+        then:
+        assert runProcedureJob.getStatus() == jobExpectedStatus
+        assert jobUpperStepSummary =~ summary
+        for (log in logs){
+            assert procedureLogs =~ log
+        }
+
+
+        where:
+        testCaseId                  | serverconfig      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption                                          | jobExpectedStatus | summary                             | logs
+        testCases.systemTest1.name  | defaultConfigName | domainConfigs.'default' | hostConfigs.'default'    | jbossHostNames.'master'   | startupScripts.'default'  | logFileLocations.'empty'   | additionalOptions.'docker'                                | "success"         | summaries.'default'                 | jobLogs.'default'
+        testCases.systemTest2.name  | defaultConfigName | domainConfigs.'default' | hostConfigs.'default'    | jbossHostNames.'master'   | startupScripts.'default'  | logFileLocations.'custom'  | additionalOptions.'docker'+additionalOptions.'customLogs' | "success"         | summaries.'default'                 | jobLogs.'customLogs'
+    }
+
+    @Requires({ env.JBOSS_TOPOLOGY == 'master' })
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StartHostController - start jboss: success and warning, boot errors"() {
         def runParams = [
@@ -206,6 +243,7 @@ class StartHostController extends PluginTestHelper {
     }
 
     @Requires({ env.JBOSS_TOPOLOGY == 'master_slave' })
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Start Slave - positive"() {
         def runParams = [
@@ -240,6 +278,7 @@ class StartHostController extends PluginTestHelper {
     }
 
     @Requires({ env.JBOSS_TOPOLOGY == 'master' })
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StartHostController - errors"() {
         def runParams = [
@@ -283,6 +322,7 @@ class StartHostController extends PluginTestHelper {
     }
 
     @Requires({ env.JBOSS_TOPOLOGY == 'master_slave' })
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Start Slave - errors"() {
         def runParams = [

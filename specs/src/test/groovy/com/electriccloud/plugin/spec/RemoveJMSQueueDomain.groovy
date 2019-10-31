@@ -3,6 +3,8 @@ package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
@@ -50,6 +52,34 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C278433"
+
+        def runParams = [
+                profile          : defaultProfile,
+                queueName        : '',
+                serverconfig     : defaultConfigName
+        ]
+
+        setup:
+        String queueName = "testQueue-$testCaseId"
+        addJMSQueueDefaultDomain(queueName, defaultJndiNames, defaultProfile)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'queueName' is not provided"
+
+        cleanup:
+        queueName = "testQueue-$testCaseId"
+        removeJMSQueue(queueName, defaultProfile)
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Remove JMS Queue without 'Queue Name' (C278433)"() {
         String testCaseId = "C278433"
@@ -76,6 +106,7 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
         removeJMSQueue(queueName, defaultProfile)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Remove JMS Queue, non existing Queue Name (C278434)"() {
         String testCaseId = "C278434"
@@ -94,6 +125,7 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' not found"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Remove JMS Queue, without 'Profile' (C278430)"() {
         String testCaseId = "C278430"

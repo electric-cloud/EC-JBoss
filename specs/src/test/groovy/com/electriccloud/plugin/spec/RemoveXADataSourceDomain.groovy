@@ -3,6 +3,8 @@ package com.electriccloud.plugin.spec
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 import spock.lang.*
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class RemoveXADataSourceDomain extends PluginTestHelper {
@@ -107,7 +109,33 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         }
         return  pathForJar
     }
-    
+
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C289593"
+        String jdbcDriverName = "mysql"
+        def runParams = [
+                profile          : defaultProfile,
+                serverconfig     : defaultConfigName,
+                dataSourceName   : 'MysqlXADS',
+        ]
+        setup:
+        def dataSourceName = runParams.dataSourceName
+        addXADatasource(defaultProfile, dataSourceName, jndiName.mysql, jdbcDriverName, 'com.mysql.jdbc.jdbc2.optional.MysqlXADataSource')
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$dataSourceName' has been removed successfully"
+        assert getListOfXADataSource(defaultProfile) == null
+
+        cleanup:
+        reloadServer('master')
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "RemoveXADataSource, MySQL C289593"() {
         String testCaseId = "C289593"
@@ -133,6 +161,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
     }
 
     @Ignore
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "RemoveXADataSource Enabled XA dataSource, MySQL C289593"() {
         String testCaseId = "C289593"
@@ -159,6 +188,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
     }
 
     @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3']})
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "RemoveXADataSource, PostgreSQL C289594"() {
         String testCaseId = "C289594"
@@ -183,6 +213,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         reloadServer('master')
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "RemoveXADataSource, H2 C290242"() {
         String testCaseId = "C290242"
@@ -207,6 +238,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         reloadServer('master')
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "RemoveXADataSource, not existing 'Configuration name' C289610"() {
         String testCaseId = "C289610"
@@ -225,6 +257,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         assert runProcedureJob.getLogs() =~ "Configuration no_name doesn't exist."
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "RemoveXADataSource, without 'Profile' C289609"() {
         String testCaseId = "C289609"
@@ -243,6 +276,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
         assert runProcedureJob.getLogs() =~ "Required parameter 'profile' is not provided"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "   RemoveXADataSource, not existing 'Data Source Name' C289611"() {
         String testCaseId = "C289611"
@@ -262,6 +296,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
     }
 
     // Bug P3 http://jira/browse/ECPAPPSERVERJBOSS-667
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "RemoveXADataSource, not existing 'full' C289612"() {
         String testCaseId = "C289612"

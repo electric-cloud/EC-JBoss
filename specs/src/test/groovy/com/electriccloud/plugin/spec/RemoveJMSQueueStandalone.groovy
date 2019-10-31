@@ -2,6 +2,8 @@ package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
@@ -48,6 +50,35 @@ class RemoveJMSQueueStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C278427"
+
+        def runParams = [
+                profile          : '',
+                queueName        : '',
+                serverconfig     : defaultConfigName
+        ]
+
+        setup:
+        String queueName = "testQueue-$testCaseId"
+        addJMSQueueDefaultStandalone(queueName, defaultJndiNames)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'queueName' is not provided"
+
+        cleanup:
+        queueName = "testQueue-$testCaseId"
+        removeJMSQueue(queueName)
+
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Remove JMS Queue without 'Queue Name' (C278427)"() {
         String testCaseId = "C278427"
@@ -75,6 +106,7 @@ class RemoveJMSQueueStandalone extends PluginTestHelper {
 
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Remove JMS Queue, non existing Queue Name (C278428)"() {
         String testCaseId = "C278428"

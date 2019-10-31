@@ -4,7 +4,8 @@ import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerHelper
 import spock.lang.*
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 
 @IgnoreIf({ EnvPropertiesHelper.getOS() == "WINDOWS" })
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
@@ -54,9 +55,42 @@ class StopDomainMaster extends PluginTestHelper {
 
     RunProcedureJob runProcedureUnderTest(def parameters) {
         return runProcedureDsl(projectName, procName, parameters)
-    }    
+    }
 
     @Timeout(600)
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C289387"
+        def serverGroupName = "default"
+
+        def runParams = [
+                serverconfig     		: defaultConfigName,
+                allControllersShutdown  : '',
+                jbossTimeout        	: '',
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() in ["warning", "success"]
+        assert runProcedureJob.getUpperStepSummary() =~ "Performed stop-servers operation for domain"
+        for (item in serverNames){
+            ServerHelper server = new ServerHelper(item.Name, serverGroupName, item.Host)
+            def expectedStatus = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerAutoStartInDomain(server)).result ? 'STOPPED' : 'DISABLED'
+            assert  runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server)).result == expectedStatus
+        }
+
+        cleanup:
+        for (item in serverNames){
+            ServerHelper server = new ServerHelper(item.Name, serverGroupName, item.Host)
+            runCliCommand(CliCommandsGeneratorHelper.startServerCmd(server))
+        }
+        waitUntilServerIsUp('master')
+    }
+
+    @Timeout(600)
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StopDomain, with minimum parameters (no wait time - undef) (C289387)"() {
     	String testCaseId = "C289387"
@@ -88,6 +122,7 @@ class StopDomainMaster extends PluginTestHelper {
     }
 
     @Timeout(600)
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StopDomain, with default parameters (C289399)"() {
         String testCaseId = "C289399"
@@ -114,6 +149,7 @@ class StopDomainMaster extends PluginTestHelper {
     }
 
     @Timeout(600)
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StopDomain, stop with no wait time - 0 (C289400)"() {
         String testCaseId = "C289400"
@@ -144,6 +180,7 @@ class StopDomainMaster extends PluginTestHelper {
     }    
 
     @Timeout(600)
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StopDomain, all fields are filled (All Controllers Shutdown=true) (C289401)"() {
         String testCaseId = "C289401"
@@ -174,6 +211,7 @@ class StopDomainMaster extends PluginTestHelper {
     }   
 
     @Timeout(600)
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StopDomain, with not existing 'Configuration name' (C289412)"() {
         String testCaseId = "C289412"
@@ -192,6 +230,7 @@ class StopDomainMaster extends PluginTestHelper {
     }   
 
     @Timeout(600)
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StopDomain, without 'Configuration name'  (C289411)"() {
         String testCaseId = "C289411"
@@ -210,6 +249,7 @@ class StopDomainMaster extends PluginTestHelper {
     }   
 
     @Timeout(600)
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StopDomain, host controller 'master' is stopped   (C289407)"() {
         String testCaseId = "C289407"

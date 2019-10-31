@@ -3,6 +3,8 @@ package com.electriccloud.plugin.spec
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import spock.lang.*
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 
 @IgnoreIf({ env.JBOSS_MODE == 'domain' })
 class DeployApplicationStandalone extends PluginTestHelper {
@@ -60,6 +62,43 @@ class DeployApplicationStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C278099"
+
+        def runParams = [
+                additionalOptions              : '',
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
+                deploymentName                 : '',
+                disabledServerGroups           : '',
+                enabledServerGroups            : '',
+                runtimeName                    : '',
+                serverconfig                   : defaultConfigName,
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\\nEnabled on standalone server."
+
+        checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
+        checkAppDeployedToStandaloneUrl(expectedContextRoot)
+
+        cleanup:
+        undeployAppFromStandalone("$testCaseId-app.war")
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, file, minimum params  (C278099)"() {
         String testCaseId = "C278099"
@@ -95,6 +134,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, file, disabled server groups ignored (C278101)"() {
         String testCaseId = "C278101"
@@ -130,6 +170,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, file, enabled server groups ignored (C278133)"() {
         String testCaseId = "C278133"
@@ -165,6 +206,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, file, custom app name (C278102)"() {
         String testCaseId = "C278102"
@@ -201,6 +243,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, file, custom runtime name (C278103)"() {
         String testCaseId = "C278103"
@@ -236,6 +279,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, file, custom app name, custom runtime name (C278104)"() {
         String testCaseId = "C278104"
@@ -272,6 +316,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, file, custom app name without extension, custom runtime name (C278105)"() {
         String testCaseId = "C278105"
@@ -308,6 +353,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, file, whitespace in path (C278109)"() {
         String testCaseId = "C278109"
@@ -343,6 +389,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone(expectedAppName)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, file, disabled flag in additional options (C278110)"() {
         String testCaseId = "C278110"
@@ -378,6 +425,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone(expectedAppName)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, url (for EAP 7 and later), custom app name, custom runtime name (C278115)"() {
@@ -412,6 +460,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, url (for EAP 7 and later), disabled flag in additional options (C278115)"() {
@@ -445,6 +494,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone(expectedAppName)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, app already deployed, url (for EAP 7 and later), update app (C278116)"() {
@@ -484,6 +534,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, app already deployed, file, update app (C278107)"() {
         String testCaseId = "C278107"
@@ -522,6 +573,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, app already deployed, file, update app, enabled server groups and disabled server groups ignored (C278108)"() {
         String testCaseId = "C278108"
@@ -559,6 +611,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone(expectedAppName)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, url (for EAP 7 and later), minimum params (C278195)"() {
@@ -592,6 +645,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         undeployAppFromStandalone(expectedAppName)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, 1st time, file, non existing filepath (C278120)"() {
         String testCaseId = "C278120"
@@ -614,6 +668,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "File '${runParams.applicationContentSourcePath}' doesn't exists"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, 1st time, file, wrong additional options (C278121)"() {
         String testCaseId = "C278121"
@@ -651,6 +706,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, 1st time, incorrect param, undef required param, path to app (C278119)"() {
         String testCaseId = "C278119"
@@ -674,6 +730,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Negative. DeployApp, 1st time, url (for EAP 7 and later) incorrect value (C278125)"() {
@@ -697,6 +754,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Cannot create input stream from URL 'https://github.com/electric-cloud/incorrect-path/hello-world.war'"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Negative. DeployApp, app already deployed, url (for EAP 7 and later) is empty, change runtime name (C278196)"() {

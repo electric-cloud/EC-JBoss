@@ -3,6 +3,8 @@ package com.electriccloud.plugin.spec
 import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerGroupHelper
 import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerHelper
 import com.electriccloud.plugin.spec.Services.*
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 import spock.lang.*
@@ -54,6 +56,53 @@ class StartServers extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        setup:
+        String testCaseId = "C111838"
+
+        String serverGroupName = "server-group-$testCaseId"
+        String serverName1 = "server-1-$testCaseId"
+        String serverName2 = "server-2-$testCaseId"
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
+
+        ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
+        ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
+        ServerHelper server2 = new ServerHelper(serverName2, serverGroupName, hostName)
+
+        runCliCommand(CliCommandsGeneratorHelper.addServerGroupCmd(serverGroup))
+        runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.addServerCmd(server2))
+
+        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STOPPED"
+        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).result == "STOPPED"
+
+        when:
+        def runParams = [
+                serverconfig      : defaultConfigName,
+                scriptphysicalpath: defaultCliPath,
+                serversgroup      : serverGroupName,
+                wait_time         : defaultWaitTime
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state STOPPED.*Found server $serverName1 on host $hostName in state STARTED/
+        assert runProcedureJob.getLogs() =~ /(?s)Found server $serverName1 on host $hostName in state STOPPED.*Found server $serverName1 on host $hostName in state STARTED/
+        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
+        assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server2)).result == "STARTED"
+
+        cleanup:
+        runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server2))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerCmd(server1))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerCmd(server2))
+        runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
+    }
+
+       @NewFeature(pluginVersion = "2.6.0")
        @Unroll
        def "StartServers, group with all servers stopped (C111838)"() {
            setup:
@@ -99,6 +148,7 @@ class StartServers extends PluginTestHelper {
            runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
        }
 
+       @NewFeature(pluginVersion = "2.6.0")
        @Unroll
        def "StartServers, group with all servers stopped (different auto-start options on each - check DISABLED status) (C259557)"() {
            setup:
@@ -145,6 +195,7 @@ class StartServers extends PluginTestHelper {
            runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
        }
 
+       @NewFeature(pluginVersion = "2.6.0")
        @Unroll
        def "StartServers, group with all servers started (C111840)"() {
            setup:
@@ -194,6 +245,7 @@ class StartServers extends PluginTestHelper {
            runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
        }
 
+       @NewFeature(pluginVersion = "2.6.0")
        @Unroll
        def "StartServers, group with started and stopped servers (C259526)"() {
            setup:
@@ -242,6 +294,7 @@ class StartServers extends PluginTestHelper {
        }
 
     //todo: docker env with different hosts
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_MODE == 'domain' })
     def "StartServers, group with all servers stopped on different hosts (C277750)"() {
@@ -318,6 +371,7 @@ class StartServers extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StartServers, start with no wait time - undef (C259543)"() {
         setup:
@@ -356,6 +410,7 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StartServers, start with no wait time - 0 (C259544)"() {
         setup:
@@ -394,6 +449,7 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. StartServers, non existing server group (C84614)"() {
         setup:
@@ -414,6 +470,7 @@ class StartServers extends PluginTestHelper {
         assert runProcedureJob.getStatus() == 'error'
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. StartServers, empty server group (C259484)"() {
         setup:
@@ -441,6 +498,7 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. StartServers, incorrect param, wait time - negative value (C259525)"() {
         setup:
@@ -480,6 +538,7 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. StartServers, incorrect param, wait time - decimal value (C277845)"() {
         setup:
@@ -519,6 +578,7 @@ class StartServers extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.removeServerGroupCmd(serverGroup))
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. StartServers, incorrect param, undef required param, server group (C259524)"() {
         setup:
@@ -541,6 +601,7 @@ class StartServers extends PluginTestHelper {
     }
 
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. Controller is not available (C278096)"() { 
         setup:

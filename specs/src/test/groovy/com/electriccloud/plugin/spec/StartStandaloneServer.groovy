@@ -2,6 +2,8 @@ package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
 class StartStandaloneServer extends PluginTestHelper {
@@ -134,6 +136,43 @@ class StartStandaloneServer extends PluginTestHelper {
     }
 
     @Requires({ env.JBOSS_MODE == 'standalone' })
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        if (jbossShouldBeStopped) {
+            runCliCommand(CliCommandsGeneratorHelper.shutDownStandalone())
+        }
+
+        def runParams = [
+                additionalOptions: additionalOption,
+                alternatejbossconfig: standaloneConfig,
+                scriptphysicalpath: scriptPath,
+                serverconfig: configName,
+                logFileLocation: logFileLocation,
+
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        def jobUpperStepSummary = runProcedureJob.getUpperStepSummary()
+        def procedureLogs = runProcedureJob.getLogs()
+
+        then:
+        assert runProcedureJob.getStatus() == jobExpectedStatus
+        assert jobUpperStepSummary =~ summary
+        for (log in logs){
+            assert procedureLogs =~ log
+        }
+
+        if (jbossVersion in ['7.1', '7.0', '6.4']){
+            assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getStandaloneStatus()).result == "running"
+        }
+        where: 'The following params will be: '
+        testCaseId                 | configName         | scriptPath             | standaloneConfig             | additionalOption          	      | jbossShouldBeStopped | logs      			    | summary 				| jobExpectedStatus  | logFileLocation
+        testCases.systemTest1.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'docker'	      | true                 | jobLogs.'default'		| summaries.'default'	|	"success"        | logFileLocations.'empty'
+    }
+
+    @Requires({ env.JBOSS_MODE == 'standalone' })
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StartStandaloneServer - positive"() {
         if (jbossShouldBeStopped) {
@@ -177,6 +216,7 @@ class StartStandaloneServer extends PluginTestHelper {
 // TODO break CreateOrUpdateJMSTopicStandalone and RemoveXADataSourceStandalone
     @Ignore
     @Requires({ env.JBOSS_MODE == 'standalone' })
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "StartStandaloneServer - negative"() {
         if (jbossShouldBeStopped) {

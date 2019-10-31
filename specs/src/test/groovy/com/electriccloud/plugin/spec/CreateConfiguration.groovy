@@ -1,5 +1,7 @@
 package com.electriccloud.plugin.spec
 
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 import spock.lang.*
@@ -55,6 +57,38 @@ class CreateConfiguration extends PluginTestHelper {
         return  java_opts
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C289655"
+        String config_name = "config-"+testCaseId
+
+
+        def runParams = [
+                config              : config_name,
+                java_opts           : getJava_opts(),
+                jboss_url           : defaultJbossURL,
+                log_level           : '4',
+                scriptphysicalpath  : defaultCliPath
+        ]
+        def credential = [
+                credentialName: 'credential',
+                userName: 'admin',
+                password: 'changeme'
+        ]
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+
+        cleanup:
+        deleteConfiguration("EC-JBoss", config_name)
+    }
+
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create Configuration, minimum parameters (C111844)"() {
         String testCaseId = "C289654"
@@ -83,6 +117,7 @@ class CreateConfiguration extends PluginTestHelper {
         deleteConfiguration("EC-JBoss", config_name)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create Configuration, all fields are filled, Log Level=DEBUG (C289655)"() {
         String testCaseId = "C289655"
@@ -112,6 +147,7 @@ class CreateConfiguration extends PluginTestHelper {
         deleteConfiguration("EC-JBoss", config_name)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create Configuration, all fields are filled, Log Level=INFO (C289656)"() {
         String testCaseId = "C289656"
@@ -141,6 +177,7 @@ class CreateConfiguration extends PluginTestHelper {
         deleteConfiguration("EC-JBoss", config_name)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create Configuration, all fields are filled, Log Level=WARNING (C289658)"() {
         String testCaseId = "C289658"
@@ -170,6 +207,7 @@ class CreateConfiguration extends PluginTestHelper {
         deleteConfiguration("EC-JBoss", config_name)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create Configuration, all fields are filled, Log Level=ERROR (C289659)"() {
         String testCaseId = "C289659"
@@ -199,6 +237,7 @@ class CreateConfiguration extends PluginTestHelper {
         deleteConfiguration("EC-JBoss", config_name)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create Configuration, without 'Configuration name' (C289667)"() {
         String testCaseId = "C289667"
@@ -226,6 +265,7 @@ class CreateConfiguration extends PluginTestHelper {
 
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @Ignore //need run after fix bug ECPAPPSERVERJBOSS-650
     def "Create Configuration, without 'JBoss controller location' (C289668)"() {
@@ -254,6 +294,7 @@ class CreateConfiguration extends PluginTestHelper {
 
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create Configuration, configuration with the same name already exist (C289704)"() {
         String testCaseId = "C289704"

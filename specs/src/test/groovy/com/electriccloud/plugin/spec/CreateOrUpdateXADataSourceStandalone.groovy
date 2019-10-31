@@ -2,6 +2,8 @@ package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
@@ -154,6 +156,57 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         return  pathForJar
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C289546"
+        String jdbcDriverName = "mysql"
+        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        def runParams = [
+                additionalOptions               : '',
+                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceName                  : xaDataSourceName,
+                enabled                         : defaultEnabledDataSource,
+                jdbcDriverName                  : jdbcDriverName,
+                jndiName                        : jndiName.mysql,
+                profile                         : '',
+                serverconfig                    : defaultConfigName,
+                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+        ]
+        def credential = [
+                credentialName: 'dataSourceConnectionCredentials',
+                userName: defaultUserName,
+                password: defaultPassword
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
+        if (EnvPropertiesHelper.getVersion() == '6.1') {
+            reloadServer()
+        }
+
+        // we expect "success" or "warning"
+        // "success": if the server does not need reloading
+        // "warning": if server needs reloading, and this case we throw text "reload-required" or
+        // "restart-required" (it depends on jboss version).
+        def jobUpperStepSummary = runProcedureJob.getUpperStepSummary()
+        def jobExpectedStatus = "success"
+        if (jobUpperStepSummary.contains("reload-required") || jobUpperStepSummary.contains("restart-required")) {
+            jobExpectedStatus = "warning"
+        }
+        then:
+        assert runProcedureJob.getStatus() == jobExpectedStatus
+        assert jobUpperStepSummary =~ "XA data source '$xaDataSourceName' has been added successfully"
+        checkCreateXADataSource(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
+                defaultPassword, defaultUserName)
+
+        cleanup:
+        reloadServer()
+        // remove XA datasource
+        removeXADatasource(xaDataSourceName)
+        reloadServer()
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, minimum parameters (C289546)"() {
         String testCaseId = "C289546"
@@ -203,6 +256,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, minimum parameters, verify xaDataSourceProperties (C289546-1)"() {
         String testCaseId = "C289546"
@@ -240,6 +294,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     }    
 
     @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']})
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, PostgreSQL, minimum parameters (C289547)"() {
         String testCaseId = "C289547"
@@ -278,6 +333,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         
        }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, update JNDI Name, MySQL (C289554)"() {
         String testCaseId = "C289554"
@@ -322,6 +378,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, enabled=false (C289553)"() {
         String testCaseId = "C289553"
@@ -358,6 +415,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, update Password, MySQL (C289555)"() {
         String testCaseId = "C289555"
@@ -403,6 +461,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, update JNDI Name and Password, MySQL (C289556)"() {
         String testCaseId = "C289556"
@@ -450,6 +509,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll 
     def "CreateorUpdateXADataSource, MySQL, update JNDI Name Enabled=false (C289558)"() {
         String testCaseId = "C289558"
@@ -490,6 +550,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, with ignored 'Profile'  (C289559)"() {
         String testCaseId = "C289559"
@@ -528,6 +589,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, update data source with the same parameters (C289560)"() {
         String testCaseId = "C289560"
@@ -565,6 +627,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--min-pool-size' (C289557)"() {
         String testCaseId = "C289557"
@@ -605,6 +668,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--max-pool-size' (C289557)"() {
         String testCaseId = "C289557"
@@ -644,6 +708,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     }
 
     @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.4', '7.0']})
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options --check-valid-connection-sql' (C289557)"() {
         String testCaseId = "C289557"
@@ -682,6 +747,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options --check-valid-connection-sql-2' (C289557)"() {
         String testCaseId = "C289557"
@@ -720,6 +786,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--pad-xid' (C289557)"() {
         String testCaseId = "C289557"
@@ -759,6 +826,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options 'interleaving' (C289557)"() {
         String testCaseId = "C289557"
@@ -798,6 +866,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'Configuration name' ( C289561)"() {
         String testCaseId = "C289561"
@@ -825,6 +894,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "error"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'Data Source Name'  ( C289562)"() {
         String testCaseId = "C289562"
@@ -853,6 +923,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'dataSourceName' is not provided"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'JNDI Name'  ( C289563)"() {
         String testCaseId = "C289563"
@@ -881,6 +952,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'jndiName' is not provided"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'JDBC Driver Name'  ( C289564)"() {
         String testCaseId = "C289564"
@@ -909,6 +981,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'jdbcDriverName' is not provided"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'xaDataSourceProperties'  ( C289566)"() {
         String testCaseId = "C289566"
@@ -937,6 +1010,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'xaDataSourceProperties' is not provided"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, without 'Datasource Connection Credentials'  ( C289567)"() {
         String testCaseId = "C289567"
@@ -966,6 +1040,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Configuration name'  ( C289569)"() {
         String testCaseId = "C289569"
@@ -995,6 +1070,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     }
 
     @Ignore
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Data Source Name' ( C289570)"() {
         String testCaseId = "C289570"
@@ -1023,6 +1099,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ " Composite operation failed and was rolled back. Steps that failed"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'JNDI Name' ( C289571)"() {
         String testCaseId = "C289571"
@@ -1051,6 +1128,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Jndi name have to start with java:/ or java:jboss/"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value  'JDBC Driver Name' ( C289572)"() {
         String testCaseId = "C289572"
@@ -1084,6 +1162,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     }
 
     @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0']})
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Additional Options' ( C289576)"() {
         String testCaseId = "C289576"
@@ -1113,6 +1192,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ expectedText
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'JNDI Name'' ( C289577)"() {
         String testCaseId = "C289577"
@@ -1149,6 +1229,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, empty value 'Additional Options' (C289578)"() {
         String testCaseId = "C289578"

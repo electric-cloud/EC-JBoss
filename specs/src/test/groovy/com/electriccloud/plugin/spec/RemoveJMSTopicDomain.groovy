@@ -3,6 +3,8 @@ package com.electriccloud.plugin.spec
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 import spock.lang.*
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class RemoveJMSTopicDomain extends PluginTestHelper {
@@ -49,8 +51,35 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C278471"
+
+        def runParams = [
+                profile          : defaultProfile,
+                serverconfig     : defaultConfigName,
+                topicName        : '',
+        ]
+
+        setup:
+        String topicName = "testTopic-$testCaseId"
+        addJMSTopicDefaultDomain(topicName, defaultJndiNames, defaultProfile)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
+
+        cleanup:
+        topicName = "testTopic-$testCaseId"
+        removeJMSTopic(topicName, defaultProfile)
+    }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Remove JMS Topic without 'Topic Name' (C278471)"() {
         String testCaseId = "C278471"
@@ -77,6 +106,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
         removeJMSTopic(topicName, defaultProfile)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Remove JMS Topic, non existing Topic Name (C278472)"() {
         String testCaseId = "C278472"
@@ -104,6 +134,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Remove JMS Topic, without 'Profile' (C278469)"() {
         String testCaseId = "C278469"

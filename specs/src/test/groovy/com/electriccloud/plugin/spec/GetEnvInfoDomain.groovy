@@ -1,6 +1,8 @@
 package com.electriccloud.plugin.spec
 
 import spock.lang.*
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class GetEnvInfoDomain extends PluginTestHelper {
@@ -53,6 +55,45 @@ class GetEnvInfoDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        when:
+        def runParams = [
+                serverconfig          : defaultConfigName,
+                informationType       : informationTypeSystemDump,
+                informationTypeContext: '',
+                additionalOptions     : ''
+        ]
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        def envInfo = getJobProperty('/myJob/jobSteps/GetEnvInfo/envInfo', runProcedureJob.getJobId())
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+
+        String prefix = /"outcome" => "success",.*"result" => \{.*/
+        String[] envInfoPatterns = [
+                prefix + /"product-name" => .*/,
+                prefix + /"deployment" => .*/,
+                prefix + /"extension" => \{.*/,
+                prefix + /"profile" => \{.*"full-ha" => .*/
+        ]
+        String[] envInfoPatternsNotExixsting = [
+                prefix + /"launch-type" => .*/
+        ]
+
+        for (String envInfoPattern: envInfoPatterns) {
+            assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
+            assert envInfo =~ /(?s)/ + envInfoPattern
+        }
+
+        for (String envInfoPattern: envInfoPatternsNotExixsting) {
+            assert !(runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern)
+            assert !(envInfo =~ /(?s)/ + envInfoPattern)
+        }
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, systemDump with minimum params (systemDump 1)"() {
         when:
@@ -90,6 +131,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, systemDump context ignored (systemDump 2)"() {
         when:
@@ -127,6 +169,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, systemDump additional options (systemDump 3)"() {
         when:
@@ -163,6 +206,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, Domain, systemDump wrong additional options (systemDump 4)"() {
         when:
@@ -179,6 +223,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ /'wrong-option' is not found among the supported properties/
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, profiles with minimum params (profiles 1)"() {
         when:
@@ -212,6 +257,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, profiles context ignored (profiles 2)"() {
         when:
@@ -245,6 +291,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, profiles additional options (profiles 3)"() {
         when:
@@ -278,6 +325,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, Domain, profiles wrong additional options (profiles 4)"() {
         when:
@@ -294,6 +342,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ /'wrong-option' is not found among the supported properties/
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, dataSources with minimum params on full profile (dataSources 1)"() {
         when:
@@ -322,6 +371,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, dataSources additional options on full profile (dataSources 2)"() {
         when:
@@ -350,6 +400,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, Domain, dataSources wrong additional options on full profile (dataSources 3)"() {
         when:
@@ -366,6 +417,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ /'wrong-option' is not found among the supported properties/
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, Domain, dataSources wrong profile (dataSources 4)"() {
         when:
@@ -382,6 +434,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
 //        assert runProcedureJob.getUpperStepSummary() =~ /todo/
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, dataSources with minimum params on all profiles (dataSources 5)"() {
         when:
@@ -419,6 +472,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, dataSources additional options on all profiles (dataSources 6)"() {
         when:
@@ -456,6 +510,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, Domain, dataSources wrong additional options on all profiles (dataSources 7)"() {
         when:
@@ -472,6 +527,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ /'wrong-option' is not found among the supported properties/
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, xaDataSources with minimum params on full profile (xaDataSources 1)"() {
         when:
@@ -498,6 +554,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, xaDataSources additional options on full profile (xaDataSources 2)"() {
         when:
@@ -524,6 +581,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, Domain, xaDataSources wrong additional options on full profile (xaDataSources 3)"() {
         when:
@@ -540,6 +598,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ /'wrong-option' is not found among the supported properties/
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, Domain, xaDataSources wrong profile (xaDataSources 4)"() {
         when:
@@ -556,6 +615,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
 //        assert runProcedureJob.getUpperStepSummary() =~ /todo/
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, xaDataSources with minimum params on all profiles (xaDataSources 5)"() {
         when:
@@ -586,6 +646,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Domain, xaDataSources additional options on all profiles (xaDataSources 6)"() {
         when:
@@ -616,6 +677,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
         }
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, Domain, xaDataSources wrong additional options on all profiles (xaDataSources 7)"() {
         when:

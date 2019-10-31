@@ -4,6 +4,8 @@ import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerGroupHelper
 import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerHelper
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
@@ -85,7 +87,45 @@ class DeployApplicationDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-   @Unroll
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C278234"
+
+        def runParams = [
+                additionalOptions              : '',
+                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
+                deploymentName                 : '',
+                disabledServerGroups           : '',
+                enabledServerGroups            : "$serverGroup1",
+                runtimeName                    : '',
+                serverconfig                   : defaultConfigName,
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup1 server groups."
+
+        String[] expectedServerGroupsWithApp = [serverGroup1]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups(expectedAppName)
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
     def "DeployApplication, 1st time, file, enabled server group: 1 server group, minimum params (C278234)"() {
         String testCaseId = "C278234"
 
@@ -121,7 +161,8 @@ class DeployApplicationDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups(expectedAppName)
     }
 
-        @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
        def "DeployApplication, 1st time, file, disabled server group: 1 server group, minimum params (C278235)"() {
            String testCaseId = "C278235"
 
@@ -158,7 +199,8 @@ class DeployApplicationDomain extends PluginTestHelper {
        }
 
 
-       @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
        def "DeployApplication, 1st time, file, enabled server group: 1 server group, disabled server group: 1 server group, minimum params (C278236)"() {
            String testCaseId = "C278236"
 
@@ -200,7 +242,8 @@ class DeployApplicationDomain extends PluginTestHelper {
            undeployFromAllRelevantServerGroups("$testCaseId-app.war")
        }
 
-          @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
           def "DeployApplication, 1st time, file, with custom name and runtime name (C278237)"() {
               String testCaseId = "C278237"
 
@@ -243,7 +286,8 @@ class DeployApplicationDomain extends PluginTestHelper {
               undeployFromAllRelevantServerGroups("app-custom-$testCaseId-appname.war")
           }
 
-           @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
            def "DeployApplication, app already deployed, file, enabled and disabled server groups, update app (C278242)"() {
                String testCaseId = "C278242"
 
@@ -287,7 +331,8 @@ class DeployApplicationDomain extends PluginTestHelper {
                undeployFromAllRelevantServerGroups("$testCaseId-app.war")
            }
 
-             @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
              @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
              def "DeployApplication, app already deployed, url (for EAP 7 and later), enabled server group and disabled server group, update app (C278258)"() {
                  String testCaseId = "C278258"
@@ -330,7 +375,8 @@ class DeployApplicationDomain extends PluginTestHelper {
                  undeployFromAllRelevantServerGroups(existingAppName)
              }
 
-             @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
              def "DeployApplication,  1st time, file, custom app name (C278245)"() {
                  String testCaseId = "C278245"
 
@@ -371,7 +417,8 @@ class DeployApplicationDomain extends PluginTestHelper {
                  undeployFromAllRelevantServerGroups("$testCaseId-custom-appname.war")
              }
 
-             @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
              def "DeployApplication, 1st time, file, custom runtime name (C278246)"() {
                  String testCaseId = "C278246"
 
@@ -413,7 +460,8 @@ class DeployApplicationDomain extends PluginTestHelper {
                  undeployFromAllRelevantServerGroups(expectedAppName)
              }
 
-             @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
              def "DeployApplication, 1st time, file, whitespace in path (C278248)"() {
                  String testCaseId = "C278248"
 
@@ -455,7 +503,8 @@ class DeployApplicationDomain extends PluginTestHelper {
                  undeployFromAllRelevantServerGroups(expectedAppName)
              }
 
-               @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
                def "DeployApplication, 1st time, file, custom app name without extension, custom runtime name (C278249)"() {
                    String testCaseId = "C278249"
 
@@ -498,7 +547,7 @@ class DeployApplicationDomain extends PluginTestHelper {
                    undeployFromAllRelevantServerGroups(expectedAppName)
                }
 
-
+    @NewFeature(pluginVersion = "2.6.0")
    @Unroll
    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApplication, 1st time, url (for EAP 7 and later), enabled server groups (C278256)"() {
@@ -535,6 +584,7 @@ class DeployApplicationDomain extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApplication, 1st time, url (for EAP 7 and later), disabled server groups (C278265)"() {
@@ -570,7 +620,8 @@ class DeployApplicationDomain extends PluginTestHelper {
     }
 
 
-       @Unroll
+       @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
        @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
        def "DeployApplication, 1st time, url (for EAP 7 and later), disabled server groups and enabled server groups (C278266)"() {
            String testCaseId = "C278266"
@@ -610,7 +661,8 @@ class DeployApplicationDomain extends PluginTestHelper {
        }
 
 
-       @Unroll
+       @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
        def "Negative. DeployApplication,1st time, file, non existing server group (C278221)"() {
            String testCaseId = "C278221"
 
@@ -638,7 +690,8 @@ class DeployApplicationDomain extends PluginTestHelper {
 
        }
 
-          @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
           @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
           def "Negative. DeployApplication, app already deployed, url (for EAP 7 and later) is empty, update app (C278276)"() {
               String testCaseId = "C278276"
@@ -675,7 +728,8 @@ class DeployApplicationDomain extends PluginTestHelper {
           }
 
 
-          @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
           def "Negative. DeployApplication, 1st time, file, not existing path in the 'Path to the application to deploy' (C278218)"() {
               String testCaseId = "C278218"
 
@@ -703,7 +757,8 @@ class DeployApplicationDomain extends PluginTestHelper {
 
           }
 
-             @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
              def "DeployApplication, 1st time, file, with not choose server group (C278224)"() {
                  String testCaseId = "C278224"
 
@@ -734,7 +789,8 @@ class DeployApplicationDomain extends PluginTestHelper {
              }
 
 
-             @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
              def "Negative. DeployApplication, 1st time, file, with specified file without extension (C278226)"() {
                  String testCaseId = "C278226"
 
@@ -765,7 +821,8 @@ class DeployApplicationDomain extends PluginTestHelper {
              }
 
 
-       @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
        def "DeployApplication, 1st time, file, with wrong additional options (C278227)"() {
            String testCaseId = "C278227"
 
@@ -807,7 +864,8 @@ class DeployApplicationDomain extends PluginTestHelper {
        }
 
 
-       @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
        def "Negative. DeployApplication,  incorrect param, undef required param, path to app (C278229)"() {
            String testCaseId = "C278229"
 
@@ -836,7 +894,8 @@ class DeployApplicationDomain extends PluginTestHelper {
        }
 
 
-       @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
        @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
        def "Negative. DeployApplication,1st time, url incorrect value (for EAP 7 and later) (C278230)"() {
            String testCaseId = "C278230"
@@ -865,7 +924,8 @@ class DeployApplicationDomain extends PluginTestHelper {
 
 
 
-       @Unroll
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
        def "Negative. DeployApplication, 1st time, file, same server group in enabled and disabled server group (C278273)"() {
            String testCaseId = "C278273"
 
@@ -893,6 +953,7 @@ class DeployApplicationDomain extends PluginTestHelper {
        }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApplication, 1st time, file, enabled --all-server-group (C278546)"() {
         String testCaseId = "C278546"

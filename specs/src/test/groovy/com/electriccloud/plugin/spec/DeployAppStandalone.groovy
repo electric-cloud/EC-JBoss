@@ -3,6 +3,8 @@ package com.electriccloud.plugin.spec
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import spock.lang.*
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
 class DeployAppStandalone extends PluginTestHelper {
@@ -68,6 +70,47 @@ class DeployAppStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C111844"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "",
+                force                : "",
+                assignservergroups   : "",
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "success"
+        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath
+
+        checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
+        checkAppDeployedToStandaloneUrl(expectedContextRoot)
+
+        cleanup:
+        undeployAppFromStandalone("$testCaseId-app.war")
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, minimum params (C111844)"() {
         String testCaseId = "C111844"
@@ -107,6 +150,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, server groups ignored (C277822)"() {
         String testCaseId = "C277822"
@@ -146,6 +190,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, all server groups ignored (C277823)"() {
         String testCaseId = "C277823"
@@ -185,6 +230,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, custom app name (C277824)"() {
         String testCaseId = "C277824"
@@ -223,6 +269,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app-custom-appname.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, custom runtime name (C277825)"() {
         String testCaseId = "C277825"
@@ -262,6 +309,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, custom app name, custom runtime name (C277826)"() {
         String testCaseId = "C277826"
@@ -300,6 +348,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app-custom-appname.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, custom app name without extension, custom runtime name (C277827)"() {
         String testCaseId = "C277827"
@@ -338,6 +387,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app-custom-appname")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, both server groups and all server groups ignored (C277828)"() {
         String testCaseId = "C277828"
@@ -376,6 +426,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, app already deployed, force flag, update app (C277829)"() {
         String testCaseId = "C277829"
@@ -416,6 +467,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, app already deployed, force flag, update app, server groups and all server groups ignored (C277831)"() {
         String testCaseId = "C277831"
@@ -495,6 +547,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, whitespace in path (C277834)"() {
         String testCaseId = "C277834"
@@ -534,6 +587,7 @@ class DeployAppStandalone extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, non existing filepath (C277836)"() {
         String testCaseId = "C277836"
@@ -560,6 +614,7 @@ class DeployAppStandalone extends PluginTestHelper {
         assert runProcedureJob.getLogs() =~ "read-attribute\\(name=launch-type\\)"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, disabled flag in additional options (C277837)"() {
         String testCaseId = "C277837"
@@ -597,6 +652,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, app already deployed, force flag (in additional options), update app (C277838)"() {
         String testCaseId = "C277838"
@@ -637,6 +693,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, additional options conflicts with defined params (C277839)"() {
         String testCaseId = "C277839"
@@ -679,6 +736,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, wrong additional options (C277840)"() {
         String testCaseId = "C277840"
@@ -709,6 +767,7 @@ class DeployAppStandalone extends PluginTestHelper {
 
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, application content source path --url(C278037)"() {
@@ -745,6 +804,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, app already deployed, force flag, application content source path --url(C278039)"() {
@@ -784,6 +844,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, app already deployed, force flag (in additional options), application content source path --url (C278041)"() {
@@ -823,6 +884,7 @@ class DeployAppStandalone extends PluginTestHelper {
         undeployAppFromStandalone("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Negative. DeployApp, 1st time, application content source path --url incorrect value (C278038)"() {

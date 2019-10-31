@@ -4,6 +4,8 @@ import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerGroupHelper
 import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerHelper
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
@@ -93,6 +95,50 @@ class DeployAppDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C84582"
+
+        def runParams = [
+                serverconfig         : defaultConfigName,
+                scriptphysicalpath   : defaultCliPath,
+                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                appname              : "",
+                runtimename          : "",
+                force                : "",
+                assignservergroups   : "$serverGroup1", // deploy to one server group
+                assignallservergroups: "0",
+                additional_options   : ""
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
+        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy.*"+expectedPath+".*--server-groups=.*${runParams.assignservergroups}"
+
+
+
+        String[] expectedServerGroupsWithApp = [serverGroup1]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithApp)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, 1 server group, minimum params (C84582)"() {
         String testCaseId = "C84582"
@@ -135,6 +181,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, 2 server groups, minimum params (C84612)"() {
         String testCaseId = "C84612"
@@ -175,6 +222,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, all server groups, minimum params (C111810)"() {
         String testCaseId = "C111810"
@@ -215,6 +263,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, custom app name (C277888)"() {
         String testCaseId = "C277888"
@@ -254,6 +303,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app-custom-appname.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, custom runtime name (C277889)"() {
         String testCaseId = "C277889"
@@ -294,6 +344,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, custom app name, custom runtime name (C111895)"() {
         String testCaseId = "C111895"
@@ -333,6 +384,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app-custom-appname.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, custom app name without extension, custom runtime name (C277892)"() {
         String testCaseId = "C277892"
@@ -372,6 +424,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app-custom-appname")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, both server groups and all server groups are specified (C277930)"() {
         String testCaseId = "C277930"
@@ -411,6 +464,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, 1st time, duplicated server groups (C258992)"() {
         String testCaseId = "C258992"
@@ -438,6 +492,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Duplicate resource"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, non existing server group (C258987)"() {
         String testCaseId = "C258987"
@@ -465,6 +520,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "(does not exist|not found)"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, app already deployed, force flag (C277905)"() {
         String testCaseId = "C277905"
@@ -508,6 +564,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, app already deployed, force flag, server groups ignored, update app (C277890)"() {
         String testCaseId = "C277890"
@@ -554,6 +611,8 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll    
     def "DeployApp, 1st time, force flag (C277906)"() {
         String testCaseId = "C277906"
 
@@ -590,6 +649,8 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
     def "DeployApp, app already deployed, force flag, all server groups ignored (C84613)"() {
         String testCaseId = "C84613"
 
@@ -632,6 +693,8 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
     def "Negative. DeployApp, app already deployed, no force flag (C111812)"() {
         String testCaseId = "C111812"
 
@@ -678,7 +741,9 @@ class DeployAppDomain extends PluginTestHelper {
         cleanup:
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
-
+    
+    @NewFeature(pluginVersion = "2.6.0")
+    @Unroll
     def "Negative. DeployApp with no specified server groups and with no apply to all server group options (C259002)"() {
         String testCaseId = "C259002"
 
@@ -706,6 +771,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "(One of --disabled, --enabled, --all-server-groups or --server-groups is missing.|One of --disabled, --all-server-groups or --server-groups is missing.)"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, whitespace in path (C277891)"() {
         String testCaseId = "C277891"
@@ -745,6 +811,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, incorrect param, undef required param, path to app (C277934)"() {
         String testCaseId = "C277934"
@@ -769,6 +836,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "File '' doesn't exists"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, non existing filepath (C84591)"() {
         String testCaseId = "C84591"
@@ -793,6 +861,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "File '"+getPathApp()+"non-existing-file.war' doesn't exists"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, 1 server group in additional options (C277931)"() {
         String testCaseId = "C277931"
@@ -833,6 +902,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, 1st time, disabled flag in additional options (C277893)"() {
         String testCaseId = "C277893"
@@ -873,6 +943,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "DeployApp, app already deployed, force flag in additional options (C277932)"() {
         String testCaseId = "C277932"
@@ -916,6 +987,7 @@ class DeployAppDomain extends PluginTestHelper {
     }
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, additional options conflicts with defined params (C277933)"() {
         String testCaseId = "C277933"
@@ -943,6 +1015,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "--server-groups can't appear in the same command with --all-server-groups"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. DeployApp, wrong additional options (C259006)"() {
         String testCaseId = "C259006"
@@ -970,6 +1043,7 @@ class DeployAppDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized arguments: [--some-wrong-param]"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, 1st time, application content source path --url(C278052)"() {
@@ -1007,6 +1081,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, app already deployed, force flag, application content source path --url(C278053)"() {
@@ -1050,6 +1125,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApp, app already deployed, force flag (in additional options), application content source path --url (C278054)"() {
@@ -1088,6 +1164,7 @@ class DeployAppDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups("$testCaseId-app.war")
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Negative. DeployApp, 1st time, application content source path --url incorrect value (C278055)"() {

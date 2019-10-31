@@ -2,6 +2,8 @@ package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import com.electriccloud.plugins.annotations.NewFeature
+import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
@@ -52,6 +54,34 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Sanity
+    @Unroll
+    def "Sanity"() {
+        String testCaseId = "C278441"
+
+        def runParams = [
+                additionalOptions: '',
+                jndiNames        : defaultJndiNames,
+                profile          : '',
+                serverconfig     : defaultConfigName,
+                topicName        : "testTopic-$testCaseId",
+        ]
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "JMS topic '${runParams.topicName}' has been added successfully"
+
+        String topicName = "testTopic-$testCaseId"
+        checkCreateOrUpdateJMSTopic(topicName, expectedJndiNames)
+
+        cleanup:
+        topicName = "testTopic-$testCaseId"
+        removeJMSTopic(topicName)
+    }
+
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create JMS Topic with minimum parameters (C278441)"() {
         String testCaseId = "C278441"
@@ -78,6 +108,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         removeJMSTopic(topicName)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Create JMS Topic, ignored profile (C278442)"() {
         String testCaseId = "C278442"
@@ -106,6 +137,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
 
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Update JMS Topic with the same parameters (C278501)"() {
         String testCaseId = "C278501"
@@ -136,6 +168,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         removeJMSTopic(topicName)
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. Create JMS Topic without 'Topic Name' (C278445)"() {
         String testCaseId = "C278445"
@@ -156,6 +189,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. Create JMS Topic without 'JNDI Names' (C278446)"() {
         String testCaseId = "C278446"
@@ -177,6 +211,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negative. Create JMS Topic, with non-existing 'Configuration Name' (C278449)"() {
         String testCaseId = "C278449"
@@ -198,6 +233,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.0' })
     def "Negative. Create JMS Topic with wrong additional option (C278450)"() {
@@ -221,6 +257,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     }
 
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "Create JMS Topic with additional option --legacy-entries (C278556)"() {
@@ -249,6 +286,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
     }
 
     //TODO: fail after the second run
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Update JMS Topic, change 'JNDI Names' (C278443)"() {
         String testCaseId = "C278443"
