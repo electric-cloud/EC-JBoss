@@ -123,8 +123,8 @@ class StartStandaloneServer extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
-        deleteConfiguration("EC-JBoss", defaultConfigName)
+        //deleteProject(projectName)
+        //deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
     RunProcedureJob runProcedureUnderTest(def parameters) {
