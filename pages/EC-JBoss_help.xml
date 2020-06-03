@@ -4,7 +4,7 @@
     <head>
         <meta name="generator" content="HTML Tidy for Windows (vers 14 February 2006), see www.w3.org" />
         <meta content="text/html; charset=us-ascii" http-equiv="content-type" />
-        <title>CloudBees Flow Plugin for JBoss EAP.</title>
+        <title>CloudBees CD Plugin for JBoss EAP.</title>
         <link rel="stylesheet" href="../../plugins/@PLUGIN_KEY@/pluginhelp.css" type="text/css" media="screen" />
     </head>
     <body>
@@ -118,7 +118,7 @@
                 The following link provides the Red Hat documentation for JBoss EAP:
                 <a href="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/" title="https://access.redhat.com/documentation/en-us/red_hat_jboss_enterprise_application_platform/">JBoss EAP</a>
             </p>
-            <h2>CloudBees Flow Integration with JBoss</h2>
+            <h2>CloudBees CD Integration with JBoss</h2>
             <p>
                 Use the EC-JBoss plugin to interact with JBoss EAP to perform tasks such as managing servers and deployments.
             </p>
@@ -159,7 +159,7 @@
                     <li>Find the @PLUGIN_KEY@ row.</li>
                     <li>Click <b>Configure</b> to open the JBoss Configurations page.</li>
                     <li>Click <b>Create Configuration</b>.</li>
-                    <li>To enable CloudBees Flow to communicate with your JBoss AS, enter the following information. You may need to create additional
+                    <li>To enable CloudBees CD to communicate with your JBoss AS, enter the following information. You may need to create additional
                         configurations later, especially when using standalone and domain servers, because they use different port numbers.<br /> </li>
 
                     <!-- For all parameters, the parameter name should be exactly the same as it appears in the Parameter Panel,
@@ -189,7 +189,7 @@
                             </tr>
                             <tr>
                                 <td>Login as</td>
-                                <td><i>Username</i>: The user name that CloudBees Flow uses to communicate with the JBoss server.<br />
+                                <td><i>Username</i>: The user name that CloudBees CD uses to communicate with the JBoss server.<br />
                                     <i>Password</i>: Provide the password for the <i>Username</i>.<br />
                                     <i>Retype Password</i>: Re-enter the password.
                                 </td>
@@ -278,7 +278,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p>
-                    After the job runs, you can view the results on the Job Details page in CloudBees Flow. In the <b>CheckDeployStatus</b> step, click the Log icon to see the diagnostic information and status of the deployment:
+                    After the job runs, you can view the results on the Job Details page in CloudBees CD. In the <b>CheckDeployStatus</b> step, click the Log icon to see the diagnostic information and status of the deployment:
 
                 </p>
                     <br />
@@ -348,7 +348,7 @@
                 <h2>CheckServerGroupStatus (Domain)</h2>
                 The CheckServerGroupStatus procedure checks if the Status of all servers in the Server Group is equal to the Status mentioned in the Criteria field.
                 The procedure will have status success if criteria is met.
-                For CloudBees Flow 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".
+                For CloudBees CD 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".
                 <br/><br/>
                 There are the following criterias supported by the procedure:
                 <ol>
@@ -447,7 +447,7 @@
                                             </li>
                                         </ol>
                                         The procedure will have status success if criteria is met.
-                                        For CloudBees Flow 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".
+                                        For CloudBees CD 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".
                                     </td>
                                 </tr>
                             </tbody>
@@ -458,7 +458,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>CheckServerGroupStatus</b> step, click the
+                    in CloudBees CD. In the <b>CheckServerGroupStatus</b> step, click the
                     Log icon to see the diagnostic information. </p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/CheckServerGroupStatus/CheckServerGroupStatusRunScenarios.PNG" />
@@ -495,7 +495,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p>
-                    After the job runs, you can view the results on the Job Details page in CloudBees Flow. In the <b>CheckServerStatus</b> step,
+                    After the job runs, you can view the results on the Job Details page in CloudBees CD. In the <b>CheckServerStatus</b> step,
                     click the Log icon to see the diagnostic information.
                 </p>
                 <!--
@@ -579,7 +579,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p>
-                    After the job runs, you can view the results on the Job Details page in CloudBees Flow. In the <b>CreateDatasource</b> step,
+                    After the job runs, you can view the results on the Job Details page in CloudBees CD. In the <b>CreateDatasource</b> step,
                     click the Log icon to see the diagnostic information.
                 </p>
                 <!--
@@ -728,7 +728,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>CreateOrUpdateDataSource</b> step, click the
+                    in CloudBees CD. In the <b>CreateOrUpdateDataSource</b> step, click the
                     Log icon to see the diagnostic information. </p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateDataSource/CreateOrUpdateDataSourceRunScenarios.PNG" />
@@ -871,7 +871,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>CreateOrUpdateJMSQueue</b> step, click the
+                    in CloudBees CD. In the <b>CreateOrUpdateJMSQueue</b> step, click the
                     Log icon to see the diagnostic information. </p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSQueue/CreateOrUpdateJMSQueueRunScenarios.PNG" />
@@ -993,7 +993,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>CreateOrUpdateJMSTopic</b> step, click the
+                    in CloudBees CD. In the <b>CreateOrUpdateJMSTopic</b> step, click the
                     Log icon to see the diagnostic information. </p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateJMSTopic/CreateOrUpdateJMSTopicRunScenarios.PNG" />
@@ -1140,7 +1140,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>CreateOrUpdateXADataSource</b> step, click the
+                    in CloudBees CD. In the <b>CreateOrUpdateXADataSource</b> step, click the
                     Log icon to see the diagnostic information. </p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/CreateOrUpdateXADataSource/CreateOrUpdateXADataSourceRunScenarios.PNG" />
@@ -1187,7 +1187,7 @@
 
                 <h3>Output</h3>
                 <p>
-                    After the job runs, you can view the results on the Job Details page in CloudBees Flow. In the <b>DeleteDatasource</b> step,
+                    After the job runs, you can view the results on the Job Details page in CloudBees CD. In the <b>DeleteDatasource</b> step,
                     click the Log icon to see the diagnostic information.
                 </p>
                 <!--
@@ -1757,7 +1757,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>GetEnvInfo</b> step, click the
+                    in CloudBees CD. In the <b>GetEnvInfo</b> step, click the
                     Log icon to see the diagnostic information. </p>
                 <br/>
                 <img src="../../plugins/@PLUGIN_NAME@/images/GetEnvInfo/GetEnvInfoRun.PNG" />
@@ -1828,7 +1828,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>RemoveJMSQueue</b> step, click the Log
+                    in CloudBees CD. In the <b>RemoveJMSQueue</b> step, click the Log
                     icon to see the diagnostic information. </p>
             </div>
             <div id="RemoveJMSTopic"> <a name="RemoveJMSTopic" id="RemoveJMSTopic"></a>
@@ -1897,7 +1897,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>RemoveJMSTopic</b> step, click the Log
+                    in CloudBees CD. In the <b>RemoveJMSTopic</b> step, click the Log
                     icon to see the diagnostic information. </p>
             </div>
             <div id="RemoveXADataSource"> <a name="RemoveXADataSource" id="RemoveXADataSource"></a>
@@ -1965,7 +1965,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>RemoveXADataSource</b> step, click the
+                    in CloudBees CD. In the <b>RemoveXADataSource</b> step, click the
                     Log icon to see the diagnostic information. </p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/RemoveXADataSource/RemoveXADataSourceRunScenarios.PNG" />
@@ -2023,8 +2023,8 @@
                                 <tr>
                                     <td>Server Configuration Name</td>
                                     <td>The name of the configuration for the JBoss server. This configuration has connection information
-                                        about the standalone server. CloudBees Flow uses the IP address and port number in the configuration.
-                                        If this field is blank, CloudBees Flow uses the default controller values (IP address and port number)
+                                        about the standalone server. CloudBees CD uses the IP address and port number in the configuration.
+                                        If this field is blank, CloudBees CD uses the default controller values (IP address and port number)
                                         to shut down the server.</td>
                                 </tr>
                                 <tr>
@@ -2067,11 +2067,11 @@
                                 </tr>
                                 <tr>
                                     <td>Optional domain configuration name</td>
-                                    <td>For domain controllers only. Name of the domain configuration file that CloudBees Flow uses to start the domain controller with a different domain configuration (--domain-config). By default domain.xml is used.</td>
+                                    <td>For domain controllers only. Name of the domain configuration file that CloudBees CD uses to start the domain controller with a different domain configuration (--domain-config). By default domain.xml is used.</td>
                                 </tr>
                                 <tr>
                                     <td>Optional host configuration name</td>
-                                    <td>For domain and host controllers. Name of the host configuration file that CloudBees Flow uses to start the domain or host controller with a different host configuration (--host-config). By default host.xml is used.</td>
+                                    <td>For domain and host controllers. Name of the host configuration file that CloudBees CD uses to start the domain or host controller with a different host configuration (--host-config). By default host.xml is used.</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -2380,7 +2380,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>StopDomain</b> step, click the
+                    in CloudBees CD. In the <b>StopDomain</b> step, click the
                     Log icon to see the diagnostic information. </p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/StartStandaloneServer/StartStandaloneServerRun1.PNG" />
@@ -2473,7 +2473,7 @@
                 </ol>
                 <h3>Output</h3>
                 <p> After the job runs, you can view the results on the Job Details page
-                    in CloudBees Flow. In the <b>StopDomain</b> step, click the
+                    in CloudBees CD. In the <b>StopDomain</b> step, click the
                     Log icon to see the diagnostic information. </p>
                 <br />
                 <img src="../../plugins/@PLUGIN_NAME@/images/StopDomain/StopDomainRun1.PNG" />
@@ -2625,7 +2625,7 @@
             This section contains known limitations with different Jboss Server Versions that we found as part of System testing.
             <h2>Windows only. jboss-cli.bat from JBoss EAP 6 exits with wrong code.</h2>
             jboss-cli.bat does not exit with correct return code when calling it from a wrapper script. It always exits with 0, even if the operation failed.<br />
-            For CloudBees Flow it means that jboss-cli response may be interpreted wrong.<br />
+            For CloudBees CD it means that jboss-cli response may be interpreted wrong.<br />
             Details: <a href="https://bugzilla.redhat.com/show_bug.cgi?id=1223877" target="_BLANK">https://bugzilla.redhat.com/show_bug.cgi?id=1223877</a> <br />
             Solution:
             <p>
@@ -2692,6 +2692,10 @@
             <br/>
             <h1 id="rns">Release Notes</h1>
 
+            <h2>@PLUGIN_KEY@ 2.7.1</h2>
+            <ul>
+                <li>Renaming from "CloudBees Flow" to "CloudBees CD"</li>
+            </ul>
             <h2 id="2.7.0">@PLUGIN_KEY@ 2.7.0</h2>
             <ul>
                 <li>
