@@ -27,6 +27,13 @@ dependencies {
     compile 'de.gesellix:docker-client:2018-01-26T21-28-05'
 }
 
+test {
+    systemProperties['COMMANDER_SERVER'] = findProperty('server') ?: 'localhost'
+    systemProperties['COMMANDER_USERNAME'] = findProperty('username') ?: 'admin'
+    systemProperties['COMMANDER_PASSWORD'] = findProperty('password') ?: 'changeme'
+    systemProperties['COMMANDER_SECURE'] = '1'
+}
+
 sendAllureReports {
     projectName = 'ec-jboss'
 }
