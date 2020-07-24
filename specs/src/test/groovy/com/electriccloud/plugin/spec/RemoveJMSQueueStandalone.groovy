@@ -1,8 +1,9 @@
 package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
-import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
 class RemoveJMSQueueStandalone extends PluginTestHelper {
@@ -28,9 +29,9 @@ class RemoveJMSQueueStandalone extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        profile          : '',
-                        queueName        : '',
-                        serverconfig     : '',
+                        profile     : '',
+                        queueName   : '',
+                        serverconfig: '',
                 ]
         ]
 
@@ -53,9 +54,9 @@ class RemoveJMSQueueStandalone extends PluginTestHelper {
         String testCaseId = "C278427"
 
         def runParams = [
-                profile          : '',
-                queueName        : '',
-                serverconfig     : defaultConfigName
+                profile     : '',
+                queueName   : '',
+                serverconfig: defaultConfigName
         ]
 
         setup:
@@ -80,9 +81,9 @@ class RemoveJMSQueueStandalone extends PluginTestHelper {
         String testCaseId = "C278428"
 
         def runParams = [
-                profile          : '',
-                queueName        : "testQueue-$testCaseId",
-                serverconfig     : defaultConfigName
+                profile     : '',
+                queueName   : "testQueue-$testCaseId",
+                serverconfig: defaultConfigName
         ]
 
         when:

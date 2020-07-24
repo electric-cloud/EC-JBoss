@@ -1,8 +1,8 @@
 package com.electriccloud.plugin.spec
 
-import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
-import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+
+import spock.lang.Shared
+import spock.lang.Unroll
 
 class DeleteConfiguration extends PluginTestHelper {
 
@@ -23,7 +23,7 @@ class DeleteConfiguration extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        config            : '',
+                        config: '',
                 ]
         ]
 
@@ -42,10 +42,10 @@ class DeleteConfiguration extends PluginTestHelper {
     @Unroll
     def "DeleteConfiguration (C289709)"() {
         String testCaseId = "C289709"
-        String config_name = "config-"+testCaseId
+        String config_name = "config-" + testCaseId
 
         def runParams = [
-                config              : config_name
+                config: config_name
         ]
 
         setup:
@@ -61,10 +61,10 @@ class DeleteConfiguration extends PluginTestHelper {
     @Unroll
     def "DeleteConfiguration, without 'Configuration name' (C289713)"() {
         String testCaseId = "C289713"
-        String config_name = "config-"+testCaseId
+        String config_name = "config-" + testCaseId
 
         def runParams = [
-                config              : ''
+                config: ''
         ]
 
         setup:
@@ -83,10 +83,10 @@ class DeleteConfiguration extends PluginTestHelper {
     @Unroll
     def "DeleteConfiguration, with not existing 'Configuration name' (C289714)"() {
         String testCaseId = "C289714"
-        String config_name = "jboss_conf_not_existing"+testCaseId
+        String config_name = "jboss_conf_not_existing" + testCaseId
 
         def runParams = [
-                config              : config_name
+                config: config_name
         ]
 
         when:

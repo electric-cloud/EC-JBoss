@@ -1,8 +1,11 @@
 package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
-import spock.lang.*
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
+import spock.lang.IgnoreIf
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
 class DeployAppStandalone extends PluginTestHelper {
@@ -20,16 +23,16 @@ class DeployAppStandalone extends PluginTestHelper {
     @Shared
     String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-2.war"
 
-    static String getPathApp(){
+    static String getPathApp() {
         String warphysicalpath = "/tmp/"
         EnvPropertiesHelper.getOS() == "WINDOWS" ? warphysicalpath = "C:\\\\tmp\\\\" : warphysicalpath
-        return  warphysicalpath
+        return warphysicalpath
     }
 
     static String getPathAppLogs() {
         String warphysicalpath = "/tmp/"
         EnvPropertiesHelper.getOS() == "WINDOWS" ? warphysicalpath = "C:.*tmp.*" : warphysicalpath
-        return  warphysicalpath
+        return warphysicalpath
     }
 
     def doSetupSpec() {
@@ -75,7 +78,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -96,9 +99,9 @@ class DeployAppStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -114,7 +117,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -135,9 +138,9 @@ class DeployAppStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -153,7 +156,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -174,9 +177,9 @@ class DeployAppStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app"
 
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -192,7 +195,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "$testCaseId-app-custom-appname.war", // custom app name
                 runtimename          : "",
                 force                : "",
@@ -209,9 +212,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*--name=.*${runParams.appname}"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*--name=.*${runParams.appname}"
 
         String expectedAppName = "$testCaseId-app-custom-appname.war"
         String expectedRuntimeName = "$testCaseId-app-custom-appname.war"
@@ -230,7 +233,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "$testCaseId-app-custom-runtimename.war", // custom runtime name
                 force                : "",
@@ -251,9 +254,9 @@ class DeployAppStandalone extends PluginTestHelper {
         String expectedContextRoot = "$testCaseId-app-custom-runtimename"
 
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*--runtime-name=.*${runParams.runtimename}"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*--runtime-name=.*${runParams.runtimename}"
 
         checkAppDeployedToStandaloneCli(expectedAppName, expectedRuntimeName)
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
@@ -269,7 +272,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "$testCaseId-app-custom-appname.war", // custom app name
                 runtimename          : "$testCaseId-app-custom-runtimename.war", // and custom runtime name
                 force                : "",
@@ -286,9 +289,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
 
         String expectedAppName = "$testCaseId-app-custom-appname.war"
         String expectedRuntimeName = "$testCaseId-app-custom-runtimename.war"
@@ -307,7 +310,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "$testCaseId-app-custom-appname", // no extension here
                 runtimename          : "$testCaseId-app-custom-runtimename.war", // here we have usual extension .war
                 force                : "",
@@ -324,9 +327,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
 
         String expectedAppName = "$testCaseId-app-custom-appname"
         String expectedRuntimeName = "$testCaseId-app-custom-runtimename.war"
@@ -345,7 +348,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app-custom-runtimename.war",
                 force                : "",
@@ -362,9 +365,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
 
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app-custom-runtimename.war"
@@ -383,7 +386,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "1", // force flag
@@ -394,7 +397,7 @@ class DeployAppStandalone extends PluginTestHelper {
 
         setup:
         downloadArtifact(linkToSampleWarFile, runParams.warphysicalpath)
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         deployAppToStandalone(runParams.warphysicalpath, "$testCaseId-app.war", "$testCaseId-app.war")
         downloadArtifact(linkToSampleWarFile2, runParams.warphysicalpath)
 
@@ -404,7 +407,7 @@ class DeployAppStandalone extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*--force"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*--force"
 
         String existingAppName = "$testCaseId-app.war"
         String newRuntimeName = "$testCaseId-app.war"
@@ -423,7 +426,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "1", // force flag
@@ -443,9 +446,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*--force"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*--force"
 
         String newRuntimeName = "$testCaseId-app.war"
         String newContextRoot = "$testCaseId-app"
@@ -462,7 +465,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "$testCaseId-app.war",
                 force                : "0", // when force is not set, but app exists
@@ -484,9 +487,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "'$existingAppName' already exists in the deployment repository"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath
 
         checkAppDeployedToStandaloneCli(existingAppName, oldRuntimeName)
         checkAppDeployedToStandaloneUrl(oldContextRoot, "1", true)
@@ -502,7 +505,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app with whitespace.war", // whitespaces in path
+                warphysicalpath      : getPathApp() + "$testCaseId-app with whitespace.war", // whitespaces in path
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "",
@@ -519,9 +522,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app with whitespace.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app with whitespace.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}"
 
         String expectedAppName = "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
@@ -541,7 +544,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"non-existing-file.war", // non existing file
+                warphysicalpath      : getPathApp() + "non-existing-file.war", // non existing file
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "",
@@ -555,8 +558,8 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        String expectedPath = getPathAppLogs()+"non-existing-file.war"
-        assert runProcedureJob.getUpperStepSummary() =~ "File '"+expectedPath+"' doesn't exists"
+        String expectedPath = getPathAppLogs() + "non-existing-file.war"
+        assert runProcedureJob.getUpperStepSummary() =~ "File '" + expectedPath + "' doesn't exists"
         assert runProcedureJob.getLogs() =~ "read-attribute\\(name=launch-type\\)"
     }
 
@@ -567,7 +570,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "",
                 runtimename          : "",
                 force                : "",
@@ -589,9 +592,9 @@ class DeployAppStandalone extends PluginTestHelper {
         checkAppDeployedToStandaloneUrl(expectedRuntimeName, "", false)
 
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*${runParams.additional_options}"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*${runParams.additional_options}"
 
         cleanup:
         undeployAppFromStandalone("$testCaseId-app.war")
@@ -604,7 +607,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "0",
@@ -626,9 +629,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*${runParams.additional_options}"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*${runParams.additional_options}"
 
         checkAppDeployedToStandaloneCli(existingAppName, runtimeName)
         checkAppDeployedToStandaloneUrl(contextRoot, "2", true)
@@ -644,7 +647,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "1", // this one
@@ -667,9 +670,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "success"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '${runParams.warphysicalpath}'"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}.*--force"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}.*--force"
 
         String contextRoot = "$testCaseId-app"
         checkAppDeployedToStandaloneCli(existingAppName, runtimeName)
@@ -686,7 +689,7 @@ class DeployAppStandalone extends PluginTestHelper {
         def runParams = [
                 serverconfig         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
-                warphysicalpath      : getPathApp()+"$testCaseId-app.war",
+                warphysicalpath      : getPathApp() + "$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
                 runtimename          : "$testCaseId-app.war",
                 force                : "",
@@ -703,9 +706,9 @@ class DeployAppStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        String expectedPath = getPathAppLogs()+"$testCaseId-app.war"
+        String expectedPath = getPathAppLogs() + "$testCaseId-app.war"
         assert runProcedureJob.getUpperStepSummary() =~ "Unrecognized arguments: [--some-wrong-param]"
-        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*"+expectedPath+".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}"
+        assert runProcedureJob.getLogs() =~ "jboss-cli.*--command=.*deploy .*" + expectedPath + ".*--name=.*${runParams.appname}.*--runtime-name=.*${runParams.runtimename}.*${runParams.additional_options}"
 
     }
 
@@ -762,10 +765,10 @@ class DeployAppStandalone extends PluginTestHelper {
                 additional_options   : ""
         ]
         setup:
-        downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile, getPathApp() + "$testCaseId-app.war")
         String existingAppName = "$testCaseId-app.war"
         String runtimeName = "$testCaseId-app.war"
-        deployAppToStandalone(getPathApp()+"$testCaseId-app.war", existingAppName, runtimeName)
+        deployAppToStandalone(getPathApp() + "$testCaseId-app.war", existingAppName, runtimeName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -801,10 +804,10 @@ class DeployAppStandalone extends PluginTestHelper {
                 additional_options   : "--force"
         ]
         setup:
-        downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
+        downloadArtifact(linkToSampleWarFile, getPathApp() + "$testCaseId-app.war")
         String existingAppName = "$testCaseId-app.war"
         String runtimeName = "$testCaseId-app.war"
-        deployAppToStandalone(getPathApp()+"$testCaseId-app.war", existingAppName, runtimeName)
+        deployAppToStandalone(getPathApp() + "$testCaseId-app.war", existingAppName, runtimeName)
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)

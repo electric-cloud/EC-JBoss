@@ -4,7 +4,10 @@ import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerGroupHelper
 import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerHelper
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+import spock.lang.IgnoreIf
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class StopServers extends PluginTestHelper {
@@ -61,7 +64,7 @@ class StopServers extends PluginTestHelper {
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
         String serverName2 = "server-2-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
         ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
@@ -110,8 +113,8 @@ class StopServers extends PluginTestHelper {
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
         String serverName2 = "server-2-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
-        String hostName2 = EnvPropertiesHelper.getJbossDomainSlaveHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
+        String hostName2 = EnvPropertiesHelper.getJbossDomainSlaveHostname()
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
         ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
@@ -159,7 +162,7 @@ class StopServers extends PluginTestHelper {
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
         String serverName2 = "server-2-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
         ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
@@ -207,7 +210,7 @@ class StopServers extends PluginTestHelper {
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
         String serverName2 = "server-2-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
         ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
@@ -251,7 +254,7 @@ class StopServers extends PluginTestHelper {
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
         String serverName2 = "server-2-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
         ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
@@ -297,7 +300,7 @@ class StopServers extends PluginTestHelper {
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
         String serverName2 = "server-2-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
         ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
@@ -343,7 +346,7 @@ class StopServers extends PluginTestHelper {
 
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
         String waitTime = ''
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
@@ -382,7 +385,7 @@ class StopServers extends PluginTestHelper {
 
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
         String waitTime = '0'
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
@@ -468,7 +471,7 @@ class StopServers extends PluginTestHelper {
 
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
         ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
@@ -493,7 +496,7 @@ class StopServers extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == 'error'
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
-        assert  runProcedureJob.getUpperStepSummary() =~ "Wait time expected to be positive integer \\(wait time in seconds\\), 0 \\(unlimited\\) or undefined \\(one time check\\)"
+        assert runProcedureJob.getUpperStepSummary() =~ "Wait time expected to be positive integer \\(wait time in seconds\\), 0 \\(unlimited\\) or undefined \\(one time check\\)"
 
         cleanup:
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
@@ -508,7 +511,7 @@ class StopServers extends PluginTestHelper {
 
         String serverGroupName = "server-group-$testCaseId"
         String serverName1 = "server-1-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
 
         ServerGroupHelper serverGroup = new ServerGroupHelper(serverGroupName)
         ServerHelper server1 = new ServerHelper(serverName1, serverGroupName, hostName)
@@ -533,7 +536,7 @@ class StopServers extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == 'error'
         assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getServerStatusInDomain(server1)).result == "STARTED"
-        assert  runProcedureJob.getUpperStepSummary() =~ "Wait time expected to be positive integer \\(wait time in seconds\\), 0 \\(unlimited\\) or undefined \\(one time check\\)"
+        assert runProcedureJob.getUpperStepSummary() =~ "Wait time expected to be positive integer \\(wait time in seconds\\), 0 \\(unlimited\\) or undefined \\(one time check\\)"
 
         cleanup:
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
@@ -564,12 +567,13 @@ class StopServers extends PluginTestHelper {
 
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     @Unroll
-    def "Negative. Controller is not available (C278097)"() {   //shutdown host. After test need start server
+    def "Negative. Controller is not available (C278097)"() {
+        //shutdown host. After test need start server
         setup:
         String testCaseId = "C278097"
 
         String serverGroupName = "server-group-$testCaseId"
-        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname();
+        String hostName = EnvPropertiesHelper.getJbossDomainMasterHostname()
         shutdownHost(hostName)
 
         when:

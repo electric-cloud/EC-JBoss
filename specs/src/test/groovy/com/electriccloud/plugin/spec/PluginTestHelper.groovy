@@ -2,8 +2,7 @@ package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
-import com.electriccloud.spec.*
+import com.electriccloud.spec.PluginSpockTestSupport
 import groovy.json.JsonSlurper
 
 class PluginTestHelper extends PluginSpockTestSupport {
@@ -20,11 +19,11 @@ class PluginTestHelper extends PluginSpockTestSupport {
     def createDefaultConfiguration(String configName, props = [:]) {
         String pluginName = "EC-JBoss"
 
-        def username = EnvPropertiesHelper.getJbossUsername();
-        def password = EnvPropertiesHelper.getJbossPassword();
-        def jboss_url = EnvPropertiesHelper.getJbossControllerUrl();
-        def jboss_cli_path = EnvPropertiesHelper.getJbossCliPath();
-        def jboss_log_level = EnvPropertiesHelper.getJbossLogLevelValue();
+        def username = EnvPropertiesHelper.getJbossUsername()
+        def password = EnvPropertiesHelper.getJbossPassword()
+        def jboss_url = EnvPropertiesHelper.getJbossControllerUrl()
+        def jboss_cli_path = EnvPropertiesHelper.getJbossCliPath()
+        def jboss_log_level = EnvPropertiesHelper.getJbossLogLevelValue()
 
         createPluginConfiguration(
                 'EC-JBoss',
@@ -39,13 +38,13 @@ class PluginTestHelper extends PluginSpockTestSupport {
         )
     }
 
-    def createJBossResource(def mode='master') {
+    def createJBossResource(def mode = 'master') {
         def hostname = EnvPropertiesHelper.getResourceHostname()
         def port = EnvPropertiesHelper.getResourcePort()
         if (mode == 'slave') {
             hostname = EnvPropertiesHelper.getResourceSlaveHostname()
             port = EnvPropertiesHelper.getResourcePortSlave()
-        } 
+        }
         def resources = dsl "getResources()"
         logger.debug(objectToJson(resources))
 
@@ -62,8 +61,8 @@ class PluginTestHelper extends PluginSpockTestSupport {
         def agentDrivePath = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'c:/tmp/workspace' : '/tmp'
         def agentUncPath = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'c:\\\\tmp\\\\workspace' : '/tmp'
         def agentUnixPath = EnvPropertiesHelper.getOS() == "WINDOWS" ? '' : "/opt/electriccloud/electriccommander/workspace"
-           
-           def workspaceResult = dsl """
+
+        def workspaceResult = dsl """
             createWorkspace(
                 workspaceName: '${workspaceName}',
                 agentDrivePath: '${agentDrivePath}',
@@ -203,10 +202,10 @@ class PluginTestHelper extends PluginSpockTestSupport {
         String parametersString = parameters.collect { k, v -> "$k: '$v'" }.join(', ')
         String dslString = ''
         def listProceduresWithCredentials = ["CreateOrUpdateXADataSource", "CreateOrUpdateDataSource"]
-        def procedureWithCredentials =  procedureName in listProceduresWithCredentials
-        if(procedureName == "CreateConfiguration"){
-        String credentialString = credential.collect { k, v -> "$k: '$v'" }.join(', ')
-        dslString = """
+        def procedureWithCredentials = procedureName in listProceduresWithCredentials
+        if (procedureName == "CreateConfiguration") {
+            String credentialString = credential.collect { k, v -> "$k: '$v'" }.join(', ')
+            dslString = """
                 runProcedure(
                     projectName: '$projectName',
                     procedureName: '$procedureName',
@@ -218,8 +217,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
                     ]
                 )
         """
-        }
-        else if(procedureWithCredentials){
+        } else if (procedureWithCredentials) {
             String credentialString = credential.collect { k, v -> "$k: '$v'" }.join(', ')
             dslString = """
                 runProcedure(
@@ -233,9 +231,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
                     ]
                 )
         """
-        }
-
-        else {
+        } else {
             dslString = """
                 runProcedure(
                     projectName: '$projectName',
@@ -287,20 +283,20 @@ class PluginTestHelper extends PluginSpockTestSupport {
         ]
 
         dslFile 'dsl/UtilProcedures.dsl', [
-                projName: helperProjName,
-                resName: resName,
-                procNameDownloadArtifact: helperProcedureDownloadArtifact,
-                procNameCheckUrl: helperProcedureCheckUrl,
-                procNameMkdir: helperProcedureMkdir,
-                procNamerunCustomShellCommand: helperProcedurerunCustomShellCommand, 
-                shell: shell
+                projName                     : helperProjName,
+                resName                      : resName,
+                procNameDownloadArtifact     : helperProcedureDownloadArtifact,
+                procNameCheckUrl             : helperProcedureCheckUrl,
+                procNameMkdir                : helperProcedureMkdir,
+                procNamerunCustomShellCommand: helperProcedurerunCustomShellCommand,
+                shell                        : shell
         ]
     }
 
     def runCliCommandAndGetJBossReply(String command) {
-        RunProcedureJob runProcedureJob =  runCliCommand(command)
+        RunProcedureJob runProcedureJob = runCliCommand(command)
 
-        def commandsHistoryString = getJobProperty('/myJob/jobSteps/RunCustomCommand/commands_history', runProcedureJob.getJobId());
+        def commandsHistoryString = getJobProperty('/myJob/jobSteps/RunCustomCommand/commands_history', runProcedureJob.getJobId())
         logger.info("RunCustomCommand commands_history: $commandsHistoryString")
 
         def jsonSlurper = new JsonSlurper()
@@ -308,11 +304,11 @@ class PluginTestHelper extends PluginSpockTestSupport {
         def commandsHistoryObject = jsonSlurper.parseText(commandsHistoryString)
         assert commandsHistoryObject instanceof List
 
-        def stdoutObject;
-        for (def element: commandsHistoryObject) {
+        def stdoutObject
+        for (def element : commandsHistoryObject) {
             def stdoutString = element.result.stdout
             logger.info("RunCustomCommand commands_history result stdout before replacing: $stdoutString")
-            stdoutString = stdoutString.replaceAll(/(?s)"hash" => bytes \{.*?\}/, /"hash" => "skipped by system test"/);
+            stdoutString = stdoutString.replaceAll(/(?s)"hash" => bytes \{.*?\}/, /"hash" => "skipped by system test"/)
             stdoutString = stdoutString.replaceAll(/(?m)( => )(\d+L)(,?)$/, /$1"$2"$3/)
             stdoutString = stdoutString.replace(" => undefined", " => null")
             stdoutString = stdoutString.replace(" => ", ":")
@@ -330,7 +326,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
 
         RunProcedureJob runProcedureJob = runProcedureDsl(helperProjName, helperProcedureRunCustomCommand, runParams)
         if (runProcedureJob.isStatusError()) {
-            throw new Exception("Run CLI Command failed");
+            throw new Exception("Run CLI Command failed")
         }
 
         return runProcedureJob
@@ -398,7 +394,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         return jobStatus(res.jobId).outcome == 'success'
     }
 
-    def runCustomShellCommand(command, res='') {
+    def runCustomShellCommand(command, res = '') {
         def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
         // def resLine = ''
         // if (res != 'default')
@@ -420,7 +416,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
         }
     }
 
-    def checkVersionApplication(String url, String version){ //for parse web page
+    def checkVersionApplication(String url, String version) { //for parse web page
         String data = new URL(url).getText().replaceAll("\t", "").replaceAll("\\s+", "")
         assert data =~ "Theversionis$version.0.0"
     }
@@ -444,34 +440,34 @@ class PluginTestHelper extends PluginSpockTestSupport {
     }
 
     def startDomain(def hostName, def resName) {
-        def jbossDomainPath = EnvPropertiesHelper.getJbossDomainPath();
-        def commandForStart 
-        switch(hostName) {
-            case 'master': commandForStart = "nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &"; break;
-            case 'slave': commandForStart = "nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &"; break;   
+        def jbossDomainPath = EnvPropertiesHelper.getJbossDomainPath()
+        def commandForStart
+        switch (hostName) {
+            case 'master': commandForStart = "nohup $jbossDomainPath -b 0.0.0.0 -bmanagement 0.0.0.0 > log &"; break
+            case 'slave': commandForStart = "nohup $jbossDomainPath -Djboss.domain.master.address=\"jboss\" -b 0.0.0.0 -bmanagement 0.0.0.0 --host-config=host-slave.xml > log &"; break
         }
         runCustomShellCommand(commandForStart, resName)
         waitUntilServerIsUp(hostName, commandForStart, resName)
     }
 
-    def waitUntilServerIsUp(def serverName, def commandForStart, def resName){
+    def waitUntilServerIsUp(def serverName, def commandForStart, def resName) {
         def isHostControllerRunning = true
         def attemptNumber = 0
         def attemptTotalCount = 10
-        while(isHostControllerRunning){
+        while (isHostControllerRunning) {
             try {
                 // this loop can be infinite, so I added a counter
-                if (attemptNumber == attemptTotalCount){
+                if (attemptNumber == attemptTotalCount) {
                     break
                 }
-                attemptNumber += 1 
+                attemptNumber += 1
                 // getHostStatus throws exception if Jboss is not running
                 if (runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getHostStatus(serverName)).result == 'running') {
                     isHostControllerRunning = false
                 }
                 sleep(15000)
             }
-            catch (Exception e){
+            catch (Exception e) {
                 // if we found that server was not running, we would try to run it again
                 runCustomShellCommand(commandForStart, resName)
             }

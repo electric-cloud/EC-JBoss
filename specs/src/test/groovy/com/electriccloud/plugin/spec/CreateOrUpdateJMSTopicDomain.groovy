@@ -2,7 +2,10 @@ package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+import spock.lang.IgnoreIf
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
@@ -44,7 +47,6 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         createHelperProject(resName, defaultConfigName)
 
     }
-
 
 
     def doCleanupSpec() {
@@ -141,7 +143,6 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         removeJMSTopic(topicName, defaultProfile)
         removeJMSTopic(topicName, "full-ha")
     }
-
 
 
     @Unroll
@@ -313,7 +314,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 serverconfig     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
 
-                ]
+        ]
         setup:
         addJMSTopicDefaultDomain(runParams.topicName, defaultJndiNames, defaultProfile)
 
@@ -387,14 +388,16 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
     }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile) {
-        logger.debug("env "+EnvPropertiesHelper.getVersion())
+        logger.debug("env " + EnvPropertiesHelper.getVersion())
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoDomain(topicName, profile)).result
-        assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'entries' =~ jndiNames
+        //need rewrite after changing run custom command from json to raw text
     }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String profile, String legacy) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoDomain(topicName, profile)).result
-        assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'entries' =~ jndiNames
+        //need rewrite after changing run custom command from json to raw text
         assert result.'legacy-entries' =~ legacy
     }
 

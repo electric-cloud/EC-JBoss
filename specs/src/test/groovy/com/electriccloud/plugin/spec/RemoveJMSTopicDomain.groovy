@@ -1,8 +1,9 @@
 package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
-import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class RemoveJMSTopicDomain extends PluginTestHelper {
@@ -29,9 +30,9 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        profile      : '',
-                        serverconfig : '',
-                        topicName    : '',
+                        profile     : '',
+                        serverconfig: '',
+                        topicName   : '',
                 ]
         ]
 
@@ -50,15 +51,14 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
     }
 
 
-
     @Unroll
     def "Remove JMS Topic without 'Topic Name' (C278471)"() {
         String testCaseId = "C278471"
 
         def runParams = [
-                profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
-                topicName        : '',
+                profile     : defaultProfile,
+                serverconfig: defaultConfigName,
+                topicName   : '',
         ]
 
         setup:
@@ -82,9 +82,9 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
         String testCaseId = "C278472"
 
         def runParams = [
-                profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
-                topicName        : 'testTopic-non-existing',
+                profile     : defaultProfile,
+                serverconfig: defaultConfigName,
+                topicName   : 'testTopic-non-existing',
         ]
 
         setup:
@@ -109,9 +109,9 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
         String testCaseId = "C278469"
 
         def runParams = [
-                profile          : '',
-                serverconfig     : defaultConfigName,
-                topicName        : "testTopic-$testCaseId",
+                profile     : '',
+                serverconfig: defaultConfigName,
+                topicName   : "testTopic-$testCaseId",
         ]
 
         setup:

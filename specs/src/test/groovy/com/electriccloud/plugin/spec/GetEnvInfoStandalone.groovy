@@ -1,8 +1,9 @@
 package com.electriccloud.plugin.spec
 
-import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
-import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
 class GetEnvInfoStandalone extends PluginTestHelper {
@@ -81,12 +82,12 @@ class GetEnvInfoStandalone extends PluginTestHelper {
                 prefix + /"launch-type" => .*/
         ]
 
-        for (String envInfoPattern: envInfoPatterns) {
+        for (String envInfoPattern : envInfoPatterns) {
             assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
             assert envInfo =~ /(?s)/ + envInfoPattern
         }
 
-        for (String envInfoPattern: envInfoPatternsNotExixsting) {
+        for (String envInfoPattern : envInfoPatternsNotExixsting) {
             assert !(runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern)
             assert !(envInfo =~ /(?s)/ + envInfoPattern)
         }
@@ -118,12 +119,12 @@ class GetEnvInfoStandalone extends PluginTestHelper {
                 prefix + /"launch-type" => .*/
         ]
 
-        for (String envInfoPattern: envInfoPatterns) {
+        for (String envInfoPattern : envInfoPatterns) {
             assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
             assert envInfo =~ /(?s)/ + envInfoPattern
         }
 
-        for (String envInfoPattern: envInfoPatternsNotExixsting) {
+        for (String envInfoPattern : envInfoPatternsNotExixsting) {
             assert !(runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern)
             assert !(envInfo =~ /(?s)/ + envInfoPattern)
         }
@@ -154,12 +155,12 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         ]
         String[] envInfoPatternsNotExixsting = []
 
-        for (String envInfoPattern: envInfoPatterns) {
+        for (String envInfoPattern : envInfoPatterns) {
             assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
             assert envInfo =~ /(?s)/ + envInfoPattern
         }
 
-        for (String envInfoPattern: envInfoPatternsNotExixsting) {
+        for (String envInfoPattern : envInfoPatternsNotExixsting) {
             assert !(runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern)
             assert !(envInfo =~ /(?s)/ + envInfoPattern)
         }
@@ -219,7 +220,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
                 prefix + /"user-name" => "sa",.*/
         ]
 
-        for (String envInfoPattern: envInfoPatterns) {
+        for (String envInfoPattern : envInfoPatterns) {
             assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
             assert envInfo =~ /(?s)/ + envInfoPattern
         }
@@ -247,7 +248,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
                 prefix + /"user-name" => "sa",.*/
         ]
 
-        for (String envInfoPattern: envInfoPatterns) {
+        for (String envInfoPattern : envInfoPatterns) {
             assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
             assert envInfo =~ /(?s)/ + envInfoPattern
         }
@@ -275,7 +276,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
                 prefix + /"user-name" => "sa",.*/
         ]
 
-        for (String envInfoPattern: envInfoPatterns) {
+        for (String envInfoPattern : envInfoPatterns) {
             assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
             assert envInfo =~ /(?s)/ + envInfoPattern
         }
@@ -317,7 +318,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
                 /"outcome" => "success",.*"result" => \{\}.*/
         ]
 
-        for (String envInfoPattern: envInfoPatterns) {
+        for (String envInfoPattern : envInfoPatterns) {
             assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
             assert envInfo =~ /(?s)/ + envInfoPattern
         }
@@ -343,7 +344,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
                 /"outcome" => "success",.*"result" => \{\}.*/
         ]
 
-        for (String envInfoPattern: envInfoPatterns) {
+        for (String envInfoPattern : envInfoPatterns) {
             assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
             assert envInfo =~ /(?s)/ + envInfoPattern
         }
@@ -369,7 +370,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
                 /"outcome" => "success",.*"result" => \{\}.*/
         ]
 
-        for (String envInfoPattern: envInfoPatterns) {
+        for (String envInfoPattern : envInfoPatterns) {
             assert runProcedureJob.getLogs() =~ /(?s)/ + /Requested Environment Information.*/ + envInfoPattern
             assert envInfo =~ /(?s)/ + envInfoPattern
         }

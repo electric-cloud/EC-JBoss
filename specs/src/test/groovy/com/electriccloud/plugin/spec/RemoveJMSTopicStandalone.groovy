@@ -1,8 +1,9 @@
 package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
-import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
 class RemoveJMSTopicStandalone extends PluginTestHelper {
@@ -52,9 +53,9 @@ class RemoveJMSTopicStandalone extends PluginTestHelper {
         String testCaseId = "C278481"
 
         def runParams = [
-                profile          : '',
-                serverconfig     : defaultConfigName,
-                topicName        : '',
+                profile     : '',
+                serverconfig: defaultConfigName,
+                topicName   : '',
         ]
 
         setup:
@@ -78,9 +79,9 @@ class RemoveJMSTopicStandalone extends PluginTestHelper {
         String testCaseId = "C278482"
 
         def runParams = [
-                profile          : '',
-                serverconfig     : defaultConfigName,
-                topicName        : 'testTopic-non-existing',
+                profile     : '',
+                serverconfig: defaultConfigName,
+                topicName   : 'testTopic-non-existing',
         ]
 
         setup:
@@ -106,7 +107,6 @@ class RemoveJMSTopicStandalone extends PluginTestHelper {
     void addJMSTopicDefaultStandalone(String topicName, String jndiName) {
         runCliCommand(CliCommandsGeneratorHelper.addJMSTopicStandalone(topicName, jndiName))
     }
-
 
 
 }

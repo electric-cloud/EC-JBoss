@@ -1,8 +1,10 @@
 package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
-import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+import spock.lang.IgnoreIf
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_MODE == 'standalone' })
 class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
@@ -103,7 +105,6 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         topicName = "testTopic-$testCaseId"
         removeJMSTopic(topicName)
     }
-
 
 
     @Unroll
@@ -280,13 +281,15 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames, String legacy) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoStandalone(topicName)).result
-        assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'entries' =~ jndiNames
+        //need rewrite after changing run custom command from json to raw text
         assert result.'legacy-entries' =~ legacy
     }
 
     void checkCreateOrUpdateJMSTopic(String topicName, String jndiNames) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSTopicInfoStandalone(topicName)).result
-        assert result.'entries' =~ jndiNames //need rewrite after changing run custom command from json to raw text
+        assert result.'entries' =~ jndiNames
+        //need rewrite after changing run custom command from json to raw text
     }
 
     void removeJMSTopic(String topicName) {

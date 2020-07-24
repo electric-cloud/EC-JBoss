@@ -4,7 +4,10 @@ import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerGroupHelper
 import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerHelper
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+import spock.lang.IgnoreIf
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class DeployApplicationDomain extends PluginTestHelper {
@@ -46,7 +49,7 @@ class DeployApplicationDomain extends PluginTestHelper {
     static String getPathApp() {
         String applicationContentSourcePath = "/tmp/"
         EnvPropertiesHelper.getOS() == "WINDOWS" ? applicationContentSourcePath = "C:\\\\tmp\\\\" : applicationContentSourcePath
-        return  applicationContentSourcePath
+        return applicationContentSourcePath
     }
 
     def doSetupSpec() {
@@ -60,13 +63,13 @@ class DeployApplicationDomain extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        additionalOptions              : '',
-                        applicationContentSourcePath   : '',
-                        deploymentName                 : '',
-                        disabledServerGroups           : '',
-                        enabledServerGroups            : '',
-                        runtimeName                    : '',
-                        serverconfig                   : '',
+                        additionalOptions           : '',
+                        applicationContentSourcePath: '',
+                        deploymentName              : '',
+                        disabledServerGroups        : '',
+                        enabledServerGroups         : '',
+                        runtimeName                 : '',
+                        serverconfig                : '',
                 ]
         ]
 
@@ -85,18 +88,18 @@ class DeployApplicationDomain extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
-   @Unroll
+    @Unroll
     def "DeployApplication, 1st time, file, enabled server group: 1 server group, minimum params (C278234)"() {
         String testCaseId = "C278234"
 
         def runParams = [
-                additionalOptions              : '',
-                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                deploymentName                 : '',
-                disabledServerGroups           : '',
-                enabledServerGroups            : "$serverGroup1",
-                runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : '',
+                disabledServerGroups        : '',
+                enabledServerGroups         : "$serverGroup1",
+                runtimeName                 : '',
+                serverconfig                : defaultConfigName,
         ]
 
         setup:
@@ -121,397 +124,397 @@ class DeployApplicationDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups(expectedAppName)
     }
 
-        @Unroll
-       def "DeployApplication, 1st time, file, disabled server group: 1 server group, minimum params (C278235)"() {
-           String testCaseId = "C278235"
-
-           def runParams = [
-                   additionalOptions              : '',
-                   applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                   deploymentName                 : '',
-                   disabledServerGroups           : "$serverGroup1",
-                   enabledServerGroups            : '',
-                   runtimeName                    : '',
-                   serverconfig                   : defaultConfigName,
-           ]
-
-           setup:
-           downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+    @Unroll
+    def "DeployApplication, 1st time, file, disabled server group: 1 server group, minimum params (C278235)"() {
+        String testCaseId = "C278235"
+
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : '',
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : '',
+                runtimeName                 : '',
+                serverconfig                : defaultConfigName,
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
 
-           when:
-           RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-           then:
-           String expectedAppName = "$testCaseId-app.war"
-           String expectedRuntimeName = "$testCaseId-app.war"
-           String expectedContextRoot = "$testCaseId-app"
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
 
-           assert runProcedureJob.getStatus() == "success"
-           assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nDisabled on: $serverGroup1 server groups."
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nDisabled on: $serverGroup1 server groups."
 
-           String[] expectedServerGroupsWithApp = [serverGroup1]
-           checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
-           checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+        String[] expectedServerGroupsWithApp = [serverGroup1]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithApp)
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
 
-           cleanup:
-           undeployFromAllRelevantServerGroups("$testCaseId-app.war")
-       }
-
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
 
-       @Unroll
-       def "DeployApplication, 1st time, file, enabled server group: 1 server group, disabled server group: 1 server group, minimum params (C278236)"() {
-           String testCaseId = "C278236"
+    @Unroll
+    def "DeployApplication, 1st time, file, enabled server group: 1 server group, disabled server group: 1 server group, minimum params (C278236)"() {
+        String testCaseId = "C278236"
 
-           def runParams = [
-                   additionalOptions              : '',
-                   applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                   deploymentName                 : '',
-                   disabledServerGroups           : "$serverGroup1",
-                   enabledServerGroups            : "$serverGroup2",
-                   runtimeName                    : '',
-                   serverconfig                   : defaultConfigName,
-           ]
-
-           setup:
-           downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
-
-           when:
-           RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : '',
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : '',
+                serverconfig                : defaultConfigName,
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-           then:
-           String expectedAppName = "$testCaseId-app.war"
-           String expectedRuntimeName = "$testCaseId-app.war"
-           String expectedContextRoot = "$testCaseId-app"
-
-           assert runProcedureJob.getStatus() == "success"
-           assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
 
-           String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
-           String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
+        String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
 
-           checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
-           checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
-
-           checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
-           checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
-
-
-           cleanup:
-           undeployFromAllRelevantServerGroups("$testCaseId-app.war")
-       }
-
-          @Unroll
-          def "DeployApplication, 1st time, file, with custom name and runtime name (C278237)"() {
-              String testCaseId = "C278237"
-
-              def runParams = [
-                      additionalOptions              : '',
-                      applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                      deploymentName                 : "app-custom-$testCaseId-appname.war",
-                      disabledServerGroups           : "$serverGroup1",
-                      enabledServerGroups            : "$serverGroup2",
-                      runtimeName                    : "app-custom-$testCaseId-runtimename.war",
-                      serverconfig                   : defaultConfigName,
-              ]
-
-              setup:
-              downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
-
-              when:
-              RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-
-              then:
-              String expectedAppName = "app-custom-$testCaseId-appname.war"
-              String expectedRuntimeName = "app-custom-$testCaseId-runtimename.war"
-              String expectedContextRoot = "app-custom-$testCaseId-runtimename"
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
+
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    def "DeployApplication, 1st time, file, with custom name and runtime name (C278237)"() {
+        String testCaseId = "C278237"
+
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : "app-custom-$testCaseId-appname.war",
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : "app-custom-$testCaseId-runtimename.war",
+                serverconfig                : defaultConfigName,
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        String expectedAppName = "app-custom-$testCaseId-appname.war"
+        String expectedRuntimeName = "app-custom-$testCaseId-runtimename.war"
+        String expectedContextRoot = "app-custom-$testCaseId-runtimename"
 
-              assert runProcedureJob.getStatus() == "success"
-              assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
 
 
-              String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
-              String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
+        String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
 
-              checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
-              checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
 
-              checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
-              checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
 
-
-              cleanup:
-              undeployFromAllRelevantServerGroups("app-custom-$testCaseId-appname.war")
-          }
-
-           @Unroll
-           def "DeployApplication, app already deployed, file, enabled and disabled server groups, update app (C278242)"() {
-               String testCaseId = "C278242"
-
-               def runParams = [
-                       additionalOptions              : '',
-                       applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                       deploymentName                 : "$testCaseId-app.war",
-                       disabledServerGroups           : "$serverGroup1",
-                       enabledServerGroups            : "$serverGroup2",
-                       runtimeName                    : "$testCaseId-app.war",
-                       serverconfig                   : defaultConfigName,
-               ]
-
-               setup:
-               downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
-
-               String expectedAppName = "$testCaseId-app.war"
-               String runtimeName = "$testCaseId-app.war"
-               String expectedContextRoot = "$testCaseId-app"
-               String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
-               deployToServerGroups(oldServerGroupsWithApp, runParams.applicationContentSourcePath, expectedAppName, runtimeName)
-               downloadArtifact(linkToSampleWarFile2, runParams.applicationContentSourcePath)
-
-               when:
-               RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("app-custom-$testCaseId-appname.war")
+    }
+
+    @Unroll
+    def "DeployApplication, app already deployed, file, enabled and disabled server groups, update app (C278242)"() {
+        String testCaseId = "C278242"
+
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : "$testCaseId-app.war",
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : "$testCaseId-app.war",
+                serverconfig                : defaultConfigName,
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+
+        String expectedAppName = "$testCaseId-app.war"
+        String runtimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+        String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
+        deployToServerGroups(oldServerGroupsWithApp, runParams.applicationContentSourcePath, expectedAppName, runtimeName)
+        downloadArtifact(linkToSampleWarFile2, runParams.applicationContentSourcePath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-               then:
-               assert runProcedureJob.getStatus() == "success"
-               assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
 
-               String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
-               String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
+        String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
 
-               checkAppDeployedToServerGroupsCli(expectedAppName, runtimeName, expectedServerGroupsWithAppEnabled)
-               checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled, "2")
-
-               checkAppDeployedToServerGroupsCli(expectedAppName, runtimeName, expectedServerGroupsWithAppDisabled)
-               checkAppUploadedToContentRepo(expectedAppName, runtimeName)
-
-               cleanup:
-               undeployFromAllRelevantServerGroups("$testCaseId-app.war")
-           }
-
-             @Unroll
-             @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
-             def "DeployApplication, app already deployed, url (for EAP 7 and later), enabled server group and disabled server group, update app (C278258)"() {
-                 String testCaseId = "C278258"
-
-                 def runParams = [
-                         additionalOptions              : '',
-                         applicationContentSourcePath   : "--url=$linkToSampleWarFile2",
-                         deploymentName                 : "$testCaseId-app.war",
-                         disabledServerGroups           : "$serverGroup1",
-                         enabledServerGroups            : "$serverGroup2",
-                         runtimeName                    : "$testCaseId-app.war",
-                         serverconfig                   : defaultConfigName,
-                 ]
-
-                 String existingAppName = "$testCaseId-app.war"
-                 String runtimeName = "$testCaseId-app.war"
-                 String expectedContextRoot = "$testCaseId-app"
-                 String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
-                 deployToServerGroups(oldServerGroupsWithApp, "--url=$linkToSampleWarFile", existingAppName, runtimeName)
-
-                 when:
-                 RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        checkAppDeployedToServerGroupsCli(expectedAppName, runtimeName, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled, "2")
+
+        checkAppDeployedToServerGroupsCli(expectedAppName, runtimeName, expectedServerGroupsWithAppDisabled)
+        checkAppUploadedToContentRepo(expectedAppName, runtimeName)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-app.war")
+    }
+
+    @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    def "DeployApplication, app already deployed, url (for EAP 7 and later), enabled server group and disabled server group, update app (C278258)"() {
+        String testCaseId = "C278258"
+
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: "--url=$linkToSampleWarFile2",
+                deploymentName              : "$testCaseId-app.war",
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : "$testCaseId-app.war",
+                serverconfig                : defaultConfigName,
+        ]
+
+        String existingAppName = "$testCaseId-app.war"
+        String runtimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+        String[] oldServerGroupsWithApp = [serverGroup1, serverGroup2]
+        deployToServerGroups(oldServerGroupsWithApp, "--url=$linkToSampleWarFile", existingAppName, runtimeName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-                 then:
-                 assert runProcedureJob.getStatus() == "success"
-                 assert runProcedureJob.getUpperStepSummary() =~ "Application '$existingAppName' has been successfully deployed from '$linkToSampleWarFile2'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
+        then:
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$existingAppName' has been successfully deployed from '$linkToSampleWarFile2'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
 
-                 String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
-                 String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
+        String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
 
-                 checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, expectedServerGroupsWithAppEnabled)
-                 checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled, "2")
+        checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled, "2")
 
-                 checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, expectedServerGroupsWithAppDisabled)
-                 checkAppUploadedToContentRepo(existingAppName, runtimeName)
-
-
-                 cleanup:
-                 existingAppName = "$testCaseId-app.war"
-                 undeployFromAllRelevantServerGroups(existingAppName)
-             }
-
-             @Unroll
-             def "DeployApplication,  1st time, file, custom app name (C278245)"() {
-                 String testCaseId = "C278245"
+        checkAppDeployedToServerGroupsCli(existingAppName, runtimeName, expectedServerGroupsWithAppDisabled)
+        checkAppUploadedToContentRepo(existingAppName, runtimeName)
+
+
+        cleanup:
+        existingAppName = "$testCaseId-app.war"
+        undeployFromAllRelevantServerGroups(existingAppName)
+    }
+
+    @Unroll
+    def "DeployApplication,  1st time, file, custom app name (C278245)"() {
+        String testCaseId = "C278245"
 
-                 def runParams = [
-                         additionalOptions              : '',
-                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                         deploymentName                 : "$testCaseId-custom-appname.war",
-                         disabledServerGroups           : "$serverGroup1",
-                         enabledServerGroups            : "$serverGroup2",
-                         runtimeName                    : '',
-                         serverconfig                   : defaultConfigName,
-                 ]
-
-                 setup:
-                 downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
-
-                 when:
-                 RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : "$testCaseId-custom-appname.war",
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : '',
+                serverconfig                : defaultConfigName,
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-                 then:
-                 String expectedAppName = "$testCaseId-custom-appname.war"
-                 String expectedRuntimeName = "$testCaseId-custom-appname.war"
-                 String expectedContextRoot = "$testCaseId-custom-appname"
+        then:
+        String expectedAppName = "$testCaseId-custom-appname.war"
+        String expectedRuntimeName = "$testCaseId-custom-appname.war"
+        String expectedContextRoot = "$testCaseId-custom-appname"
 
-                 assert runProcedureJob.getStatus() == "success"
-                 assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
 
-                 String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
-                 String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
+        String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
 
-                 checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
-                 checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
 
-                 checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
-                 checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
-
-                 cleanup:
-                 undeployFromAllRelevantServerGroups("$testCaseId-custom-appname.war")
-             }
-
-             @Unroll
-             def "DeployApplication, 1st time, file, custom runtime name (C278246)"() {
-                 String testCaseId = "C278246"
-
-                 def runParams = [
-                         additionalOptions              : '',
-                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                         deploymentName                 : "$testCaseId-app.war",
-                         disabledServerGroups           : "$serverGroup1",
-                         enabledServerGroups            : "$serverGroup2",
-                         runtimeName                    : "app-custom-$testCaseId-runtimename.war",
-                         serverconfig                   : defaultConfigName,
-                 ]
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups("$testCaseId-custom-appname.war")
+    }
+
+    @Unroll
+    def "DeployApplication, 1st time, file, custom runtime name (C278246)"() {
+        String testCaseId = "C278246"
+
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : "$testCaseId-app.war",
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : "app-custom-$testCaseId-runtimename.war",
+                serverconfig                : defaultConfigName,
+        ]
 
-                 setup:
-                 downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
 
-                 when:
-                 RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-                 then:
-                 String expectedAppName = "$testCaseId-app.war"
-                 String expectedRuntimeName = "app-custom-$testCaseId-runtimename.war"
-                 String expectedContextRoot = "app-custom-$testCaseId-runtimename"
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "app-custom-$testCaseId-runtimename.war"
+        String expectedContextRoot = "app-custom-$testCaseId-runtimename"
 
-                 assert runProcedureJob.getStatus() == "success"
-                 assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
 
-                 String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
-                 String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
+        String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
 
-                 checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
-                 checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
 
-                 checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
-                 checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
 
 
-                 cleanup:
-                 undeployFromAllRelevantServerGroups(expectedAppName)
-             }
+        cleanup:
+        undeployFromAllRelevantServerGroups(expectedAppName)
+    }
 
-             @Unroll
-             def "DeployApplication, 1st time, file, whitespace in path (C278248)"() {
-                 String testCaseId = "C278248"
+    @Unroll
+    def "DeployApplication, 1st time, file, whitespace in path (C278248)"() {
+        String testCaseId = "C278248"
 
-                 def runParams = [
-                         additionalOptions              : '',
-                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app with whitespace.war",
-                         deploymentName                 : "$testCaseId-app.war",
-                         disabledServerGroups           : "$serverGroup1",
-                         enabledServerGroups            : "$serverGroup2",
-                         runtimeName                    : "app-custom-$testCaseId-runtimename.war",
-                         serverconfig                   : defaultConfigName,
-                 ]
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app with whitespace.war",
+                deploymentName              : "$testCaseId-app.war",
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : "app-custom-$testCaseId-runtimename.war",
+                serverconfig                : defaultConfigName,
+        ]
 
-                 setup:
-                 downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
 
-                 when:
-                 RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-                 then:
-                 String expectedAppName = "$testCaseId-app.war"
-                 String expectedRuntimeName = "app-custom-$testCaseId-runtimename.war"
-                 String expectedContextRoot = "app-custom-$testCaseId-runtimename"
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "app-custom-$testCaseId-runtimename.war"
+        String expectedContextRoot = "app-custom-$testCaseId-runtimename"
 
-                 assert runProcedureJob.getStatus() == "success"
-                 assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
 
-                 String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
-                 String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
+        String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
 
-                 checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
-                 checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
 
-                 checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
-                 checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
 
 
-                 cleanup:
-                 undeployFromAllRelevantServerGroups(expectedAppName)
-             }
+        cleanup:
+        undeployFromAllRelevantServerGroups(expectedAppName)
+    }
 
-               @Unroll
-               def "DeployApplication, 1st time, file, custom app name without extension, custom runtime name (C278249)"() {
-                   String testCaseId = "C278249"
+    @Unroll
+    def "DeployApplication, 1st time, file, custom app name without extension, custom runtime name (C278249)"() {
+        String testCaseId = "C278249"
 
-                   def runParams = [
-                           additionalOptions              : '',
-                           applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                           deploymentName                 : "$testCaseId-app",
-                           disabledServerGroups           : "$serverGroup1",
-                           enabledServerGroups            : "$serverGroup2",
-                           runtimeName                    : "app-custom-$testCaseId-runtimename.war",
-                           serverconfig                   : defaultConfigName,
-                   ]
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : "$testCaseId-app",
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : "app-custom-$testCaseId-runtimename.war",
+                serverconfig                : defaultConfigName,
+        ]
 
-                   setup:
-                   downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
 
-                   when:
-                   RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-                   then:
-                   String expectedAppName = "$testCaseId-app"
-                   String expectedRuntimeName = "app-custom-$testCaseId-runtimename.war"
-                   String expectedContextRoot = "app-custom-$testCaseId-runtimename"
+        then:
+        String expectedAppName = "$testCaseId-app"
+        String expectedRuntimeName = "app-custom-$testCaseId-runtimename.war"
+        String expectedContextRoot = "app-custom-$testCaseId-runtimename"
 
-                   assert runProcedureJob.getStatus() == "success"
-                   assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
 
 
-                   String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
-                   String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
+        String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
 
-                   checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
-                   checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
 
-                   checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
-                   checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
 
 
-                   cleanup:
-                   undeployFromAllRelevantServerGroups(expectedAppName)
-               }
+        cleanup:
+        undeployFromAllRelevantServerGroups(expectedAppName)
+    }
 
 
-   @Unroll
-   @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
     def "DeployApplication, 1st time, url (for EAP 7 and later), enabled server groups (C278256)"() {
         String testCaseId = "C278256"
 
         def runParams = [
-                additionalOptions              : '',
-                applicationContentSourcePath   : "--url=$linkToSampleWarFile",
-                deploymentName                 : "$testCaseId-app.war",
-                disabledServerGroups           : '',
-                enabledServerGroups            : "$serverGroup2",
-                runtimeName                    : "$testCaseId-app.war",
-                serverconfig                   : defaultConfigName,
+                additionalOptions           : '',
+                applicationContentSourcePath: "--url=$linkToSampleWarFile",
+                deploymentName              : "$testCaseId-app.war",
+                disabledServerGroups        : '',
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : "$testCaseId-app.war",
+                serverconfig                : defaultConfigName,
         ]
 
         when:
@@ -541,13 +544,13 @@ class DeployApplicationDomain extends PluginTestHelper {
         String testCaseId = "C278265"
 
         def runParams = [
-                additionalOptions              : '',
-                applicationContentSourcePath   : "--url=$linkToSampleWarFile",
-                deploymentName                 : "$testCaseId-app.war",
-                disabledServerGroups           : "$serverGroup2",
-                enabledServerGroups            : '',
-                runtimeName                    : "$testCaseId-app.war",
-                serverconfig                   : defaultConfigName,
+                additionalOptions           : '',
+                applicationContentSourcePath: "--url=$linkToSampleWarFile",
+                deploymentName              : "$testCaseId-app.war",
+                disabledServerGroups        : "$serverGroup2",
+                enabledServerGroups         : '',
+                runtimeName                 : "$testCaseId-app.war",
+                serverconfig                : defaultConfigName,
         ]
 
         when:
@@ -570,327 +573,325 @@ class DeployApplicationDomain extends PluginTestHelper {
     }
 
 
-       @Unroll
-       @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
-       def "DeployApplication, 1st time, url (for EAP 7 and later), disabled server groups and enabled server groups (C278266)"() {
-           String testCaseId = "C278266"
-
-           def runParams = [
-                   additionalOptions              : '',
-                   applicationContentSourcePath   : "--url=$linkToSampleWarFile",
-                   deploymentName                 : "$testCaseId-app.war",
-                   disabledServerGroups           : "$serverGroup2",
-                   enabledServerGroups            : "$serverGroup1",
-                   runtimeName                    : "$testCaseId-app.war",
-                   serverconfig                   : defaultConfigName,
-           ]
-
-           when:
-           RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-
-           then:
-           String expectedAppName = "$testCaseId-app.war"
-           String expectedRuntimeName = "$testCaseId-app.war"
-           String expectedContextRoot = "$testCaseId-app"
-
-           assert runProcedureJob.getStatus() == "success"
-           assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on: $serverGroup1 server groups.\nDisabled on: $serverGroup2 server groups."
-
-           String[] expectedServerGroupsWithAppEnabled = [serverGroup1]
-           String[] expectedServerGroupsWithAppDisabled = [serverGroup2]
-
-           checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
-           checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
-
-           checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
-           checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
-
-           cleanup:
-           undeployFromAllRelevantServerGroups(expectedAppName)
-       }
-
-
-       @Unroll
-       def "Negative. DeployApplication,1st time, file, non existing server group (C278221)"() {
-           String testCaseId = "C278221"
-
-           def runParams = [
-                   additionalOptions              : '',
-                   applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                   deploymentName                 : "$testCaseId-app.war",
-                   disabledServerGroups           : "disabled-non-existing-server-group",
-                   enabledServerGroups            : "enabled-non-existing-server-group",
-                   runtimeName                    : "$testCaseId-app",
-                   serverconfig                   : defaultConfigName,
-           ]
-
-           setup:
-           downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
-
-           when:
-           RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-
-           then:
-           String expectedAppName = "$testCaseId-app"
-
-           assert runProcedureJob.getStatus() == "error"
-           assert runProcedureJob.getUpperStepSummary() =~ "Specified non existing server group\\(s\\): enabled-non-existing-server-group disabled-non-existing-server-group. Please add server groups before deploying to them."
-
-       }
-
-          @Unroll
-          @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
-          def "Negative. DeployApplication, app already deployed, url (for EAP 7 and later) is empty, update app (C278276)"() {
-              String testCaseId = "C278276"
-
-              def runParams = [
-                      additionalOptions              : '',
-                      applicationContentSourcePath   : "--url=",
-                      deploymentName                 : "$testCaseId-app",
-                      disabledServerGroups           : "$serverGroup1",
-                      enabledServerGroups            : "$serverGroup2",
-                      runtimeName                    : "$testCaseId-app.war",
-                      serverconfig                   : defaultConfigName,
-              ]
-
-
-              setup:
-              downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
-
-              String existingAppName = "$testCaseId-app.war"
-              String oldRuntimeName = "$testCaseId-app.war"
-              String[] oldServerGroupsWithApp = [serverGroup2]
-              deployToServerGroups(oldServerGroupsWithApp, getPathApp()+"$testCaseId-app.war", existingAppName, oldRuntimeName)
-
-              when:
-              RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-
-              then:
-              assert runProcedureJob.getStatus() == "error"
-              assert runProcedureJob.getUpperStepSummary() =~ "Filesystem path or --url pointing to the deployment is required."
-
-              cleanup:
-              existingAppName = "$testCaseId-app.war"
-              undeployFromAllRelevantServerGroups(existingAppName)
-          }
+    @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    def "DeployApplication, 1st time, url (for EAP 7 and later), disabled server groups and enabled server groups (C278266)"() {
+        String testCaseId = "C278266"
+
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: "--url=$linkToSampleWarFile",
+                deploymentName              : "$testCaseId-app.war",
+                disabledServerGroups        : "$serverGroup2",
+                enabledServerGroups         : "$serverGroup1",
+                runtimeName                 : "$testCaseId-app.war",
+                serverconfig                : defaultConfigName,
+        ]
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$linkToSampleWarFile'.\nEnabled on: $serverGroup1 server groups.\nDisabled on: $serverGroup2 server groups."
+
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup1]
+        String[] expectedServerGroupsWithAppDisabled = [serverGroup2]
+
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
+
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+
+        cleanup:
+        undeployFromAllRelevantServerGroups(expectedAppName)
+    }
+
+
+    @Unroll
+    def "Negative. DeployApplication,1st time, file, non existing server group (C278221)"() {
+        String testCaseId = "C278221"
+
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : "$testCaseId-app.war",
+                disabledServerGroups        : "disabled-non-existing-server-group",
+                enabledServerGroups         : "enabled-non-existing-server-group",
+                runtimeName                 : "$testCaseId-app",
+                serverconfig                : defaultConfigName,
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        String expectedAppName = "$testCaseId-app"
+
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Specified non existing server group\\(s\\): enabled-non-existing-server-group disabled-non-existing-server-group. Please add server groups before deploying to them."
+
+    }
+
+    @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    def "Negative. DeployApplication, app already deployed, url (for EAP 7 and later) is empty, update app (C278276)"() {
+        String testCaseId = "C278276"
+
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: "--url=",
+                deploymentName              : "$testCaseId-app",
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : "$testCaseId-app.war",
+                serverconfig                : defaultConfigName,
+        ]
+
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, getPathApp() + "$testCaseId-app.war")
+
+        String existingAppName = "$testCaseId-app.war"
+        String oldRuntimeName = "$testCaseId-app.war"
+        String[] oldServerGroupsWithApp = [serverGroup2]
+        deployToServerGroups(oldServerGroupsWithApp, getPathApp() + "$testCaseId-app.war", existingAppName, oldRuntimeName)
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+
+        then:
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Filesystem path or --url pointing to the deployment is required."
+
+        cleanup:
+        existingAppName = "$testCaseId-app.war"
+        undeployFromAllRelevantServerGroups(existingAppName)
+    }
 
 
-          @Unroll
-          def "Negative. DeployApplication, 1st time, file, not existing path in the 'Path to the application to deploy' (C278218)"() {
-              String testCaseId = "C278218"
-
-              def runParams = [
-                      additionalOptions              : '',
-                      applicationContentSourcePath   : getPathApp()+"wrongpath/$testCaseId-app.war",
-                      deploymentName                 : "$testCaseId-app",
-                      disabledServerGroups           : "$serverGroup1",
-                      enabledServerGroups            : "$serverGroup2",
-                      runtimeName                    : "$testCaseId-app.war",
-                      serverconfig                   : defaultConfigName,
-              ]
-
-              setup:
-              downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
-
-              when:
-              RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+    @Unroll
+    def "Negative. DeployApplication, 1st time, file, not existing path in the 'Path to the application to deploy' (C278218)"() {
+        String testCaseId = "C278218"
+
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "wrongpath/$testCaseId-app.war",
+                deploymentName              : "$testCaseId-app",
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : "$testCaseId-app.war",
+                serverconfig                : defaultConfigName,
+        ]
+
+        setup:
+        downloadArtifact(linkToSampleWarFile, getPathApp() + "$testCaseId-app.war")
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-              then:
-              String expectedAppName = "$testCaseId-app.war"
+        then:
+        String expectedAppName = "$testCaseId-app.war"
 
-              assert runProcedureJob.getStatus() == "error"
-              assert runProcedureJob.getUpperStepSummary() =~ "File '$runParams.applicationContentSourcePath' doesn't exists"
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "File '$runParams.applicationContentSourcePath' doesn't exists"
 
-          }
+    }
 
-             @Unroll
-             def "DeployApplication, 1st time, file, with not choose server group (C278224)"() {
-                 String testCaseId = "C278224"
+    @Unroll
+    def "DeployApplication, 1st time, file, with not choose server group (C278224)"() {
+        String testCaseId = "C278224"
 
-                 def runParams = [
-                         additionalOptions              : '',
-                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                         deploymentName                 : "$testCaseId-app.war",
-                         disabledServerGroups           : '',
-                         enabledServerGroups            : '',
-                         runtimeName                    : "$testCaseId-app.war",
-                         serverconfig                   : defaultConfigName,
-                 ]
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : "$testCaseId-app.war",
+                disabledServerGroups        : '',
+                enabledServerGroups         : '',
+                runtimeName                 : "$testCaseId-app.war",
+                serverconfig                : defaultConfigName,
+        ]
 
-                 setup:
-                 downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
-
-                 when:
-                 RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        setup:
+        downloadArtifact(linkToSampleWarFile, getPathApp() + "$testCaseId-app.war")
+
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-                 then:
-                 String expectedAppName = "$testCaseId-app.war"
-                 String expectedRuntimeName = "$testCaseId-app.war"
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
 
-                 assert runProcedureJob.getStatus() == "success"
-                 assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$runParams.applicationContentSourcePath'."
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$runParams.applicationContentSourcePath'."
 
-                 checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
-             }
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+    }
 
 
-             @Unroll
-             def "Negative. DeployApplication, 1st time, file, with specified file without extension (C278226)"() {
-                 String testCaseId = "C278226"
+    @Unroll
+    def "Negative. DeployApplication, 1st time, file, with specified file without extension (C278226)"() {
+        String testCaseId = "C278226"
 
-                 def runParams = [
-                         additionalOptions              : '',
-                         applicationContentSourcePath   : getPathApp()+"$testCaseId-app",
-                         deploymentName                 : '',
-                         disabledServerGroups           : '',
-                         enabledServerGroups            : '',
-                         runtimeName                    : '',
-                         serverconfig                   : defaultConfigName,
-                 ]
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app",
+                deploymentName              : '',
+                disabledServerGroups        : '',
+                enabledServerGroups         : '',
+                runtimeName                 : '',
+                serverconfig                : defaultConfigName,
+        ]
 
-                 setup:
-                 downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app")
+        setup:
+        downloadArtifact(linkToSampleWarFile, getPathApp() + "$testCaseId-app")
 
-                 when:
-                 RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-                 then:
-                 String expectedAppName = "$testCaseId-app"
-                 String expectedRuntimeName = "$testCaseId-app"
+        then:
+        String expectedAppName = "$testCaseId-app"
+        String expectedRuntimeName = "$testCaseId-app"
 
-                 assert runProcedureJob.getStatus() == "success"
-                 assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$runParams.applicationContentSourcePath'."
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$runParams.applicationContentSourcePath'."
 
-                 checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
-             }
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+    }
 
 
-       @Unroll
-       def "DeployApplication, 1st time, file, with wrong additional options (C278227)"() {
-           String testCaseId = "C278227"
+    @Unroll
+    def "DeployApplication, 1st time, file, with wrong additional options (C278227)"() {
+        String testCaseId = "C278227"
 
-           def runParams = [
-                   additionalOptions              : '--some-wrong-param',
-                   applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                   deploymentName                 : '',
-                   disabledServerGroups           : "$serverGroup1",
-                   enabledServerGroups            : "$serverGroup2",
-                   runtimeName                    : '',
-                   serverconfig                   : defaultConfigName,
-           ]
+        def runParams = [
+                additionalOptions           : '--some-wrong-param',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : '',
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : '',
+                serverconfig                : defaultConfigName,
+        ]
 
-           setup:
-           downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
+        setup:
+        downloadArtifact(linkToSampleWarFile, getPathApp() + "$testCaseId-app.war")
 
-           when:
-           RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-           then:
-           String expectedAppName = "$testCaseId-app.war"
-           String expectedRuntimeName = "$testCaseId-app.war"
-           String expectedContextRoot = "$testCaseId-app"
+        then:
+        String expectedAppName = "$testCaseId-app.war"
+        String expectedRuntimeName = "$testCaseId-app.war"
+        String expectedContextRoot = "$testCaseId-app"
 
-           assert runProcedureJob.getStatus() == "success"
-           assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$runParams.applicationContentSourcePath'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
+        assert runProcedureJob.getStatus() == "success"
+        assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '$runParams.applicationContentSourcePath'.\nEnabled on: $serverGroup2 server groups.\nDisabled on: $serverGroup1 server groups."
 
-           String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
-           String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup2]
+        String[] expectedServerGroupsWithAppDisabled = [serverGroup1]
 
-           checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
-           checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
+        checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
 
-           checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
-           checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
+        checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppDisabled)
+        checkAppUploadedToContentRepo(expectedAppName, expectedRuntimeName)
 
-           cleanup:
-           undeployFromAllRelevantServerGroups(expectedAppName)
-       }
+        cleanup:
+        undeployFromAllRelevantServerGroups(expectedAppName)
+    }
 
 
-       @Unroll
-       def "Negative. DeployApplication,  incorrect param, undef required param, path to app (C278229)"() {
-           String testCaseId = "C278229"
+    @Unroll
+    def "Negative. DeployApplication,  incorrect param, undef required param, path to app (C278229)"() {
+        String testCaseId = "C278229"
 
-           def runParams = [
-                   additionalOptions              : '',
-                   applicationContentSourcePath   : '',
-                   deploymentName                 : '',
-                   disabledServerGroups           : "$serverGroup1",
-                   enabledServerGroups            : "$serverGroup2",
-                   runtimeName                    : '',
-                   serverconfig                   : defaultConfigName,
-           ]
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: '',
+                deploymentName              : '',
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : '',
+                serverconfig                : defaultConfigName,
+        ]
 
-           setup:
-           downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
+        setup:
+        downloadArtifact(linkToSampleWarFile, getPathApp() + "$testCaseId-app.war")
 
-           when:
-           RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-           then:
-           String expectedAppName = "$testCaseId-app"
+        then:
+        String expectedAppName = "$testCaseId-app"
 
-           assert runProcedureJob.getStatus() == "error"
-           assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'applicationContentSourcePath' is not provided"
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'applicationContentSourcePath' is not provided"
 
-       }
+    }
 
 
-       @Unroll
-       @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
-       def "Negative. DeployApplication,1st time, url incorrect value (for EAP 7 and later) (C278230)"() {
-           String testCaseId = "C278230"
+    @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    def "Negative. DeployApplication,1st time, url incorrect value (for EAP 7 and later) (C278230)"() {
+        String testCaseId = "C278230"
 
-           def runParams = [
-                   additionalOptions              : '',
-                   applicationContentSourcePath   : '--url=https://github.com/electric-cloud/incorrect-path/hello-world.war',
-                   deploymentName                 : '',
-                   disabledServerGroups           : "$serverGroup1",
-                   enabledServerGroups            : "$serverGroup2",
-                   runtimeName                    : '',
-                   serverconfig                   : defaultConfigName,
-           ]
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: '--url=https://github.com/electric-cloud/incorrect-path/hello-world.war',
+                deploymentName              : '',
+                disabledServerGroups        : "$serverGroup1",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : '',
+                serverconfig                : defaultConfigName,
+        ]
 
-           when:
-           RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-           then:
-           String expectedAppName = "$testCaseId-app"
+        then:
+        String expectedAppName = "$testCaseId-app"
 
-           assert runProcedureJob.getStatus() == "error"
-           assert runProcedureJob.getUpperStepSummary() =~ "Invalid url stream."
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Invalid url stream."
 
-       }
+    }
 
 
+    @Unroll
+    def "Negative. DeployApplication, 1st time, file, same server group in enabled and disabled server group (C278273)"() {
+        String testCaseId = "C278273"
 
+        def runParams = [
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : '',
+                disabledServerGroups        : "$serverGroup2",
+                enabledServerGroups         : "$serverGroup2",
+                runtimeName                 : '',
+                serverconfig                : defaultConfigName,
+        ]
+        setup:
+        downloadArtifact(linkToSampleWarFile, getPathApp() + "$testCaseId-app.war")
 
-       @Unroll
-       def "Negative. DeployApplication, 1st time, file, same server group in enabled and disabled server group (C278273)"() {
-           String testCaseId = "C278273"
+        when:
+        RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
 
-           def runParams = [
-                   additionalOptions              : '',
-                   applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                   deploymentName                 : '',
-                   disabledServerGroups           : "$serverGroup2",
-                   enabledServerGroups            : "$serverGroup2",
-                   runtimeName                    : '',
-                   serverconfig                   : defaultConfigName,
-           ]
-           setup:
-           downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
+        then:
+        String expectedAppName = "$testCaseId-app"
 
-           when:
-           RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
+        assert runProcedureJob.getStatus() == "error"
+        assert runProcedureJob.getUpperStepSummary() =~ "Duplicated server group\\(s\\) in enabled and disabled lists \\(please check provided parameters\\): $serverGroup2"
 
-           then:
-           String expectedAppName = "$testCaseId-app"
-
-           assert runProcedureJob.getStatus() == "error"
-           assert runProcedureJob.getUpperStepSummary() =~ "Duplicated server group\\(s\\) in enabled and disabled lists \\(please check provided parameters\\): $serverGroup2"
-
-       }
+    }
 
 
     @Unroll
@@ -898,13 +899,13 @@ class DeployApplicationDomain extends PluginTestHelper {
         String testCaseId = "C278546"
 
         def runParams = [
-                additionalOptions              : '',
-                applicationContentSourcePath   : getPathApp()+"$testCaseId-app.war",
-                deploymentName                 : "$testCaseId-app.war",
-                disabledServerGroups           : '',
-                enabledServerGroups            : '--all-server-groups',
-                runtimeName                    : "$testCaseId-app.war",
-                serverconfig                   : defaultConfigName,
+                additionalOptions           : '',
+                applicationContentSourcePath: getPathApp() + "$testCaseId-app.war",
+                deploymentName              : "$testCaseId-app.war",
+                disabledServerGroups        : '',
+                enabledServerGroups         : '--all-server-groups',
+                runtimeName                 : "$testCaseId-app.war",
+                serverconfig                : defaultConfigName,
         ]
         setup:
         downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
@@ -920,7 +921,7 @@ class DeployApplicationDomain extends PluginTestHelper {
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "Application '$expectedAppName' has been successfully deployed from '${runParams.applicationContentSourcePath}'.\nEnabled on: $serverGroup1,$serverGroup2 server groups."
 
-        String[] expectedServerGroupsWithAppEnabled = [serverGroup2,serverGroup1]
+        String[] expectedServerGroupsWithAppEnabled = [serverGroup2, serverGroup1]
 
         checkAppDeployedToServerGroupsCli(expectedAppName, expectedRuntimeName, expectedServerGroupsWithAppEnabled)
         checkAppDeployedToServerGroupsUrl(expectedContextRoot, expectedServerGroupsWithAppEnabled)
@@ -929,7 +930,8 @@ class DeployApplicationDomain extends PluginTestHelper {
         undeployFromAllRelevantServerGroups(expectedAppName)
     }
 
-    void checkAppDeployedToServerGroupsCli(String appName, String runtimeName, def serverGroups) { //not working for JBoss 6.4
+    void checkAppDeployedToServerGroupsCli(String appName, String runtimeName, def serverGroups) {
+        //not working for JBoss 6.4
         for (String serverGroup : serverGroups) {
             checkAppDeployedToServerGroupCli(appName, runtimeName, serverGroup)
         }

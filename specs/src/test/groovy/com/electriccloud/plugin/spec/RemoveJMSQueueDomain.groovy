@@ -1,8 +1,9 @@
 package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
-import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class RemoveJMSQueueDomain extends PluginTestHelper {
@@ -29,9 +30,9 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        profile          : '',
-                        queueName        : '',
-                        serverconfig     : '',
+                        profile     : '',
+                        queueName   : '',
+                        serverconfig: '',
                 ]
         ]
 
@@ -54,9 +55,9 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278433"
 
         def runParams = [
-                profile          : defaultProfile,
-                queueName        : '',
-                serverconfig     : defaultConfigName
+                profile     : defaultProfile,
+                queueName   : '',
+                serverconfig: defaultConfigName
         ]
 
         setup:
@@ -80,9 +81,9 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278434"
 
         def runParams = [
-                profile          : defaultProfile,
-                queueName        : "testQueue-$testCaseId",
-                serverconfig     : defaultConfigName
+                profile     : defaultProfile,
+                queueName   : "testQueue-$testCaseId",
+                serverconfig: defaultConfigName
         ]
 
         when:
@@ -98,9 +99,9 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278430"
 
         def runParams = [
-                profile          : '',
-                queueName        : "testQueue-$testCaseId",
-                serverconfig     : defaultConfigName
+                profile     : '',
+                queueName   : "testQueue-$testCaseId",
+                serverconfig: defaultConfigName
         ]
 
         setup:

@@ -30,14 +30,14 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
             /**
              * Required
              */
-            empty: '',
-            mysql: 'java:/MysqlXADS',
+            empty     : '',
+            mysql     : 'java:/MysqlXADS',
             postgresql: 'java:/PostgresXADS',
-            oracle: 'java:/XAOracleDS',
-            sqlserver: 'java:/MSSQLXADS',
-            ibmdb2: 'java:/DB2XADS',
-            sybase: 'java:/SybaseXADS',
-            mariadb: 'java:jboss/MariaDBXADS'
+            oracle    : 'java:/XAOracleDS',
+            sqlserver : 'java:/MSSQLXADS',
+            ibmdb2    : 'java:/DB2XADS',
+            sybase    : 'java:/SybaseXADS',
+            mariadb   : 'java:jboss/MariaDBXADS'
     ]
 
     @Shared
@@ -45,8 +45,8 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
             /**
              * Required
              */
-            empty: '',
-            mysql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/mysql/mysql-connector-java-5.1.36.jar",
+            empty     : '',
+            mysql     : "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/mysql/mysql-connector-java-5.1.36.jar",
             postgresql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/postgresql/postgresql-42.2.2.jar",
     ]
 
@@ -55,8 +55,8 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
             /**
              * Required
              */
-            empty: '',
-            mysql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/mysql/module.xml",
+            empty     : '',
+            mysql     : "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/mysql/module.xml",
             postgresql: "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/XADatasources/postgresql/module.xml",
     ]
 
@@ -65,8 +65,8 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
             /**
              * Required
              */
-            empty: '',
-            mysql: '"DatabaseName"=>"mysqlDB","ServerName"=>"localhost","Port"=>"3306"',
+            empty     : '',
+            mysql     : '"DatabaseName"=>"mysqlDB","ServerName"=>"localhost","Port"=>"3306"',
             postgresql: '"DatabaseName"=>"postgresdb","ServerName"=>"servername","Port"=>"5432"'
             // oracle: 'url=jdbc:oracle:oci8:@tc',
             // sqlserver: 'DatabaseName=mssqldb,ServerName=localhost,SelectMethod=cursor',
@@ -80,14 +80,14 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
             /**
              * Required
              */
-            empty: '',
-            mysql: 'MysqlXADS',
+            empty     : '',
+            mysql     : 'MysqlXADS',
             postgresql: 'PostgresXADS',
-            oracle: 'XAOracleDS',
-            sqlserver: 'MSSQLXADS',
-            ibmdb2: 'DB2XADS',
-            sybase: 'SybaseXADS',
-            mariadb: 'MariaDBXADS'
+            oracle    : 'XAOracleDS',
+            sqlserver : 'MSSQLXADS',
+            ibmdb2    : 'DB2XADS',
+            sybase    : 'SybaseXADS',
+            mariadb   : 'MariaDBXADS'
     ]
 
     def doSetupSpec() {
@@ -101,15 +101,15 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        additionalOptions               : '',
-                        dataSourceConnectionCredentials : '',
-                        dataSourceName                  : '',
-                        enabled                         : '',
-                        jdbcDriverName                  : '',
-                        jndiName                        : '',
-                        profile                         : '',
-                        serverconfig                    : '',
-                        xaDataSourceProperties          : '',
+                        additionalOptions              : '',
+                        dataSourceConnectionCredentials: '',
+                        dataSourceName                 : '',
+                        enabled                        : '',
+                        jdbcDriverName                 : '',
+                        jndiName                       : '',
+                        profile                        : '',
+                        serverconfig                   : '',
+                        xaDataSourceProperties         : '',
                 ]
         ]
 
@@ -132,54 +132,54 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
     static String getPathToMain(String path, String domain) {
         String pathForJar = ''
-        if(EnvPropertiesHelper.getVersion() == "6.0"){
+        if (EnvPropertiesHelper.getVersion() == "6.0") {
             pathForJar = "/opt/jboss/modules/$domain/$path/main"
             EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path\\\\main" : pathForJar
         } else {
             pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path/main"
             EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path\\\\main" : pathForJar
         }
-        return  pathForJar
+        return pathForJar
     }
 
     static String getPath(String path, String domain) {
         String pathForJar = ''
-        if(EnvPropertiesHelper.getVersion() == "6.0"){
+        if (EnvPropertiesHelper.getVersion() == "6.0") {
             pathForJar = "/opt/jboss/modules/$domain/$path"
             EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\$domain\\\\$path" : pathForJar
         } else {
             pathForJar = "/opt/jboss/modules/system/layers/base/$domain/$path"
             EnvPropertiesHelper.getOS() == "WINDOWS" ? pathForJar = "C:\\\\tmp\\\\jboss\\\\modules\\\\system\\\\layers\\\\base\\\\$domain\\\\$path" : pathForJar
         }
-        return  pathForJar
+        return pathForJar
     }
 
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, minimum parameters (C289546)"() {
         String testCaseId = "C289546"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
-                reloadServer()
-            }
+            reloadServer()
+        }
 
         // we expect "success" or "warning"
         // "success": if the server does not need reloading
@@ -196,7 +196,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         checkCreateXADataSource(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
                 defaultPassword, defaultUserName)
 
-        cleanup: 
+        cleanup:
         reloadServer()
         // remove XA datasource
         removeXADatasource(xaDataSourceName)
@@ -207,22 +207,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, minimum parameters, verify xaDataSourceProperties (C289546-1)"() {
         String testCaseId = "C289546"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : '0',
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : '0',
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -232,36 +232,36 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         checkCreateXADataSource(xaDataSourceName, jndiName.mysql, jdbcDriverName, "10",
                 defaultPassword, defaultUserName)
         checkXADataSourceProperties(runParams.xaDataSourceProperties, runParams.dataSourceName)
-        cleanup: 
+        cleanup:
         reloadServer()
         // remove XA datasource
         removeXADatasource(xaDataSourceName)
         reloadServer()
-    }    
+    }
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']})
+    @IgnoreIf({ EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3'] })
     @Unroll
     def "CreateorUpdateXADataSource, PostgreSQL, minimum parameters (C289547)"() {
         String testCaseId = "C289547"
         String jdbcDriverName = "postgresql"
-        String xaDataSourceName = dataSourceName.postgresql+testCaseId
+        String xaDataSourceName = dataSourceName.postgresql + testCaseId
 
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.postgresql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.postgresql,
-            ]
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.postgresql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.postgresql,
+        ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
-            ]
+                userName      : defaultUserName,
+                password      : defaultPassword
+        ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
 
@@ -275,41 +275,41 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         // remove XA datasource
         removeXADatasource(xaDataSourceName)
         reloadServer()
-        
-       }
+
+    }
 
     @Unroll
     def "CreateorUpdateXADataSource, update JNDI Name, MySQL (C289554)"() {
         String testCaseId = "C289554"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = "MysqlXADSC289554" 
+        String xaDataSourceName = "MysqlXADSC289554"
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : '1',
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : '1',
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: 'admin',
-                password: 'changeme'
+                userName      : 'admin',
+                password      : 'changeme'
         ]
         // create xa datasource
         setup:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         when:
         //change JNDI 
-        def newJNDI = jndiName.mysql+"_new" 
+        def newJNDI = jndiName.mysql + "_new"
         runParams.jndiName = newJNDI
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
-                reloadServer()
-            }
+            reloadServer()
+        }
         then:
         assert runProcedureJob1.getStatus() == "warning"
         assert runProcedureJob1.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been updated successfully by new jndi name."
@@ -326,23 +326,23 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, enabled=false (C289553)"() {
         String testCaseId = "C289553"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = "MysqlXADSC289553" 
-        String newJNDI = jndiName.mysql+testCaseId 
+        String xaDataSourceName = "MysqlXADSC289553"
+        String newJNDI = jndiName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : '0',
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : newJNDI,
-                profile                         : defaultProfile,
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : '0',
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : newJNDI,
+                profile                        : defaultProfile,
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: 'admin',
-                password: 'changeme'
+                userName      : 'admin',
+                password      : 'changeme'
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -363,25 +363,25 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String testCaseId = "C289555"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = "MysqlXADSC289555"
-        String JNDI = jndiName.mysql+"C289555"
+        String JNDI = jndiName.mysql + "C289555"
         String newPassword = 'root' //change password
         String newUserName = 'root' //change userName
 
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : '0',
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : JNDI,
-                profile                         : defaultProfile,
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : '0',
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : JNDI,
+                profile                        : defaultProfile,
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         setup:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -408,25 +408,25 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String testCaseId = "C289556"
         String jdbcDriverName = "mysql"
         String xaDataSourceName = "MysqlXADSC289556"
-        String JNDI = jndiName.mysql+"C289556"
+        String JNDI = jndiName.mysql + "C289556"
         String newPassword = 'root' //change password
         String newUserName = 'root' //change userName
 
-                def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : '1',
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : JNDI,
-                profile                         : defaultProfile,
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+        def runParams = [
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : '1',
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : JNDI,
+                profile                        : defaultProfile,
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         setup:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -434,8 +434,8 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         when:
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
-                reloadServer()
-            }
+            reloadServer()
+        }
         then:
         def expectedStatus = ["success", "warning"]
         assert runProcedureJob1.getStatus() in expectedStatus
@@ -450,27 +450,27 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
-    @Unroll 
+    @Unroll
     def "CreateorUpdateXADataSource, MySQL, update JNDI Name Enabled=false (C289558)"() {
         String testCaseId = "C289558"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
-        String jndi_new = jndiName.mysql+"_new"
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
+        String jndi_new = jndiName.mysql + "_new"
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : '0',
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : 'default',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : '0',
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : 'default',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         setup:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -494,34 +494,34 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, with ignored 'Profile'  (C289559)"() {
         String testCaseId = "C289559"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : 'full',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : 'full',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
-                reloadServer()
-            }
+            reloadServer()
+        }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSource(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
                 defaultPassword, defaultUserName)
-        cleanup: 
+        cleanup:
         reloadServer()
         // remove XA datasource
         removeXADatasource(xaDataSourceName)
@@ -532,22 +532,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, update data source with the same parameters (C289560)"() {
         String testCaseId = "C289560"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : '0',
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : 'default',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : '0',
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : 'default',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         when:
@@ -569,35 +569,35 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--min-pool-size' (C289557)"() {
         String testCaseId = "C289557"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName ="MysqlXADS"+testCaseId
+        String xaDataSourceName = "MysqlXADS" + testCaseId
 
 
         def runParams = [
-                additionalOptions               : '--min-pool-size=10',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '--min-pool-size=10',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
-                reloadServer()
-            }
+            reloadServer()
+        }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSourceAdditionalOptions(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
-                'min-pool-size', 10,  defaultPassword, defaultUserName)
+                'min-pool-size', 10, defaultPassword, defaultUserName)
         cleanup:
         reloadServer()
         // remove XA datasource
@@ -609,33 +609,33 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--max-pool-size' (C289557)"() {
         String testCaseId = "C289557"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName ="MysqlXADS"+testCaseId
+        String xaDataSourceName = "MysqlXADS" + testCaseId
         def runParams = [
-                additionalOptions               : '--max-pool-size=25',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '--max-pool-size=25',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
-                reloadServer()
-            }
+            reloadServer()
+        }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSourceAdditionalOptions(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
-                'max-pool-size', 25,  defaultPassword, defaultUserName)
+                'max-pool-size', 25, defaultPassword, defaultUserName)
         cleanup:
         reloadServer()
         // remove XA datasource
@@ -643,38 +643,38 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.4', '7.0']})
+    @IgnoreIf({ EnvPropertiesHelper.getVersion() in ['6.4', '7.0'] })
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, Additional Options --check-valid-connection-sql' (C289557)"() {
         String testCaseId = "C289557"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName ="MysqlXADS"+testCaseId
+        String xaDataSourceName = "MysqlXADS" + testCaseId
         def runParams = [
-                additionalOptions               : '--check-valid-connection-sql="INSERT INTO jboss_table VALUES (34, \\\'qa34\\\');"',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '--check-valid-connection-sql="INSERT INTO jboss_table VALUES (34, \\\'qa34\\\');"',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
-                reloadServer()
-            }
+            reloadServer()
+        }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSourceAdditionalOptions(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
-                'check-valid-connection-sql', 'INSERT INTO jboss_table VALUES (34, \'qa34\');',  defaultPassword, defaultUserName)
+                'check-valid-connection-sql', 'INSERT INTO jboss_table VALUES (34, \'qa34\');', defaultPassword, defaultUserName)
         cleanup:
         reloadServer()
         // remove XA datasource
@@ -686,33 +686,33 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, Additional Options --check-valid-connection-sql-2' (C289557)"() {
         String testCaseId = "C289557"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName ="MysqlXADS"+testCaseId
+        String xaDataSourceName = "MysqlXADS" + testCaseId
         def runParams = [
-                additionalOptions               : '--check-valid-connection-sql="Select 1, 2;"',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '--check-valid-connection-sql="Select 1, 2;"',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
-                reloadServer()
-            }
+            reloadServer()
+        }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSourceAdditionalOptions(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
-                'check-valid-connection-sql', 'Select 1, 2;',  defaultPassword, defaultUserName)
+                'check-valid-connection-sql', 'Select 1, 2;', defaultPassword, defaultUserName)
         cleanup:
         reloadServer()
         // remove XA datasource
@@ -724,34 +724,34 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, Additional Options '--pad-xid' (C289557)"() {
         String testCaseId = "C289557"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName ="MysqlXADS"+testCaseId
+        String xaDataSourceName = "MysqlXADS" + testCaseId
 
         def runParams = [
-                additionalOptions               : '--pad-xid=true',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '--pad-xid=true',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
-                reloadServer()
-            }
+            reloadServer()
+        }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSourceAdditionalOptions(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
-                'pad-xid', true,  defaultPassword, defaultUserName)
+                'pad-xid', true, defaultPassword, defaultUserName)
         cleanup:
         reloadServer()
         // remove XA datasource
@@ -763,34 +763,34 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, Additional Options 'interleaving' (C289557)"() {
         String testCaseId = "C289557"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName ="MysqlXADS"+testCaseId
+        String xaDataSourceName = "MysqlXADS" + testCaseId
 
         def runParams = [
-                additionalOptions               : '--interleaving=true',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '--interleaving=true',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
-                reloadServer()
-            }
+            reloadServer()
+        }
         then:
         assert runProcedureJob.getStatus() == "success"
         assert runProcedureJob.getUpperStepSummary() =~ "XA data source '$xaDataSourceName' has been added successfully"
         checkCreateXADataSourceAdditionalOptions(xaDataSourceName, jndiName.mysql, jdbcDriverName, "1",
-                'interleaving', true,  defaultPassword, defaultUserName)
+                'interleaving', true, defaultPassword, defaultUserName)
         cleanup:
         reloadServer()
         // remove XA datasource
@@ -802,22 +802,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, without 'Configuration name' ( C289561)"() {
         String testCaseId = "C289561"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : '',
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : '',
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -829,22 +829,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, without 'Data Source Name'  ( C289562)"() {
         String testCaseId = "C289562"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : '',
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : '',
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -857,22 +857,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, without 'JNDI Name'  ( C289563)"() {
         String testCaseId = "C289563"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : '',
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : '',
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -885,22 +885,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, without 'JDBC Driver Name'  ( C289564)"() {
         String testCaseId = "C289564"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : '',
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : '',
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -913,22 +913,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, without 'xaDataSourceProperties'  ( C289566)"() {
         String testCaseId = "C289566"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : '',
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : '',
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -941,22 +941,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, without 'Datasource Connection Credentials'  ( C289567)"() {
         String testCaseId = "C289567"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : '',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: '',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -970,22 +970,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Configuration name'  ( C289569)"() {
         String testCaseId = "C289569"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : 'jboss_conf_not_existing',
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : 'jboss_conf_not_existing',
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -999,22 +999,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Data Source Name' ( C289570)"() {
         String testCaseId = "C289570"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : 'Mysql32XA@DS',
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : 'Mysql32XA@DS',
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -1027,22 +1027,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'JNDI Name' ( C289571)"() {
         String testCaseId = "C289571"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : 'MysqlXADS',
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : 'MysqlXADS',
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -1055,55 +1055,55 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, incorrect value  'JDBC Driver Name' ( C289572)"() {
         String testCaseId = "C289572"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : 'wrong_driver',
-                jndiName                        : jndiName.mysql+testCaseId,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : 'wrong_driver',
+                jndiName                       : jndiName.mysql + testCaseId,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         def expectedText = "is missing [jboss.jdbc-driver.wrong_driver]"
-        if (EnvPropertiesHelper.getVersion() == '6.0'){
+        if (EnvPropertiesHelper.getVersion() == '6.0') {
             expectedText = "is not installed."
         }
         assert runProcedureJob.getStatus() == "error"
         assert runProcedureJob.getUpperStepSummary().contains(expectedText)
     }
 
-    @IgnoreIf({EnvPropertiesHelper.getVersion() in ['6.0']})
+    @IgnoreIf({ EnvPropertiesHelper.getVersion() in ['6.0'] })
     @Unroll
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'Additional Options' ( C289576)"() {
         String testCaseId = "C289576"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '--some-wrong-option',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '--some-wrong-option',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -1117,22 +1117,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, incorrect value 'JNDI Name'' ( C289577)"() {
         String testCaseId = "C289577"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         setup:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -1153,22 +1153,22 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     def "CreateorUpdateXADataSource, MySQL, empty value 'Additional Options' (C289578)"() {
         String testCaseId = "C289578"
         String jdbcDriverName = "mysql"
-        String xaDataSourceName = dataSourceName.mysql+testCaseId
+        String xaDataSourceName = dataSourceName.mysql + testCaseId
         def runParams = [
-                additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
-                dataSourceName                  : xaDataSourceName,
-                enabled                         : defaultEnabledDataSource,
-                jdbcDriverName                  : jdbcDriverName,
-                jndiName                        : jndiName.mysql,
-                profile                         : '',
-                serverconfig                    : defaultConfigName,
-                xaDataSourceProperties          : xaDataSourceProperties.mysql,
+                additionalOptions              : '',
+                dataSourceConnectionCredentials: 'dataSourceConnectionCredentials',
+                dataSourceName                 : xaDataSourceName,
+                enabled                        : defaultEnabledDataSource,
+                jdbcDriverName                 : jdbcDriverName,
+                jndiName                       : jndiName.mysql,
+                profile                        : '',
+                serverconfig                   : defaultConfigName,
+                xaDataSourceProperties         : xaDataSourceProperties.mysql,
         ]
         def credential = [
                 credentialName: 'dataSourceConnectionCredentials',
-                userName: defaultUserName,
-                password: defaultPassword
+                userName      : defaultUserName,
+                password      : defaultPassword
         ]
         setup:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
@@ -1185,7 +1185,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         reloadServer()
     }
 
-    void checkXADataSourceProperties(def properties, def xaDataSourceName){
+    void checkXADataSourceProperties(def properties, def xaDataSourceName) {
         properties.split(',').each {
             def property = it.split("=>")
             def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getXADatasourceProperties(property[0][1..-2], xaDataSourceName)).result
@@ -1193,47 +1193,47 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         }
     }
 
-    void addJDBCMySQL(String jdbcDriverName){
+    void addJDBCMySQL(String jdbcDriverName) {
         String path = getPathToMain("mysql", "com")
         createDir(getPath("mysql", "com"))
         createDir(path)
-        downloadArtifact(link.mysql, path+"/mysql-connector-java-5.1.36.jar")
-        downloadArtifact(xml.mysql, path+"/module.xml")
+        downloadArtifact(link.mysql, path + "/mysql-connector-java-5.1.36.jar")
+        downloadArtifact(xml.mysql, path + "/module.xml")
         // if(!(EnvPropertiesHelper.getVersion() ==~ '6.[0,1,2,3]')) {
         addModuleXADatasource(jdbcDriverName, "com.mysql.jdbc.jdbc2.optional.MysqlXADataSource")
         // }
     }
 
-    void addJDBCPostgres(String jdbcDriverName){
+    void addJDBCPostgres(String jdbcDriverName) {
         String path = getPathToMain("postgresql", "org")
         createDir(getPath("postgresql", "org"))
         createDir(path)
-        downloadArtifact(link.postgresql, path+"/postgresql-42.2.2.jar")
-        downloadArtifact(xml.postgresql, path+"/module.xml")
+        downloadArtifact(link.postgresql, path + "/postgresql-42.2.2.jar")
+        downloadArtifact(xml.postgresql, path + "/module.xml")
         addModuleXADatasource(jdbcDriverName, "org.postgresql.xa.PGXADataSource")
     }
 
-    void addModuleXADatasource(String driver, String DSclass){
-        if (EnvPropertiesHelper.getVersion() in ['6.0','6.1','6.2','6.3']) {
+    void addModuleXADatasource(String driver, String DSclass) {
+        if (EnvPropertiesHelper.getVersion() in ['6.0', '6.1', '6.2', '6.3']) {
             // https://issues.jboss.org/browse/JBPAPP6-944
             reloadServer()
-        } 
+        }
         runCliCommandAnyResult(CliCommandsGeneratorHelper.addModuleXADatasourceStandalone(driver, DSclass))
     }
 
     void checkCreateXADataSourceAdditionalOptions(String nameDatasource, String jndiNames, String jdbcDriverName,
-                                             String enabled, String additionaOptionsParameter, def additionaOptionsValue, String password, String userName) {
+                                                  String enabled, String additionaOptionsParameter, def additionaOptionsValue, String password, String userName) {
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getXADatasourceInfoStandalone(nameDatasource)).result
         assert result.'jndi-name' =~ jndiNames
         assert result.'driver-name' == jdbcDriverName
         assert result.'password' == password
         assert result.'user-name' == userName
         assert result.'enabled' == (enabled == "1" ? true : false)
-        if(additionaOptionsParameter != ''){
+        if (additionaOptionsParameter != '') {
             assert result[additionaOptionsParameter] == additionaOptionsValue
-           }
+        }
 
-       }
+    }
 
 
     void checkCreateXADataSource(String nameDatasource, String jndiNames, String jdbcDriverName,
@@ -1252,30 +1252,30 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
             // I used here try catch because "reload" command doesn't any json
             runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.reloadStandalone())
         }
-        catch (Exception e){
-                println e.getMessage()
-            }
+        catch (Exception e) {
+            println e.getMessage()
+        }
         def cond = true
-        while(cond){
+        while (cond) {
             try {
                 sleep(3000)
                 if (runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getStandaloneStatus()).result == 'running') {
                     cond = false
                 }
             }
-            catch (Exception e){
+            catch (Exception e) {
                 println e.getMessage()
             }
         }
     }
 
 
-    def removeXADatasource(def xaDataSourceName){
+    def removeXADatasource(def xaDataSourceName) {
         if (EnvPropertiesHelper.getVersion() == "6.3") {
             runCliCommandAndGetJBossReply("/subsystem=datasources/xa-data-source=$xaDataSourceName:disable()")
             reloadServer()
         }
-        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(xaDataSourceName)) 
+        runCliCommandAnyResult(CliCommandsGeneratorHelper.removeXADatasource(xaDataSourceName))
     }
 
 

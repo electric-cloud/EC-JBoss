@@ -1,6 +1,8 @@
 package com.electriccloud.plugin.spec.Services
 
-import com.electriccloud.plugin.spec.Models.JBoss.Domain.*
+
+import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerGroupHelper
+import com.electriccloud.plugin.spec.Models.JBoss.Domain.ServerHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 
 class CliCommandsGeneratorHelper {
@@ -41,7 +43,7 @@ class CliCommandsGeneratorHelper {
     }
 
     static String startServerCmd(ServerHelper server) {
-        return startServerCmd(server.getServerName(), server.getHostName());
+        return startServerCmd(server.getServerName(), server.getHostName())
     }
 
     static String startServerCmd(String serverName, String hostName) {
@@ -50,7 +52,7 @@ class CliCommandsGeneratorHelper {
     }
 
     static String stopServerCmd(ServerHelper server) {
-        return stopServerCmd(server.getServerName(), server.getHostName());
+        return stopServerCmd(server.getServerName(), server.getHostName())
     }
 
     static String stopServerCmd(String serverName, String hostName) {
@@ -59,7 +61,7 @@ class CliCommandsGeneratorHelper {
     }
 
     static String getServerStatusInDomain(ServerHelper server) {
-        return getServerStatusInDomain(server.getServerName(), server.getHostName());
+        return getServerStatusInDomain(server.getServerName(), server.getHostName())
     }
 
     static String getServerStatusInDomain(String serverName, String hostName) {
@@ -68,7 +70,7 @@ class CliCommandsGeneratorHelper {
     }
 
     static String getServerAutoStartInDomain(ServerHelper server) {
-        return getServerAutoStartInDomain(server.getServerName(), server.getHostName());
+        return getServerAutoStartInDomain(server.getServerName(), server.getHostName())
     }
 
     static String getServerAutoStartInDomain(String serverName, String hostName) {
@@ -120,7 +122,7 @@ class CliCommandsGeneratorHelper {
         if (!serverGroups) {
             throw new Exception("serverGroups should be non empty array")
         }
-        String serverGroupsStr = Arrays.toString(serverGroups).replaceAll(", ", ",").replaceAll("[\\[\\]]", "");
+        String serverGroupsStr = Arrays.toString(serverGroups).replaceAll(", ", ",").replaceAll("[\\[\\]]", "")
         String command = "deploy $pathToSourceFile" + (name.isEmpty() ? "" : " --name=$name") + (runtimeName.isEmpty() ? "" : " --runtime-name=$runtimeName") + " --server-groups=$serverGroupsStr"
         return command
     }
@@ -132,7 +134,7 @@ class CliCommandsGeneratorHelper {
 
     static String reloadHostDomain(String hostName) {
         String command = "/host=$hostName:reload"
-        if(EnvPropertiesHelper.getVersion() =~ '6.0'){
+        if (EnvPropertiesHelper.getVersion() =~ '6.0') {
             command = "/host=$hostName:shutdown(restart=true)"
         }
         return command
@@ -143,34 +145,34 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
-    static def shutDownStandalone(){
+    static def shutDownStandalone() {
         def command = "shutdown"
-        if(EnvPropertiesHelper.getVersion() =~ '6.0'){
+        if (EnvPropertiesHelper.getVersion() =~ '6.0') {
             command = "/:shutdown"
         }
         return command
     }
 
     static String getJMSQueueInfoStandalone(String queueName) {
-        String subsystem = getJMSsubsystem();
+        String subsystem = getJMSsubsystem()
         String command = "/$subsystem/jms-queue=$queueName:read-resource()"
         return command
     }
 
     static String getJMSQueueInfoDomain(String queueName, String profile) {
-        String subsystem = getJMSsubsystem();
+        String subsystem = getJMSsubsystem()
         String command = "/profile=$profile/$subsystem/jms-queue=$queueName:read-resource()"
         return command
     }
 
     static String getJMSTopicInfoStandalone(String topicName) {
-        String subsystem = getJMSsubsystem();
+        String subsystem = getJMSsubsystem()
         String command = "/$subsystem/jms-topic=$topicName:read-resource()"
         return command
     }
 
     static String getJMSTopicInfoDomain(String topicName, String profile) {
-        String subsystem = getJMSsubsystem();
+        String subsystem = getJMSsubsystem()
         String command = "/profile=$profile/$subsystem/jms-topic=$topicName:read-resource()"
         return command
     }
@@ -196,7 +198,7 @@ class CliCommandsGeneratorHelper {
     }
 
     static String reloadStandalone() {
-        if (EnvPropertiesHelper.getVersion() ==~ '6.0'){
+        if (EnvPropertiesHelper.getVersion() ==~ '6.0') {
             return '/:reload'
         }
         return "reload"
@@ -233,7 +235,7 @@ class CliCommandsGeneratorHelper {
         String subsystem_part = "subsystem=messaging-activemq"
         String provider_part = "server=default"
 
-        if(EnvPropertiesHelper.getVersion() =~ "6.*") {
+        if (EnvPropertiesHelper.getVersion() =~ "6.*") {
             subsystem_part = "subsystem=messaging"
             provider_part = "hornetq-server=default"
         }
@@ -242,75 +244,75 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
-    static String getXADatasourceInfoStandalone(String nameDatasource){
+    static String getXADatasourceInfoStandalone(String nameDatasource) {
         String command = "/subsystem=datasources/xa-data-source=$nameDatasource:read-resource"
         return command
     }
 
-    static String getXADatasourceInfoDomain(String nameDatasource, String profile){
+    static String getXADatasourceInfoDomain(String nameDatasource, String profile) {
         String command = "/profile=$profile/subsystem=datasources/xa-data-source=$nameDatasource:read-resource"
         return command
     }
 
-    static def getDatasourceInfo(nameDatasource, def profile=null){
+    static def getDatasourceInfo(nameDatasource, def profile = null) {
         def command = "/subsystem=datasources/data-source=$nameDatasource:read-resource"
-        if (profile){
+        if (profile) {
             command = "/profile=$profile/subsystem=datasources/data-source=$nameDatasource:read-resource"
         }
         return command
     }
 
-    static String getXADatasourceProperties(String property, String xaDataSourece){
+    static String getXADatasourceProperties(String property, String xaDataSourece) {
         String command = "/subsystem=datasources/xa-data-source=$xaDataSourece/xa-datasource-properties=$property:read-attribute(name=value)"
         return command
     }
 
-    static String getXADatasourceProperties(String property, String xaDataSourece, String profile){
+    static String getXADatasourceProperties(String property, String xaDataSourece, String profile) {
         String command = "/profile=$profile/subsystem=datasources/xa-data-source=$xaDataSourece/xa-datasource-properties=$property:read-attribute(name=value)"
         return command
     }
 
-    static String getListOfXADatasourceInDomain(String profile){
+    static String getListOfXADatasourceInDomain(String profile) {
         String command = "/profile=$profile/subsystem=datasources:read-resource"
         return command
     }
 
-    static String getListOfXADatasourceInStandalone(){
+    static String getListOfXADatasourceInStandalone() {
         String command = "/subsystem=datasources:read-resource"
         return command
     }
 
-    static String removeXADatasource(String nameDatasource){
+    static String removeXADatasource(String nameDatasource) {
         String command = "xa-data-source remove --name=$nameDatasource"
         return command
     }
 
-    static String removeXADatasource(String profile, String nameDatasource){
+    static String removeXADatasource(String profile, String nameDatasource) {
         String command = "xa-data-source remove --profile=$profile --name=$nameDatasource"
         return command
     }
 
-    static String addModuleXADatasource(String profile, String driver, String DSclass){
+    static String addModuleXADatasource(String profile, String driver, String DSclass) {
         String domain = (driver == 'mysql' ? 'com' : 'org')
         String command = "/profile=$profile/subsystem=datasources/jdbc-driver=$driver:add(driver-name=$driver,driver-module-name=$domain.$driver,driver-xa-datasource-class-name=$DSclass)"
         return command
     }
 
 
-    static String addModuleXADatasourceStandalone(String driver, String DSclass){
+    static String addModuleXADatasourceStandalone(String driver, String DSclass) {
         String domain = (driver == 'mysql' ? 'com' : 'org')
         String command = "/subsystem=datasources/jdbc-driver=$driver:add(driver-name=$driver,driver-module-name=$domain.$driver,driver-xa-datasource-class-name=$DSclass)"
         return command
     }
 
-    static String addXADatasource(String profile, String name, String jndiName, String driverName, String xaDatasourceClass, def is_enabled=false){
+    static String addXADatasource(String profile, String name, String jndiName, String driverName, String xaDatasourceClass, def is_enabled = false) {
         def enabled = is_enabled ? "--enabled=true" : ""
         String command = "xa-data-source add --profile=$profile --name=$name --jndi-name=\"$jndiName\" --driver-name=\"$driverName\" $enabled --xa-datasource-class=$xaDatasourceClass --xa-datasource-properties={\"ServerName\"=>\"localhost\",\"DatabaseName\"=>\"test\",\"PortNumber\"=>\"3306\",\"DriverType\"=>\"4\"}"
         return command
     }
 
-    static String addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass, def is_enabled=false){
-        if (EnvPropertiesHelper.getVersion() ==~ '6.0'){
+    static String addXADatasource(String name, String jndiName, String driverName, String xaDatasourceClass, def is_enabled = false) {
+        if (EnvPropertiesHelper.getVersion() ==~ '6.0') {
             return "/subsystem=datasources/xa-data-source=$name:add(xa-datasource-class=$xaDatasourceClass,jndi-name=\"$jndiName\",driver-name=\"$driverName\")"
         }
         def enabled = is_enabled ? "--enabled=true" : ""
@@ -318,23 +320,23 @@ class CliCommandsGeneratorHelper {
         return command
     }
 
-    static String deleteJDBCDriverInDomain(String profile, String driver){
+    static String deleteJDBCDriverInDomain(String profile, String driver) {
         String command = "/profile=$profile/subsystem=datasources/jdbc-driver=$driver:remove"
         return command
     }
 
-    static String deleteJDBCDriverInStandalone(String driver){
+    static String deleteJDBCDriverInStandalone(String driver) {
         String command = "/subsystem=datasources/jdbc-driver=$driver:remove"
         return command
     }
 
 
-    static String getHostStatus(String hostName){
+    static String getHostStatus(String hostName) {
         String command = "/host=$hostName/:read-attribute(name=host-state)"
         return command
     }
 
-    static String getStandaloneStatus(){
+    static String getStandaloneStatus() {
         String command = ":read-attribute(name=server-state)"
         return command
     }

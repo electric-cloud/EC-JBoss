@@ -1,8 +1,10 @@
 package com.electriccloud.plugin.spec
 
 import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
-import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
-import spock.lang.*
+import spock.lang.IgnoreIf
+import spock.lang.Requires
+import spock.lang.Shared
+import spock.lang.Unroll
 
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
@@ -39,13 +41,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        additionalOptions    : '',
-                        durable              : '',
-                        jndiNames            : '',
-                        messageSelector      : '',
-                        profile              : '',
-                        queueName            : '',
-                        serverconfig         : '',
+                        additionalOptions: '',
+                        durable          : '',
+                        jndiNames        : '',
+                        messageSelector  : '',
+                        profile          : '',
+                        queueName        : '',
+                        serverconfig     : '',
                 ]
         ]
 
@@ -68,13 +70,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278706"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -96,13 +98,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278382"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '1',  //true
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '1',  //true
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -124,13 +126,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278385"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : 'FILTER_EXPRESSION',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : 'FILTER_EXPRESSION',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -152,13 +154,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278390"
 
         def runParams = [
-                additionalOptions    : '--durable=true',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '--durable=true',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -180,13 +182,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278391"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '1',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : 'FILTER_EXPRESSION',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '1',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : 'FILTER_EXPRESSION',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -204,19 +206,18 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
 
-
     @Unroll
     def "Update JMS Queue, ignored change 'Durable' (C278387)"() {
         String testCaseId = "C278387"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '1', //durable=true
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '1', //durable=true
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultDomain(runParams.queueName, defaultJndiNames, defaultProfile) //durable=false
@@ -241,13 +242,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278388"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : 'FILTER_EXPRESSION',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : 'FILTER_EXPRESSION',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultDomain(runParams.queueName, defaultJndiNames, defaultProfile) //without message selector
@@ -273,13 +274,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278409"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : 'full-ha',
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : 'full-ha',
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
 
         setup:
@@ -308,13 +309,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278436"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : "Any whitespace filter",
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : "Any whitespace filter",
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
 
         when:
@@ -338,13 +339,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278438"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : "filterTwo",
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : "filterTwo",
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         setup:
         addJMSQueue(runParams.queueName, defaultJndiNames, "--durable=false", " --selector=filterOne", " --profile=$defaultProfile")
@@ -370,13 +371,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278396"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : defaultProfile,
-                queueName            : '',
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : defaultProfile,
+                queueName        : '',
+                serverconfig     : defaultConfigName
         ]
 
         when:
@@ -392,13 +393,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278397"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : '',
-                messageSelector      : '',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : '',
+                messageSelector  : '',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
 
         when:
@@ -414,13 +415,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278370"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : 'conf_non-existing'
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : 'conf_non-existing'
         ]
 
         when:
@@ -436,13 +437,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278401"
 
         def runParams = [
-                additionalOptions    : '--durable=true',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '--durable=true',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
 
         when:
@@ -466,13 +467,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278402"
 
         def runParams = [
-                additionalOptions    : '--some-wrong-option',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '--some-wrong-option',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
 
         when:
@@ -489,13 +490,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278412"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : '',
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : '',
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
 
         when:
@@ -511,13 +512,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         String testCaseId = "C278413"
 
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : '',
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : '',
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         setup:
         addJMSQueue(runParams.queueName, defaultJndiNames, "--durable=false", "", " --profile=$defaultProfile")
@@ -557,7 +558,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile,"java:/test, java:/test2")
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile, "java:/test, java:/test2")
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -571,13 +572,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
 
         def queueName = "testQueue-$testCaseId"
         def runParams = [
-                additionalOptions    : '',
-                durable              : '0',
-                jndiNames            : defaultJndiNames,
-                messageSelector      : '',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '0',
+                jndiNames        : defaultJndiNames,
+                messageSelector  : '',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultDomain(runParams.queueName, "queue/test3, java:jboss/exported/jms/queue/test3", defaultProfile) //wrong jndi name
@@ -590,17 +591,17 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         def expectedJobStatus
         def expectedUpperStepSummary
         def isWorkingVersionOfJboss = !(jbossVersion in ["6.2", "6.3"])
-        if (isWorkingVersionOfJboss) { 
+        if (isWorkingVersionOfJboss) {
             expectedJobStatus = "warning"
-            expectedUpperStepSummary = "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*" //for check need reload
+            expectedUpperStepSummary = "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
+            //for check need reload
             checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
-        } 
-        else {
+        } else {
             expectedJobStatus = "error"
             expectedUpperStepSummary = "Update of JNDI names for JMS queue '${runParams.queueName}' cannot be performed for this version of JBoss \\(${jbossVersion}.0.GA\\).*"
         }
         assert runProcedureJob.getStatus() == expectedJobStatus
-        assert runProcedureJob.getUpperStepSummary() =~ expectedUpperStepSummary 
+        assert runProcedureJob.getUpperStepSummary() =~ expectedUpperStepSummary
 
         cleanup:
         removeJMSQueue(queueName, defaultProfile)
@@ -613,13 +614,13 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
 
         def queueName = "testQueue-$testCaseId"
         def runParams = [
-                additionalOptions    : '',
-                durable              : '1', //durable=true
-                jndiNames            : defaultJndiNames,
-                messageSelector      : 'FILTER_EXPRESSION',
-                profile              : defaultProfile,
-                queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                additionalOptions: '',
+                durable          : '1', //durable=true
+                jndiNames        : defaultJndiNames,
+                messageSelector  : 'FILTER_EXPRESSION',
+                profile          : defaultProfile,
+                queueName        : "testQueue-$testCaseId",
+                serverconfig     : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultDomain(runParams.queueName, "queue/test4, java:jboss/exported/jms/queue/test4", defaultProfile) //without message selector, durable=false and wrong jndi
@@ -632,12 +633,11 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         def expectedJobStatus
         def expectedUpperStepSummary
         def isWorkingVersionOfJboss = !(jbossVersion in ["6.2", "6.3"])
-        if (isWorkingVersionOfJboss) { 
+        if (isWorkingVersionOfJboss) {
             expectedJobStatus = "warning"
             expectedUpperStepSummary = "JMS queue '${runParams.queueName}' has been updated successfully by new jndi names*(reload-required|restart)*"
             checkCreateOrUpdateJMSQueue(queueName, defaultDurable, defaultMessageSelector, expectedJndiNames, defaultProfile)
-        } 
-        else {
+        } else {
             expectedJobStatus = "error"
             expectedUpperStepSummary = "Update of JNDI names for JMS queue '${runParams.queueName}' cannot be performed for this version of JBoss \\(${jbossVersion}.0.GA\\).*"
         }
@@ -649,8 +649,8 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
     }
 
 
-
-    void checkCreateOrUpdateJMSQueue(String queueName, def durable, String messageSelector, String jndiNames, String profile, String legacy) { //check with legacy
+    void checkCreateOrUpdateJMSQueue(String queueName, def durable, String messageSelector, String jndiNames, String profile, String legacy) {
+        //check with legacy
         def result = runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getJMSQueueInfoDomain(queueName, profile)).result
         assert result.'entries' =~ jndiNames
         assert result.'durable' == durable
