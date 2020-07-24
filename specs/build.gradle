@@ -1,5 +1,5 @@
 plugins {
-    id "com.cloudbees.cd.plugins.specs" version "1.5.12.0"
+    id "com.cloudbees.cd.plugins.specs" version "1.5.13.0"
 }
 
 version = "1.0"
@@ -20,18 +20,11 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.5:indy'
-    compile 'org.spockframework:spock-core:1.1-groovy-2.4'
-    compile 'com.electriccloud:commander-spec-tests:latest.release'
-    compile 'com.jayway.restassured:rest-assured:2.4.0'
-    compile 'de.gesellix:docker-client:2018-01-26T21-28-05'
-}
-
-test {
-    systemProperties['COMMANDER_SERVER'] = findProperty('server') ?: 'localhost'
-    systemProperties['COMMANDER_USERNAME'] = findProperty('username') ?: 'admin'
-    systemProperties['COMMANDER_PASSWORD'] = findProperty('password') ?: 'changeme'
-    systemProperties['COMMANDER_SECURE'] = '1'
+    implementation 'org.codehaus.groovy:groovy-all:2.4.5:indy'
+    implementation 'org.spockframework:spock-core:1.1-groovy-2.4'
+    implementation 'com.electriccloud:ec-specs-plugins-core:1.9.2'
+    implementation 'com.jayway.restassured:rest-assured:2.4.0'
+    implementation 'de.gesellix:docker-client:2018-01-26T21-28-05'
 }
 
 sendAllureReports {
