@@ -78,7 +78,7 @@ class RemoveXADataSourceDomain extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        // deleteProject(projectName)
+        // conditionallyDeleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 

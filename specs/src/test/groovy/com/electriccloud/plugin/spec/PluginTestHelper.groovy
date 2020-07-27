@@ -92,9 +92,9 @@ class PluginTestHelper extends PluginSpockTestSupport {
         resName
     }
 
-    def deleteProject(String projectName) {
+    def conditionallyDeleteProject(String projectName) {
         dsl """
-            deleteProject(projectName: '$projectName')
+            conditionallyDeleteProject(projectName: '$projectName')
         """
     }
 

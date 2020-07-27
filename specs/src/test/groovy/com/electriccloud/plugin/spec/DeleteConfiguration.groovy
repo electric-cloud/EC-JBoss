@@ -34,7 +34,7 @@ class DeleteConfiguration extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
+        conditionallyDeleteProject(projectName)
     }
 
     RunProcedureJob runProcedureUnderTest(def parameters) {
