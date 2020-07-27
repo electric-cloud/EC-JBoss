@@ -1,10 +1,9 @@
-
-apply plugin: "groovy"
-apply plugin: 'idea'
+plugins {
+    id "com.cloudbees.cd.plugins.specs" version "1.5.13.0"
+}
 
 version = "1.0"
 description = "EC-JBoss Specs"
-
 sourceCompatibility = 1.8
 
 defaultTasks 'test'
@@ -21,33 +20,14 @@ repositories {
 }
 
 dependencies {
-    compile 'org.codehaus.groovy:groovy-all:2.4.5:indy'
-    compile 'org.spockframework:spock-core:1.1-groovy-2.4-SNAPSHOT'
-    compile 'com.electriccloud:commander-spec-tests:latest.release'
-    compile 'com.jayway.restassured:rest-assured:2.4.0'
-    compile 'com.electriccloud:ec-specs-plugins-core:1.9.1'
-
-    compile( 'com.athaydes:spock-reports:1.6.0' ) {
-        transitive = false // this avoids affecting your version of Groovy/Spock
-    }
-
+    implementation 'org.codehaus.groovy:groovy-all:2.4.5:indy'
+    implementation 'org.spockframework:spock-core:1.1-groovy-2.4'
+    implementation 'com.electriccloud:ec-specs-plugins-core:1.9.2'
+    implementation 'com.jayway.restassured:rest-assured:2.4.0'
+    implementation 'de.gesellix:docker-client:2018-01-26T21-28-05'
 }
 
-test {
-    systemProperty 'com.athaydes.spockframework.report.showCodeBlocks', true
-
-    def server = findProperty('server') ?: 'localhost'
-    systemProperties['COMMANDER_SERVER'] = server
-    systemProperties["COMMANDER_SECURE"] = '1'
-
-    testLogging {
-        showStandardStreams = true
-    }
-    outputs.upToDateWhen { false }
-    systemProperties['EC_SPECS_CLI'] = true
-
-    def destination = findProperty('reportDestination') ?: "spec-report"
-    if (destination) {
-        systemProperty 'com.athaydes.spockframework.report.outputDir', destination
-    }
+sendAllureReports {
+    projectName = 'ec-jboss'
 }
+
