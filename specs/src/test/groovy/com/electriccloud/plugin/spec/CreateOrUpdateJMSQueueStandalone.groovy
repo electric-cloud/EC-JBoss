@@ -650,6 +650,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
     }
 
     void removeJMSQueue(String queueName) {
+        queueName = queueName.replaceAll('-', '\\-')
         runCliCommand(CliCommandsGeneratorHelper.removeJMSQueueStandalone(queueName))
     }
 
