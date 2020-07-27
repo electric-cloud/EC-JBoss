@@ -555,5 +555,10 @@ class PluginTestHelper extends PluginSpockTestSupport {
         }
     }
 
-
+    def conditionallyDeleteProject(String projectName){
+        if (System.getenv("LEAVE_TEST_PROJECTS")){
+            return
+        }
+        dsl "deleteProject '$projectName'"
+    }
 }
