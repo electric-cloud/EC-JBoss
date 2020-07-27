@@ -176,7 +176,7 @@ class CliCommandsGeneratorHelper {
     }
 
     static String removeJMSQueueStandalone(String queueName) {
-        String command = "jms-queue remove --queue-address='$queueName'"
+        String command = "jms-queue remove --queue-address=\'$queueName\'"
         return command
     }
 
