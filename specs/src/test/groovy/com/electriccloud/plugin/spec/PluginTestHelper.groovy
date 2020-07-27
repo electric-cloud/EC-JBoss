@@ -94,7 +94,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
 
     def conditionallyDeleteProject(String projectName) {
         dsl """
-            conditionallyDeleteProject(projectName: '$projectName')
+            deleteProject(projectName: '$projectName')
         """
     }
 
