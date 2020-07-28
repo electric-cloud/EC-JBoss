@@ -92,12 +92,6 @@ class PluginTestHelper extends PluginSpockTestSupport {
         resName
     }
 
-    def deleteProject(String projectName) {
-        dsl """
-            deleteProject(projectName: '$projectName')
-        """
-    }
-
     def createCredential(String projectName, String credName, String userName, String password) {
         def credentialResult = dsl """
             createCredential(
@@ -561,5 +555,10 @@ class PluginTestHelper extends PluginSpockTestSupport {
         }
     }
 
-
+    def conditionallyDeleteProject(String projectName){
+        if (System.getenv("LEAVE_TEST_PROJECTS")){
+            return
+        }
+        dsl "deleteProject '$projectName'"
+    }
 }

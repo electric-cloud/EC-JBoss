@@ -28,7 +28,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
 
 
     def doSetupSpec() {
-        logger.info("Hello World! doSetupSpec")
+        logger.info("doSetupSpec")
         redirectLogs()
         createDefaultConfiguration(defaultConfigName)
         def resName = createJBossResource()
@@ -53,8 +53,8 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
     }
 
     def doCleanupSpec() {
-        logger.info("Hello World! doCleanupSpec")
-        deleteProject(projectName)
+        logger.info("doCleanupSpec")
+        conditionallyDeleteProject(projectName)
         deleteConfiguration("EC-JBoss", defaultConfigName)
     }
 
