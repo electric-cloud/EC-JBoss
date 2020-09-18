@@ -1,5 +1,5 @@
 <editor>
-    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#DisableDeploy</help>
+    <help>https://docs.cloudbees.com/docs/cloudbees-cd/latest/plugins/ec-jboss#DisableDeploy</help>
     <formElement>
         <type>entry</type>
         <label>Configuration name:</label>

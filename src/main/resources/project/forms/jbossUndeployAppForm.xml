@@ -1,5 +1,5 @@
 <editor>
-    <help>/commander/pages/@PLUGIN_NAME@/@PLUGIN_KEY@_help?s=Administration&amp;ss=Plugins#UndeployApp</help>
+    <help>https://docs.cloudbees.com/docs/cloudbees-cd/latest/plugins/ec-jboss#UndeployApp</help>
     <label>Application Server - JBoss UndeployApp</label>
     <version>@PLUGIN_VERSION@</version>
     <description>Undeploy an application in JBoss server.</description>

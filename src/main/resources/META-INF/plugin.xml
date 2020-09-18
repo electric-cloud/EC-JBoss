@@ -16,4 +16,6 @@
             <javascript>war/ecplugins.jboss.ConfigurationManagement/ecplugins.jboss.ConfigurationManagement.nocache.js</javascript>
         </component>
     </components>
+    <hasAdoc>true</hasAdoc>
+    <catalogLabel>JBoss</catalogLabel>
 </plugin>

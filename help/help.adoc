@@ -1,0 +1,1786 @@
+
+Plugin Version @PLUGIN_VERSION@
+
+
+Revised on June 15, 2020
+
+
+These procedures have been replaced by more robust procedures and are retained for backwards compatibility. It is strongly recommended that new implementations not use these procedures. Their replacements are in parentheses.
+
+** link:#CreateDatasource[CreateDatasource] (Use link:#CreateOrUpdateDataSource[CreateOrUpdateDataSource] instead)
+** link:#DeployApp[DeployApp] (Use link:#DeployApplication[DeployApplication] instead)
+** link:#StartDomainServer[StartDomainServer] (Use link:#StartHostController[StartHostController] instead)
+
+
+== {CD} integration with jboss
+
+Use the EC-JBoss plugin to interact with JBoss EAP to perform tasks such as managing servers and deployments.
+
+== Supported versions
+
+This plugin was developed and tested with following JBoss versions:
+
+* JBoss EAP 6.0 on Linux and Windows
+* JBoss EAP 6.1 on Linux and Windows
+* JBoss EAP 6.2 on Linux and Windows
+* JBoss EAP 6.4 on Linux and Windows
+* JBoss EAP 7.0 on Linux and Windows
+* JBoss EAP 7.1 on Linux and Windows
+
+*Important*: For all parameter descriptions in the following sections, the required parameters are in [.required]#bold italics#.
+
+
+
+[[setupconfig]]
+== Setting up the plugin configuration
+
+Plugin configurations are sets of parameters that apply across some or all of the plugin procedures. They reduce repetition of common values, create predefined sets of parameters for end users, and store credentials securely. Each configuration has a unique name that is automatically entered in designated parameters in the procedures.
+
+== Input
+
+. Go to *Administration* > *Plugins* to open the Plugin Manager.
+. Find the EC-JBoss row.
+. Click *Configure* to open the JBoss Configurations page.
+. Click *Create Configuration*.
+. To enable {CD} to communicate with your JBoss AS, enter the following information. You may need to create additional configurations later, especially when using standalone and domain servers, because they use different port numbers.
+
+== Output
+
+The JBoss Configurations page now shows the new configuration.
+
+[[procedures]]
+== Plugin procedures
+
+[[CheckDeployStatus]]
+=== CheckDeployStatus
+
+This procedure checks the status of a deployed application using jboss client script.
+
+==== Input
+
+. Go to the CheckDeployStatus procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Deployment Name |Unique name of the deployment.
+|Hosts |Provide the comma-separated list of host names.
+|Server groups |Provide the comma-separated list of server group names. If "Hosts" parameter has been provided, procedure will search for server groups within that hosts list.
+|Servers |Provide the comma-separated list of server names. If "Server groups" parameter has been provided, procedure will search for servers within that group.
+|Success criteria |A desired terminal status of the deployment. The procedure will fail if criteria will not be reached.
+|Wait time |Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.
+|===
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *CheckDeployStatus* step, click the Log icon to see the diagnostic information and status of the deployment:
+
+image::cloudbees-common::cd-plugins/ec-jboss/checkdeploystatus/ecjbosscheckdeploystatus3.png[image]
+
+In the *CheckDeployStatus* step, click the Log icon to see the diagnostic information. The output is similar to the following diagnostic report:
+
+image::cloudbees-common::cd-plugins/ec-jboss/checkdeploystatus/ecjbosscheckdeploystatus4.png[image]
+
+[[CheckHostControllerStatus]]
+===  CheckHostControllerStatus
+
+The CheckHostControllerStatus procedure checks status of JBoss' Host Controller.
+
+==== Input
+
+. Go to the CheckHostControllerStatus procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Host controller name |Host controller name. Default is 'master'.
+|Wait time |Wait time for terminal state in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.
+|Success criteria |A desired terminal status of the host controller. The procedure will fail if criteria will not be reached.
+|===
+
+==== Output
+
+After the job runs, you can view the results, including the following job details, which show that host controller is running.
+
+image::cloudbees-common::cd-plugins/ec-jboss/checkhostcontrollerstatus/checkhostcontrollerstatus3.png[image]
+
+In the *CheckHostControllerStatus* step, click the Log icon to see the diagnostic information. The output is similar to the following diagnostic report:
+
+image::cloudbees-common::cd-plugins/ec-jboss/checkhostcontrollerstatus/checkhostcontrollerstatus4.png[image]
+
+[[CheckServerGroupStatus]]
+=== CheckServerGroupStatus (Domain)
+
+The CheckServerGroupStatus procedure checks if the Status of all servers in the Server Group is equal to the Status mentioned in the Criteria field. The procedure will have status success if criteria is met. For {CD} 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".
+
+
+There are the following criterias supported by the procedure:
+
+. STARTED
+. STOPPED
+. DISABLED
+. STOPPED or DISABLED
+
+Retrieving of server statuses is performed via JBoss CLI by checking the 'status' attribute under the following context /host=[host_name]/server-config=[server_name] for needed servers within server group.
+
+
+List of all possible values of cli server statuses is the following (according to some WildFly open source code):
+
+. STARTED - The server is started
+. STOPPED - The server is stopped and configured to start automatically
+. DISABLED - The server is stopped and configured not to start automatically
+. STARTING - The server is starting
+. STOPPING - The server is stopping
+. FAILED - The server failed to start
+. UNKNOWN - The status of the server is currently unknown. This is the status of any server whose host controller is currently unreachable
+. DOES_NOT_EXIST - Status indicating the host controller does not recognize the server name
+
+==== Input
+
+. Go to the CheckServerGroupStatus procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical Location of the JBoss Client Script |Optional parameter.
+
+Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Server Group Name |Required parameter.
+
+The name of server group to be checked.
+|Wait Time |Optional parameter.
+
+Maximum duration (in seconds) of server group status check retries. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.
+|Criteria a|
+Required parameter.
+
+A desired status for all servers in the group. Possible options:
+
+.. STARTED
+.. STOPPED
+.. DISABLED
+.. STOPPED or DISABLED
+
+The procedure will have status success if criteria is met. For {CD} 8.3 and later: the procedure returns 'TRUE' or 'FALSE' based on the check, the result is captured in the Output Parameter, called "servergroupstatus".
+
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/checkservergroupstatus/checkservergroupform1.png[image]
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *CheckServerGroupStatus* step, click the Log icon to see the diagnostic information.
+
+image::cloudbees-common::cd-plugins/ec-jboss/checkservergroupstatus/checkservergroupstatusrunscenarios.png[image]
+
+[[CheckServerStatus]]
+===  CheckServerStatus
+
+The CheckServerStatus procedure checks the status of the specified server.
+
+==== Input
+
+. Go to the CheckServerStatus procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/checkserverstatus/ecjbosscheckserverstatus2.png[image]
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *CheckServerStatus* step, click the Log icon to see the diagnostic information.
+
+[[CreateDatasource]]
+===  CreateDatasource
+
+This procedure creates a datasource in JBoss.
+
+==== Input
+
+. Go to the CreateDatasource procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Application Name |The name of the application to deploy.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Connection driver URL |The URL for the JDBC driver connection, such as _jdbc:mysql://localhost:3306/ectest_.
+|Driver class |The fully qualifed name of the JDBC driver class, such as _com.mysql.jdbc.Driver_.
+|JNDI name |The JNDI name for the datasource that should start with java:/ or java:jboss/, such as _java:jboss/datasources/MySql_.
+|Driver name |The JDBC driver used by the datasource that can be the name of the .jar file or of the module, such as _mysql-connector-java-5.1.20-bin.jar_, depending on how the driver has been deployed.
+|Profile name |The name of the profile used in domain mode.
+|Datasource credential |Credential that contains username and password for data source (need to be attached to step).
+|Enable datasource? |Select this parameter to enable the datasource after it is created.
+|===
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *CreateDatasource* step, click the Log icon to see the diagnostic information.
+
+[[CreateOrUpdateDataSource]]
+===  CreateOrUpdateDataSource
+
+This procedure can be used to either create a new data source or update certain properties (listed below) of an existing data source.
+
+
+The procedure automatically figures out the context (i.e., Create or Update) based on a comparison between certain properties (aka Unique identifiers) in the Input and what exists in the System. The Unique Identifiers per operating mode are as follows:
+
+* For Standalone, if the 'Data Source Name' in the Input exists in the System, it will result in an update.
+* For Domain if the combination of both 'Data Source Name' and 'Profile' exists in the System, it will result in an update.
+
+These are the updatable properties for an Update Scenario:
+
+* JNDI name
+* Credentials: username/password
+
+The expected behavior of this procedure is described below
+
+* If data source does not exist (based on Unique Identifier comparison mentioned above) it will be created.
+
+The following example shows how the procedure invokes the creation of data source:
+
+data-source --profile=full add --name=someDataSourceName --jndi-name=java:/test --driver-name=mysql --user-name=someUserName --password=somePassword --connection-url=jdbc:mysql://localhost:3306/mysqldb
+* If data source exists (based on Unique Identifier comparison mentioned above) an update happens. The update makes sure that only when the Input value is different from the System value, the property is updated, else it is skipped.
+
+The following examples shows how the procedure invokes the updation of a data source
+
+/profile=full/subsystem=datasources/data-source=someDataSourceName/:write-attribute(name=jndi-name,value=java:/newTest)
+
+NOTE: JBoss servers may require restart or reload after a data source is created or updated. The JBoss Response would be parsed and reported as part of the step summary. Where a reload or restart is required and status of the step will be a Warning. The procedure will not perform the reload or restart.
+
+==== Input
+
+. Go to the CreateOrUpdateDataSource procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Data Source Name |Required parameter.
+
+Name of the Data Source. This will also serve as the unique identifier for this resource. For example MySqlDS
+|JNDI Name |Required parameter.
+
+JNDI Name of the Data Source. For example java:/MySqlDS
+|JDBC Driver Name |Required parameter.
+
+Defines the JDBC driver the data source should use. It is a symbolic name matching the name of installed driver. For example mysql
+|Connection URL |Required for JBoss EAP 6.X, 7.0. Not Required for 7.1.
+
+The JDBC driver connection URL. For example jdbc:mysql://localhost:3306/mysqldb
+|Data Source Connection Credentials |Required parameter.
+
+Credential that contains username and password used for the connection (need to be attached to step).
+|Enabled |Required parameter.
+
+If the created Data Source should be enabled or not. Default is true.
+|Profile (Domain only) |Required for Domain, will be ignored for Standalone.
+
+Name of the Server Profile to which this Data Source applies to.
+
+For example: 'full', 'full-ha'
+|Additional Options |Optional parameter.
+
+'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating data source. For example:
+
+--min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select 1 from dual"
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/createorupdatedatasource/createorupdatedatasourceform1.png[image]
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *CreateOrUpdateDataSource* step, click the Log icon to see the diagnostic information.
+
+image::cloudbees-common::cd-plugins/ec-jboss/createorupdatedatasource/createorupdatedatasourcerunscenarios.png[image]
+
+[[CreateOrUpdateJMSQueue]]
+===  CreateOrUpdateJMSQueue
+
+This procedure creates a new jms queue or updates JNDI names for an existing jms queue using the default message provider as specified in the configuration of the JBoss EAP messaging subsystem.
+
+
+JBoss EAP supports the following message brokers:
+
+. HornetQ message broker in EAP 6.0
+
+. ActiveMQ Artemis message broker in EAP 7.0
+
+Unique identifier for a JMS queue per operating mode are as follows:
+
+. For Standalone : 'Queue Name'
+. For Domain : 'Queue Name' and 'Profile'
+
+The expected behavior of this procedure is described below
+
+. If queue does not exist (based on unique identifier) it will be created with specified Queue Name and the list of JNDI names. In case of Domain it will be created based on the specified Profile. Optionally a Queue can be specified to be Durable (default is not durable) and with a Message Selector. The following example shows how the procedure invokes the creation of queue:
+
+'jms-queue --profile=full add --queue-address=newQueueName --entries=java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2 --durable=false'
+. If queue exists (based on unique identifier) and the specified list of JNDI names differ from existing list of JNDI name for the queue, they will get updated.
+
+NOTE: For JBoss EAP versions 6.2 and 6.3 updating an existing JNDI is not supported.
+
+NOTE: Parameters pertaining to Durability, Message Selection and Additional Options will be ignored.
+
+NOTE: JBoss servers may require restart (in case of EAP 6) or reload (in case of EAP 7) after a queue is updated with a new jndi name. The procedure would parse the JBoss Response and report as part of the step summary if a reload or a restart is required and where these are required will have report the status as a Warning. The procedure will not perform the reload or restart. The following examples shows how the procedure invokes the updation of a queue in the case of EAP 7.0 and EAP 6.0 respectively:
+
+'/profile=full/subsystem=messaging-activemq/server=default/jms-queue=myQueue/:write-attribute(name=entries,value=[java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2])'
+
+'/profile=full/subsystem=messaging/hornetq-server=default/jms-queue=myQueue/:write-attribute(name=entries,value=[java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2])'
+. If queue exists (based on unique identifier) and specified list of JNDI names is the same as what exists already, it will be a NO-OP for the procedure. It would update nothing in this case.
+
+NOTE: Parameters pertaining to Durability, Message Selection and Additional Options will be ignored.
+
+==== Input
+
+. Go to the CreateOrUpdateJMSQueue procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Queue Name |Required parameter.
+
+Name of the Queue.
+|JNDI Names |Required parameter.
+
+Format: comma separated JNDI names (do not use whitespaces).
+
+The list of JNDI names the queue will be bound to.
+
+For example: 'java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2'
+|Profile (Domain only) |Required for Domain, will be ignored for Standalone
+
+Name of profile in Domain where queue should be created or updated (in case of need).
+
+For example: 'full', 'full-ha'
+|Durable |Optional parameter.
+
+Whether the queue to be created is durable or not. Default is false (unchecked) - non durable.
+
+NOTE: This parameter will be considered only when creating queues and will be ignored for updates.
+|Message Selector |Optional parameter.
+
+JMS message selector. Only messages that match the selector will be added to the queue. For example: color='red'
+
+NOTE: This parameter will be considered only when creating queues and will be ignored for updates.
+|Additional Options |Optional parameter.
+
+'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating queue. The following is an example:
+
+If Additional options is populated as follows
+
+'--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'
+
+the procedure invoke the following command for the creation of a queue whose name is myQueue:
+
+'jms-queue add --queue-address=myQueue --entries=java:jboss/exported/jms/queue/test --durable=false --legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'
+
+NOTE: This parameter will be considered only when creating queues and will be ignored for updates.
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/createorupdatejmsqueue/createorupdatejmsqueueform1.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/createorupdatejmsqueue/createorupdatejmsqueueform2.png[image]
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *CreateOrUpdateJMSQueue* step, click the Log icon to see the diagnostic information.
+
+image::cloudbees-common::cd-plugins/ec-jboss/createorupdatejmsqueue/createorupdatejmsqueuerunscenarios.png[image]
+
+[[CreateOrUpdateJMSTopic]]
+===  CreateOrUpdateJMSTopic
+
+This procedure creates a new jms topic or updates JNDI names for an existing jms topic using the default message provider as specified in the configuration of the JBoss EAP messaging subsystem.
+
+
+JBoss EAP supports the following message brokers:
+
+. HornetQ message broker in EAP 6.0
+
+. ActiveMQ Artemis message broker in EAP 7.0
+
+Unique identifier for a JMS topic per operating mode are as follows:
+
+. For Standalone : 'Topic Name'
+. For Domain : 'Topic Name' and 'Profile'
+
+The expected behavior of this procedure is described below
+
+. If topic does not exist (based on unique identifier) it will be created with specified Topic Name and the list of JNDI names. In case of Domain it will be created based on the specified Profile. The following example shows how the procedure invokes the creation of topic:
+
+'jms-topic --profile=full add --topic-address=newTopicName --entries=java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2'
+. If topic exists (based on unique identifier) and the specified list of JNDI names differ from existing list of JNDI name for the topic, they will get updated.
+
+NOTE: Additional Options will be ignored.
+
+NOTE: JBoss servers may require restart (in case of EAP 6) or reload (in case of EAP 7) after a topic is updated with a new jndi name. The procedure would parse the JBoss Response and report as part of the step summary if a reload or a restart is required and where these are required will have report the status as a Warning. The procedure will not perform the reload or restart. The following examples shows how the procedure invokes the updation of a topic in the case of EAP 7.0 and EAP 6.0 respectively:
+
+'/profile=full/subsystem=messaging-activemq/server=default/jms-topic=myTopic/:write-attribute(name=entries,value=[java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2])'
+
+'/profile=full/subsystem=messaging/hornetq-server=default/jms-topic=myTopic/:write-attribute(name=entries,value=[java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2])'
+. If topic exists (based on unique identifier) and specified list of JNDI names is the same as what exists already, it will be a NO-OP for the procedure. It would update nothing in this case.
+
+NOTE: Additional Options will be ignored.
+
+==== Input
+
+. Go to the CreateOrUpdateJMSTopic procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Topic Name |Required parameter.
+
+Name of the Topic.
+|JNDI Names |Required parameter.
+
+Format: comma separated JNDI names (do not use whitespaces).
+
+The list of JNDI names the topic will be bound to.
+
+For example: 'java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2'
+|Profile (Domain only) |Required for Domain, will be ignored for Standalone
+
+Name of profile in Domain where topic should be created or updated (in case of need).
+
+For example: 'full', 'full-ha'
+|Additional Options |Optional parameter.
+
+'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating topic. The following is an example:
+
+If Additional options is populated as follows
+
+'--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'
+
+the procedure invoke the following command for the creation of a topic whose name is myTopic:
+
+'jms-topic add --topic-address=myTopic --entries=java:jboss/exported/jms/topic/test --legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'
+
+NOTE: This parameter will be considered only when creating topics and will be ignored for updates.
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/createorupdatejmstopic/createorupdatejmstopicform1.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/createorupdatejmstopic/createorupdatejmstopicform2.png[image]
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *CreateOrUpdateJMSTopic* step, click the Log icon to see the diagnostic information.
+
+image::cloudbees-common::cd-plugins/ec-jboss/createorupdatejmstopic/createorupdatejmstopicrunscenarios.png[image]
+
+[[CreateOrUpdateXADataSource]]
+===  CreateOrUpdateXADataSource
+
+This procedure can be used to either create a new XA data source or update certain properties (listed below) of an existing XA data source.
+
+
+The procedure automatically figures out the context (i.e., Create or Update) based on a comparison between certain properties (aka Unique identifiers) in the Input and what exists in the System. The Unique Identifiers per operating mode are as follows:
+
+* For Standalone, if the 'Data Source Name' in the Input exists in the System, it will result in an update.
+* For Domain if the combination of both 'Data Source Name' and 'Profile' exists in the System, it will result in an update.
+
+These are the updatable properties for an Update Scenario:
+
+* JNDI name
+* Credentials: username/password
+
+The expected behavior of this procedure is described below
+
+* If XA data source does not exist (based on Unique Identifier comparison mentioned above) it will be created.
+
+The following example shows how the procedure invokes the creation of xa data source:
+
+xa-data-source --profile=full add --name=someDataSourceName --jndi-name=java:/test --driver-name=mysql --user-name=someUserName --password=somePassword --xa-datasource-properties=\{"ServerName"=>"localhost","DatabaseName"=>"test","PortNumber"=>"3306","DriverType"=>"4"}
+* If XA data source exists (based on Unique Identifier comparison mentioned above) an update happens. The update makes sure that only when the Input value is different from the System value, the property is updated, else it is skipped.
+
+The following examples shows how the procedure invokes the updation of a xa data source
+
+/profile=full/subsystem=datasources/xa-data-source=someDataSourceName/:write-attribute(name=jndi-name,value=newTest)
+
+NOTE: JBoss servers may require restart or reload after a XA data source is created or updated. The JBoss Response woule be parsed and reported as part of the step summary. Where a reload or restart is required and status of the step will be a Warning. The procedure will not perform the reload or restart.
+
+==== Input
+
+. Go to the CreateOrUpdateXADataSource procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Data Source Name |Required parameter.
+
+Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS
+|JNDI Name |Required parameter.
+
+JNDI Name of the Data Source. For example java:/MysqlXADS
+|JDBC Driver Name |Required parameter.
+
+Defines the JDBC driver the data source should use. It is a symbolic name matching the name of installed driver. For example mysql.
+|XA Data Source Properties |Required parameter.
+
+A comma-separated list of XA data source properties in "key"=>"value" pair format. Note that the key value pairs are database dependent and at a minimum should contain the database connection information. For example
+
+"URL"=>"jdbc:oracle:oci8:@tc" for an Oracle database
+
+"ServerName"=>"localhost","DatabaseName"=>"test","PortNumber"=>"3306","DriverType"=>"4" for a Mysql database
+|Data Source Connection Credentials |Required parameter.
+
+Credential that contains username and password used for the connection (need to be attached to step).
+|Enabled |Required parameter.
+
+If the created XA Data Source should be enabled or not. Default is true.
+|Profile (Domain only) |Required for Domain, will be ignored for Standalone.
+
+Name of the Server Profile to which this XA Data Source applies to.
+
+For example: 'full', 'full-ha'
+|Additional Options |Optional parameter.
+
+'Additional options' to be passed on to jboss-cli. The parameters mentioned in this string will be concatenated to already generated command line for creating xa data source. For example:
+
+--min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select 1 from dual"
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/createorupdatexadatasource/createorupdatexadatasourceform1.png[image]
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *CreateOrUpdateXADataSource* step, click the Log icon to see the diagnostic information.
+
+image::cloudbees-common::cd-plugins/ec-jboss/createorupdatexadatasource/createorupdatexadatasourcerunscenarios.png[image]
+
+[[DeleteDatasource]]
+===  DeleteDatasource
+
+This procedure deletes a datasource in JBoss.
+
+==== Input
+
+. Go to the DeleteDatasource procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Application Name |The name of the application to deploy.
+|Profile Name |The name of the profile used in domain mode.
+|===
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *DeleteDatasource* step, click the Log icon to see the diagnostic information.
+
+[[DeployApp]]
+=== DeployApp (Standalone/Domain)
+
+The DeployApp procedure deploys an application (mainly WAR or EAR) from the specified source (usually from filepath) to standalone server (for Standalone JBoss) or to content repository and specified server groups (for Domain JBoss) based on provided parameters.
+
+
+This procedure is build around jboss-cli command 'deploy' and most parameters are corresponding.
+
+
+For Standalone server: if the application was already deployed to the server and has to be replaced then deploy should be performed with force flag. Or it is possible to undeploy the application (see link:#UndeployApp[UndeployApp] procedure) before deploying a new version (then force flag is not required).
+
+
+For Domain JBoss with help of this procedure it is possible to do the following:
+
+. upload the deployment to content repository (when deployment does not exist there)
+. upload the deployment to content repository (when deployment does not exist there) and assign it to specified server groups
+. replace the deployment in content repository - force deploy (those server groups which are already assigned to the deployment now will use upgraded version).
+
+NOTE: it is not possible to assign deployment to specified server groups when it is upgrade (force deploy). It is limitation of jboss-cli 'deploy' command
+
+NOTE: This procedure does not support assigning of the deployment which already exists in repository to specified server groups (just because "Application Content Source Path" is required parameter in this procedure - it is limitation of the procedure).
+
+
+For JBoss Domain it is also possible to consider the following flow without using force flag:
+
+. UndeployApp - undeploy app from all relevant server groups and remove from content repository (see link:#UndeployApp[UndeployApp] procedure)
+. DeployApp - upload the deployment to content repository (when deployment does not exist there) and assign it to specified server groups
+
+==== Input
+
+. Go to the DeployApp procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Application Content Source Path a|
+Required parameter.
+
+Either an absolute filepath (including the name of the WAR or EAR) or a URL that the Domain controller or the Standalone Server (as the case may be)
+
+can resolve. URL is supported only for 7.0 EAP and later versions.
+
+This parameter should be populated as follows.
+
+.. If using filepath, it should be the full filesystem path to the application that needs to be deployed. E.g. '/tmp/hello-world.war'
+.. If using URL it should be preceded by a -- prefix anchor. E.g. '--url=https://my.site.com/hello-world.war'.
+
+|Deployment name |Stands for '--name' parameter for jboss-cli 'deploy' command.
+
+The unique name of the deployment. If this parameter is not provided then JBoss will retrieve the deployment name from the file name of 'file_path' or '--url', see required 'Application Content Source Path' parameter.
+|Runtime name for deployment |Optional parameter.
+
+The runtime name for the deployment. If not specified it will be the same as 'Deployment Name'.
+|Apply to all servers (Domain only) a|
+For Domain only (will be ignored in case of Standalone).
+
+Stands for '--all-server-groups' parameter for jboss-cli 'deploy' command.
+
+NOTE:
+
+.. this parameter will be ignored if 'Force deployment' is chosen
+.. 'Server groups to apply' will be ignored if this parameter is chosen
+
+This parameter indicates that deploy should apply to all the available server groups.
+
+|Server groups to apply (Domain only) |For Domain only (will be ignored in case of Standalone).
+
+Stands for '--server-groups' parameter for jboss-cli 'deploy' command.
+
+NOTE: this parameter will be ignored if 'Apply to all servers' or 'Force deployment' is chosen.
+
+Provide comma separated list of server group names the deploy command should apply to.
+|Force deployment |Stands for '--force' parameter for jboss-cli 'deploy' command.
+
+NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to all servers' and 'Server groups to apply' will be ignored.
+
+Chose this option in order to force the replacement of the existing deployment with the one specified in 'file_path' or '--url', see required 'Application Content Source Path' parameter.
+
+If 'Force deployment' is Off and the deployment with the specified deployment name (see 'Deployment name' parameter) already exists - deploy will fail and the corresponding message will printed.
+|Additional options |Additional options for jboss-cli 'deploy' command.
+
+The 'Additional options' string will be concatenated to already generated command line from the parameters above.
+
+E.g. if 'Application Content Source Path' is '/tmp/hello-world.war' and 'Additional options' is '--disabled' the the following jboss-cli command will be called:
+
+'deploy "/tmp/hello-world.war" --disabled'
+
+NOTE: it is recommended to not use duplicating options, e.g. no need to specify '--all-server-groups' because we have 'Apply to all servers' parameter for this.
+
+NOTE: for JBoss EAP 7 and later do not specify '--url' option here because we have special handling for such option within 'Application Content Source Path' parameter.
+|===
+
+==== Output
+
+After the job runs, you can view the results, including the following job details, which show that the application was deployed, what its expected deployment name and from where it was deployed, for example:
+
+image::cloudbees-common::cd-plugins/ec-jboss/deployapp/ecjbossdeployappstatus1.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/deployapp/ecjbossdeployappstatus2.png[image]
+
+
+And here is an example of run with errors, when JBoss did not accept parameters provided and replied with corresponding message. This message is in the job step summary:
+
+image::cloudbees-common::cd-plugins/ec-jboss/deployapp/ecjbossdeployappstatus3.png[image]
+
+[[DeployApplication]]
+=== DeployApplication (Standalone/Domain)
+
+The DeployApplication procedure deploys an application (mainly WAR or EAR) to a JBoss Standalone or Managed domain. The procedure will automatically detect as to which operating mode (Standalone/Domain) JBoss is running as.
+
+
+The DeployApplication procedure is a major improvement to the existing DeployApp procedure. It provides a very robust interface that brings in the complete range of possibilities(enabled/disabled states, enabled/disabled servergroups) from Jboss during deployment to a Domain. Most importantly its behavior is idempotent i.e., it leaves a deployment in the specified state every single time it runs and hence can be run as part of an environment template where in an Application that exists gets updated with new content or gets created otherwise.
+
+The Deployment Name is used as a unique identifier to know if a Deployment exists already. This can either be passed in 'Deployment Name' parameter or can be derived from the Application Content Source path parameter.
+
+The expected behavior of the procedure for a standalone is described below:
+
+. It will update the content repository if the deployment exists, else it will create the content.
+. It will enable the application by default, unless it is specified other wise through Additional Options (see below).
+. Enabled Server Groups and Disabled Server groups do not apply to standalone.
+
+The expected behavior of the procedure for a managed domain is described below:
+
+. It will update the content repository if the deployment exists, else it will create the content. All server groups assigned to this content will start using the upgraded version of the content.
+. Server Groups in 'Enabled Server Groups' and 'Disabled Server Groups' parameters will be assigned to the new content if they are not assigned already.
+. Server groups specified in 'Enabled Server Groups' parameter will be enabled.
+. Server groups specified in 'Disabled Server Groups' parameter will be disabled.
+. Server Groups that are not mentioned in 'Enabled Server Groups' and 'Disabled Server Groups' parameters will retain their previous state (before deployment). More specifically, if they were assigned to the content before deployment, they will continue to be assigned and if they were enabled/disabled before the deployment, they will continue to be enabled/disabled respectively.
+
+=== Input
+
+. Go to the DeployApplication procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Application Content Source Path a|
+Required parameter.
+
+Either an absolute filepath (including the name of the WAR or EAR) or a URL that the Domain controller or the Standalone Server (as the case may be)
+
+can resolve. URL is supported only for 7.0 EAP and later versions.
+
+This parameter should be populated as follows.
+
+.. If using filepath, it should be the full filesystem path to the application that needs to be deployed. E.g. '/tmp/hello-world.war'
+.. If using URL it should be preceded by a -- prefix anchor. E.g. '--url=https://my.site.com/hello-world.war'.
+
+|Deployment Name |Optional parameter.
+
+The unique name of the deployment.
+
+If this parameter is not passed, it will be derived from 'Application Content Source Path' parameter.
+|Runtime Name |Optional parameter.
+
+The runtime name for the deployment. If not specified it will be the same as 'Deployment Name'.
+|Enabled Server Groups |Applicable to Jboss Domain only.
+
+Server groups specified in this parameter will be assigned (if not already assigned) and enabled.
+
+These are the formatting rules:
+
+Either a comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.
+|Disabled Server Groups |Applicable to Jboss Domain only.
+
+Server groups specified in this parameter will be assigned (if not already assigned) and disabled.
+
+These are the formatting rules:
+
+Either a comma separated list of server groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'.
+|Additional Options |Applicable to JBoss Standalone only.
+
+Currently supported additional option is '--disabled' for Standalone Server. If it is populated as '--disabled' the procedure will deploy the Application and leave it disabled.
+|===
+
+=== Output
+
+After the job runs, you can view the results, including the following job details which show that the application was deployed, what its deployment name and from where it was deployed. For Managed Domain there will be also information about the deployment state (enabled/disabled) on server groups (if the deployment was assigned to any). For example:
+
+image::cloudbees-common::cd-plugins/ec-jboss/deployapplication/ecjbossdeployapplicationstatus1.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/deployapplication/ecjbossdeployapplicationstatus2.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/deployapplication/ecjbossdeployapplicationstatus3.png[image]
+
+[[DisableDeploy]]
+===  DisableDeploy
+
+This procedure disables the specified deployment.
+
+==== Input
+
+. Go to the DisableDeploy procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Deployment name |The unique name of the deployment to disable.
+|Server groups |Provide the comma-separated list of server group names the disable deployment command applies to. Server groups parameter is required in domain mode. This argument is not applicable in standalone mode and will be ignored.
+|===
+
+==== Output
+
+After the job runs, you can view the results, including the following job details, which show that the deployment was disabled:
+
+image::cloudbees-common::cd-plugins/ec-jboss/disabledeploy/ecjbossdisabledeploy3.png[image]
+
+In the *DisableDeploy* step, click the Log icon to see the diagnostic information. The output is similar to the following diagnostic report:
+
+image::cloudbees-common::cd-plugins/ec-jboss/disabledeploy/ecjbossdisabledeploy4.png[image]
+
+[[EnableDeploy]]
+=== EnableDeploy
+
+This procedure enables the specified deployment in the repository. This deployment is disabled and is currently not running.
+
+==== Input
+
+. Go to the EnableDeploy procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Deployment name |Unique name of the deployment to enable.
+|Server groups |Provide the comma-separated list of server group names the enable deployment command applies to. Server groups parameter is required in domain mode. This argument is not applicable in standalone mode and will be ignored.
+|===
+
+==== Output
+
+After the job runs, you can view the results, including the following job details, which show that the deployment was enabled:
+
+image::cloudbees-common::cd-plugins/ec-jboss/enabledeploy/ecjbossenabledeploy3.png[image]
+
+In the *EnableDeploy* step, click the Log icon to see the diagnostic information. The output is similar to the following diagnostic report:
+
+image::cloudbees-common::cd-plugins/ec-jboss/enabledeploy/ecjbossenabledeploy4.png[image]
+
+[[GetEnvInfo]]
+=== GetEnvInfo
+
+This procedure returns different types of information about a Jboss environment and writes it to property and logs.
+
+Outputs can be found in the following places:
+
+* envInfo property within job step
+* step logs under the "INFO: Requested Environment Information: " section
+
+There are the types of Information(aka 'Information Types') that can be requested:
+
+* System Dump
+* Profiles (for Domain only)
+* Data Sources
+* XA Data Sources
+
+The following is provided as a quick reference to the different Jboss CLI calls invoked.
+
+* System Dump.
+
+CLI call: '/:read-resource'
+
+Output:
+
+image::cloudbees-common::cd-plugins/ec-jboss/getenvinfo/getenvinfosystemdump.png[image]
+
+* Profiles (for Domain only).
+
+CLI call: '/:read-children-resources(child-type=profile)'
+
+Output:
+
+image::cloudbees-common::cd-plugins/ec-jboss/getenvinfo/getenvinfoprofiles.png[image]
+
+* Data Sources on Standalone or for a specific profile in a domain.
+
+CLI call on standalone: '/subsystem=datasources/:read-children-resources(child-type=data-source)'
+
+CLI call on 'full' profile within Domain: '/profile=full/subsystem=datasources/:read-children-resources(child-type=data-source)'
+
+Output:
+
+image::cloudbees-common::cd-plugins/ec-jboss/getenvinfo/getenvinfodatasources.png[image]
+
+For XA Data Sources, it is very similar to above.
+* Data Sources on all profiles in a Domain.
+
+CLI call performed for every profile which contains 'datasources' subsystem: '/profile=full/subsystem=datasources/:read-children-resources(child-type=data-source)'
+
+Combined output:
+
+image::cloudbees-common::cd-plugins/ec-jboss/getenvinfo/getenvinfodatasourcesallprofiles.png[image]
+
+For XA Data Sources, it is very similar to above.
+
+Combined output: image::cloudbees-common::cd-plugins/ec-jboss/getenvinfo/getenvinfoxadatasourcesallprofiles.png[image]
+
+==== Input
+
+. Go to the GetEnvInfo procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Information Type a|
+Required parameter.
+
+Information Type. Possible options:
+
+.. System Dump
+.. Profiles (for Domain only)
+.. Data Sources
+.. XA Data Sources
+
+|Information Type Context |Optional parameter. Applies only when Information Type is "Data Sources" or "XA Data Sources".
+
+Information Type Context. Enter the name of the Profile for which Information Type is requested for. If none the procedure would return for all profiles.
+|Additional Options |Optional parameter.
+
+'Additional Options' that can be included into CLI call to limit the information requested. For example, if you provide 'include-runtime=true,include-defaults=true' the procedure would call /:read-resource('include-runtime=true,include-defaults=true').
+|===
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *GetEnvInfo* step, click the Log icon to see the diagnostic information.
+
+image::cloudbees-common::cd-plugins/ec-jboss/getenvinfo/getenvinforun.png[image]
+
+[[RemoveJMSQueue]]
+===  RemoveJMSQueue
+
+This procedure removes an existing jms queue in the JBoss EAP messaging subsystem.
+
+
+JBoss EAP supports the following message brokers:
+
+. HornetQ message broker in EAP 6.0
+
+. ActiveMQ Artemis message broker in EAP 7.0
+
+Unique identifier for a JMS queue per operating mode are as follows:
+
+. For Standalone : 'Queue Name'
+. For Domain : 'Queue Name' and 'Profile'
+
+The expected behavior of this procedure is described below
+
+If the specified queue exists it will be removed, else it will return a job status of warning. The following is an example of how the procedure invokes this operation using jms-cli
+
+'jms-queue --profile=full remove --queue-address=someQueue'
+
+=== Input
+
+. Go to the RemoveJMSQueue procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Queue Name |Required parameter.
+
+Name of the Queue.
+|Profile (Domain only) |Required for Domain, will be ignored for Standalone
+
+Name of profile in Domain form which queue should be removed.
+
+For example: 'full', 'full-ha'
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/removejmsqueue/removejmsqueueform1.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/removejmsqueue/removejmsqueueform2.png[image]
+
+=== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *RemoveJMSQueue* step, click the Log icon to see the diagnostic information.
+
+[[RemoveJMSTopic]]
+===  RemoveJMSTopic
+
+This procedure removes an existing jms topic in the JBoss EAP messaging subsystem.
+
+
+JBoss EAP supports the following message brokers:
+
+. HornetQ message broker in EAP 6.0
+
+. ActiveMQ Artemis message broker in EAP 7.0
+
+Unique identifier for a JMS topic per operating mode are as follows:
+
+. For Standalone : 'Topic Name'
+. For Domain : 'Topic Name' and 'Profile'
+
+The expected behavior of this procedure is described below
+
+If the specified topic exists it will be removed, else it will return a job status of warning. The following is an example of how the procedure invokes this operation using jms-cli
+
+'jms-topic --profile=full remove --topic-address=someTopic'
+
+=== Input
+
+. Go to the RemoveJMSTopic procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Topic Name |Required parameter.
+
+Name of the Topic.
+|Profile (Domain only) |Required for Domain, will be ignored for Standalone
+
+Name of profile in Domain form which topic should be removed.
+
+For example: 'full', 'full-ha'
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/removejmstopic/removejmstopicform1.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/removejmstopic/removejmstopicform2.png[image]
+
+=== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *RemoveJMSTopic* step, click the Log icon to see the diagnostic information.
+
+[[RemoveXADataSource]]
+===  RemoveXADataSource
+
+This procedure removes an existing XA data source in the JBoss EAP 'datasources' subsystem.
+
+The existence of a data source is determined based on Unique Identifier Comparison based on the operating mode as per follows:
+
+* For Standalone : 'Data Source Name'
+* For Domain : 'Data Source Name' and 'Profile'
+
+The expected behavior of this procedure is described below
+
+If the specified XA data source exists it will be removed, else it will return a job status of warning.
+
+NOTE: In addition procedure will have parse JBoss response and report is as part of step summary. If JBoss response indicated that a restart or reload of server(s) is needed, the step status would be a warning.
+
+The following is an example of how the procedure invokes this operation using jboss-cli
+
+xa-data-source --profile=full remove --name=someDataSourceName
+
+==== Input
+
+. Go to the RemoveXADataSource procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Data Source Name |Required parameter.
+
+Name of the Data Source. This will also serve as the unique identifier for this resource. For example MysqlXADS.
+|Profile (Domain only) |Required for Domain, will be ignored for Standalone
+
+Name of the Server Profile to which this XA Data Source applies to.
+
+For example: 'full', 'full-ha'
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/removexadatasource/removexadatasourceform1.png[image]
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *RemoveXADataSource* step, click the Log icon to see the diagnostic information.
+
+image::cloudbees-common::cd-plugins/ec-jboss/removexadatasource/removexadatasourcerunscenarios.png[image]
+
+[[RunCustomCommand]]
+===  RunCustomCommand
+
+This procedure runs user-specified scripts or procedures on JBoss instances.
+
+==== Input
+
+. Go to the RunCustomCommand procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Custom Command |User-specified command or script to run on JBoss instances.
+|===
+
+==== Output
+
+After the job runs, you can view the results in the Job Details page. In the *RunCustomCommand* step, click the Log icon to see the diagnostic information.
+
+[[ShutdownStandaloneServer]]
+===  ShutdownStandaloneServer
+
+The ShutdownStandaloneServer procedure shuts down a running standalone server.
+
+==== Input
+
+. Go to the ShutdownStandaloneServer procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Server Configuration Name |The name of the configuration for the JBoss server. This configuration has connection information about the standalone server. {CD} uses the IP address and port number in the configuration. If this field is blank, {CD} uses the default controller values (IP address and port number) to shut down the server.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|===
+
+==== Output
+
+After the job runs, you can view the results in the Job Details page.
+
+In the *ShutdownStandaloneServer* step, click the Log icon to see the diagnostic information.
+
+[[StartDomainServer]]
+===  StartDomainServer
+
+The StartDomainServer procedure starts a server in domain mode. A domain is a collection of servers.
+
+==== Input
+
+. Go to the StartDomainServer procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the domain script |Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.
+|Optional domain configuration name |For domain controllers only. Name of the domain configuration file that {CD} uses to start the domain controller with a different domain configuration (--domain-config). By default domain.xml is used.
+|Optional host configuration name |For domain and host controllers. Name of the host configuration file that {CD} uses to start the domain or host controller with a different host configuration (--host-config). By default host.xml is used.
+|===
+
+==== Output
+
+After the job runs, you can view the results, including the following job details, which show that the server is up:
+
+image::cloudbees-common::cd-plugins/ec-jboss/startdomainserver/ecjbossstartdomain3.png[image]
+
+In the *StartDomainServer* step, click the Log icon to see the diagnostic information. The output is similar to the following diagnostic report:
+
+image::cloudbees-common::cd-plugins/ec-jboss/startdomainserver/ecjbossstartdomain4.png[image]
+
+[[StartHostController]]
+===  StartHostController
+
+This procedure can be used to start any of the Host Controllers (Master or Slave) in a managed domain.
+
+
+This procedure is typically used in a Scenario where an entire Domain has been stopped using StopDomain, which shuts down all Server Groups and Host Controllers. In that scenario this procedure can be invoked multiple times (i.e., once per Host Controller to start each of them), followed by multiple invocations of StartServers procedure (i.e, once per ServerGroup to start each of them), thus starting the entire Domain.
+
+
+In addition, the procedure surfaces server logs and boot errors upon startup (based on optional parameters being provided) as well as providing an ability to over-ride defaults (such as host.xml, domain.xml etc.) required for startup.
+
+==== Input
+
+. Go to the StartHostController procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin. NOTE: information for connecting to Master CLI should be provided within the specified configuration, even for stating slave host controllers.
+|Startup Script |Required parameter.
+
+Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.
+|Domain Configuration File |Optional Parameter. Applies only to master host controllers.
+
+Use this parameter only if you have a need to override the default domain.xml by a different file which stores your domain configuration.
+|Host Configuration File |Optional Parameter.
+
+Use this parameter only if you have a need to override the default host.xml by a different file which stores your host configuration.
+|Host Name |Optional parameter.
+
+Host Name of the started Host Controller. If provided this parameter would be used to connect using the Master Host Controller Jboss-cli and surface any boot errors upon startup.
+|Additional Options a|
+Optional parameter.
+
+'Additional options' to be passed on to domain startup script. If provided parameters will be concatenated AS IS to already generated command line for starting master or slave host controller. These are some examples.
+
+* '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0'
+* '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0'
+
+|Log File Location |Optional parameter.
+
+Absolute path location to Host controller log file. For example, /opt/jboss/domain-copied-for-slave-1/log/host-controller.log . If provided the procedure will read recent 100 log lines from the specified file surface them as part of the procedure summary logs.
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/starthostcontroller/starthostcontrollerform1.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/starthostcontroller/starthostcontrollerform2.png[image]
+
+==== Output
+
+After the job runs, you can view the results, including the following job details, which show that host controller is started (in case if 'Host Name parameter was provided'):
+
+image::cloudbees-common::cd-plugins/ec-jboss/starthostcontroller/starthostcontrollerrun1.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/starthostcontroller/starthostcontrollerrun2.png[image]
+
+And one more example of cases when 'Host Name' parameter was not provided (NOTE: recommended is to provide 'Host Name' parameter in order to perform needed checks via Master CLI about requested host controller startup)
+
+image::cloudbees-common::cd-plugins/ec-jboss/starthostcontroller/starthostcontrollerrun3.png[image]
+
+[[StartServers]]
+=== StartServers (Domain)
+
+The StartServers procedure starts the servers in the specified server group and checks if these servers are started successfully.
+
+
+This procedure is build around jboss-cli command 'start-servers' for the server groups, e.g. '/server-group=some-group-name:start-servers'. Check of servers statuses is done also with help of cli - basically the procedure checks 'status' attributes of needed servers on needed hosts (within specified server group), e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'. Expected value for started servers is 'STARTED'.
+
+. The procedure will be completed with success if all servers within server group are 'STARTED' and there were no 'STARTED' servers within the group before start-servers was called.
+. The procedure will be completed with warning if all servers within server group are 'STARTED' and there were some 'STARTED' servers within the group before start-servers was called.
+. The procedure will be completed with error if timeout for recurring check of servers is reached and not all servers are 'STARTED'.
+
+List of all possible values of cli server statuses is the following (according to some WildFly open source code):
+
+. STARTED - The server is started
+. STOPPED - The server is stopped and configured to start automatically
+. DISABLED - The server is stopped and configured not to start automatically
+. STARTING - The server is starting
+. STOPPING - The server is stopping
+. FAILED - The server failed to start
+. UNKNOWN - The status of the server is currently unknown. This is the status of any server whose host controller is currently unreachable
+. DOES_NOT_EXIST - Status indicating the host controller does not recognize the server name
+
+==== Input
+
+. Go to the StartServers procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Server group |Required parameter.
+
+The name of the server group to start. The following cli command will be called: e.g. if 'some-group-name' is specified then '/server-group=some-group-name:start-servers' is called.
+|Timeout for recurring check of servers (seconds) a|
+After start-servers command for the server group is called the procedure starts performing recurring check of servers if they are started ('status' attribute is 'STARTED', see procedure description). Delay between each check is 5 seconds (hard coded value). Check will be performed only one time if the timeout is not specified or it is less than 5 seconds. Default is 300 seconds.
+
+.. The procedure will be completed with success if all servers within server group are 'STARTED' and there were no 'STARTED' servers within the group before start-servers was called.
+.. The procedure will be completed with warning if all servers within server group are 'STARTED' and there were some 'STARTED' servers within the group before start-servers was called.
+.. The procedure will be completed with error if timeout is reached and not all servers are 'STARTED'.
+
+|===
+
+==== Output
+
+After the job runs, you can view the results in the Job Details page. In the *StartServers* step, click the Log icon to see the diagnostic information. For example
+
+image::cloudbees-common::cd-plugins/ec-jboss/startservers/ecjbossstartserversstatus1.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/startservers/ecjbossstartserversstatus2.png[image]
+
+[[StartStandaloneServer]]
+===  StartStandaloneServer
+
+The StartStandaloneServer procedure starts a JBoss server in standalone mode.
+
+
+If JBoss Standalone Server is already started then there will be no attempt to start it again and job status will be Warning. Upon startup procedure will try to connect using JBOSS CLI to perform a recurring check if server state is Running upto 60 seconds. Any status other than Running would be deemed as an Error.
+
+
+The procedure will server will surface any boot errors upon startup and if logfile location is provided in addition, it will surface the last 100 lines of the server log file in the procedure summary logs.
+
+==== Input
+
+. Go to the StartStandaloneServer procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Startup Script |Required parameter.
+
+Provide the absolute physical path of the standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh', 'c:/Program Files/JBoss/bin/standalone.bat'.
+|Server Configuration File |Optional parameter.
+
+Name of the server configuration file to use (stands for '--server-config' option for standalone startup script). For example: standalone-full.xml, standalone-full-ha.xml. By default standalone.xml is used.
+|Additional Options |Optional parameter.
+
+'Additional options' to be passed on to standalone startup script. The parameters mentioned in this string will be concatenated to already generated command line for starting JBoss as a Standalone Server. For example: -b=0.0.0.0 -bmanagement=0.0.0.0
+|Log File Location |Optional parameter.
+
+Absolute path location to server log file. For example, /opt/jboss/standalone/log/server.log . If provided the procedure will the most recent 100 log lines from the specified file and surface them in the procedure summary logs.
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/startstandaloneserver/startstandaloneserverform1.png[image]
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *StopDomain* step, click the Log icon to see the diagnostic information.
+
+image::cloudbees-common::cd-plugins/ec-jboss/startstandaloneserver/startstandaloneserverrun1.png[image]
+
+[[StopDomain]]
+===  StopDomain
+
+This procedure stops all servers within a managed domain and optionally shuts down all host controllers. The following examples shows how the procedure stops servers and performs shutdown of all host controllers.
+
+
+For EAP 7.0:
+
+* :stop-servers(timeout=60)
+* shutdown --host=slave --timeout=60
+* shutdown --host=master --timeout=60
+
+For EAP 6.0 :
+
+* :stop-servers
+* /host=slave:shutdown
+* /host=master:shutdown
+
+NOTE: *timeout* is a new option introduced by Jboss in EAP 7.0. It is defined in the parameter section below.
+
+==== Input
+
+. Go to the StopDomain procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration Name |Required parameter.
+
+A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Timeout |Optional parameter. Supported only for EAP 7.X and ignored for EAP 6.X.
+
+Timeout for stopping all servers within domain and for shutdown each host controller (if 'All Controllers Shutdown' is chosen).
+
+For example, the following CLI commands can be called:
+
+:stop-servers(timeout=60)
+
+shutdown --host=master --timeout=60
+
+According to JBoss documentation: "The shutdown timeout in seconds. If this is zero then the server will shutdown immediately. A value larger than zero means the server will wait up to this many seconds for all active requests to finish. A value smaller than zero means that the server will wait indefinitely for all active requests to finish."
+|All Controllers Shutdown |Optional parameter.
+
+Whether the procedure should perform shutdown of controllers. If chosen all controllers are shutdown one by one with the master host controller being shut down the last. If after shutting down, some servers are still in STOPPING STATUS the procedure will return a status of warning. By default this option is No ie., no host controller is shut down.
+|===
+
+
+image::cloudbees-common::cd-plugins/ec-jboss/stopdomain/stopdomainform1.png[image]
+
+==== Output
+
+After the job runs, you can view the results on the Job Details page in {CD}. In the *StopDomain* step, click the Log icon to see the diagnostic information.
+
+image::cloudbees-common::cd-plugins/ec-jboss/stopdomain/stopdomainrun1.png[image]
+
+[[StopServers]]
+===  StopServers
+
+The StopServers procedure stops the servers in the specified server group and checks if these servers are stopped successfully.
+
+
+This procedure is build around jboss-cli command 'stop-servers' for the server groups, e.g. '/server-group=some-group-name:stop-servers'. Check of servers statuses is done also with help of cli - basically the procedure checks 'status' attributes of needed servers on needed hosts (within specified server group), e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'. Expected value for stopped servers is 'STOPPED' or 'DISABLED' (similar statuses which indicate that servers are stopped, the difference is that 'DISABLED' status indicates that a server is configured to not start automatically while 'STOPPED' status indicates that a server is configured to start automatically).
+
+. The procedure will be completed with success if all servers within server group are 'STOPPED' or 'DISABLED' and there were no 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.
+. The procedure will be completed with warning if all servers within server group are 'STOPPED' or 'DISABLED' and there were some 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.
+. The procedure will be completed with error if timeout for recurring check of servers is reached and not all servers are 'STOPPED' or 'DISABLED'.
+
+List of all possible values of cli server statuses is the following (according to some WildFly open source code):
+
+. STARTED - The server is started
+. STOPPED - The server is stopped and configured to start automatically
+. DISABLED - The server is stopped and configured not to start automatically
+. STARTING - The server is starting
+. STOPPING - The server is stopping
+. FAILED - The server failed to start
+. UNKNOWN - The status of the server is currently unknown. This is the status of any server whose host controller is currently unreachable
+. DOES_NOT_EXIST - Status indicating the host controller does not recognize the server name
+
+==== Input
+
+. Go to the StopServers procedure.
+. Enter the following parameters:
+
+
+[width="100%",cols="50%,50%",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Servers group |Required parameter.
+
+The name of the server group to stop. The following cli command will be called: e.g. if 'some-group-name' is specified then '/server-group=some-group-name:stop-servers' is called.
+|Timeout for recurring check of servers (seconds) a|
+After stop-servers command for the server group is called the procedure starts performing recurring check of servers if they are started ('status' attribute is 'STOPPED' or 'DISABLED', see procedure description). Delay between each check is 5 seconds (hard coded value). Check will be performed only one time if the timeout is not specified or it is less than 5 seconds. Default is 300 seconds.
+
+.. The procedure will be completed with success if all servers within server group are 'STOPPED' or 'DISABLED' and there were no 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.
+.. The procedure will be completed with warning if all servers within server group are 'STOPPED' or 'DISABLED' and there were some 'STOPPED' or 'DISABLED' servers within the group before stop-servers was called.
+.. The procedure will be completed with error if timeout for recurring check of servers is reached and not all servers are 'STOPPED' or 'DISABLED'.
+
+|===
+
+==== Output
+
+After the job runs, you can view the results in the Job Details page. In the *StopServers* step, click the Log icon to see the diagnostic information. For example:
+
+image::cloudbees-common::cd-plugins/ec-jboss/stopservers/ecjbossstopserversstatus1.png[image]
+
+image::cloudbees-common::cd-plugins/ec-jboss/stopservers/ecjbossstopserversstatus2.png[image]
+
+[[UndeployApp]]
+===  UndeployApp
+
+The UndeployApp procedure undeploys the specified application and may remove application from the repository.
+
+==== Input
+
+. Go to the UndeployApp procedure.
+. Enter the following parameters:
+
+
+[cols=",",options="header",]
+|===
+|Parameter |Description
+|Configuration name |A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin.
+|Physical location of the jboss client script |Provide the physical location of the jboss Command Line Interface script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script location from configuration will be used.
+|Deployment Name |Unique name of the application (deployment) to undeploy.
+|Apply undeploy to all server groups |Select this option to apply undeploy to all server groups in which the deployment is enabled. Either server-groups or all-relevant-server-groups is required in domain mode. This argument is not applicable in standalone mode.
+|Server groups to apply |Provide the comma-separated list of server group names the undeploy command applies to.
+|Keep content |Select this option to disable the deployment and keep the content of the deployment, or unselect it to disable the deployment and removes its content from the repository.
+|Wait time |Wait time for terminal status in seconds. If not provided, only one check will be performed. If 0, it will wait until criteria is met. Default 300.
+|===
+
+==== Output
+
+After the job runs, you can view the results, including the following job details, which show that the application was undeployed:
+
+image::cloudbees-common::cd-plugins/ec-jboss/undeployapp/ecjbossundeployapp3.png[image]
+
+== Known issues
+
+This section contains known limitations with different Jboss Server Versions that we found as part of System testing.
+
+== Windows only. jboss-cli.bat from jboss EAP 6 exits with wrong code.
+
+jboss-cli.bat does not exit with correct return code when calling it from a wrapper script. It always exits with 0, even if the operation failed.
+
+For {CD} it means that jboss-cli response may be interpreted wrong.
+
+Details: https://bugzilla.redhat.com/show_bug.cgi?id=1223877
+
+Solution:
+
+Make sure that JBoss 6 with all updates is being used. For JBoss EAP 6.4 latest Cummulative Pack should be installed.
+
+=== All systems. jboss-cli in non-interactive (--command) mode still prompts user for input if certificate is not valid (self-signed, invalid, etc).
+
+Affects Secured JBoss connection only. If target certificate is not valid, self-signed, exported, etc, jboss-cli will ask for connection confirmation, even in non-interactive mode.
+
+Details:
+
+https://issues.jboss.org/browse/WFLY-2950 https://issues.jboss.org/browse/WFCORE-869
+
+This issue has not been fixed in the JBoss EAP 7. But --error-on-interact option as workaround has been added.
+
+As result, plugin procedure may hang unexpectedly, if secured connection is being used and certificate is invalid. Solutions:
+
+* Use valid certificate.
+* Use --error-on-interact as additional parameter. Procedure will not hang, but will be failed, if certificate is invalid.
+* In the plugin configuration, using "Additional Java options" field, provide keystore file with certificate accepted. It could be achieved with the following value:
+
+....
+-Djavax.net.ssl.trustStore=/path/to/your.keystore
+....
+
+== All systems, jboss 6.2, jboss 6.0. CLI fails to show app status when runtime-name is different from the deployment name.
+
+jboss-cli may fail with "no metrics available" result during CheckDeployStatus procedure.
+
+For details see: https://access.redhat.com/solutions/481643.
+
+Bugzilla reference: https://bugzilla.redhat.com/show_bug.cgi?id=1007696.
+
+WildFly reference: https://issues.jboss.org/browse/WFLY-2061.
+
+Solution:
+
+Latest version of JBoss 6.2 is required. This issue has been fixed in 6.2.1.
+
+== Windows only, jboss EAP 7.1. failing to connect to controller when using password with special character '!'.
+
+jboss-cli.bat may fail due to "Failed to connect to the controller: Unable to authenticate against controller at ... Authentication failed: all available authentication mechanisms failed: DIGEST-MD5: javax.security.sasl.SaslException: DIGEST-MD5: Server rejected authentication". This is bug in jboss-cli.bat script - "Cannot connect to JBoss controller via CLI by passing password in command line if password contains '!' character (for JBoss EAP 7.1.0.GA in Windows)"
+
+JIRA ticket for JBoss Enterprise Application Platform: https://issues.jboss.org/browse/JBEAP-14335.
+
+JIRA ticket for WildFly Core: https://issues.jboss.org/browse/WFCORE-3674.
+
+
+=== JBoss EAP 7.0. Create XA data sources with additional options (--check-valid-connection-sql) which contains single quotes.
+
+Single quotes are missed from --check-valid-connection-sql when adding xa data source via jboss-cli --command.
+
+Fixed in JBoss EAP 7.1
+
+JIRA ticket for JBoss Enterprise Application Platform: https://issues.jboss.org/browse/JBEAP-14659.
+
+
+== Jboss EAP 6.3. removing enabled XA data source failing. removing services has lead to unsatisfied dependencies
+
+Removing XA data sources can fail when call remove command with the following error, e.g.: "JBAS014762: Removing services has lead to unsatisfied dependencies: Service jboss.data-source.reference-factory.MysqlXADSC289546 was depended upon by service jboss.naming.context.java.MysqlXADS Service jboss.xa-data-source-config.MysqlXADSC289546 was depended upon by service jboss.data-source.java:/MysqlXADS" (in Standalone) or "JBAS010839: Operation failed or was rolled back on all servers." (in Domain)
+
+[[rns]]
+== Release notes
+
+=== EC-JBoss 2.7.2
+
+- The documentation has been migrated to the main documentation site.
+
+=== EC-JBoss 2.7.1
+
+* Renaming from "CloudBees Flow" to "{CD}"
+
+=== EC-JBoss 2.7.0
+
+* Updated create and edit plugin configuration procedures by the following
+** Added possibility to check connection with JBoss within provided resource
+** Added more logging and diagnostic messages
+** Jobs with successful run for creating or editing configuration will not be removed automatically
+
+=== EC-JBoss 2.6.3
+
+* Renaming from "Electric Cloud" to "CloudBees"
+
+=== EC-JBoss 2.6.2
+
+* Fixed the issue with lost output parameters for 9.0: upon upgrade or clean install of 9.0 output parameters were not created for the plugin's procedures.
+
+=== EC-JBoss 2.6.1
+
+* The plugin icon has been updated.
+
+=== EC-JBoss 2.6.0
+
+* Following procedures have been added
+** link:#CreateOrUpdateDataSource[CreateOrUpdateDataSource]
+** link:#StartHostController[StartHostController]
+* link:#StartStandaloneServer[StartStandaloneServer]
+
+The procedure has been improved significantly. The following are the changes:
+
+** Improved step summary
+** Following parameter labels were relabeled:
+*** 'Physical location of the standalone script' to 'Startup Script'
+*** 'Optional configuration name' to 'Server Configuration File'
+** New optional parameter 'Additional Options' for changing startup behavior
+** New optional parameter 'Log File Location' which will be used to surface server logs.
+** Fixed handling of 'Server Configuration File' in Windows for overriding the default standalone.xml by a different file which stores server configuration.
+** Verification of Server Startup is verified through connecting JBOSS CLI successfully to Server.
+** Boot errors upon start up are surfaced.
+** The most recent 100 lines of Server logs are shown if log file location is specified.
+* link:#CheckServerGroupStatus[CheckServerGroupStatus]
+** Improved documentation, improved step summary
+** Added new 'Criteria' options: 'DISABLED' and 'STOPPED or DISABLED'
+** For ElectricFlow 8.3 and later versions added an output parameter to capture if the Criteria checked by this procedure returns TRUE/FALSE
+* link:#StartServers[StartServers] and link:#StopServers[StopServers]
+** Improved/fixed step summary for some specific cases
+** Standardized approach for writing step summary: it is now to be included only into '/myCall/summary' context
+* Fixed logging for log levels INFO, WARNING, ERROR
+* Improved passing of credentials to JBoss CLI
+* Configured the plugin to allow the ElectricFlow UI to create configs inline of procedure form.
+* Added classification of procedures in the top section of Help File
+
+=== EC-JBoss 2.5.0
+
+* Following procedures have been added
+** link:#CreateOrUpdateXADataSource[CreateOrUpdateXADataSource]
+** link:#RemoveXADataSource[RemoveXADataSource]
+** link:#StopDomain[StopDomain]
+** link:#GetEnvInfo[GetEnvInfo]
+* link:#StartServers[StartServers] and link:#StopServers[StopServers]
+** Fixed step summary to show correct information if controller is not available
+
+=== EC-JBoss 2.4.1
+
+* Configured the plugin to allow the ElectricFlow UI to render the plugin procedure parameters entirely using the configured form XMLs.
+* Enabled the plugin for managing the plugin configurations in-line when defining an application process step or a pipeline stage task.
+
+=== EC-JBoss 2.4.0
+
+* Following procedures have been added
+** link:#DeployApplication[DeployApplication] - a major improvement to the existing DeployApp procedure. It provides a very robust interface and its behavior is idempotent.
+** link:#CreateOrUpdateJMSQueue[CreateOrUpdateJMSQueue]
+** link:#CreateOrUpdateJMSTopic[CreateOrUpdateJMSTopic]
+** link:#RemoveJMSQueue[RemoveJMSQueue]
+** link:#RemoveJMSTopic[RemoveJMSTopic]
+* link:#DeployApp[DeployApp]
+** Renamed parameter "Path to the application to deploy" to "Application Content Source Path"
+** Added support of URL within "Application Content Source Path" for JBoss EAP 7.0 and later
+** Changed successful step summary
+** Improved documentation
+* link:#StartServers[StartServers]
+** Renamed parameter "Wait time" to "Timeout for recurring check of servers (seconds)"
+** Changed behavior for check of servers in order to perform check at least once
+** Improved documentation
+* link:#StopServers[StopServers]
+** Renamed parameter "Wait time" to "Timeout for recurring check of servers (seconds)"
+** Changed behavior for check of servers in order to perform check at least once
+** Changed warning step summary in order include information about already DISABLED servers (similar to information about already STOPPED servers)
+** Improved documentation
+* Fixed non-ascii characters in plugin forms.
+
+=== EC-JBoss 2.3.2
+
+* link:#StartStandaloneServer[StartStandaloneServer]
+** Fixed handling of "Optional configuration name"
+* link:#StartDomainServer[StartDomainServer]
+** Renamed parameter "Optional configuration name" to "Optional domain configuration name"
+** Fixed handling of "Optional domain configuration name"
+** Added new parameter "Optional host configuration name"
+* link:#CheckServerStatus[CheckServerStatus]
+** Fixed check of "NOT RUNNING" success criteria
+* link:#StopServers[StopServers]
+** Expanded check of servers by handling of DISABLED server status (similar to handling of STOPPED server status)
+* Edit of JBoss configuration
+** Renamed parameter "JBoss AS URL" to "JBoss controller location"
+
+=== EC-JBoss 2.1.5
+
+* Form for DeleteDatasource has been changed. Property "application_name" has been renamed to "datasource_name".
+* CheckHostControllerStatus procedure has been added.
+* CheckServerGroupStatus procedure has been added.
+* Fixed an issue when CheckDeploymentStatus was unable to check status of deployment in the domain mode.
+* Following fields have been added to CheckDeployStatus procedure
+** Hosts
+** ServerGroups
+** Servers
+** Criteria
+** Wait time
+* "Additional Java options" and "Physical location of the jboss client script" fields have been added to configuration.
+* "Physical location of the jboss client script" field has been updated and now it is optional.
+* EnableDeploy procedure has been improved to work with both domain and standalone modes.
+* DisableDeploy procedure has been improved to work with both domain and standalone modes.
+* Fixed a bug when CreateDatasource was failed during enabling datasource on JBoss 6.0.0.
+
+=== EC-JBoss 2.1.4
+
+* Fixed issue with configurations being cached for IE.
+
+=== EC-JBoss 2.1.3
+
+* Updated the ShutdownStandaloneServer, StartDomainServer, and StartStandaloneServer procedures.
+* Added link to plugin Configuration Page in plugin step panels.
+
+=== EC-JBoss 2.1.2
+
+* Improved the plugin for better windows support.
+* Replaced the Username and Password fields with credentials in the CreateDatasource procedure for backward incompatibility.
+
+=== EC-JBoss 2.1.1
+
+* Cleaned up the code.
+* Fixed the procedure descriptions and updated the documentation.
+
+=== EC-JBoss 2.1.0 (February 24, 2015)
+
+* Added the RunCustomCommand procedure to run user-specified commands on JBoss instances.
+* Added the StartServers procedure to start server groups.
+* Added the StopServers procedure to stop server groups.
+* Fixed the CreateDatasource procedure.
+* Fixed the DeleteDatasource procedure.
+* Fixed the DeployApp procedure.
+* Fixed the UndeployApp procedure
+* Fixed the EnableDeploy procedure.
+* Fixed the DisableDeploy procedure.
+* Fixed plugin errors on Linux ElectricFlow instances.
+
+=== EC-JBoss 2.0.7 (December 2014)
+
+* Fixed a POST_PROCESSOR_ERROR in the CheckServerStatus procedure.
+* Fixed an error in the CheckDeployStatus procedure where the _Success Criteria_ was set to "Page not found."
+* Fixed a bug in the DeployApp procedure where the "Runtime name for deployment" was specified.
+
+=== EC-JBoss 2.0.6 (June 2012)
+
+* Added five new procedures to check the status of deployments, create datasources, delete datasources, stop servers, and restart servers.
+* Fixed minor bugs.
+
+=== EC-JBoss 2.0.5 (April 2012)
+
+* Changed the procedure names in the step picker section.
+
+=== EC-JBoss 2.0.4 (March 2012)
+
+* Did minor fixes.
+
+=== EC-JBoss 2.0.3
+
+* Made improvements to the Help document.
+
+=== EC-JBoss 2.0.2
+
+* Upgraded the plugin to use the new XML parameter form.
+* Added a direct link to the new Help document.
+
+=== EC-JBoss 2.0.1
+
+* Improved the XML parameter panels.
+* Reformatted the Help document.
