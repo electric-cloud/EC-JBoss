@@ -17,7 +17,7 @@
         </component>
     </components>
     <hasAdoc>true</hasAdoc>
-    <catalogLabel>JBoss</catalogLabel>
-    <detailedDescription>Use the EC-JBoss plugin to interact with JBoss EAP to perform tasks such as managing servers and deployments.
-</detailedDescription>
-    </plugin>
+
+<detailedDescription>Use the EC-JBoss plugin to interact with JBoss EAP to perform tasks such as managing servers and deployments.</detailedDescription>
+<catalogLabel>JBoss</catalogLabel>
+</plugin>
