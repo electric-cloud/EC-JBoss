@@ -338,12 +338,12 @@ JBoss EAP supports the following message brokers:
 
 Unique identifier for a JMS queue per operating mode are as follows:
 
-. For Standalone : 'Queue Name'
-. For Domain : 'Queue Name' and 'Profile'
+* For Standalone : 'Queue Name'
+* For Domain : 'Queue Name' and 'Profile'
 
 The expected behavior of this procedure is described below
 
-. If queue does not exist (based on unique identifier) it will be created with specified Queue Name and the list of JNDI names. In case of Domain it will be created based on the specified Profile. Optionally a Queue can be specified to be Durable (default is not durable) and with a Message Selector. The following example shows how the procedure invokes the creation of queue:
+* If queue does not exist (based on unique identifier) it will be created with specified Queue Name and the list of JNDI names. In case of Domain it will be created based on the specified Profile. Optionally a Queue can be specified to be Durable (default is not durable) and with a Message Selector. The following example shows how the procedure invokes the creation of queue:
 
 'jms-queue --profile=full add --queue-address=newQueueName --entries=java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2 --durable=false'
 . If queue exists (based on unique identifier) and the specified list of JNDI names differ from existing list of JNDI name for the queue, they will get updated.
@@ -357,7 +357,8 @@ NOTE: JBoss servers may require restart (in case of EAP 6) or reload (in case of
 '/profile=full/subsystem=messaging-activemq/server=default/jms-queue=myQueue/:write-attribute(name=entries,value=[java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2])'
 
 '/profile=full/subsystem=messaging/hornetq-server=default/jms-queue=myQueue/:write-attribute(name=entries,value=[java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2])'
-. If queue exists (based on unique identifier) and specified list of JNDI names is the same as what exists already, it will be a NO-OP for the procedure. It would update nothing in this case.
+
+* If queue exists (based on unique identifier) and specified list of JNDI names is the same as what exists already, it will be a NO-OP for the procedure. It would update nothing in this case.
 
 NOTE: Parameters pertaining to Durability, Message Selection and Additional Options will be ignored.
 
@@ -411,6 +412,7 @@ the procedure invoke the following command for the creation of a queue whose nam
 'jms-queue add --queue-address=myQueue --entries=java:jboss/exported/jms/queue/test --durable=false --legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'
 
 NOTE: This parameter will be considered only when creating queues and will be ignored for updates.
+
 |===
 
 
@@ -1225,28 +1227,36 @@ In addition, the procedure surfaces server logs and boot errors upon startup (ba
 . Enter the following parameters:
 
 
-[width="100%",cols="50%,50%",options="header",]
+[cols="1a,1a",options="header"]
 |===
+
 |Parameter |Description
+
 |Configuration Name |Required parameter.
 
-A unique name of the configuration to be used. URL, port and credentials are retrieved from the given configuration. To view or create a new configuration, go to the Administration -> Plugins tab, and select 'Configure' action for EC-JBoss plugin. NOTE: information for connecting to Master CLI should be provided within the specified configuration, even for stating slave host controllers.
+A unique name of the configuration to be used. URL, port, and credentials are retrieved from the given configuration. To view or create a new configuration go to the *Administration > Plugins* tab and select *Configure* action for EC-JBoss plugin.
+
+NOTE: Information for connecting to controller CLI should be provided within the specified configuration, even for stating agent host controllers.
+
 |Startup Script |Required parameter.
 
-Provide the absolute physical path of the domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'.
-|Domain Configuration File |Optional Parameter. Applies only to master host controllers.
+Provide the absolute physical path of the domain script, that is, `domain.bat`, `/usr/tools/bin/domain.sh`, `c:/Program Files/JBoss/bin/domain.bat`.
 
-Use this parameter only if you have a need to override the default domain.xml by a different file which stores your domain configuration.
+|Domain Configuration File |Optional Parameter. Applies only to agent host controllers.
+
+Use this parameter only if you have a need to override the default `domain.xml` by a different file which stores your domain configuration.
+
 |Host Configuration File |Optional Parameter.
 
 Use this parameter only if you have a need to override the default host.xml by a different file which stores your host configuration.
+
 |Host Name |Optional parameter.
 
 Host Name of the started Host Controller. If provided this parameter would be used to connect using the Master Host Controller Jboss-cli and surface any boot errors upon startup.
 |Additional Options a|
 Optional parameter.
 
-'Additional options' to be passed on to domain startup script. If provided parameters will be concatenated AS IS to already generated command line for starting master or slave host controller. These are some examples.
+'Additional options' to be passed on to domain startup script. If provided parameters will be concatenated AS IS to already generated command line for starting master or agent host controller. These are some examples.
 
 * '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0'
 * '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0'
@@ -1596,7 +1606,7 @@ Removing XA data sources can fail when call remove command with the following er
 
 === EC-JBoss 2.7.1
 
-* Renaming from "CloudBees Flow" to "{CD}"
+* Renaming  to "{CD}"
 
 === EC-JBoss 2.7.0
 
@@ -1607,7 +1617,7 @@ Removing XA data sources can fail when call remove command with the following er
 
 === EC-JBoss 2.6.3
 
-* Renaming from "Electric Cloud" to "CloudBees"
+* Renaming  to "CloudBees"
 
 === EC-JBoss 2.6.2
 
