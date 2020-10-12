@@ -572,8 +572,8 @@ sub get_controller_location {
     my $cred = $self->get_plugin_configuration();
     my $controller = $cred->{jboss_url};
     return undef unless $controller;
-    $controller =~ s|^(?:.*?://)||s;
-    $controller =~ s|/.+$||s;
+    #$controller =~ s|^(?:.*?://)||s;
+    #$controller =~ s|/.+$||s;
     return $controller;
 }
 
