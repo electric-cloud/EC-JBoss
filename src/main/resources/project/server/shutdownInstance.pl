@@ -1,3 +1,16 @@
+$[/myProject/procedure_helpers/preamble]
+use Data::Dumper;
+no warnings qw/redefine/;
+my $PROJECT_NAME = '$[/myProject/projectName]';
+my $PLUGIN_NAME = '@PLUGIN_NAME@';
+my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+my $jboss = EC::JBoss->new(
+    project_name                    => $PROJECT_NAME,
+    plugin_name                     => $PLUGIN_NAME,
+    plugin_key                      => $PLUGIN_KEY,
+);
+my $cfg = $jboss->get_plugin_configuration();
 # -------------------------------------------------------------------------
 # File
 #    shutdownInstance.pl
@@ -27,7 +40,6 @@ use warnings;
 use strict;
 use Cwd;
 use File::Spec;
-use diagnostics;
 use ElectricCommander::PropDB;
 $|=1;
 
@@ -74,7 +86,7 @@ $::gEC = new ElectricCommander();
 $::gEC->abortOnError(0);
 
 $::gServerConfig = ($::gEC->getProperty("serverconfig") )->findvalue("//value");
-my %tempConfig = &getConfiguration($::gServerConfig);
+my %tempConfig = %$cfg;
 
 if ($tempConfig{java_opts}) {
     my $new_java_opts = $tempConfig{java_opts};
@@ -127,7 +139,7 @@ sub main() {
 
     #getting all info from the configuration, url, user and pass
     if ($::gServerConfig ne '') {
-        %configuration = getConfiguration($::gServerConfig);
+        %configuration = %$cfg;
         if (%configuration) {
             $rawUrl = $configuration{'jboss_url'};
             my $url;
@@ -194,41 +206,6 @@ sub setProperties($) {
         my $val = $propHash->{$key};
         $::gEC->setProperty("/myCall/$key", $val);
     }
-}
-##########################################################################
-# getConfiguration - get the information of the configuration given
-#
-# Arguments:
-#   -configName: name of the configuration to retrieve
-#
-# Returns:
-#   -configToUse: hash containing the configuration information
-#
-#########################################################################
-sub getConfiguration($) {
-    my ($configName) = @_;
-    my %configToUse;
-    my $proj = "$[/myProject/projectName]";
-    my $pluginConfigs = new ElectricCommander::PropDB($::gEC,"/projects/$proj/jboss_cfgs");
-    my %configRow = $pluginConfigs->getRow($configName);
-    # Check if configuration exists
-    unless(keys(%configRow)) {
-        print 'Error: Configuration doesn\'t exist';
-        exit ERROR;
-    }
-    # Get user/password out of credential
-    my $xpath = $::gEC->getFullCredential($configRow{credential});
-    $configToUse{'user'} = $xpath->findvalue("//userName");
-    $configToUse{'password'} = $xpath->findvalue("//password");
-
-    foreach my $c (keys %configRow) {
-        #getting all values except the credential that was read previously
-        if ($c ne CREDENTIAL_ID) {
-            $configToUse{$c} = $configRow{$c};
-        }
-    }
-
-    return %configToUse;
 }
 
 main();

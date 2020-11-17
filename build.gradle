@@ -20,23 +20,23 @@ buildscript {
 }
 
 repositories {
+    // maven {
+	// 	url "http://artifactory.electric-cloud.com/artifactory/repo"
+	// }
     maven {
-		url "http://artifactory.electric-cloud.com/artifactory/repo"
-	}
-    // maven {
-    //     url 'https://nexus-internal.cloudbees.com/content/repositories/snapshots'
-    //     credentials {
-    //         username = nexusUsername
-    //         password = nexusPassword
-    //     }
-    // }
-    // maven {
-    //     url 'https://nexus-internal.cloudbees.com/service/local/staging/deploy/maven2'
-    //     credentials {
-    //         username = nexusUsername
-    //         password = nexusPassword
-    //     }
-    // }
+        url 'https://nexus-internal.cloudbees.com/content/repositories/snapshots'
+        credentials {
+            username = nexusUsername
+            password = nexusPassword
+        }
+    }
+    maven {
+        url 'https://nexus-internal.cloudbees.com/service/local/staging/deploy/maven2'
+        credentials {
+            username = nexusUsername
+            password = nexusPassword
+        }
+    }
     maven {
         url 'http://35.234.102.60/artifactory/ec'
         credentials {

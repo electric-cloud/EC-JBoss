@@ -312,6 +312,7 @@ if ($upgradeAction eq "upgrade") {
             }
         }
     }
+    # reattachExternalCredentials($pluginName);
     reattachExternalCredentials($otherPluginName);
 }
 
@@ -330,6 +331,8 @@ if ($promoteAction eq 'promote') {
             }
         }
     }
+    # reattachExternalCredentials($pluginName);
+    reattachExternalCredentials($otherPluginName);
 }
 
 sub checkAndSetOutputParameters {
@@ -418,10 +421,10 @@ sub createMissingOutputParameters {
 
 
 sub reattachExternalCredentials {
-    my ($otherPluginName) = @_;
+    my ($pluginNameToReattach) = @_;
 
-    my $configName = getConfigLocation($otherPluginName);
-    my $configsPath = "/plugins/$otherPluginName/project/$configName";
+    my $configName = getConfigLocation($pluginNameToReattach);
+    my $configsPath = "/plugins/$pluginNameToReattach/project/$configName";
 
     my $xp = $commander->getProperty($configsPath);
 
@@ -430,7 +433,6 @@ sub reattachExternalCredentials {
     for my $node ($props->findnodes('//property/propertySheetId')) {
         my $configPropertySheetId = $node->string_value();
         my $config = $commander->getProperties({propertySheetId => $configPropertySheetId});
-
         # iterate through props to get credentials.
         for my $configRow ($config->findnodes('//property')) {
             my $propName = $configRow->findvalue('propertyName')->string_value();
@@ -446,7 +448,6 @@ sub reattachExternalCredentials {
                     });
                     #    debug "Attached credential to $step->{stepName}";
                 }
-                print "Reattaching $propName with val: $propValue\n";
             }
         }
         # exit 0;
@@ -456,7 +457,7 @@ sub reattachExternalCredentials {
 sub getConfigLocation {
     my ($otherPluginName) = @_;
 
-    my $configName = 'Jenkins_cfgs';
+    my $configName = 'jboss_cfgs';
     return $configName;
 }
 
