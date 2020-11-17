@@ -1,7 +1,7 @@
 // -*- Groovy -*-
 // build.gradle
 //
-// Gradle build script for ECSCM-Git plugin.
+// Gradle build script for EC-JBoss plugin.
 //
 // Copyright (c) 2015 Electric Cloud, Inc.
 // All rights reserved
