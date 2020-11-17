@@ -13,6 +13,56 @@ EC JBoss integration plugin logic.
 =cut
 
 package EC::JBoss;
+
+# Here we are loading PDK. We need to load it in the begin.
+# Do not modify it if you don't understand how perl phases are working.
+# Thanks.
+
+BEGIN {
+    require ElectricCommander;
+    import ElectricCommander;
+    my $ec = ElectricCommander->new();
+
+    my @locations = (
+        '/myProject/pdk/',
+        # '/myProject/perl/core/lib/',
+        # '/myProject/perl/lib/'
+    );
+    my $display;
+    my $pdk_loader = sub {
+        my ($self, $target) = @_;
+
+        $display = '[EC]@PLUGIN_KEY@-@PLUGIN_VERSION@/' . $target;
+        # Undo perl'd require transformation
+        # Retrieving framework part and lib part.
+        my $code;
+        for my $prefix (@locations) {
+            my $prop = $target;
+            # $prop =~ s#\.pm$##;
+
+            $prop = "$prefix$prop";
+            $code = eval {
+                $ec->getProperty("$prop")->findvalue('//value')->string_value;
+            };
+            last if $code;
+        }
+        return unless $code; # let other module paths try ;)
+
+        # Prepend comment for correct error attribution
+        $code = qq{# line 1 "$display"\n$code};
+
+        # We must return a file in perl < 5.10, in 5.10+ just return \$code
+        #    would suffice.
+        open my $fd, "<", \$code
+            or die "Redirect failed when loading $target from $display";
+
+        return $fd;
+    };
+
+    push @INC, $pdk_loader;
+};
+
+
 use strict;
 use warnings;
 use subs qw/is_win is_positive_int/;
@@ -27,8 +77,10 @@ use IPC::Open3;
 use Symbol qw/gensym/;
 use IO::Select;
 use Storable 'dclone';
+use FlowPDF;
+use FlowPDF::ContextFactory;
 
-our $VERSION = 0.02;
+our $VERSION = 0.1;
 
 BEGIN {
     if ($^O eq 'MSWin32') {
@@ -84,6 +136,49 @@ my %LOG_LEVEL_PRIORITY_RESOLVER_FOR_OLD_API = (
     $LOG_LEVEL_OLD_API_VALUE_WARNING => $LOG_LEVEL_PRIORITY_INT_WARNING,
     $LOG_LEVEL_OLD_API_VALUE_ERROR   => $LOG_LEVEL_PRIORITY_INT_ERROR,
 );
+
+
+sub create_flowpdf_object {
+    my ($self) = @_;
+    my $procedureName = $self->ec()->getProperty('/myProcedure/procedureName')->findvalue('//value')->string_value();
+    my $stepName = $self->ec()->getProperty('/myJobStep/stepName')->findvalue('//value')->string_value();
+    my $pluginName = '@PLUGIN_KEY@';
+    my $pluginVersion = '@PLUGIN_VERSION@';
+
+    *FlowPDF::pluginInfo = sub {
+        return {
+            pluginName => '@PLUGIN_KEY@',
+            pluginVersion => '@PLUGIN_VERSION@',
+            config_fields => ['config_name', 'configuration_name', 'serverconfig', 'config'],
+            config_locations => ['jboss_cfgs', 'ec_plugin_cfgs']
+        }
+    };
+    my $flowpdf = FlowPDF->new({
+        pluginName      => '@PLUGIN_KEY@',
+        pluginVersion   => '@PLUGIN_VERSION@',
+        configFields    => ['config_name', 'configuration_name', 'serverconfig', 'config'],
+        configLocations => ['jboss_cfgs', 'ec_plugin_cfgs'],
+        contextFactory  => FlowPDF::ContextFactory->new({
+            procedureName => $procedureName,
+            stepName      => $stepName
+        })
+    });
+    # print Dumper $flowpdf;
+    # $flowpdf->showEnvironmentInfo();
+    return $flowpdf;
+}
+
+
+sub flowpdf {
+    my ($self) = @_;
+
+    if (!$self->{flowpdf}) {
+        $self->{flowpdf} = $self->create_flowpdf_object();
+    }
+    return $self->{flowpdf};
+}
+
+
 
 =item B<new>
 
@@ -146,7 +241,6 @@ sub new {
     }
 
     my $creds = $self->get_plugin_configuration();
-
     if ($creds->{log_level} && is_positive_int($creds->{log_level})) {
         $self->{log_level} = $creds->{log_level};
         $creds->{log_level} = 4 if $creds->{log_level} > 4;
@@ -433,60 +527,14 @@ Returns credentials by credentials name specified at object creation.
 sub get_plugin_configuration {
     my ($self) = @_;
 
+    # keeping previous logic for any kind of compatibilities.
     if ($self->{_credentials} && ref $self->{_credentials} eq 'HASH' && %{$self->{_credentials}}) {
         return $self->{_credentials};
     }
-    if (!$self->{config_name}) {
-        croak "Configuration_name doesn't exist";
-    }
 
-    my $ec = $self->ec();
-    my $config_name = $self->{config_name};
-    my $project = $self->{project_name};
-
-    my $pattern = sprintf '/projects/%s/jboss_cfgs', $project;
-    my $plugin_configs;
-    eval {
-        $plugin_configs = ElectricCommander::PropDB->new($ec, $pattern);
-        1;
-    } or do {
-        $self->out("Can't access credentials.");
-        # bailing out if can't access credendials.
-        $self->bail_out("Can't access credentials.");
-    };
-
-    my %config_row;
-    eval {
-        %config_row = $plugin_configs->getRow($config_name);
-        1;
-    } or do {
-        $self->out("Configuration $config_name doesn't exist.");
-        # bailing out if configuration specified doesn't exist.
-        $self->bail_out("Configuration $config_name doesn't exist.");
-    };
-
-    unless (%config_row) {
-        croak "Configuration doesn't exist";
-    }
-
-    my $retval = {};
-
-    my $xpath = $ec->getFullCredential($config_row{credential});
-    $retval->{user} = '' . $xpath->findvalue("//userName");
-    $retval->{password} = '' . $xpath->findvalue("//password");
-    $retval->{jboss_url} = '' . $config_row{jboss_url};
-    if ($config_row{scriptphysicalpath}) {
-        $retval->{scriptphysicalpath} = '' . $config_row{scriptphysicalpath};
-    }
-    if ($config_row{java_opts}) {
-        $retval->{java_opts} = '' . $config_row{java_opts};
-    }
-    if ($config_row{log_level}) {
-        $retval->{log_level} = '' . $config_row{log_level};
-    }
-
-    return $retval;
-
+    my $context = $self->flowpdf()->getContext();
+    my $cfg = $context->getConfigValuesAsHashref();
+    return $cfg;
 }
 
 

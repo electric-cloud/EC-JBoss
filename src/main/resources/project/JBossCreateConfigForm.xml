@@ -25,6 +25,7 @@
         <required>0</required>
     </formElement>
     <formElement>
+        <supportsCredentialReference>true</supportsCredentialReference>
         <type>credential</type>
         <label>Login as:</label>
         <property>credential</property>

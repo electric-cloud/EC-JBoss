@@ -24,6 +24,7 @@ import com.electriccloud.commander.client.responses.CommanderError;
 import com.electriccloud.commander.client.responses.DefaultProcedureCallback;
 import com.electriccloud.commander.client.responses.DefaultRunProcedureResponseCallback;
 import com.electriccloud.commander.client.responses.RunProcedureResponse;
+import com.electriccloud.commander.client.util.StringUtil;
 import com.electriccloud.commander.gwt.client.ui.CredentialEditor;
 import com.electriccloud.commander.gwt.client.ui.FormBuilder;
 import com.electriccloud.commander.gwt.client.ui.SimpleErrorBox;
@@ -124,12 +125,23 @@ public class EditConfigPropertySheetEditor
                     for (String paramName : params.keySet()) {
 
                         if (credentialParams.contains(paramName)) {
-                            CredentialEditor credential = fb.getCredential(
-                                    paramName);
+                            CredentialEditor credential = fb.getCredential(paramName);
 
-                            request.addCredentialParameter(paramName,
-                                credential.getUsername(),
-                                credential.getPassword());
+                            String username = credential.getUsername();
+                            String password = credential.getPassword();
+                            String credentialReference = credential.getCredentialReference();
+                            if (!StringUtil.isEmpty(credentialReference)) {
+
+                                  request.addCredentialReferenceParameter(
+                                         paramName,
+                                         credentialReference);
+                                 request.addActualParameter(paramName,
+                                         paramName);
+                             }
+                             else {
+                                 request.addCredentialParameter(paramName, username,
+                                         password);
+                             }
                         }
                         else {
                             request.addActualParameter(paramName,
@@ -179,8 +191,8 @@ public class EditConfigPropertySheetEditor
                 }
 
                 if (responseString.startsWith("Success")) {
-                    EditConfigPropertySheetEditor.super.submit();
-                    // super.submit();
+                    // Submit replaced with Cancel here to give control over configuration values to EditConfiguration procedure.
+                    EditConfigPropertySheetEditor.super.cancel();
                 }
                 else {
                     SimpleErrorBox      error      = getUIFactory()
