@@ -1600,6 +1600,10 @@ Removing XA data sources can fail when call remove command with the following er
 [[rns]]
 == Release notes
 
+=== EC-JBiss 2.8.0
+
+- Plugin configuration has been improved to support external credentials.
+
 === EC-JBoss 2.7.2
 
 - The documentation has been migrated to the main documentation site.
