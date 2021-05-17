@@ -8,66 +8,38 @@
 
 buildscript {
     repositories {
-	    maven {
-		    url 'http://dl.bintray.com/ecpluginsdev/maven'
-	    }
-
-	    jcenter()
+        mavenCentral()
+        maven { url 'https://repo.cloudbees.com/content/repositories/dev-connect' }
     }
     dependencies {
-        classpath group: 'com.electriccloud.plugins', name: 'flow-gradle-plugin', version: '+'
+        classpath group: 'com.electriccloud.plugins', name: 'flow-gradle-plugin', version: '2.4'
     }
 }
 
 repositories {
-    // maven {
-	// 	url "http://artifactory.electric-cloud.com/artifactory/repo"
-	// }
+    mavenCentral()
+    maven { url 'https://repo.cloudbees.com/content/repositories/dev-connect' }
     maven {
-        url 'https://nexus-internal.cloudbees.com/content/repositories/snapshots'
+        url 'https://nexus-internal.cloudbees.com/content/groups/mirror'
         credentials {
-            username = nexusUsername
-            password = nexusPassword
+            username = System.getenv('NEXUS_USERNAME') ?: nexusUsername
+            password = System.getenv('NEXUS_PASSWORD') ?: nexusPassword
         }
     }
-    maven {
-        url 'https://nexus-internal.cloudbees.com/service/local/staging/deploy/maven2'
-        credentials {
-            username = nexusUsername
-            password = nexusPassword
-        }
-    }
-    maven {
-        url 'http://35.234.102.60/artifactory/ec'
-        credentials {
-                username = System.getenv('ARTIFACTORY_USERNAME') ?: 'build'
-                password = System.getenv('ARTIFACTORY_PASSWORD')
-        }
-    }
-    maven {
-        url "http://35.234.102.60/artifactory/thirdparty"
-        credentials {
-                username = System.getenv('ARTIFACTORY_USERNAME') ?: 'build'
-                password = System.getenv('ARTIFACTORY_PASSWORD')
-        }
-    }
-	maven {
-		url "https://oss.sonatype.org/content/repositories/snapshots"
-	}
 }
 
 configurations.all {
 	resolutionStrategy {
-		force group: 'com.electriccloud', name: 'commander-client', version: '2020.10.0-SNAPSHOT'
-		force group: 'com.electriccloud', name: 'commander-sdk', version: '6.1.0-SNAPSHOT'
-		force group: 'com.electriccloud', name: 'ec_internal', version: '6.1.0-SNAPSHOT'
+        force group: 'com.electriccloud', name: 'ec-test', version: '10.1.0'
+        force group: 'com.electriccloud', name: 'commander-client', version: '10.1.0'
+		force group: 'com.electriccloud', name: 'commander-sdk', version: '6.1.2.1'
+		force group: 'com.electriccloud', name: 'ec_internal', version: '6.1.2.1'
 		force group: 'com.google.gwt', name: 'gwt-user', version: '2.5.0-ec3'
 		force group: 'com.google.gwt', name: 'gwt-dev', version: '2.5.0-ec1'
 
 		cacheChangingModulesFor 0, 'seconds'
 	}
 }
-
 
 group = "com.electriccloud"
 description = "Plugins : EC-JBoss"
