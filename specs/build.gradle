@@ -15,14 +15,14 @@ repositories {
         url 'https://oss.sonatype.org/content/repositories/snapshots'
     }
     maven {
-        url  "https://dl.bintray.com/ecpluginsdev/maven"
+        url "https://repo.cloudbees.com/content/repositories/dev-connect"
     }
 }
 
 dependencies {
     implementation 'org.codehaus.groovy:groovy-all:2.4.5:indy'
     implementation 'org.spockframework:spock-core:1.1-groovy-2.4'
-    implementation 'com.electriccloud:commander-spec-tests:latest.release'
+//    implementation 'com.electriccloud:commander-spec-tests:latest.release'
     implementation 'com.electriccloud:ec-specs-plugins-core:1.9.2'
     implementation 'com.jayway.restassured:rest-assured:2.4.0'
 }
