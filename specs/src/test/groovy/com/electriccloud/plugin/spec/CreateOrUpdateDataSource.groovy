@@ -383,7 +383,6 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         assert runProcedureJob.getStatus() == jobExpectedStatus
         assert jobUpperStepSummary =~ summaries.'default'.replace("dsName1", dsName)
         assert procedureLogs =~ jobLogs.'default'.replace("dsName1", dsName)
-        assert !(procedureLogs.contains("profile"))
         checkCreateDataSource(dsName, jndiName, jdbcDriverName, enabled, password, userName, url, additionalOption)
 
         cleanup:
@@ -453,7 +452,6 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         assert runProcedureJob.getStatus() == jobExpectedStatus
         assert jobUpperStepSummary =~ summaries.'default'.replace("dsName1", dsName)
         assert procedureLogs =~ jobLogs.'default'.replace("dsName1", dsName)
-        assert !(procedureLogs.contains("profile"))
         checkCreateDataSource(dsName, jndiName, jdbcDriverName, enabled, password, userName, url, additionalOption)
 
         cleanup:
@@ -608,7 +606,6 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         assert runProcedureJob.getStatus() == jobExpectedStatus
         assert jobUpperStepSummary =~ summary
         assert procedureLogs =~ logs
-        assert !(procedureLogs.contains("profile"))
         checkCreateDataSource(dsName, jndiName, jdbcDriverName, enabled, password, userName, url, additionalOption)
 
         cleanup:
