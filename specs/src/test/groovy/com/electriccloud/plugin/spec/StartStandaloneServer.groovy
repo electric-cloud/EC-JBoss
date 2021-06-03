@@ -66,7 +66,7 @@ class StartStandaloneServer extends PluginTestHelper {
     @Shared
     def additionalOptions = [
         'empty': '',
-        'docker': '-b 0.0.0.0 -bmanagement 0.0.0.0 -c standalone-full.xml',
+        'docker': '-b 0.0.0.0 -bmanagement 0.0.0.0',
         'custom path': '-Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement 0.0.0.0',
         'error': '-b 0.0.0.0 -bmanagement error',
         'error and custom path': "-Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement error"
