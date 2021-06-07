@@ -67,6 +67,7 @@ class StartStandaloneServer extends PluginTestHelper {
     def additionalOptions = [
         'empty': '',
         'docker': '-b 0.0.0.0 -bmanagement 0.0.0.0 -c standalone-full.xml',
+        'docker no config': '-b 0.0.0.0 -bmanagement 0.0.0.0',
         'custom path': '-Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement 0.0.0.0',
         'error': '-b 0.0.0.0 -bmanagement error',
         'error and custom path': "-Djboss.server.log.dir=/tmp/qa -b 0.0.0.0 -bmanagement error"
@@ -203,10 +204,10 @@ class StartStandaloneServer extends PluginTestHelper {
             assert runCliCommandAndGetJBossReply(CliCommandsGeneratorHelper.getStandaloneStatus()).result == "running"
         }
         where: 'The following params will be: '
-        testCaseId                 | configName         | scriptPath             | standaloneConfig             | additionalOption          	      | jbossShouldBeStopped | logs      			    | summary 				| jobExpectedStatus  | logFileLocation
-        testCases.systemTest1.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'docker'	      | true                 | jobLogs.'default'		| summaries.'default'	|	"success"        | logFileLocations.'empty'
-        testCases.systemTest2.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'docker'	      | false                | jobLogs.'started'		| summaries.'started'	|	"warning"        | logFileLocations.'empty'
-        testCases.systemTest3.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'full'     | additionalOptions.'docker'	      | true                 | jobLogs.'full config'	| summaries.'default'	|	"success"        | logFileLocations.'empty'
+        testCaseId                 | configName         | scriptPath             | standaloneConfig             | additionalOption                      | jbossShouldBeStopped | logs      			    | summary 				| jobExpectedStatus  | logFileLocation
+        testCases.systemTest1.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'docker'            | true                 | jobLogs.'default'		| summaries.'default'	|	"success"        | logFileLocations.'empty'
+        testCases.systemTest2.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'docker'            | false                | jobLogs.'started'		| summaries.'started'	|	"warning"        | logFileLocations.'empty'
+        testCases.systemTest3.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'full'     | additionalOptions.'docker no config'  | true                 | jobLogs.'full config'	| summaries.'default'	|	"success"        | logFileLocations.'empty'
 // !!!
 //        testCases.systemTest4.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'custom path'     | true                 | jobLogs.'custom logs'	| summaries.'default'	|	"success"        | logFileLocations.'empty'
 //        testCases.systemTest4.name | defaultConfigName  | scriptPaths.'default'  | standaloneConfigs.'empty'    | additionalOptions.'custom path'     | true                 | jobLogs.'custom logs'    | summaries.'default'   |   "success"        | logFileLocations.'custom'
