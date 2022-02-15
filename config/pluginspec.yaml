@@ -357,7 +357,7 @@ procedures:
     required: false
     documentation: "Profile name for domain mode."
     label: "Profile name:"
-  - name: "dsCredential"
+  - name: "ds_credential"
     type: "credential"
     required: false
     documentation: "Specify credential that contains username and password for data\
@@ -416,7 +416,7 @@ procedures:
     documentation: "Required for JBoss EAP 6.X, 7.0. Not Required for 7.1. The JDBC\
       \ driver connection URL. For example jdbc:mysql://localhost:3306/mysqldb"
     label: "Connection URL:"
-  - name: "dataSourceConnectionCredentials"
+  - name: "dataSourceConnection_credential"
     type: "credential"
     required: true
     documentation: "Credential that contains username and password used for the\
@@ -621,7 +621,7 @@ procedures:
       =>\"localhost\",\"DatabaseName\"=>\"test\",\"PortNumber\"=>\"3306\",\"DriverType\"\
       =>\"4\" for a Mysql database"
     label: "XA Data Source Properties:"
-  - name: "dataSourceConnectionCredentials"
+  - name: "dataSourceConnection_credential"
     type: "credential"
     required: true
     documentation: "Credential that contains username and password used for the\
