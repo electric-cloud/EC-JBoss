@@ -82,7 +82,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -95,32 +95,32 @@ content:
       label: "Deployment name:"
     - name: "hosts"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the comma-separated list of host names."
       label: "Hosts:"
     - name: "serversgroup"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the comma-separated list of server group names. If \"\
         Hosts\" parameter has been provided, procedure will search for server groups\
         \ within that hosts list."
       label: "Server groups:"
     - name: "servers"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the comma-separated list of server names. If \"Server\
         \ groups\" parameter has been provided, procedure will search for servers\
         \ within that group."
       label: "Servers:"
     - name: "criteria"
       type: "entry"
-      required: true
+      required: false
       documentation: "A desired terminal status of the deployment. The procedure will\
         \ fail if criteria will not be reached."
       label: "Success criteria:"
     - name: "wait_time"
       type: "entry"
-      required: true
+      required: false
       documentation: "Wait time for terminal status in seconds. If not provided, only\
         \ one check will be performed. If 0, it will wait until criteria is met. Default\
         \ 300."
@@ -150,7 +150,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -164,7 +164,7 @@ content:
       value: "master"
     - name: "wait_time"
       type: "entry"
-      required: true
+      required: false
       documentation: "Wait time for terminal state in seconds. If not provided, only\
         \ one check will be performed. If 0, it will wait until criteria is met. Default\
         \ 300."
@@ -202,7 +202,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -215,7 +215,7 @@ content:
       label: "Servers Group Name:"
     - name: "wait_time"
       type: "entry"
-      required: true
+      required: false
       documentation: "Maximum duration (in seconds) of server group status check retries.\
         \ If not provided, only one check will be performed. If 0, it will wait until\
         \ criteria is met. Default 300."
@@ -254,7 +254,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -262,7 +262,7 @@ content:
       dependsOn: "serverconfig"
     - name: "url_check"
       type: "checkbox"
-      required: true
+      required: false
       documentation: "Select this option to check JBoss server url for availability\
         \ instead of checking terminal status with jboss-cli."
       label: "Perform URL check:"
@@ -270,13 +270,13 @@ content:
       uncheckedValue: "0"
     - name: "host"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide a host name to check. Applicable only for domain mode\
         \ and will be ignored for standalone server."
       label: "Host:"
     - name: "server"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide a server name to check. Applicable only for domain mode\
         \ and will be ignored for standalone server."
       label: "Server:"
@@ -289,7 +289,7 @@ content:
       label: "Success criteria:"
     - name: "wait_time"
       type: "entry"
-      required: true
+      required: false
       documentation: "Wait time for terminal status in seconds. If not provided, only\
         \ one check will be performed. If 0, it will wait until criteria is met. Default\
         \ 300."
@@ -319,7 +319,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -355,18 +355,18 @@ content:
       label: "Driver name:"
     - name: "profile"
       type: "entry"
-      required: true
+      required: false
       documentation: "Profile name for domain mode."
       label: "Profile name:"
     - name: "dsCredential"
       type: "credential"
-      required: true
+      required: false
       documentation: "Specify credential that contains username and password for data\
         \ source."
       label: "Datasource credential:"
     - name: "enabled"
       type: "checkbox"
-      required: true
+      required: false
       documentation: "Specifies if the datasource should be enabled after creation."
       label: "Enable Datasource?:"
       checkedValue: "1"
@@ -413,7 +413,7 @@ content:
       label: "JDBC Driver Name:"
     - name: "connectionUrl"
       type: "entry"
-      required: true
+      required: false
       documentation: "Required for JBoss EAP 6.X, 7.0. Not Required for 7.1. The JDBC\
         \ driver connection URL. For example jdbc:mysql://localhost:3306/mysqldb"
       label: "Connection URL:"
@@ -433,14 +433,14 @@ content:
       uncheckedValue: "0"
     - name: "profile"
       type: "entry"
-      required: true
+      required: false
       documentation: "Required for Domain, will be ignored for Standalone. Name of\
         \ the Server Profile to which this Data Source applies to. For example: 'full',\
         \ 'full-ha'"
       label: "Profile:"
     - name: "additionalOptions"
       type: "entry"
-      required: true
+      required: false
       documentation: "'Additional options' to be passed on to jboss-cli. The parameters\
         \ mentioned in this string will be concatenated to already generated command\
         \ line for creating data source. For example: --min-pool-size=5 --max-pool-size=10\
@@ -483,14 +483,14 @@ content:
       label: "JNDI Names:"
     - name: "profile"
       type: "entry"
-      required: true
+      required: false
       documentation: "Required for Domain, will be ignored for Standalone. Name of\
         \ profile in Domain where queue should be created or updated (in case of need).\
         \ For example: 'full', 'full-ha'"
       label: "Profile:"
     - name: "durable"
       type: "entry"
-      required: true
+      required: false
       documentation: "Whether the queue to be created is durable or not. Default is\
         \ false (unchecked) - non durable. NOTE: This parameter will be considered\
         \ only when creating queues and will be ignored for updates."
@@ -499,14 +499,14 @@ content:
       uncheckedValue: "0"
     - name: "messageSelector"
       type: "entry"
-      required: true
+      required: false
       documentation: "JMS message selector. Only messages that match the selector\
         \ will be added to the queue. For example: color='red'. NOTE: This parameter\
         \ will be considered only when creating queues and will be ignored for updates."
       label: "Message Selector:"
     - name: "additionalOptions"
       type: "entry"
-      required: true
+      required: false
       documentation: "'Additional options' to be passed on to jboss-cli. The parameters\
         \ mentioned in this string will be concatenated to already generated command\
         \ line for creating queue. The following is an example: If Additional options\
@@ -554,14 +554,14 @@ content:
       label: "JNDI Names:"
     - name: "profile"
       type: "entry"
-      required: true
+      required: false
       documentation: "Required for Domain, will be ignored for Standalone. Name of\
         \ profile in Domain where topic should be created or updated (in case of need).\
         \ For example: 'full', 'full-ha'"
       label: "Profile:"
     - name: "additionalOptions"
       type: "entry"
-      required: true
+      required: false
       documentation: "'Additional options' to be passed on to jboss-cli. The parameters\
         \ mentioned in this string will be concatenated to already generated command\
         \ line for creating topic. The following is an example: If Additional options\
@@ -638,14 +638,14 @@ content:
       uncheckedValue: "0"
     - name: "profile"
       type: "entry"
-      required: true
+      required: false
       documentation: "Required for Domain, will be ignored for Standalone. Name of\
         \ the Server Profile to which this XA Data Source applies to. For example:\
         \ 'full', 'full-ha'"
       label: "Profile:"
     - name: "additionalOptions"
       type: "entry"
-      required: true
+      required: false
       documentation: "'Additional options' to be passed on to jboss-cli. The parameters\
         \ mentioned in this string will be concatenated to already generated command\
         \ line for creating xa data source. For example: --min-pool-size=5 --max-pool-size=10\
@@ -675,7 +675,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -688,7 +688,7 @@ content:
       label: "Datasource name:"
     - name: "profile"
       type: "entry"
-      required: true
+      required: false
       documentation: "Profile name for domain mode."
       label: "Profile name:"
     shell: "ec-perl"
@@ -719,7 +719,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted,\
         \ script location from configuration will be used."
@@ -738,7 +738,7 @@ content:
       label: "Application Content Source Path:"
     - name: "appname"
       type: "entry"
-      required: true
+      required: false
       documentation: "Stands for '--name' parameter for jboss-cli 'deploy' command.\
         \ The unique name of the deployment. If this parameter is not provided then\
         \ JBoss will retrieve the deployment name from the file name of 'file_path'\
@@ -746,13 +746,13 @@ content:
       label: "Deployment name:"
     - name: "runtimename"
       type: "entry"
-      required: true
+      required: false
       documentation: "The runtime name for the deployment. If not specified it will\
         \ be the same as 'Deployment Name'."
       label: "Runtime name for deployment:"
     - name: "assignallservergroups"
       type: "checkbox"
-      required: true
+      required: false
       documentation: "For Domain only (will be ignored in case of Standalone). Stands\
         \ for '--all-server-groups' parameter for jboss-cli 'deploy' command. NOTE:\
         \ this parameter will be ignored if 'Force deployment' is chosen; 'Server\
@@ -763,7 +763,7 @@ content:
       uncheckedValue: "0"
     - name: "assignservergroups"
       type: "entry"
-      required: true
+      required: false
       documentation: "For Domain only (will be ignored in case of Standalone). Stands\
         \ for '--server-groups' parameter for jboss-cli 'deploy' command. NOTE: this\
         \ parameter will be ignored if 'Apply to all servers' or 'Force deployment'\
@@ -772,7 +772,7 @@ content:
       label: "Server groups to apply:"
     - name: "force"
       type: "checkbox"
-      required: true
+      required: false
       documentation: "Stands for '--force' parameter for jboss-cli 'deploy' command.\
         \ NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to\
         \ all servers' and 'Server groups to apply' will be ignored. Chose this option\
@@ -786,7 +786,7 @@ content:
       uncheckedValue: "0"
     - name: "additional_options"
       type: "entry"
-      required: true
+      required: false
       documentation: "Additional options for jboss-cli 'deploy' command. The 'Additional\
         \ options' string will be concatenated to already generated command line from\
         \ the parameters above. NOTE: for JBoss EAP 7 and later do not specify '--url'\
@@ -838,19 +838,19 @@ content:
       label: "Application Content Source Path:"
     - name: "deploymentName"
       type: "entry"
-      required: true
+      required: false
       documentation: "The unique name of the deployment. If this parameter is not\
         \ passed, it will be derived from 'Application Content Source Path' parameter."
       label: "Deployment Name:"
     - name: "runtimeName"
       type: "entry"
-      required: true
+      required: false
       documentation: "The runtime name for the deployment. If not specified it will\
         \ be the same as 'Deployment Name'."
       label: "Runtime Name:"
     - name: "enabledServerGroups"
       type: "entry"
-      required: true
+      required: false
       documentation: "Applicable to Jboss Domain only. Server groups specified in\
         \ this parameter will be assigned (if not already assigned) and enabled. These\
         \ are the formatting rules: Either a comma separated list of server groups\
@@ -859,7 +859,7 @@ content:
       value: "--all-server-groups"
     - name: "disabledServerGroups"
       type: "entry"
-      required: true
+      required: false
       documentation: "Applicable to Jboss Domain only. Server groups specified in\
         \ this parameter will be assigned (if not already assigned) and disabled.\
         \ These are the formatting rules: Either a comma separated list of server\
@@ -867,7 +867,7 @@ content:
       label: "Disabled Server Groups:"
     - name: "additionalOptions"
       type: "entry"
-      required: true
+      required: false
       documentation: "Applicable to JBoss Standalone only. Currently supported additional\
         \ option is '--disabled' for Standalone Server. If it is populated as '--disabled'\
         \ the procedure will deploy the Application and leave it disabled."
@@ -897,7 +897,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -910,7 +910,7 @@ content:
       label: "Deployment name:"
     - name: "assignservergroups"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the comma-separated list of server group names the disable\
         \ deployment command applies to. Server groups parameter is required in domain\
         \ mode. This argument is not applicable in standalone mode and will be ignored."
@@ -940,7 +940,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -953,7 +953,7 @@ content:
       label: "Deployment name:"
     - name: "assignservergroups"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the comma-separated list of server group names the enable\
         \ deployment command applies to. Server groups parameter is required in domain\
         \ mode. This argument is not applicable in standalone mode and will be ignored."
@@ -989,7 +989,7 @@ content:
       label: "Information Type:"
     - name: "informationTypeContext"
       type: "entry"
-      required: true
+      required: false
       documentation: "Optional parameter. Applies only when Information Type is \"\
         Data Sources\" or \"XA Data Sources\". Information Type Context. Enter the\
         \ name of the Profile for which Information Type is requested for. If none\
@@ -997,7 +997,7 @@ content:
       label: "Information Type Context:"
     - name: "additionalOptions"
       type: "entry"
-      required: true
+      required: false
       documentation: "'Additional Options' that can be included into CLI call to limit\
         \ the information requested. For example, if you provide 'include-runtime=true,include-defaults=true'\
         \ the procedure would call /:read-resource('include-runtime=true,include-defaults=true')."
@@ -1032,7 +1032,7 @@ content:
       label: "Queue Name:"
     - name: "profile"
       type: "entry"
-      required: true
+      required: false
       documentation: "Required for Domain, will be ignored for Standalone. Name of\
         \ profile in Domain form which queue should be removed. For example: 'full',\
         \ 'full-ha'"
@@ -1067,7 +1067,7 @@ content:
       label: "Topic Name:"
     - name: "profile"
       type: "entry"
-      required: true
+      required: false
       documentation: "Required for Domain, will be ignored for Standalone. Name of\
         \ profile in Domain form which topic should be removed. For example: 'full',\
         \ 'full-ha'"
@@ -1103,7 +1103,7 @@ content:
       label: "Data Source Name:"
     - name: "profile"
       type: "entry"
-      required: true
+      required: false
       documentation: "Required for Domain, will be ignored for Standalone. Name of\
         \ the Server Profile to which this XA Data Source applies to. For example:\
         \ 'full', 'full-ha'"
@@ -1132,7 +1132,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -1151,7 +1151,7 @@ content:
     parameters:
     - name: "serverconfig"
       type: "entry"
-      required: true
+      required: false
       documentation: "Name of the configuration to be used. URL and credentials are\
         \ retrieved from the given configuration. To view or create a new configuration,\
         \ go to the Administration -> Plugins tab, and select 'Configure' action for\
@@ -1167,7 +1167,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -1203,14 +1203,14 @@ content:
       label: "Physical location of the domain script:"
     - name: "alternatejbossconfig"
       type: "entry"
-      required: true
+      required: false
       documentation: "For domain controllers only. Name of the domain configuration\
         \ file that CloudBees CD uses to start the domain controller with a different\
         \ domain configuration (--domain-config). By default domain.xml is used."
       label: "Optional domain configuration name:"
     - name: "alternateJBossConfigHost"
       type: "entry"
-      required: true
+      required: false
       documentation: "For domain and host controllers. Name of the host configuration\
         \ file that CloudBees CD uses to start the domain or host controller with\
         \ a different host configuration (--host-config). By default host.xml is used."
@@ -1251,28 +1251,28 @@ content:
       label: "Startup Script:"
     - name: "domainConfig"
       type: "entry"
-      required: true
+      required: false
       documentation: "Optional Parameter. Applies only to master host controllers.\
         \ Use this parameter only if you have a need to override the default domain.xml\
         \ by a different file which stores your domain configuration."
       label: "Domain Configuration File:"
     - name: "hostConfig"
       type: "entry"
-      required: true
+      required: false
       documentation: "Optional Parameter. Use this parameter only if you have a need\
         \ to override the default host.xml by a different file which stores your host\
         \ configuration."
       label: "Host Configuration File:"
     - name: "jbossHostName"
       type: "entry"
-      required: true
+      required: false
       documentation: "Optional parameter. Host Name of the started Host Controller.\
         \ If provided this parameter would be used to connect using the Master Host\
         \ Controller Jboss-cli and surface any boot errors upon startup."
       label: "Host Name:"
     - name: "additionalOptions"
       type: "entry"
-      required: true
+      required: false
       documentation: "Optional parameter. 'Additional options' to be passed on to\
         \ domain startup script. If provided parameters will be concatenated AS IS\
         \ to already generated command line for starting master or slave host controller.\
@@ -1283,7 +1283,7 @@ content:
       label: "Additional Options:"
     - name: "logFileLocation"
       type: "entry"
-      required: true
+      required: false
       documentation: "Optional parameter. Absolute path location to Host controller\
         \ log file. For example, /opt/jboss/domain-copied-for-slave-1/log/host-controller.log\
         \ . If provided the procedure will read recent 100 log lines from the specified\
@@ -1320,7 +1320,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted,\
         \ script location from configuration will be used."
@@ -1335,7 +1335,7 @@ content:
       label: "Servers group:"
     - name: "wait_time"
       type: "entry"
-      required: true
+      required: false
       documentation: "After start-servers command for the server group is called the\
         \ procedure starts performing recurring check of servers if they are started\
         \ ('status' attribute is 'STARTED', see procedure description). Delay between\
@@ -1376,7 +1376,7 @@ content:
       label: "Startup Script:"
     - name: "alternatejbossconfig"
       type: "entry"
-      required: true
+      required: false
       documentation: "Optional parameter. Name of the server configuration file to\
         \ use (stands for '--server-config' option for standalone startup script).\
         \ For example: standalone-full.xml, standalone-full-ha.xml. By default standalone.xml\
@@ -1384,7 +1384,7 @@ content:
       label: "Server Configuration File:"
     - name: "additionalOptions"
       type: "entry"
-      required: true
+      required: false
       documentation: "Optional parameter. 'Additional options' to be passed on to\
         \ standalone startup script. The parameters mentioned in this string will\
         \ be concatenated to already generated command line for starting JBoss as\
@@ -1392,7 +1392,7 @@ content:
       label: "Additional Options:"
     - name: "logFileLocation"
       type: "entry"
-      required: true
+      required: false
       documentation: "Optional parameter. Absolute path location to server log file.\
         \ For example, /opt/jboss/standalone/log/server.log . If provided the procedure\
         \ will the most recent 100 log lines from the specified file and surface them\
@@ -1423,7 +1423,7 @@ content:
       configuration: true
     - name: "jbossTimeout"
       type: "entry"
-      required: true
+      required: false
       documentation: "Supported only for EAP 7.X and ignored for EAP 6.X. Timeout\
         \ for stopping all servers within domain and for shutdown each host controller\
         \ (if 'All Controllers Shutdown' is chosen). For example, the following CLI\
@@ -1437,7 +1437,7 @@ content:
       value: "60"
     - name: "allControllersShutdown"
       type: "entry"
-      required: true
+      required: false
       documentation: "Whether the procedure should perform shutdown of controllers.\
         \ If chosen all controllers are shutdown one by one with the master host controller\
         \ being shut down the last. If after shutting down, some servers are still\
@@ -1480,7 +1480,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted,\
         \ script location from configuration will be used."
@@ -1495,7 +1495,7 @@ content:
       label: "Servers group:"
     - name: "wait_time"
       type: "entry"
-      required: true
+      required: false
       documentation: "After stop-servers command for the server group is called the\
         \ procedure starts performing recurring check of servers if they are started\
         \ ('status' attribute is 'STOPPED' or 'DISABLED', see procedure description).\
@@ -1529,7 +1529,7 @@ content:
       configuration: true
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the physical location of the jboss Command Line Interface\
         \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
         \ location from configuration will be used."
@@ -1542,7 +1542,7 @@ content:
       label: "Deployment name:"
     - name: "allrelevantservergroups"
       type: "checkbox"
-      required: true
+      required: false
       documentation: "Select this option to apply undeploy to all server groups in\
         \ which the deployment is enabled. Either server-groups or all-relevant-server-groups\
         \ is required in domain mode. This argument is not applicable in standalone\
@@ -1552,13 +1552,13 @@ content:
       uncheckedValue: "0"
     - name: "servergroups"
       type: "entry"
-      required: true
+      required: false
       documentation: "Provide the comma-separated list of server group names the undeploy\
         \ command applies to."
       label: "Server groups to apply:"
     - name: "keepcontent"
       type: "checkbox"
-      required: true
+      required: false
       documentation: "Select this option to disable the deployment and keep the content\
         \ of the deployment, or unselect it to disable the deployment and removes\
         \ its content from the repository."
@@ -1567,7 +1567,7 @@ content:
       uncheckedValue: "0"
     - name: "additional_options"
       type: "entry"
-      required: true
+      required: false
       documentation: "Additional options for deploy command."
       label: "Additional options:"
     shell: "ec-perl"
@@ -1584,11 +1584,11 @@ content:
       documentation: "Configuration Name"
     - name: "credential"
       type: "credential"
-      required: true
+      required: false
       documentation: ""
     - name: "java_opts"
       type: "entry"
-      required: true
+      required: false
       documentation: "Additional JAVA_OPTS"
     - name: "jboss_url"
       type: "entry"
@@ -1596,18 +1596,18 @@ content:
       documentation: "IP Address of JBoss AS."
     - name: "log_level"
       type: "entry"
-      required: true
+      required: false
       documentation: "Log level."
     - name: "scriptphysicalpath"
       type: "entry"
-      required: true
+      required: false
       documentation: "Physical path to jboss-cli."
     - name: "test_connection"
       type: "checkbox"
-      required: true
+      required: false
       documentation: "\n                    Check if connection should be established\
         \ during config creation to validate credentials.\n                "
     - name: "test_connection_res"
       type: "entry"
-      required: true
+      required: false
       documentation: "A resource which is used for the testing connection."
