@@ -5,44 +5,13 @@ pluginInfo:
   description: "JBoss Application Server integration"
   author: "CloudBees"
   supportUrl: "http://www.electric-cloud.com/support"
-  category: "Fill me"
-  shell: "ec-perl"
+  category: "Application Server"
+  supportLevel: 10
+  label: JBoss
+  hasAdoc: true
+  detailedDescription: Use the EC-JBoss plugin to interact with JBoss EAP to perform tasks such as managing servers and deployments.
+
 properties:
-- propertyName: "jboss_driver"
-  properties:
-  - propertyName: "EC::Bootstrap"
-    value:
-      path: "dsl/properties/jboss_driver/EC/Bootstrap.pm"
-  - propertyName: "EC::JBoss"
-    value:
-      path: "dsl/properties/jboss_driver/EC/JBoss.pm"
-  - propertyName: "EC::LogTrapper"
-    value:
-      path: "dsl/properties/jboss_driver/EC/LogTrapper.pm"
-  - propertyName: "EC::Logger"
-    value:
-      path: "dsl/properties/jboss_driver/EC/Logger.pm"
-  - propertyName: "EC::POSTP"
-    value:
-      path: "dsl/properties/jboss_driver/EC/POSTP.pm"
-  - propertyName: "File::Path"
-    value:
-      path: "dsl/properties/jboss_driver/File/Path.pm"
-- propertyName: "procedure_helpers"
-  properties:
-  - propertyName: "preamble"
-    value:
-      path: "dsl/properties/procedure_helpers/preamble.pl"
-- propertyName: "ui_forms"
-  properties:
-  - propertyName: "JBossCreateConfigForm"
-    value:
-      path: "dsl/properties/ui_forms/JBossCreateConfigForm.pl"
-  - propertyName: "JBossEditConfigForm"
-    value:
-      path: "dsl/properties/ui_forms/JBossEditConfigForm.pl"
-- propertyName: "ec_configPropertySheet"
-  value: "jboss_cfgs"
 - propertyName: "postp_loader"
   value: "ec-perl -MElectricCommander -MElectricCommander::PropMod -e \"ElectricCommander::PropMod::loadPerlCodeFromProperty(ElectricCommander->new(),\
     \ '/projects/EC-JBoss-2.8.0.0/jboss_driver/EC::POSTP');EC::POSTP->run(\\@ARGV)\"\
