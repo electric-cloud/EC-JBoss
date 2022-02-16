@@ -14,55 +14,6 @@ EC JBoss integration plugin logic.
 
 package EC::JBoss;
 
-# Here we are loading PDK. We need to load it in the begin.
-# Do not modify it if you don't understand how perl phases are working.
-# Thanks.
-
-BEGIN {
-    require ElectricCommander;
-    import ElectricCommander;
-    my $ec = ElectricCommander->new();
-
-    my @locations = (
-        '/myProject/pdk/',
-        # '/myProject/perl/core/lib/',
-        # '/myProject/perl/lib/'
-    );
-    my $display;
-    my $pdk_loader = sub {
-        my ($self, $target) = @_;
-
-        $display = '[EC]@PLUGIN_NAME@/' . $target;
-        # Undo perl'd require transformation
-        # Retrieving framework part and lib part.
-        my $code;
-        for my $prefix (@locations) {
-            my $prop = $target;
-            # $prop =~ s#\.pm$##;
-
-            $prop = "$prefix$prop";
-            $code = eval {
-                $ec->getProperty("$prop")->findvalue('//value')->string_value;
-            };
-            last if $code;
-        }
-        return unless $code; # let other module paths try ;)
-
-        # Prepend comment for correct error attribution
-        $code = qq{# line 1 "$display"\n$code};
-
-        # We must return a file in perl < 5.10, in 5.10+ just return \$code
-        #    would suffice.
-        open my $fd, "<", \$code
-            or die "Redirect failed when loading $target from $display";
-
-        return $fd;
-    };
-
-    push @INC, $pdk_loader;
-};
-
-
 use strict;
 use warnings;
 use subs qw/is_win is_positive_int/;
@@ -77,8 +28,8 @@ use IPC::Open3;
 use Symbol qw/gensym/;
 use IO::Select;
 use Storable 'dclone';
-use FlowPDF;
-use FlowPDF::ContextFactory;
+use EC::LogTrapper;
+use FlowPDF::Service::Bootstrap;
 
 our $VERSION = 0.1;
 
@@ -98,7 +49,6 @@ $| = 1;
         $log_property_path = $ec->getProperty('/plugins/@PLUGIN_KEY@/project/ec_debug_logToProperty')->findvalue('//value')->string_value();
     };
     if ($log_property_path) {
-        ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::LogTrapper");
 
         EC::LogTrapper::open_handle();
         tie *STDOUT, "EC::LogTrapper", (
@@ -115,9 +65,7 @@ $| = 1;
                 }
             );
     }
-
-    ElectricCommander::PropMod::loadPerlCodeFromProperty($ec,"/myProject/jboss_driver/EC::Bootstrap");
-    EC::Bootstrap->import();
+    FlowPDF::Service::Bootstrap->import();
 };
 
 my $LOG_LEVEL_OLD_API_VALUE_DEBUG = 4;
@@ -138,43 +86,9 @@ my %LOG_LEVEL_PRIORITY_RESOLVER_FOR_OLD_API = (
 );
 
 
-sub create_flowpdf_object {
-    my ($self) = @_;
-    my $procedureName = $self->ec()->getProperty('/myProcedure/procedureName')->findvalue('//value')->string_value();
-    my $stepName = $self->ec()->getProperty('/myJobStep/stepName')->findvalue('//value')->string_value();
-    my $pluginName = '@PLUGIN_KEY@';
-    my $pluginVersion = '2.8.0.0';
-
-    *FlowPDF::pluginInfo = sub {
-        return {
-            pluginName => '@PLUGIN_KEY@',
-            pluginVersion => '2.8.0.0',
-            config_fields => ['config_name', 'configuration_name', 'serverconfig', 'config'],
-            config_locations => ['jboss_cfgs', 'ec_plugin_cfgs']
-        }
-    };
-    my $flowpdf = FlowPDF->new({
-        pluginName      => '@PLUGIN_KEY@',
-        pluginVersion   => '2.8.0.0',
-        configFields    => ['config_name', 'configuration_name', 'serverconfig', 'config'],
-        configLocations => ['jboss_cfgs', 'ec_plugin_cfgs'],
-        contextFactory  => FlowPDF::ContextFactory->new({
-            procedureName => $procedureName,
-            stepName      => $stepName
-        })
-    });
-    # print Dumper $flowpdf;
-    # $flowpdf->showEnvironmentInfo();
-    return $flowpdf;
-}
-
 
 sub flowpdf {
     my ($self) = @_;
-
-    if (!$self->{flowpdf}) {
-        $self->{flowpdf} = $self->create_flowpdf_object();
-    }
     return $self->{flowpdf};
 }
 
@@ -205,7 +119,7 @@ B<debug> => enables debug mode.
 =cut
 
 sub new {
-    my ($class, %params) = @_;
+    my ($class, %params, $flowpdf) = @_;
 
     my $self = {
         plugin_key => '',
@@ -213,6 +127,8 @@ sub new {
         # do_we_have_error_on_interact_support => 0,
     };
     bless $self, $class;
+
+    $self->{flowpdf} = $params{flowpdf};
 
     $self->{log_level} = $params{log_level};
     $self->{log_level} ||= 1;

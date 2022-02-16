@@ -16,7 +16,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
     @Shared
     String defaultConfigName = 'specConfig'
     @Shared
-    String dataSourceConnectionCredentials = "dataSourceConnectionCredentials"
+    String dataSourceConnectionCredentials = "dataSourceConnection_credential"
     @Shared
     def passwords = [
         defaultPassword: 'changeme',
@@ -301,7 +301,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
                 params  : [
 			            additionalOptions: '',
 			            connectionUrl: '',
-			            dataSourceConnectionCredentials: '',
+			            dataSourceConnection_credential: '',
 			            dataSourceName: '',
 			            enabled: '',
 			            jdbcDriverName: '',
@@ -344,7 +344,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         def runParams = [
                 additionalOptions: additionalOption,
                 connectionUrl: url,
-                dataSourceConnectionCredentials: creds,
+                dataSourceConnection_credential: creds,
                 dataSourceName: dsName,
                 enabled: enabled,
                 jdbcDriverName: jdbcDriverName,
@@ -413,7 +413,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         def runParams = [
             additionalOptions: additionalOption,
             connectionUrl: url,
-            dataSourceConnectionCredentials: creds,
+            dataSourceConnection_credential: creds,
             dataSourceName: dsName,
             enabled: enabled,
             jdbcDriverName: jdbcDriverName,
@@ -491,7 +491,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         def runParams = [
             additionalOptions: additionalOption,
             connectionUrl: url,
-            dataSourceConnectionCredentials: creds,
+            dataSourceConnection_credential: creds,
             dataSourceName: dsName,
             enabled: enabled,
             jdbcDriverName: jdbcDriverName,
@@ -560,7 +560,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         def runParams = [
             additionalOptions: additionalOption,
             connectionUrl: url,
-            dataSourceConnectionCredentials: creds,
+            dataSourceConnection_credential: creds,
             dataSourceName: dsName,
             enabled: enabled,
             jdbcDriverName: jdbcDriverName,
@@ -629,7 +629,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         def runParams = [
             additionalOptions: additionalOption,
             connectionUrl: url,
-            dataSourceConnectionCredentials: creds,
+            dataSourceConnection_credential: creds,
             dataSourceName: dsName,
             enabled: enabled,
             jdbcDriverName: jdbcDriverName,
@@ -698,7 +698,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         def runParams = [
             additionalOptions: additionalOption,
             connectionUrl: url,
-            dataSourceConnectionCredentials: creds,
+            dataSourceConnection_credential: creds,
             dataSourceName: dsName,
             enabled: enabled,
             jdbcDriverName: jdbcDriverName,
@@ -744,7 +744,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         def runParams = [
             additionalOptions: additionalOption,
             connectionUrl: url,
-            dataSourceConnectionCredentials: creds,
+            dataSourceConnection_credential: creds,
             dataSourceName: dsName,
             enabled: enabled,
             jdbcDriverName: jdbcDriverName,
@@ -792,7 +792,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         def runParams = [
             additionalOptions: additionalOption,
             connectionUrl: url,
-            dataSourceConnectionCredentials: creds,
+            dataSourceConnection_credential: creds,
             dataSourceName: dsName,
             enabled: enabled,
             jdbcDriverName: jdbcDriverName,
@@ -835,7 +835,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         def runParams = [
             additionalOptions: additionalOption,
             connectionUrl: url,
-            dataSourceConnectionCredentials: creds,
+            dataSourceConnection_credential: creds,
             dataSourceName: dsName,
             enabled: enabled,
             jdbcDriverName: jdbcDriverName,
