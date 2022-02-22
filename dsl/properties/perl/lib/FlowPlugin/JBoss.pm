@@ -1486,8 +1486,110 @@ sub removeJMSQueue {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $jboss = EC::JBoss->new(
+        project_name                    => $PROJECT_NAME,
+        plugin_name                     => $PLUGIN_NAME,
+        plugin_key                      => $PLUGIN_KEY,
+        no_cli_path_in_procedure_params => 1,
+        flowpdf                         => $self,
+    );
+
+    my $params = $jboss->get_params_as_hashref(qw/
+        queueName
+        profile
+    /);
+
+    my $param_queue_name = $params->{queueName};
+    my $param_profile = $params->{profile};
+
+    my $cli_command;
+    my $json;
+
+    if (!$param_queue_name) {
+        $jboss->bail_out("Required parameter 'queueName' is not provided");
+    }
+
+    ########
+    # check jboss launch type
+    ########
+    $cli_command = ':read-attribute(name=launch-type)';
+
+    $json = run_command_and_get_json_with_exiting_on_error(
+        command => $cli_command,
+        jboss   => $jboss
+    );
+
+    my $launch_type = lc $json->{result};
+    if (!$launch_type || ($launch_type ne "standalone" && $launch_type ne "domain")) {
+        $jboss->bail_out("Unknown JBoss launch type: '$launch_type'");
+    }
+    my $jboss_is_domain = 1 if $launch_type eq "domain";
+
+    if ($jboss_is_domain && !$param_profile) {
+        $jboss->bail_out("Required parameter 'profile' is not provided (parameter required for JBoss domain)");
+    }
+
+    ########
+    # check jboss version
+    ########
+    my $subsystem_part = "subsystem=messaging-activemq";
+    my $provider_part = "server=default";
+
+    my $version = $jboss->get_jboss_server_version();
+    my $product_version = $version->{product_version};
+    if ($product_version =~ m/^6/) {
+        $subsystem_part = "subsystem=messaging";
+        $provider_part = "hornetq-server=default";
+    }
+
+    ########
+    # check if jms queue with specified name exists
+    ########
+    if ($jboss_is_domain) {
+        $cli_command = "/profile=$param_profile/$subsystem_part/$provider_part:read-children-resources(child-type=jms-queue)";
+    }
+    else {
+        $cli_command = "/$subsystem_part/$provider_part:read-children-resources(child-type=jms-queue)";
+    }
+
+    $json = run_command_and_get_json_with_exiting_on_error(
+        command => $cli_command,
+        jboss   => $jboss
+    );
+
+    my $jms_queue_resources = $json->{result};
+    my $jms_queue_exists = 1 if $jms_queue_resources->{$param_queue_name};
+
+    if ($jms_queue_exists) {
+        $jboss->log_info("JMS queue '$param_queue_name' exists - to be removed");
+
+        $cli_command = qq/jms-queue remove /;
+
+        if ($jboss_is_domain) {
+            $cli_command .= qq/ --profile=$param_profile /;
+        }
+
+        $cli_command .= qq/ --queue-address=$param_queue_name /;
+
+        run_command_with_exiting_on_error(
+            command => $cli_command,
+            jboss   => $jboss
+        );
+
+        $jboss->set_property(summary => "JMS queue '$param_queue_name' has been removed successfully");
+        return;
+    }
+    else {
+        $jboss->log_info("JMS queue '$param_queue_name' does not exist");
+
+        $jboss->set_property(summary => "JMS queue '$param_queue_name' not found");
+        $jboss->warning();
+        return;
+    }
 }
 # Auto-generated method for the procedure RemoveJMSTopic/RemoveJMSTopic
 # Add your code into this method and it will be called when step runs
@@ -1508,8 +1610,110 @@ sub removeJMSTopic {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $jboss = EC::JBoss->new(
+        project_name                    => $PROJECT_NAME,
+        plugin_name                     => $PLUGIN_NAME,
+        plugin_key                      => $PLUGIN_KEY,
+        no_cli_path_in_procedure_params => 1,
+        flowpdf                         => $self,
+    );
+
+    my $params = $jboss->get_params_as_hashref(qw/
+        topicName
+        profile
+    /);
+
+    my $param_topic_name = $params->{topicName};
+    my $param_profile = $params->{profile};
+
+    my $cli_command;
+    my $json;
+
+    if (!$param_topic_name) {
+        $jboss->bail_out("Required parameter 'topicName' is not provided");
+    }
+
+    ########
+    # check jboss launch type
+    ########
+    $cli_command = ':read-attribute(name=launch-type)';
+
+    $json = run_command_and_get_json_with_exiting_on_error(
+        command => $cli_command,
+        jboss   => $jboss
+    );
+
+    my $launch_type = lc $json->{result};
+    if (!$launch_type || ($launch_type ne "standalone" && $launch_type ne "domain")) {
+        $jboss->bail_out("Unknown JBoss launch type: '$launch_type'");
+    }
+    my $jboss_is_domain = 1 if $launch_type eq "domain";
+
+    if ($jboss_is_domain && !$param_profile) {
+        $jboss->bail_out("Required parameter 'profile' is not provided (parameter required for JBoss domain)");
+    }
+
+    ########
+    # check jboss version
+    ########
+    my $subsystem_part = "subsystem=messaging-activemq";
+    my $provider_part = "server=default";
+
+    my $version = $jboss->get_jboss_server_version();
+    my $product_version = $version->{product_version};
+    if ($product_version =~ m/^6/) {
+        $subsystem_part = "subsystem=messaging";
+        $provider_part = "hornetq-server=default";
+    }
+
+    ########
+    # check if jms topic with specified name exists
+    ########
+    if ($jboss_is_domain) {
+        $cli_command = "/profile=$param_profile/$subsystem_part/$provider_part:read-children-resources(child-type=jms-topic)";
+    }
+    else {
+        $cli_command = "/$subsystem_part/$provider_part:read-children-resources(child-type=jms-topic)";
+    }
+
+    $json = run_command_and_get_json_with_exiting_on_error(
+        command => $cli_command,
+        jboss   => $jboss
+    );
+
+    my $jms_topic_resources = $json->{result};
+    my $jms_topic_exists = 1 if $jms_topic_resources->{$param_topic_name};
+
+    if ($jms_topic_exists) {
+        $jboss->log_info("JMS topic '$param_topic_name' exists - to be removed");
+
+        $cli_command = qq/jms-topic remove /;
+
+        if ($jboss_is_domain) {
+            $cli_command .= qq/ --profile=$param_profile /;
+        }
+
+        $cli_command .= qq/ --topic-address=$param_topic_name /;
+
+        run_command_with_exiting_on_error(
+            command => $cli_command,
+            jboss   => $jboss
+        );
+
+        $jboss->set_property(summary => "JMS topic '$param_topic_name' has been removed successfully");
+        return;
+    }
+    else {
+        $jboss->log_info("JMS topic '$param_topic_name' does not exist");
+
+        $jboss->set_property(summary => "JMS topic '$param_topic_name' not found");
+        $jboss->warning();
+        return;
+    }
 }
 # Auto-generated method for the procedure RemoveXADataSource/RemoveXADataSource
 # Add your code into this method and it will be called when step runs
@@ -1523,7 +1727,6 @@ sub removeJMSTopic {
 sub removeXADataSource {
     my ($self, $p, $sr) = @_;
 
-
     my $context = $self->getContext();
     logInfo("Current context is: ", $context->getRunContext());
     logInfo("Step parameters are: ", $p);
@@ -1531,8 +1734,107 @@ sub removeXADataSource {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $jboss = EC::JBoss->new(
+        project_name                    => $PROJECT_NAME,
+        plugin_name                     => $PLUGIN_NAME,
+        plugin_key                      => $PLUGIN_KEY,
+        no_cli_path_in_procedure_params => 1,
+        flowpdf                         => $self,
+    );
+
+    my $params = $jboss->get_params_as_hashref(qw/
+        dataSourceName
+        profile
+    /);
+
+    my $param_data_source_name = $params->{dataSourceName};
+    my $param_profile = $params->{profile};
+
+    my $cli_command;
+    my $json;
+
+    if (!$param_data_source_name) {
+        $jboss->bail_out("Required parameter 'dataSourceName' is not provided");
+    }
+
+    ########
+    # check jboss launch type
+    ########
+    $cli_command = ':read-attribute(name=launch-type)';
+
+    $json = run_command_and_get_json_with_exiting_on_error(
+        command => $cli_command,
+        jboss   => $jboss
+    );
+
+    my $launch_type = lc $json->{result};
+    if (!$launch_type || ($launch_type ne "standalone" && $launch_type ne "domain")) {
+        $jboss->bail_out("Unknown JBoss launch type: '$launch_type'");
+    }
+    my $jboss_is_domain = 1 if $launch_type eq "domain";
+
+    if ($jboss_is_domain && !$param_profile) {
+        $jboss->bail_out("Required parameter 'profile' is not provided (parameter required for JBoss domain)");
+    }
+
+    ########
+    # check if xa data source with specified name exists
+    ########
+    my @all_xa_data_sources;
+    if ($jboss_is_domain) {
+        @all_xa_data_sources = @{ get_all_xa_data_sources_domain(jboss => $jboss, profile => $param_profile) };
+    }
+    else {
+        @all_xa_data_sources = @{ get_all_xa_data_sources_standalone(jboss => $jboss) };
+    }
+    my %all_xa_data_sources_hash = map {$_ => 1} @all_xa_data_sources;
+
+    my $xa_data_source_exists = 1 if $all_xa_data_sources_hash{$param_data_source_name};
+
+    if ($xa_data_source_exists) {
+        $jboss->log_info("XA data source '$param_data_source_name' exists - to be removed");
+
+        $cli_command = qq/xa-data-source remove /;
+
+        if ($jboss_is_domain) {
+            $cli_command .= qq/ --profile=$param_profile /;
+        }
+
+        $cli_command .= qq/ --name=$param_data_source_name /;
+
+        my %result = $jboss->run_commands($cli_command);
+        $jboss->process_response(%result);
+
+        my $summary;
+        if ($result{code}) {
+            # we expect that summary was already set within process_response if code is not 0
+            exit 1;
+        }
+        else {
+            $summary = "XA data source '$param_data_source_name' has been removed successfully";
+            if ($result{stdout}
+                && ($result{stdout} =~ m/process-state:\sreload-required/gs
+                || $result{stdout} =~ m/process-state:\srestart-required/gs)) {
+                $jboss->log_warning("Some servers require reload or restart, please check the JBoss response");
+                $jboss->warning();
+                $summary .= "\nJBoss reply: " . $result{stdout};
+            }
+            $jboss->set_property(summary => $summary);
+        }
+
+        return;
+    }
+    else {
+        $jboss->log_info("XA data source '$param_data_source_name' does not exist");
+
+        $jboss->set_property(summary => "XA data source '$param_data_source_name' not found");
+        $jboss->warning();
+        return;
+    }
 }
 # Auto-generated method for the procedure RunCustomCommand/RunCustomCommand
 # Add your code into this method and it will be called when step runs
