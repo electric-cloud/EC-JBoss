@@ -22,6 +22,10 @@ use constant {
     STATUS_ERROR                     => "error",
     STATUS_WARNING                   => "warning",
     STATUS_SUCCESS                   => "success",
+    # For StartStandaloneServer
+    PLUGIN_NAME                      => '@PLUGIN_KEY@',
+    CREDENTIAL_ID                    => 'credential',
+    EXPECTED_LOG_FILE_NAME           => 'server.log',
 };
 
 
@@ -2614,8 +2618,46 @@ sub startStandaloneServer {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $jboss = EC::JBoss->new(
+        project_name                    => $PROJECT_NAME,
+        plugin_name                     => $PLUGIN_NAME,
+        plugin_key                      => $PLUGIN_KEY,
+        no_cli_path_in_procedure_params => 1,
+        flowpdf                         => $self,
+    );
+
+    my $params = $jboss->get_params_as_hashref(qw/
+        scriptphysicalpath
+        alternatejbossconfig
+        additionalOptions
+        logFileLocation
+    /);
+
+    my $param_startup_script = $params->{scriptphysicalpath};
+    my $param_optional_config = $params->{alternatejbossconfig};
+    my $param_additional_options = $params->{additionalOptions};
+    my $log_file_location = $params->{logFileLocation};
+
+    if (!$param_startup_script) {
+        $jboss->bail_out("Required parameter 'scriptphysicalpath' is not provided");
+    }
+
+    exit_if_jboss_is_already_started(jboss => $jboss);
+
+    start_standalone_server(
+        startup_script     => $param_startup_script,
+        optional_config    => $param_optional_config,
+        additional_options => $param_additional_options,
+        jboss              => $jboss);
+
+    verify_jboss_is_started_and_show_startup_info(
+        jboss             => $jboss,
+        log_file_location => $log_file_location
+    );
 }
 # Auto-generated method for the procedure StopDomain/StopDomain
 # Add your code into this method and it will be called when step runs
@@ -2707,6 +2749,40 @@ sub assign_deployment_to_server_groups_or_fail {
             $jboss->bail_out("JBoss replied with outcome other than success: " . (encode_json $json));
         }
         $jboss->log_info("Assigned deployment '$deployment_name' to server group '$server_group'");
+    }
+}
+
+sub check_boot_errors_via_cli {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+
+    $jboss->log_info("Checking boot errors via CLI");
+
+    my $cli_command = '/core-service=management/:read-boot-errors';
+
+    my %result = $jboss->run_command($cli_command);
+
+    if ($result{code}) {
+        $jboss->log_warning("Cannot read boot errors via CLI");
+        $jboss->add_summary("Cannot read boot errors via CLI");
+        $jboss->add_status_warning();
+        return;
+    }
+    else {
+        my $json = $jboss->decode_answer($result{stdout});
+        if ($json && exists $json->{result}) {
+            my $boot_errors_result = $json->{result};
+            if (!@$boot_errors_result) {
+                $jboss->log_info("No boot errors detected via CLI");
+                $jboss->add_summary("No boot errors detected via CLI");
+                return;
+            }
+        }
+
+        $jboss->log_warning("JBoss boot errors: " . $result{stdout});
+        $jboss->add_summary("Detected boot errors via CLI, see log for details");
+        $jboss->add_status_warning();
+        return;
     }
 }
 
@@ -2894,6 +2970,39 @@ sub exit_if_host_controller_is_already_started {
                 $jboss->log_info("JBoss Host Controller '$host_name' is not started");
                 return;
             }
+        }
+    }
+}
+
+sub exit_if_jboss_is_already_started {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+
+    $jboss->log_info("Checking whether JBoss Standalone is already started by connecting to CLI");
+    my $cli_command = ':read-attribute(name=launch-type)';
+    my %result = $jboss->run_command($cli_command);
+    if ($result{code}
+        && ($result{stdout} =~ m/The\scontroller\sis\snot\savailable/s
+        || $result{stderr} =~ m/The\scontroller\sis\snot\savailable/s)) {
+        $jboss->log_info("JBoss is not started - checked by attempt to connect to the cli");
+        return;
+    }
+    else {
+        my $json = $jboss->decode_answer($result{stdout});
+        $jboss->bail_out("Cannot convert JBoss response into JSON") if !$json;
+
+        my $launch_type = lc $json->{result};
+        if (!$launch_type || $launch_type ne "standalone") {
+            $jboss->log_warning("JBoss is started, but operating mode is '$launch_type' instead of 'standalone'");
+            $jboss->add_summary("JBoss is started, but operating mode is '$launch_type' instead of 'standalone'");
+            $jboss->add_status_error();
+            exit ERROR;
+        }
+        else {
+            $jboss->log_warning("JBoss is already started in expected operating mode '$launch_type'");
+            $jboss->add_summary("JBoss is already started in expected operating mode '$launch_type'");
+            $jboss->add_status_warning();
+            exit SUCCESS;
         }
     }
 }
@@ -3440,6 +3549,33 @@ sub show_jboss_logs_from_requested_file {
     }
 }
 
+sub show_logs_via_cli {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+
+    my $assumption_sting = sprintf(
+        "assumption is that log file is %s, tailing %u lines",
+        EXPECTED_LOG_FILE_NAME,
+        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+    );
+
+    $jboss->log_info("Showing logs via CLI ($assumption_sting)");
+
+    my $cli_command = sprintf(
+        "/subsystem=logging/log-file=%s/:read-log-file(lines=%u,skip=0)",
+        EXPECTED_LOG_FILE_NAME,
+        NUMBER_OF_LINES_TO_TAIL_FROM_LOG
+    );
+
+    my %result = $jboss->run_command($cli_command);
+    if ($result{code}) {
+        $jboss->log_warning("Cannot read logs via CLI");
+    }
+    else {
+        $jboss->log_info("JBoss logs ($assumption_sting): " . $result{stdout});
+    }
+}
+
 sub show_logs_via_cli_for_server {
     my %args = @_;
     my $jboss = $args{jboss} || croak "'jboss' is required param";
@@ -3556,6 +3692,78 @@ sub start_host_controller {
     $jboss->log_info("Command line for ecdaemon: $cmdLine");
     system($cmdLine);
 
+}
+
+sub start_standalone_server {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $scriptPhysicalLocation = $args{startup_script} || croak "'startup_script' is required param";
+    my $alternateConfig = $args{optional_config};
+    my $additional_options = $args{additional_options};
+
+    # $The quote and backslash constants are just a convenient way to represtent literal literal characters so it is obvious
+    # in the concatentations. NOTE: BSLASH ends up being a single backslash, it needs to be doubled here so it does not
+    # escape the right curly brace.
+    my $operatingSystem = $^O;
+    print qq{OS: $operatingSystem\n};
+    # Ideally, the logs should exist in the step's workspace directory, but because the ecdaemon continues after the step is
+    # completed the temporary drive mapping to the workspace is gone by the time we want to write to it. Instead, the log
+    # and errors get the JOBSTEPID appended and it goes in the Tomcat root directory.
+    my $LOGNAMEBASE = "jbossstartstandaloneserver";
+    # If we try quoting in-line to get the final string exactly right, it will be confusing and ugly. Only the last
+    # parameter to our outer exec() needs _literal_ single and double quotes inside the string itself, so we build that
+    # parameter before the call rather than inside it. Using concatenation here both substitutes the variable values and
+    # puts literal quote from the constants in the final value, but keeps any other shell metacharacters from causing
+    # trouble.
+    my @systemcall;
+    if ($operatingSystem eq WIN_IDENTIFIER) {
+        # Windows has a much more complex execution and quoting problem. First, we cannot just execute under "cmd.exe"
+        # because ecdaemon automatically puts quote marks around every parameter passed to it -- but the "/K" and "/C"
+        # option to cmd.exe can't have quotes (it sees the option as a parameter not an option to itself). To avoid this, we
+        # use "ec-perl -e xxx" to execute a one-line script that we create on the fly. The one-line script is an "exec()"
+        # call to our shell script. Unfortunately, each of these wrappers strips away or interprets certain metacharacters
+        # -- quotes, embedded spaces, and backslashes in particular. We end up escaping these metacharacters repeatedly so
+        # that when it gets to the last level it's a nice simple script call. Most of this was determined by trial and error
+        # using the sysinternals procmon tool.
+        my $commandline = BSLASH . BSLASH . BSLASH . DQUOTE . $scriptPhysicalLocation . BSLASH . BSLASH . BSLASH . DQUOTE;
+        if ($alternateConfig && $alternateConfig ne '') {
+            $commandline .= " --server-config=" . BSLASH . DQUOTE . $alternateConfig . BSLASH . DQUOTE;
+        }
+        if ($additional_options) {
+            my $escaped_additional_options = escape_additional_options_for_windows($additional_options);
+            $commandline .= " $escaped_additional_options";
+        }
+        my $logfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".log";
+        my $errfile = $LOGNAMEBASE . "-" . $ENV{'COMMANDER_JOBSTEPID'} . ".err";
+        $commandline = SQUOTE . $commandline . " 1>" . $logfile . " 2>" . $errfile . SQUOTE;
+        $commandline = "exec(" . $commandline . ");";
+        $commandline = DQUOTE . $commandline . DQUOTE;
+        print "Command line: $commandline\n";
+        @systemcall = ("ecdaemon", "--", "ec-perl", "-e", $commandline);
+    }
+    else {
+        # Linux is comparatively simple, just some quotes around the script name in case of embedded spaces.
+        # IMPORTANT NOTE: At this time the direct output of the script is lost in Linux, as I have not figured out how to
+        # safely redirect it. Nothing shows up in the log file even when I appear to get the redirection correct; I believe
+        # the script might be putting the output to /dev/tty directly (or something equally odd). Most of the time, it's not
+        # really important since the vital information goes directly to $CATALINA_HOME/logs/catalina.out anyway. It can lose
+        # important error messages if the paths are bad, etc. so this will be a JIRA.
+        my $commandline = DQUOTE . $scriptPhysicalLocation . DQUOTE;
+        if ($alternateConfig && $alternateConfig ne '') {
+            $commandline .= " --server-config=" . DQUOTE . $alternateConfig . DQUOTE . " ";
+        }
+        if ($additional_options) {
+            $commandline .= " $additional_options";
+        }
+        $commandline = SQUOTE . $commandline . SQUOTE;
+        print "Command line: $commandline\n";
+        @systemcall = ("ecdaemon", "--", "sh", "-c", $commandline);
+    }
+
+    my $cmdLine = create_command_line(\@systemcall);
+    $jboss->set_property(startStandaloneServerLine => $cmdLine);
+    $jboss->log_info("Command line for ecdaemon: $cmdLine");
+    system($cmdLine);
 }
 
 sub verify_host_controller_is_started_and_show_startup_info {
@@ -3736,6 +3944,101 @@ sub verify_host_controller_is_started_and_show_startup_info {
     if ($@) {
         $jboss->log_warning("Failed to read information about startup: $@");
         $jboss->add_warning_summary("Failed to read information about startup");
+        $jboss->add_status_warning();
+        $jboss->log_info("Please refer to JBoss logs on file system for more information");
+    }
+}
+
+sub verify_jboss_is_started_and_show_startup_info {
+    my %args = @_;
+    my $jboss = $args{jboss} || croak "'jboss' is required param";
+    my $log_file_location = $args{log_file_location};
+
+    $jboss->log_info(
+        sprintf(
+            "Checking whether JBoss is started by connecting to CLI. Max time - %s seconds, sleep between attempts - %s seconds",
+            MAX_ELAPSED_TEST_TIME,
+            SLEEP_INTERVAL_TIME
+        )
+    );
+
+    my $elapsedTime = 0;
+    my $startTimeStamp = time;
+    my $attempts = 0;
+    my $recent_message;
+    my $jboss_is_started;
+    my $jboss_cli_is_available;
+    while (!$jboss_is_started) {
+        $elapsedTime = time - $startTimeStamp;
+        $jboss->log_info("Elapsed time so far: $elapsedTime seconds\n") if $attempts > 0;
+        last unless $elapsedTime < MAX_ELAPSED_TEST_TIME;
+        #sleep between attempts
+        sleep SLEEP_INTERVAL_TIME if $attempts > 0;
+
+        $attempts++;
+        $jboss->log_info("----Attempt $attempts----");
+
+        #execute check
+        my $cli_command = '/:read-attribute(name=server-state)';
+        my %result = $jboss->run_command($cli_command);
+        if ($result{code}) {
+            $recent_message = "Failed to connect to CLI for verication of server state";
+            $jboss->log_info($recent_message);
+            next;
+        }
+        else {
+            $jboss_cli_is_available = 1;
+
+            my $json = $jboss->decode_answer($result{stdout});
+            if (!$json) {
+                $recent_message = "Failed to read server state via CLI";
+                $jboss->log_info($recent_message);
+                next;
+            }
+
+            my $server_state = lc $json->{result};
+            if (!$server_state || $server_state ne "running") {
+                $recent_message = "Server state is '$server_state' instead of 'running'";
+                $jboss->log_info($recent_message);
+                next;
+            }
+            else {
+                $jboss_is_started = 1;
+                $recent_message = "JBoss Standalone has been launched, server state is '$server_state'";
+                $jboss->log_info($recent_message);
+                last;
+            }
+        }
+    }
+
+    $jboss->log_info("--------$recent_message--------");
+    $jboss->add_summary($recent_message);
+    $jboss->add_status_error() unless $jboss_cli_is_available && $jboss_is_started;
+
+    eval {
+        if ($log_file_location) {
+            show_jboss_logs_from_requested_file(
+                jboss             => $jboss,
+                log_file_location => $log_file_location
+            );
+        }
+
+        if ($jboss_cli_is_available) {
+            check_boot_errors_via_cli(jboss => $jboss) if $jboss->is_cli_command_supported_read_boot_errors();
+            show_logs_via_cli(jboss => $jboss) if $jboss->is_cli_command_supported_read_log_file();
+        }
+        elsif (!$log_file_location) {
+            # too many options of how log file location can be overriden, so let's do not guess where the logs are (at least for now)
+            # also, we are not going to read logs by redirection of console output to files (like it is done for startup in case of Windows)
+            # due to JBoss has good handling of logs by itself and it is not good idea to keep extra redirection of logs to EF workout etc.
+
+            $jboss->log_info("Please refer to JBoss logs on file system for more information");
+            $jboss->add_summary("Please refer to JBoss logs on file system for more information");
+        }
+    };
+    if ($@) {
+        $jboss->log_warning("Failed to read information about startup: $@");
+        $jboss->add_summary("Failed to read information about startup");
         $jboss->add_status_warning();
         $jboss->log_info("Please refer to JBoss logs on file system for more information");
     }
