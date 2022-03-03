@@ -6,6 +6,7 @@ import com.electriccloud.plugins.annotations.NewFeature
 import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
+@Ignore
 @Requires({ env.JBOSS_MODE == 'standalone' })
 class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
 

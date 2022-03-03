@@ -6,6 +6,7 @@ import com.electriccloud.plugins.annotations.NewFeature
 import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
+@Ignore
 @IgnoreIf({EnvPropertiesHelper.getVersion() == "6.3"})
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class CreateOrUpdateXADataSourceDomain extends PluginTestHelper {

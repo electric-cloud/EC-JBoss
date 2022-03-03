@@ -6,6 +6,7 @@ import com.electriccloud.plugin.spec.Services.CliCommandsGeneratorHelper
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 import spock.lang.*
 
+@Ignore
 class CreateConfiguration extends PluginTestHelper {
 
     @Shared

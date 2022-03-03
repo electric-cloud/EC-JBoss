@@ -6,6 +6,7 @@ import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 import com.electriccloud.plugins.annotations.NewFeature
 import com.electriccloud.plugins.annotations.Sanity
 
+@Ignore
 @IgnoreIf({ env.JBOSS_MODE == 'domain' })
 class DeployApplicationStandalone extends PluginTestHelper {
 

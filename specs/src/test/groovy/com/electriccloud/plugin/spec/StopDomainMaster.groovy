@@ -7,6 +7,7 @@ import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 import com.electriccloud.plugins.annotations.NewFeature
 import com.electriccloud.plugins.annotations.Sanity
 
+@Ignore
 @IgnoreIf({ EnvPropertiesHelper.getOS() == "WINDOWS" })
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class StopDomainMaster extends PluginTestHelper {

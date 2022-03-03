@@ -9,6 +9,7 @@ import com.electriccloud.plugins.annotations.Sanity
 import com.electriccloud.plugin.spec.Utils.EnvPropertiesHelper
 import spock.lang.*
 
+@Ignore
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class StartServers extends PluginTestHelper {
 

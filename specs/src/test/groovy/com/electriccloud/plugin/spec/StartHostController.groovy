@@ -6,6 +6,7 @@ import com.electriccloud.plugins.annotations.NewFeature
 import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
+@Ignore
 @Requires({ env.OS == 'UNIX' && env.JBOSS_VERSION in ['7.0', '7.1']})
 class StartHostController extends PluginTestHelper {
 

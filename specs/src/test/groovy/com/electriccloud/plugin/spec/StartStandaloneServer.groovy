@@ -6,6 +6,7 @@ import com.electriccloud.plugins.annotations.NewFeature
 import com.electriccloud.plugins.annotations.Sanity
 import spock.lang.*
 
+@Ignore
 class StartStandaloneServer extends PluginTestHelper {
 
     @Shared

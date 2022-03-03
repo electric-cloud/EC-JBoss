@@ -6,6 +6,7 @@ import spock.lang.*
 import com.electriccloud.plugins.annotations.NewFeature
 import com.electriccloud.plugins.annotations.Sanity
 
+@Ignore
 @Requires({ env.JBOSS_TOPOLOGY == 'master' })
 class RemoveJMSTopicDomain extends PluginTestHelper {
 
