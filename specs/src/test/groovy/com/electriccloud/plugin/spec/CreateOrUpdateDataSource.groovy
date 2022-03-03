@@ -291,7 +291,10 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
     def doSetupSpec() {
         logger.info("Hello World! doSetupSpec")
         redirectLogs()
-        createDefaultConfiguration(defaultConfigName, [recreate : 1])
+        println("### 1 START SLEEP")
+        sleep(300000)
+        println("### 2 END SLEEP")
+        createDefaultConfiguration(defaultConfigName)
         def resName = createJBossResource()
 
         dslFile 'dsl/RunProcedure.dsl', [
