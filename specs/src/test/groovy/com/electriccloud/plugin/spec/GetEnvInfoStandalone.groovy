@@ -57,6 +57,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters)
     }
 
+    @Ignore
     @Sanity
     @Unroll
     def "Sanity"() {
@@ -95,6 +96,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         }
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Standalone, systemDump with minimum params (systemDump 1)"() {
@@ -133,6 +135,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         }
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Standalone, systemDump context ignored (systemDump 2)"() {
@@ -171,6 +174,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         }
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Standalone, systemDump additional options (systemDump 3)"() {
@@ -208,6 +212,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         }
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, Standalone, systemDump wrong additional options (systemDump 4)"() {
@@ -225,6 +230,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ /'wrong-option' is not found among the supported properties/
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, requesting profiles when standalone (profiles 1)"() {
