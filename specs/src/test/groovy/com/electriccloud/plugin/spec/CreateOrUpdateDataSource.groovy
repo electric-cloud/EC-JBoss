@@ -788,6 +788,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest46.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'wrong'  | jobLogs.wrongOptions  | summaries.wrongOptions
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll

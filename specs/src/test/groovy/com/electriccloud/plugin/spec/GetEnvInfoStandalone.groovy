@@ -248,6 +248,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ /No known child type named profile/
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Standalone, dataSources with minimum params (dataSources 1)"() {
@@ -277,6 +278,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         }
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Standalone, dataSources context ignored (dataSources 2)"() {
@@ -306,6 +308,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         }
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Standalone, dataSources additional options (dataSources 3)"() {
@@ -335,6 +338,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         }
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "Negaitve. GetEnvInfo, Standalone, dataSources wrong additional options (dataSources 4)"() {
@@ -352,6 +356,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ /'wrong-option' is not found among the supported properties/
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Standalone, xaDataSources with minimum params (xaDataSources 1)"() {
@@ -379,6 +384,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         }
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Standalone, xaDataSources context ignored (xaDataSources 2)"() {
@@ -406,6 +412,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
         }
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
     def "GetEnvInfo, Standalone, xaDataSources additional options (xaDataSources 3)"() {
