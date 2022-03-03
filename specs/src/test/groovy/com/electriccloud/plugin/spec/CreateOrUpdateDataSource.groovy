@@ -397,6 +397,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest2.name      | defaultConfigName  | dataSourceNames.'escape'+testCaseId    | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.empty  | additionalOptions.'empty'        | !(jbossVersion in ['7.1', '7.0'])
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
@@ -553,6 +554,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest35.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | passwords.defaultPassword | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'complex sql'    | jbossVersion in ['7.0', '6.4']
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
@@ -691,6 +693,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         testCases.systemTest39.name     | defaultConfigName  | dataSourceNames.'default'+testCaseId   | jndiNames.'default'+testCaseId   | jndiNames.'default'+testCaseId  | drivers.h2      | urls.'default' | dataSourceConnectionCredentials  | userNames.defaultUserName | userName          | passwords.defaultPassword | password          | statusOfEnabled.'true'  | profiles.'full' | additionalOptions.'empty'   | jobLogs.notUpdate                                                                     | summaries.notUpdate.replace("dsName1", dsName)
     }
 
+    @Ignore
     @NewFeature(pluginVersion = "2.6.0")
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
