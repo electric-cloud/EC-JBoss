@@ -294,9 +294,14 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         println("### 1 START SLEEP")
         //println("### SKIP SLEEP")
         //sleep(10000)
-        for(int i = 1; i<10; i++) {
-            def result = dsl "getProperty('/projects/EC-JBoss-3.0.0.2022030200/ec_plugin_cfgs/specConfig')"
-            println("TICK $i: ${result?.property}")
+        for(int i = 1; i<30; i++) {
+            try {
+                def result = dsl "getProperty('/plugins/EC-JBoss/project/ec_plugin_cfgs/specConfig')"
+                println("TICK $i: ${result?.property}")
+            } catch (Exception ex)
+            {
+                println("TICK $i: NOT FOUND. " + ex.toString())
+            }
         }
         println("### 2 END SLEEP")
         createDefaultConfiguration(defaultConfigName)
