@@ -2,7 +2,7 @@
 Plugin Version @PLUGIN_VERSION@
 
 
-Revised on June 15, 2020
+Revised on April 14, 2022
 
 
 These procedures have been replaced by more robust procedures and are retained for backwards compatibility. It is strongly recommended that new implementations not use these procedures. Their replacements are in parentheses.
