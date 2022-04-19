@@ -2,7 +2,7 @@
 Plugin Version @PLUGIN_VERSION@
 
 
-Revised on June 15, 2020
+Revised on April 14, 2022
 
 
 These procedures have been replaced by more robust procedures and are retained for backwards compatibility. It is strongly recommended that new implementations not use these procedures. Their replacements are in parentheses.
@@ -1603,6 +1603,7 @@ Removing XA data sources can fail when call remove command with the following er
 === EC-JBiss 2.8.0
 
 - Plugin configuration has been improved to support external credentials.
+- Added session validation
 
 === EC-JBoss 2.7.2
 

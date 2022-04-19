@@ -69,7 +69,8 @@ class RemoveJMSTopicStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
+        assert runProcedureJob.getLogs() =~ "Parameter 'topicName' of procedure 'RemoveJMSTopic' is marked as required, but it does not have a value. Aborting with fatal error."
+        //assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
 
         cleanup:
         topicName = "testTopic-$testCaseId"
