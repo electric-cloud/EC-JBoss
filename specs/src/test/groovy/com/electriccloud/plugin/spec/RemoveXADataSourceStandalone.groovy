@@ -14,7 +14,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
     @Shared
     String projectName = "EC-JBoss Specs $procName Project"
     @Shared
-    String defaultConfigName = 'specConfig'
+    String defaultConfigName = "specConfig-${procName}"
     @Shared
     def jndiName = [
             /**
