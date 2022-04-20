@@ -50,7 +50,7 @@ configurations.all {
 
 group = "com.electriccloud"
 description = "Plugins : EC-JBoss"
-version = "2.8.0"
+version = "2.8.1"
 
 apply plugin: 'flow-gradle-plugin'
 apply plugin: 'license'
