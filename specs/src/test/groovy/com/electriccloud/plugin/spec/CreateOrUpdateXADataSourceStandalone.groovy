@@ -22,7 +22,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
     @Shared
     String defaultEnabledDataSource = '1'
     @Shared
-    String dataSourceConnectionCredentials = "dataSourceConnectionCredentials"
+    String dataSourceConnectionCredentials = "dataSourceConnection_credential"
     @Shared
     String defaultPassword = 'changeme'
     @Shared
@@ -104,7 +104,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 procName: procName,
                 params  : [
                         additionalOptions               : '',
-                        dataSourceConnectionCredentials : '',
+                        dataSourceConnection_credential : '',
                         dataSourceName                  : '',
                         enabled                         : '',
                         jdbcDriverName                  : '',
@@ -116,8 +116,8 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         ]
 
         createHelperProject(resName, defaultConfigName)
-        createCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, defaultPassword)
-        attachCredential(projectName, "dataSourceConnectionCredentials", procName)
+        createCredential(projectName, "dataSourceConnection_credential", defaultUserName, defaultPassword)
+        attachCredential(projectName, "dataSourceConnection_credential", procName)
         addJDBCMySQL("mysql")
         addJDBCPostgres("postgresql")
     }
@@ -164,7 +164,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -174,7 +174,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -214,7 +214,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -224,7 +224,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -264,7 +264,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : '0',
                 jdbcDriverName                  : jdbcDriverName,
@@ -274,7 +274,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -303,7 +303,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -313,7 +313,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.postgresql,
             ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
             ]
@@ -341,7 +341,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = "MysqlXADSC289554" 
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : '1',
                 jdbcDriverName                  : jdbcDriverName,
@@ -351,7 +351,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: 'admin',
                 password: 'changeme'
         ]
@@ -387,7 +387,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String newJNDI = jndiName.mysql+testCaseId 
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : '0',
                 jdbcDriverName                  : jdbcDriverName,
@@ -397,7 +397,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: 'admin',
                 password: 'changeme'
         ]
@@ -427,7 +427,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : '0',
                 jdbcDriverName                  : jdbcDriverName,
@@ -437,13 +437,13 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
         setup:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
-        modifyCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, newPassword)
+        modifyCredential(projectName, "dataSourceConnection_credential", defaultUserName, newPassword)
         when:
         println("QA $runParams")
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
@@ -455,7 +455,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 "0", newPassword, defaultUserName)
         cleanup:
         reloadServer()
-        modifyCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, defaultPassword)
+        modifyCredential(projectName, "dataSourceConnection_credential", defaultUserName, defaultPassword)
         // remove XA datasource
         removeXADatasource(xaDataSourceName)
         reloadServer()
@@ -473,7 +473,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
                 def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : '1',
                 jdbcDriverName                  : jdbcDriverName,
@@ -483,13 +483,13 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
         setup:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
-        modifyCredential(projectName, "dataSourceConnectionCredentials", newUserName, newPassword)
+        modifyCredential(projectName, "dataSourceConnection_credential", newUserName, newPassword)
         when:
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         if (EnvPropertiesHelper.getVersion() == '6.1') {
@@ -503,7 +503,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 "1", newPassword, newUserName)
         cleanup:
         reloadServer()
-        modifyCredential(projectName, "dataSourceConnectionCredentials", defaultUserName, defaultPassword)
+        modifyCredential(projectName, "dataSourceConnection_credential", defaultUserName, defaultPassword)
         // remove XA datasource
         removeXADatasource(xaDataSourceName)
         reloadServer()
@@ -518,7 +518,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String jndi_new = jndiName.mysql+"_new"
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : '0',
                 jdbcDriverName                  : jdbcDriverName,
@@ -528,7 +528,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -558,7 +558,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -568,7 +568,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -597,7 +597,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : '0',
                 jdbcDriverName                  : jdbcDriverName,
@@ -607,7 +607,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -637,7 +637,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions               : '--min-pool-size=10',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -647,7 +647,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -676,7 +676,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName ="MysqlXADS"+testCaseId
         def runParams = [
                 additionalOptions               : '--max-pool-size=25',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -686,7 +686,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -716,7 +716,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName ="MysqlXADS"+testCaseId
         def runParams = [
                 additionalOptions               : '--check-valid-connection-sql="INSERT INTO jboss_table VALUES (34, \\\'qa34\\\');"',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -726,7 +726,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -755,7 +755,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName ="MysqlXADS"+testCaseId
         def runParams = [
                 additionalOptions               : '--check-valid-connection-sql="Select 1, 2;"',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -765,7 +765,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -795,7 +795,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions               : '--pad-xid=true',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -805,7 +805,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -835,7 +835,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
 
         def runParams = [
                 additionalOptions               : '--interleaving=true',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -845,7 +845,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -874,7 +874,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -884,7 +884,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -902,7 +902,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : '',
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -912,7 +912,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -931,7 +931,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -941,7 +941,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -960,7 +960,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : '',
@@ -970,7 +970,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -989,7 +989,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -999,7 +999,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : '',
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -1018,7 +1018,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : '',
+                dataSourceConnection_credential : '',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -1028,7 +1028,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -1036,7 +1036,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'dataSourceConnectionCredentials' is not provided"
+        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'dataSourceConnection_credential' is not provided"
     }
 
 
@@ -1048,7 +1048,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -1058,7 +1058,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -1078,7 +1078,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : 'Mysql32XA@DS',
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -1088,7 +1088,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -1107,7 +1107,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -1117,7 +1117,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -1136,7 +1136,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : 'wrong_driver',
@@ -1146,7 +1146,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -1170,7 +1170,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '--some-wrong-option',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -1180,7 +1180,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -1200,7 +1200,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -1210,7 +1210,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
@@ -1237,7 +1237,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         String xaDataSourceName = dataSourceName.mysql+testCaseId
         def runParams = [
                 additionalOptions               : '',
-                dataSourceConnectionCredentials : 'dataSourceConnectionCredentials',
+                dataSourceConnection_credential : 'dataSourceConnection_credential',
                 dataSourceName                  : xaDataSourceName,
                 enabled                         : defaultEnabledDataSource,
                 jdbcDriverName                  : jdbcDriverName,
@@ -1247,7 +1247,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
-                credentialName: 'dataSourceConnectionCredentials',
+                credentialName: 'dataSourceConnection_credential',
                 userName: defaultUserName,
                 password: defaultPassword
         ]
