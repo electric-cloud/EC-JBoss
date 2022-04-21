@@ -14,7 +14,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
     @Shared
     String projectName = "EC-JBoss Specs $procName Project"
     @Shared
-    String defaultConfigName = 'specConfig'
+    String defaultConfigName = "specConfig-${procName}"
     @Shared
     String defaultJndiNames = 'topic/test,java:jboss/exported/jms/topic/test'
     @Shared
