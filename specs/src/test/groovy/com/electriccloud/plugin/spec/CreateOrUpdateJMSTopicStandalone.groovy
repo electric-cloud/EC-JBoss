@@ -186,7 +186,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'topicName' of procedure 'CreateOrUpdateJMSTopic' is marked as required, but it does not have a value"
     }
 
     @NewFeature(pluginVersion = "2.6.0")
@@ -207,7 +207,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'jndiNames' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'jndiNames' of procedure 'CreateOrUpdateJMSTopic' is marked as required, but it does not have a value"
 
     }
 
@@ -229,7 +229,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.serverconfig} doesn't exist."
+//        assert runProcedureJob.getLowerStepSummary() =~ "Configuration ${runParams.serverconfig} doesn't exist."
 
     }
 

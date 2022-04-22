@@ -726,7 +726,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'applicationContentSourcePath' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'applicationContentSourcePath' of procedure 'DeployApplication' is marked as required, but it does not have a value"
     }
 
 
