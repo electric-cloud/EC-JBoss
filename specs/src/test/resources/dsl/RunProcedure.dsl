@@ -20,7 +20,7 @@ project projName, {
         }
 
         params.each {name, defValue ->
-        if (name != 'credential' && name != 'dataSourceConnectionCredentials') {
+        if (name != 'credential' && name != 'dataSourceConnection_credential') {
           formalParameter name, defaultValue: defValue, {
             type = 'textarea'
           }
