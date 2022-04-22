@@ -251,6 +251,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         
         then:
         assert runProcedureJob.getStatus() == "error"
+//        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
 //        assert runProcedureJob.getLowerStepSummary() =~ "Configuration no_name doesn't exist."
 //        assert runProcedureJob.getLogs() =~ "Configuration 'no_name' does not exist."
     }

@@ -229,6 +229,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
+//        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
 //        assert runProcedureJob.getLowerStepSummary() =~ "Configuration ${runParams.serverconfig} doesn't exist."
 
     }
