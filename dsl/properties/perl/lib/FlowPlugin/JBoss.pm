@@ -104,8 +104,126 @@ sub checkDeployStatus {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $jboss = EC::JBoss->new(
+        project_name    => $PROJECT_NAME,
+        plugin_name     => $PLUGIN_NAME,
+        plugin_key      => $PLUGIN_KEY,
+        flowpdf         => $self
+    );
+
+    my $params = $jboss->get_params_as_hashref(qw/
+        appname
+        servers
+        serversgroup
+        criteria
+        wait_time
+        hosts
+    /);
+
+    my @servers = ();
+    my @server_groups = ();
+    my @hosts = ();
+    if ($params->{servers}) {
+        @servers = map {$jboss->trim($_); $_;} split(',', $params->{servers});
+    }
+
+    if ($params->{serversgroup}) {
+        @server_groups = map {$jboss->trim($_); $_;} split(',', $params->{serversgroup});
+    }
+    if ($params->{hosts}) {
+        @hosts = map {$jboss->trim($_); $_;} split(',', $params->{hosts});
+    }
+
+    my $appname = $params->{appname};
+    my $launch_type = $jboss->get_launch_type();
+    # my $server_groups = [];
+    my $servers = {};
+    if ($launch_type eq 'domain') {
+        $jboss->log_debug("Requesting servers with following parameters:");
+        $jboss->log_debug("Hosts: " . join ', ', @hosts);
+        $jboss->log_debug("Servers: " . join ', ', @servers);
+        $jboss->log_debug("Groups: " . join ', ', @server_groups);
+        # $server_groups = $jboss->get_server_groups();
+        $servers = $jboss->get_servers(
+            hosts => \@hosts,
+            servers => \@servers,
+            groups => \@server_groups
+        );
+        $jboss->log_debug("Servers found: " . Dumper $servers);
+    }
+    # logic for domain check
+    if ($launch_type eq 'domain') {
+        my @errors = ();
+        my $result = $jboss->run_commands_until_done({
+            sleep_time => 5,
+            time_limit => $params->{wait_time},
+        }, sub {
+            @errors = ();
+            for my $host (keys %$servers) {
+                if (!@{$servers->{$host}}) {
+                    $jboss->bail_out("No servers were found by your input for host: $host.");
+                }
+                for my $server (@{$servers->{$host}}) {
+                    my $command = sprintf '/host=%s/server=%s/deployment=%s:read-attribute(name=status)', $host, $server, $appname;
+                    my %result = $jboss->run_command($command);
+                    if ($result{code}) {
+                        $jboss->out("Application $appname (server: '$server', host: '$host') is NOT OK.");
+                        # IF returned error AND expected ok THEN treat it as error. Otherwise it is an expected behaviour.
+                        if ($params->{criteria} eq 'OK') {
+                            push @errors, $server;
+                        }
+                        next;
+                    }
+
+                    my $json = $jboss->decode_answer($result{stdout});
+                    if (!is_criteria_met_domain($json->{result}, $params->{criteria})) {
+                        # if ($json->{result} ne 'OK') {
+                        $jboss->out("Application $appname (server: '$server', host: '$host') is NOT OK.");
+                        push @errors, $server;
+                    }
+                    $jboss->out("Application $appname (server: '$server', host: '$host') has status: $json->{result}. Desired: $params->{criteria}");
+                }
+            }
+            if (@errors) {
+                my $msg = 'Wrong application status on the following servers: ' . join (', ', @errors);
+                $jboss->out($msg);
+                return 0;
+                # $jboss->bail_out($msg);
+            }
+            return 1;
+        });
+        if (!$result) {
+            my $msg = 'Wrong application status on the following servers: ' . join (', ', @errors);
+            $jboss->bail_out($msg);
+        }
+        return;
+    }
+    # logic for standalone mode
+
+    my $command = "/deployment=$params->{appname}:read-attribute(name=status)";
+
+    my $result = $jboss->run_commands_until_done({
+        time_limit => $params->{wait_time},
+        sleep_time => 5,
+    }, sub {
+        my %result = $jboss->run_command($command);
+        my $json = $jboss->decode_answer($result{stdout});
+        if (!is_criteria_met_standalone($json, $params->{criteria})) {
+            $jboss->out("Criteria was not met. Application status: $result{stdout}");
+            return 0;
+        }
+        return 1;
+    });
+
+    if ($result) {
+        $jboss->success();
+        return 1;
+    }
+    $jboss->error();
 }
 # Auto-generated method for the procedure CheckHostControllerStatus/CheckHostControllerStatus
 # Add your code into this method and it will be called when step runs
@@ -128,8 +246,39 @@ sub checkHostControllerStatus {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $jboss = EC::JBoss->new(
+        project_name    =>  $PROJECT_NAME,
+        plugin_name     =>  $PLUGIN_NAME,
+        plugin_key      =>  $PLUGIN_KEY,
+        flowpdf         =>  $self
+    );
+    my $params = $jboss->get_params_as_hashref(
+        'hostcontroller_name',
+        'criteria',
+        'wait_time'
+    );
+    my $status = '';
+    $params->{criteria} = lc $params->{criteria};
+    my $result = $jboss->run_commands_until_done({
+        sleep_time => 5,
+        time_limit => $params->{wait_time}
+    }, sub {
+        $status = '';
+        $status = get_hostcontroller_status($jboss, $params->{hostcontroller_name});
+        $jboss->out("Current HostController status: '$status'. Desired status: '$params->{criteria}'");
+        return 1 if $status eq $params->{criteria};
+        return 0;
+    });
+    unless ($result) {
+        $jboss->bail_out("Criteria was not met. HostController is in '$status' status\n");
+    }
+    $jboss->success("Criteria was met. HostController is in '$status' status\n");
+    return 1;
 }
 # Auto-generated method for the procedure CheckServerGroupStatus/CheckServerGroupStatus
 # Add your code into this method and it will be called when step runs
@@ -152,8 +301,166 @@ sub checkServerGroupStatus {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $PARAM_CRITERIA_STARTED = 'STARTED';
+    my $PARAM_CRITERIA_STOPPED = 'STOPPED';
+    my $PARAM_CRITERIA_DISABLED = 'DISABLED';
+    my $PARAM_CRITERIA_STOPPED_OR_DISABLED = 'STOPPED_OR_DISABLED';
+
+    my %PARAM_CRITERIA_LABELS = (
+        $PARAM_CRITERIA_STARTED             => "STARTED",
+        $PARAM_CRITERIA_STOPPED             => "STOPPED",
+        $PARAM_CRITERIA_DISABLED            => "DISABLED",
+        $PARAM_CRITERIA_STOPPED_OR_DISABLED => "STOPPED or DISABLED",
+    );
+
+    my $STATUS_STOPPED = 'STOPPED'; # stopped status for servers with auto-start true
+    my $STATUS_DISABLED = 'DISABLED'; # stopped status for servers with auto-start false
+    my $STATUS_STARTED = 'STARTED'; # started status for servers
+    my $SLEEP_TIME = 5;
+
+    my $OUTPUT_PARAM_CRITERIA_MET = 'servergroupstatus';
+    my $CRITERIA_MET_TRUE = 'TRUE';
+    my $CRITERIA_MET_FALSE = 'FALSE';
+
+    my $jboss = EC::JBoss->new(
+        project_name => $PROJECT_NAME,
+        plugin_name  => $PLUGIN_NAME,
+        plugin_key   => $PLUGIN_KEY,
+        flowpdf      =>  $self
+    );
+
+    my $params = $jboss->get_params_as_hashref(
+        'serversgroup',
+        'criteria',
+        'wait_time'
+    );
+
+    $jboss->bail_out("Required parameter 'serversgroup' is not provided") unless $params->{serversgroup};
+    $jboss->bail_out("Required parameter 'criteria' is not provided") unless $params->{criteria};
+
+    my $param_criteria = $params->{criteria};
+    if (!$PARAM_CRITERIA_LABELS{$param_criteria}) {
+        $jboss->bail_out(
+            sprintf(
+                "Unsupported option '%s' provided for parameter 'criteria' (supported options are: %s)",
+                $param_criteria,
+                join(", ", keys %PARAM_CRITERIA_LABELS)
+            )
+        );
+    }
+    my $param_criteria_label = $PARAM_CRITERIA_LABELS{$param_criteria};
+
+    $params->{wait_time} = $jboss->trim($params->{wait_time});
+    my $wait_time = undef;
+    if (defined $params->{wait_time} && $params->{wait_time} ne '') {
+        $wait_time = $params->{wait_time};
+        if ($wait_time !~ m/^\d+$/s) {
+            $jboss->bail_out("Wait time should be a positive integer");
+        }
+    }
+    # Seems like servers in one group could be on different hosts
+    # So we have to list all hosts
+
+    my $server_group_name = $params->{serversgroup};
+    my $done = 0;
+    my $time_start = time();
+
+    my $result = {
+        error                      => 0,
+        msg                        => '',
+        $OUTPUT_PARAM_CRITERIA_MET => ''
+    };
+
+    while (!$done) {
+        # wait time is not defined, it's empty so, one loop iteration only.
+        my $time_diff = time() - $time_start;
+        if (!defined $wait_time) {
+            $done = 1;
+        }
+        elsif ($wait_time && $time_diff >= $wait_time) {
+            $done = 1;
+            last;
+        }
+        # otherwise we will wait forever.
+
+        my ($servers, $states_ref) = $jboss->get_servergroup_status($server_group_name);
+        my @states = @$states_ref;
+
+        if (!@states) {
+            $jboss->bail_out("Server group '$server_group_name' doesn't exist or empty");
+        }
+
+        my @matching_states;
+        if ($param_criteria eq $PARAM_CRITERIA_STARTED) {
+            @matching_states = grep {$_ eq $STATUS_STARTED} @states;
+        }
+        elsif ($param_criteria eq $PARAM_CRITERIA_STOPPED) {
+            @matching_states = grep {$_ eq $STATUS_STOPPED} @states;
+        }
+        elsif ($param_criteria eq $PARAM_CRITERIA_DISABLED) {
+            @matching_states = grep {$_ eq $STATUS_DISABLED} @states;
+        }
+        elsif ($param_criteria eq $PARAM_CRITERIA_STOPPED_OR_DISABLED) {
+            @matching_states = grep {$_ eq $STATUS_STOPPED || $_ eq $STATUS_DISABLED} @states;
+        }
+        else {
+            $jboss->bail_out(
+                sprintf(
+                    "Unsupported option '%s' provided for parameter 'criteria' (supported options are: %s)",
+                    $param_criteria,
+                    join(", ", keys %PARAM_CRITERIA_LABELS)
+                )
+            );
+        }
+
+        my $criteria_is_met = 1 if scalar @matching_states == scalar @states;
+
+        my %unique_states = map {$_ => 1} @states;
+        my $unique_states_str = join(', ', keys %unique_states);
+
+        $jboss->set_property('server_group_status', $unique_states_str);
+
+        $jboss->log_info("Summarry log for servers within '$server_group_name' server group:");
+        for my $host_name (keys %$servers) {
+            for my $server_name (keys %{$servers->{$host_name}}) {
+                my $server_status = $servers->{$host_name}->{$server_name}->{status};
+                $jboss->log_info("Server '$server_name' on host '$host_name' has status '$server_status'");
+            }
+        }
+
+        if ($criteria_is_met) {
+            $jboss->log_info("Criteria '$param_criteria_label' is met on this iteration. Servers in '$server_group_name' server group have statuses $unique_states_str");
+            $result->{msg} = "Criteria '$param_criteria_label' is met.\nServers in '$server_group_name' server group have statuses $unique_states_str";
+            $result->{error} = 0;
+            $result->{$OUTPUT_PARAM_CRITERIA_MET} = $CRITERIA_MET_TRUE;
+            $done = 1;
+            last;
+        }
+        else {
+            $jboss->log_info("Criteria '$param_criteria_label' is not met on this iteration. Servers in '$server_group_name' server group have statuses $unique_states_str");
+            $result->{msg} = "Criteria '$param_criteria_label' is not met.\nServers in '$server_group_name' server group have statuses $unique_states_str";
+            $result->{error} = 1;
+            $result->{$OUTPUT_PARAM_CRITERIA_MET} = $CRITERIA_MET_FALSE;
+        }
+
+        sleep $SLEEP_TIME;
+    }
+
+    if ($result->{$OUTPUT_PARAM_CRITERIA_MET}) {
+        $jboss->set_output_parameter($OUTPUT_PARAM_CRITERIA_MET, $result->{$OUTPUT_PARAM_CRITERIA_MET});
+    }
+
+    if ($result->{error}) {
+        $jboss->error($result->{msg});
+    }
+    else {
+        $jboss->success($result->{msg});
+    }
+    return 1;
 }
 # Auto-generated method for the procedure CheckServerStatus/CheckServerStatus
 # Add your code into this method and it will be called when step runs
@@ -178,8 +485,114 @@ sub checkServerStatus {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $jboss = EC::JBoss->new(
+        project_name    =>  $PROJECT_NAME,
+        plugin_name     =>  $PLUGIN_NAME,
+        plugin_key      =>  $PLUGIN_KEY,
+        flowpdf         =>  $self
+    );
+
+    my $params = $jboss->get_params_as_hashref(qw/
+        host
+        server
+        criteria
+        url_check
+        wait_time
+    /);
+
+    my $creds = $jboss->get_plugin_configuration();
+    if ($params->{url_check}) {
+        my $check_result;
+
+        # do check via LWP.
+        my $url = $jboss->fix_url($creds->{jboss_url});
+        my $ua = LWP::UserAgent->new();
+
+        $jboss->run_commands_until_done({
+            sleep_time => 5,
+            time_limit => $params->{wait_time}
+        }, sub {
+            my $resp = $ua->get($url);
+            $check_result = is_criteria_met_url($resp, $params->{criteria});
+            return $check_result;
+        });
+        # here condition
+        if ($check_result) {
+            $jboss->out("Criteria is met.");
+            $jboss->success("Server at $url is $params->{criteria}");
+            return;
+        }
+        $jboss->out("Criteria was not met.");
+        $jboss->error("Criteria is not met. Server at $url should be in $params->{criteria} status.");
+        return 1;
+    }
+
+    my $launch_type;
+    $jboss->run_commands_until_done({
+        sleep_time => 5,
+        time_limit => $params->{wait_time}
+    }, sub {
+        eval {
+            $launch_type = $jboss->get_launch_type();
+        };
+        $jboss->log_info("launch type is '" . ($launch_type ? $launch_type : "unknown") . "'");
+        if (!$launch_type && $params->{criteria} eq 'NOT_RUNNING') {
+            return 1;
+        }
+        if ($launch_type) {
+            return 1;
+        }
+        return 0;
+    });
+
+    if (!$launch_type) {
+        if ($params->{criteria} eq 'NOT_RUNNING') {
+            # we assume that server is not running in case we cannot retrieve launch type
+            $jboss->success("Server is not running. Criteria met");
+            return;
+        }
+        else {
+            $jboss->error("Unknown launch type. Criteria not met.");
+            return;
+        }
+    }
+
+    my $command = '';
+    if ($launch_type eq 'domain') {
+        # domain detected
+        if (!$params->{host} || !$params->{server}) {
+            $jboss->bail_out('"Server" and "Host" parameters are mandatory when server is running in domain mode.');
+        }
+        $command = sprintf ('/host=%s/server-config=%s:read-attribute(name=status)', $params->{host}, $params->{server});
+    }
+    else {
+        # standalone
+        $command = ':read-attribute(name=server-state)';
+    }
+
+    my %result = ();
+    my $state_criteria_met;
+    $jboss->run_commands_until_done({
+        sleep_time => 5,
+        time_limit => $params->{wait_time},
+    }, sub {
+        %result = $jboss->run_command($command);
+        $state_criteria_met = is_criteria_met($jboss, \%result, $launch_type, $params->{criteria});
+        return $state_criteria_met;
+    });
+
+    if ($state_criteria_met) {
+        $jboss->success("Criteria '" .$params->{criteria} . "' met");
+        return;
+    }
+    else {
+        $jboss->error("Criteria '" .$params->{criteria} . "' not met.");
+        return;
+    }
 }
 # Auto-generated method for the procedure CreateDatasource/CreateDatasource
 # Add your code into this method and it will be called when step runs
@@ -3390,6 +3803,28 @@ sub get_cli_host_shutdown_7x {
     return $cli_host_shutdown;
 }
 
+sub get_hostcontroller_status {
+    my ($jboss, $name) = @_;
+
+    my $command = ':read-children-resources(child-type=host,include-runtime=true)';
+    my %result = $jboss->run_command($command);
+    # if ($result{code} == 1 && $result{stdout} =~ m/Connection\srefused/s) {
+    if ($result{code} == 1) {
+        return 'not_running';
+    }
+    my $json = $jboss->decode_answer($result{stdout});
+
+    if ($json->{outcome} ne 'success') {
+        $jboss->bail_out();
+    }
+    if (!$json->{result}->{$name}) {
+        # $jboss->bail_out("HostController with name '$name' doesn't exist");
+        return 'not_running';
+    }
+    return $json->{result}->{$name}->{'host-state'};
+
+}
+
 sub get_recent_log_lines {
     my %args = @_;
     my $file = $args{file} || croak "'file' is required param";
@@ -3426,6 +3861,53 @@ sub get_recent_log_lines {
     return \@lines;
 }
 
+sub is_criteria_met {
+    my ($jboss, $result, $launch_type, $criteria) = @_;
+
+    my $json = $jboss->decode_answer($result->{stdout});
+    $json = {} unless $json;
+
+    $jboss->log_info("state is '" . ($json->{result} ? $json->{result} : "unknown") . "'");
+
+    if ($launch_type eq 'domain') {
+        # server is running
+        if ($json->{result} && $json->{result} eq 'STARTED') {
+            # criteria is RUNNING, so criteria met.
+            if ($criteria eq 'RUNNING') {
+                return 1;
+            }
+            # criteria is NOT_RUNNING, but server is in RUNNING state, so, criteria not met.
+            return 0;
+        }
+        # criteria is RUNNING, but server is not. Not met.
+        if ($criteria eq 'RUNNING') {
+            return 0;
+        }
+        # criteria is NOT_RUNNING, server is not running. Criteria met.
+        return 1;
+
+    }
+    else {
+        # state 'running' meet the RUNNING criteria
+        # states such as 'starting', 'reload-required', 'restart-required', 'stopping' or other meet the NOT_RUNNING criteria
+        # undefined state meet the NOT_RUNNING criteria
+        my $state_is_considered_as_running;
+        if ( $json->{outcome} && $json->{outcome} eq 'success' && $json->{result} && $json->{result} eq 'running' ) {
+            $state_is_considered_as_running = 1;
+        }
+
+        if ( $criteria eq 'RUNNING' && $state_is_considered_as_running ) {
+            return 1;
+        }
+        elsif ( $criteria eq 'NOT_RUNNING' && !$state_is_considered_as_running ) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+}
+
 sub is_criteria_met_standalone {
     my ($json, $criteria) = @_;
 
@@ -3451,6 +3933,19 @@ sub is_criteria_met_domain {
     }
     else {
         return 1 if $got ne 'OK';
+    }
+    return 0;
+}
+
+sub is_criteria_met_url {
+    my ($resp, $criteria) = @_;
+
+    if ($criteria eq 'RUNNING') {
+        return 1 if $resp->is_success();
+    }
+    # criterua is not running
+    else {
+        return 1 unless $resp->is_success();
     }
     return 0;
 }
