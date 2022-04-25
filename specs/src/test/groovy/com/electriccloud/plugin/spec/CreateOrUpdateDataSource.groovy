@@ -328,6 +328,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         return runProcedureDsl(projectName, procName, parameters, credential)
     }
 
+    @Ignore("test cases duplicated in next test")
     @Sanity
     @Requires({ env.JBOSS_MODE == 'standalone' })
     @Unroll
