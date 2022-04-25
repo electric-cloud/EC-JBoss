@@ -920,7 +920,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'dataSourceName' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'dataSourceName' of procedure 'CreateOrUpdateXADataSource' is marked as required, but it does not have a value"
     }
 
     @NewFeature(pluginVersion = "2.6.0")
@@ -949,7 +949,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'jndiName' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'jndiName' of procedure 'CreateOrUpdateXADataSource' is marked as required, but it does not have a value"
     }
 
     @NewFeature(pluginVersion = "2.6.0")
@@ -978,7 +978,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'jdbcDriverName' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'jdbcDriverName' of procedure 'CreateOrUpdateXADataSource' is marked as required, but it does not have a value"
     }
 
     @NewFeature(pluginVersion = "2.6.0")
@@ -1007,7 +1007,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'xaDataSourceProperties' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'xaDataSourceProperties' of procedure 'CreateOrUpdateXADataSource' is marked as required, but it does not have a value"
     }
 
     @NewFeature(pluginVersion = "2.6.0")
@@ -1036,7 +1036,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'dataSourceConnection_credential' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'dataSourceConnection_credential' of procedure 'CreateOrUpdateXADataSource' is marked as required, but it does not have a value"
     }
 
 
@@ -1066,7 +1066,8 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Configuration jboss_conf_not_existing doesn't exist."
+//        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
+//        assert runProcedureJob.getLowerStepSummary() =~ "Configuration jboss_conf_not_existing doesn't exist."
     }
 
     @Ignore
@@ -1258,7 +1259,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob1 = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob1.getStatus() == "error"
-        assert runProcedureJob1.getUpperStepSummary() =~ "Required parameter 'jndiName' is not provided"
+        assert runProcedureJob1.getLowerStepSummary() =~ "Parameter 'jndiName' of procedure 'CreateOrUpdateXADataSource' is marked as required, but it does not have a value"
         cleanup:
         reloadServer()
         // remove XA datasource
