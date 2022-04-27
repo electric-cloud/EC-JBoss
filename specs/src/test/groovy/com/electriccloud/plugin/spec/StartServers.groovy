@@ -597,7 +597,7 @@ class StartServers extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == 'error'
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'serversgroup' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'serversgroup' of procedure 'StartServers' is marked as required, but it does not have a value"
     }
 
     @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })

@@ -72,7 +72,7 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'queueName' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'queueName' of procedure 'RemoveJMSQueue' is marked as required, but it does not have a value"
 
         cleanup:
         queueName = "testQueue-$testCaseId"
@@ -99,7 +99,7 @@ class RemoveJMSQueueDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'queueName' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'queueName' of procedure 'RemoveJMSQueue' is marked as required, but it does not have a value"
 
         cleanup:
         queueName = "testQueue-$testCaseId"
