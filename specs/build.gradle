@@ -24,7 +24,7 @@ dependencies {
     implementation 'org.spockframework:spock-core:1.1-groovy-2.4'
 //    implementation 'com.electriccloud:commander-spec-tests:latest.release'
     implementation 'com.electriccloud:ec-specs-plugins-core:1.9.2'
-    implementation 'com.jayway.restassured:rest-assured:2.4.0'
+    implementation 'com.jayway.restassured:rest-assured:2.9.0'
 }
 
 sendAllureReports {
