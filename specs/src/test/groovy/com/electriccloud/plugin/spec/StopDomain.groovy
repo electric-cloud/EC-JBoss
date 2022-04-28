@@ -273,8 +273,9 @@ class StopDomain extends PluginTestHelper {
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
         then:
-        assert runProcedureJob.getStatus() == 'error' 
-        assert runProcedureJob.getUpperStepSummary() == "Configuration jboss_conf_not_exist doesn't exist.\n"
+        assert runProcedureJob.getStatus() == 'error'
+        //        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
+//        assert runProcedureJob.getUpperStepSummary() == "Configuration jboss_conf_not_exist doesn't exist.\n"
     }   
 
     @Timeout(600)

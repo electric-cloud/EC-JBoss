@@ -71,7 +71,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'topicName' of procedure 'RemoveJMSTopic' is marked as required, but it does not have a value"
 
         cleanup:
         topicName = "testTopic-$testCaseId"
@@ -99,7 +99,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "Required parameter 'topicName' is not provided"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'topicName' of procedure 'RemoveJMSTopic' is marked as required, but it does not have a value"
 
         cleanup:
         topicName = "testTopic-$testCaseId"

@@ -833,7 +833,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "File '' doesn't exists"
+        assert runProcedureJob.getLowerStepSummary() =~ "Parameter 'warphysicalpath' of procedure 'DeployApp' is marked as required, but it does not have a value"
     }
 
     @NewFeature(pluginVersion = "2.6.0")
