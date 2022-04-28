@@ -2306,8 +2306,32 @@ sub disableDeploy {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $jboss = EC::JBoss->new(
+        project_name    =>  $PROJECT_NAME,
+        plugin_name     =>  $PLUGIN_NAME,
+        plugin_key      =>  $PLUGIN_KEY,
+        flowpdf         => $self,
+    );
+    my $params = $jboss->get_params_as_hashref(qw/
+        appname
+        assignservergroups
+    /);
+
+    my $command = "undeploy --name=$params->{appname} --keep-content";
+    my $launch_type = $jboss->get_launch_type();
+    if ($launch_type eq 'domain' && !$params->{assignservergroups}) {
+        $jboss->bail_out('When JBoss server is launched as domain, "Server groups" parameter is mandatory');
+    }
+
+    if ($launch_type eq 'domain') {
+        $command .= " --server-groups=$params->{assignservergroups}";
+    }
+    $jboss->{success_message} = "Application $params->{appname} has been successfully disabled.";
+    $jboss->process_response($jboss->run_command($command));
 }
 # Auto-generated method for the procedure EnableDeploy/EnableDeploy
 # Add your code into this method and it will be called when step runs
@@ -2329,8 +2353,32 @@ sub enableDeploy {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $jboss = EC::JBoss->new(
+        project_name    =>  $PROJECT_NAME,
+        plugin_name     =>  $PLUGIN_NAME,
+        plugin_key      =>  $PLUGIN_KEY,
+        flowpdf         =>  $self,
+    );
+    my $params = $jboss->get_params_as_hashref(qw/
+        appname
+        assignservergroups
+    /);
+
+    my $command = "deploy --name=$params->{appname}";
+    my $launch_type = $jboss->get_launch_type();
+    if ($launch_type eq 'domain' && !$params->{assignservergroups}) {
+        $jboss->bail_out('When JBoss server is launched as domain, "Server groups" parameter is mandatory');
+    }
+
+    if ($launch_type eq 'domain') {
+        $command .= " --server-groups=$params->{assignservergroups}";
+    }
+    $jboss->{success_message} = "Application $params->{appname} has been successfully enabled.";
+    $jboss->process_response($jboss->run_command($command));
 }
 # Auto-generated method for the procedure GetEnvInfo/GetEnvInfo
 # Add your code into this method and it will be called when step runs
@@ -2886,8 +2934,111 @@ sub shutdownStandaloneServer {
     my $configValues = $context->getConfigValues();
     logInfo("Config values are: ", $configValues);
 
-    $sr->setJobStepOutcome('warning');
-    $sr->setJobSummary("This is a job summary.");
+    my $PROJECT_NAME = '$[/myProject/projectName]';
+    my $PLUGIN_NAME = '@PLUGIN_NAME@';
+    my $PLUGIN_KEY = '@PLUGIN_KEY@';
+
+    my $jboss = EC::JBoss->new(
+        project_name                    => $PROJECT_NAME,
+        plugin_name                     => $PLUGIN_NAME,
+        plugin_key                      => $PLUGIN_KEY,
+        flowpdf                         => $self,
+    );
+
+    my $cfg = $jboss->get_plugin_configuration();
+
+    $::gEC = new ElectricCommander();
+    $::gEC->abortOnError(0);
+
+    $::gServerConfig = ($::gEC->getProperty("serverconfig") )->findvalue("//value");
+    my %tempConfig = %$cfg;
+
+    if ($tempConfig{java_opts}) {
+        my $new_java_opts = $tempConfig{java_opts};
+        if ($ENV{JAVA_OPTS}) {
+            $new_java_opts = $ENV{JAVA_OPTS} . ' ' . $new_java_opts;
+        }
+        $ENV{JAVA_OPTS} = $new_java_opts;
+    }
+
+    if ($tempConfig{scriptphysicalpath}) {
+        $::gScriptPhysicalLocation = $tempConfig{scriptphysicalpath};
+    }
+    my $temp = ($::gEC->getProperty("scriptphysicalpath") )->findvalue("//value");
+    if ($temp) {
+        # $::gScriptPhysicalLocation = ($::gEC->getProperty("scriptphysicalpath") )->findvalue("//value");
+        $::gScriptPhysicalLocation = $temp;
+    }
+
+    if (!$::gScriptPhysicalLocation) {
+        print "No script physical path were found neither in configuration nor in procedure\n";
+        exit 1;
+    }
+
+
+    my $cmdLine = '';
+
+    my %props;
+
+    my $rawUrl = '';
+    my $user = '';
+    my $pass = '';
+    my %configuration;
+
+    my $content;
+
+    #getting all info from the configuration, url, user and pass
+    if ($::gServerConfig ne '') {
+        %configuration = %$cfg;
+        if (%configuration) {
+            $rawUrl = $configuration{'jboss_url'};
+            my $url;
+            my $port;
+            print "$rawUrl\n";
+            #checking if raw url comes in the format http(s)://whatever(:port)/(path)
+            if ($rawUrl =~ m/http(\w*):\/\/(\S[^:]*)(:*)(\d*)(\/*)(.*)/) {
+                $url = $2;
+                $port = $4;
+            }
+            elsif ($rawUrl =~ m/(\S[^:]*)(:*)(\d*)(\/*)(.*)/) {
+                $url = $1;
+                $port = $3;
+            }
+            else {
+                print "Error: Not a valid URL.\n";
+                exit ERROR;
+            }
+            print "url: $url port: $port\n";
+            $cmdLine = "\"$::gScriptPhysicalLocation\" --connect controller=$url:$port command=:shutdown";
+        }
+    }
+    else {
+        $cmdLine = "\"$::gScriptPhysicalLocation\" --connect command=:shutdown";
+    }
+    $content = `$cmdLine`;
+    print $content;
+
+    #evaluates if exit was successful to mark it as a success or fail the step
+
+    if ($? == SUCCESS) {
+        if ($content =~ m/\"outcome\" => \"success\"(.+)/) {
+            #server was turned off
+            $::gEC->setProperty("/myJobStep/outcome", 'success');
+        } elsif ($content =~ m/You are disconnected at the moment(.+)/) {
+            #if not, an exception was reached
+            $::gEC->setProperty("/myJobStep/outcome", 'error');
+        }
+    }
+    else {
+        $::gEC->setProperty("/myJobStep/outcome", 'error');
+    }
+    #add masked command line to properties object
+    $props{'cmdLine'} = $cmdLine;
+
+     foreach my $key (keys %props) {
+        my $val = $props{$key};
+        $::gEC->setProperty("/myCall/$key", $val);
+    }
 }
 # Auto-generated method for the procedure StartDomainServer/StartDomainServer
 # Add your code into this method and it will be called when step runs
