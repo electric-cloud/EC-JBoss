@@ -1583,22 +1583,27 @@ configuration:
     type: "entry"
     required: true
     documentation: "Configuration Name"
+    label: Configuration name
   - name: "credential"
     type: "credential"
     required: false
     documentation: ""
+    label: Login as
   - name: "java_opts"
     type: "entry"
     required: false
     documentation: "Additional JAVA_OPTS"
+    label: Additional Java options
   - name: "jboss_url"
     type: "entry"
     required: true
     documentation: "IP Address of JBoss AS."
+    label: JBoss controller location
   - name: "log_level"
     type: select
     required: false
     documentation: "Log level."
+    label: Log Level
     value: 1
     options:
       - name: INFO
@@ -1613,12 +1618,15 @@ configuration:
     type: "entry"
     required: false
     documentation: "Physical path to jboss-cli."
+    label: Physical location of the jboss client script
   - name: "test_connection"
     type: "checkbox"
     required: false
     documentation: "\n                    Check if connection should be established\
       \ during config creation to validate credentials.\n                "
+    label: Check Connection?
   - name: "test_connection_res"
     type: "entry"
     required: false
     documentation: "A resource which is used for the testing connection."
+    label: Check Connection Resource
