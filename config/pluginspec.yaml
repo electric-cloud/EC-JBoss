@@ -81,11 +81,16 @@ procedures:
       \ within that group."
     label: "Servers:"
   - name: "criteria"
-    type: "entry"
-    required: false
+    type: select
+    required: true
     documentation: "A desired terminal status of the deployment. The procedure will\
       \ fail if criteria will not be reached."
     label: "Success criteria:"
+    options:
+      - name: OK
+        value: OK
+      - name: NOT OK
+        value: NOT_OK
   - name: "wait_time"
     type: "entry"
     required: false
@@ -139,11 +144,16 @@ procedures:
     label: "Wait time:"
     value: "300"
   - name: "criteria"
-    type: "entry"
+    type: select
     required: true
     documentation: "A desired terminal status of the host controller. The procedure\
       \ will fail if criteria will not be reached."
     label: "Success criteria:"
+    options:
+      - name: RUNNING
+        value: RUNNING
+      - name: NOT RUNNING
+        value: NOT_RUNNING
   shell: "ec-perl"
   properties: []
   hasConfig: "attach"
@@ -190,7 +200,7 @@ procedures:
     label: "Wait Time:"
     value: "300"
   - name: "criteria"
-    type: "entry"
+    type: select
     required: true
     documentation: "A desired status for all servers in the group. Possible options:\
       \ 'STARTED', 'STOPPED', 'DISABLED', 'STOPPED or DISABLED'. The procedure will\
@@ -198,6 +208,15 @@ procedures:
       \ the procedure returns 'TRUE' or 'FALSE' based on the check, the result is\
       \ captured in the Output Parameter, called \"servergroupstatus\"."
     label: "Criteria:"
+    options:
+      - name: STARTED
+        value: STARTED
+      - name: STOPPED
+        value: STOPPED
+      - name: DISABLED
+        value: DISABLED
+      - name: STOPPED or DISABLED
+        value: STOPPED_OR_DISABLED
   shell: "ec-perl"
   properties: []
   hasConfig: "attach"
@@ -249,12 +268,17 @@ procedures:
       \ and will be ignored for standalone server."
     label: "Server:"
   - name: "criteria"
-    type: "entry"
+    type: select
     required: true
     documentation: "A desired status of the server. The procedure fails if criteria\
       \ is not met. If \"Perform URL check\" is not set: only terminal status 'running'\
       \ for standalone and 'STARTED' for domain meet RUNNING criteria."
     label: "Success criteria:"
+    options:
+      - name: RUNNING
+        value: RUNNING
+      - name: NOT RUNNING
+        value: NOT_RUNNING
   - name: "wait_time"
     type: "entry"
     required: false
@@ -950,11 +974,20 @@ procedures:
     label: "Configuration name:"
     configuration: true
   - name: "informationType"
-    type: "entry"
+    type: select
     required: true
     documentation: "Information Type. Possible options: System Dump; Profiles (for\
       \ Domain only); Data Sources; XA Data Sources."
     label: "Information Type:"
+    options:
+      - name: System Dump
+        value: systemDump
+      - name: Profiles
+        value: profiles
+      - name: Data Sources
+        value: dataSources
+      - name: XA Data Sources
+        value: xaDataSources
   - name: "informationTypeContext"
     type: "entry"
     required: false
@@ -1543,39 +1576,57 @@ procedures:
   hasConfig: "attach"
 configuration:
   shell: "ec-perl"
-  hasDebugLevel: true
+  hasDebugLevel: false
   checkConnection: true
   parameters:
   - name: "config"
     type: "entry"
     required: true
     documentation: "Configuration Name"
+    label: Configuration name
   - name: "credential"
     type: "credential"
     required: false
     documentation: ""
+    label: Login as
   - name: "java_opts"
     type: "entry"
     required: false
     documentation: "Additional JAVA_OPTS"
+    label: Additional Java options
   - name: "jboss_url"
     type: "entry"
     required: true
     documentation: "IP Address of JBoss AS."
+    label: JBoss controller location
   - name: "log_level"
-    type: "entry"
+    type: select
     required: false
     documentation: "Log level."
+    label: Log Level
+    value: 1
+    options:
+      - name: INFO
+        value: 1
+      - name: WARNING
+        value: 2
+      - name: ERROR
+        value: 3
+      - name: DEBUG
+        value: 4
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
     documentation: "Physical path to jboss-cli."
+    label: Physical location of the jboss client script
   - name: "test_connection"
     type: "checkbox"
     required: false
     documentation: "\n                    Check if connection should be established\
       \ during config creation to validate credentials.\n                "
+    label: Check Connection?
   - name: "test_connection_res"
     type: "entry"
     required: false
     documentation: "A resource which is used for the testing connection."
+    label: Check Connection Resource
