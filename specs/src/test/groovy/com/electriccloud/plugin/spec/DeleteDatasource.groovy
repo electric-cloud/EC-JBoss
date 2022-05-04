@@ -126,7 +126,7 @@ class DeleteDatasource extends PluginTestHelper {
     @Unroll
     def "Sanity"() {
 
-        def dataSourceName = 'toDeleteDS'
+        def dataSourceName = generateRandomDataSourceName()
 
         def runParams = [
                 scriptphysicalpath  : defaultCliPath,
@@ -160,13 +160,11 @@ class DeleteDatasource extends PluginTestHelper {
             addJDBCMySQL(drivers.mysql)
         }
         RunProcedureJob runProcedureDsl = runProcedureDsl(projectName, 'CreateOrUpdateDataSource', runParamsCreate, credential)
-        println runProcedureDsl.getLogs()
         // we should reboot Jboss after adding of DS in version 6.1
         // Jboss 6.1 has next logic: after a creation all DS's have status "is enabled-false", after Jboss was rebooted, all DS's  have status "is enabled-true"
         if (jbossVersion == '6.1') {
             reloadServer()
         }
-//        assert runProcedureDsl.getStatus() == "success"
 
         when:
 
