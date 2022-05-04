@@ -9,7 +9,7 @@ sourceCompatibility = 1.8
 defaultTasks 'test'
 
 repositories {
-    jcenter()
+//    jcenter()
     mavenCentral()
     maven {
         url 'https://oss.sonatype.org/content/repositories/snapshots'
