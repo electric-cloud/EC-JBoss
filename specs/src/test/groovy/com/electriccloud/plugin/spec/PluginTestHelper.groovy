@@ -561,4 +561,14 @@ class PluginTestHelper extends PluginSpockTestSupport {
         }
         dsl "deleteProject '$projectName'"
     }
+
+    static String generateRandomDataSourceName() {
+        def pool = ['a'..'z','A'..'Z'].flatten()
+        Random rand = new Random()
+
+        def passChars = (0..10).collect { pool[rand.nextInt(pool.size())] }
+        def retval = passChars.join()
+        return retval
+    }
+
 }
