@@ -1619,12 +1619,6 @@ configuration:
     required: false
     documentation: "Physical path to jboss-cli."
     label: Physical location of the jboss client script
-  - name: "test_connection"
-    type: "checkbox"
-    required: false
-    documentation: "\n                    Check if connection should be established\
-      \ during config creation to validate credentials.\n                "
-    label: Check Connection?
   - name: "test_connection_res"
     type: "entry"
     required: false
