@@ -23,6 +23,7 @@ class CreateConfiguration extends PluginTestHelper {
     def doSetupSpec() {
         logger.info("Hello World! doSetupSpec")
         redirectLogs()
+        conditionallyDeleteProject(projectName)
         def resName = createJBossResource()
 
         dslFile 'dsl/RunProcedure.dsl', [
@@ -44,7 +45,7 @@ class CreateConfiguration extends PluginTestHelper {
 
     def doCleanupSpec() {
         logger.info("Hello World! doCleanupSpec")
-        conditionallyDeleteProject(projectName)
+//        conditionallyDeleteProject(projectName)
     }
 
     RunProcedureJob runProcedureUnderTest(def parameters, def credential) {
@@ -57,6 +58,7 @@ class CreateConfiguration extends PluginTestHelper {
         return  java_opts
     }
 
+    @IgnoreRest
     @Sanity
     @Unroll
     def "Sanity"() {
