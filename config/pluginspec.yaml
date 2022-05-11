@@ -1578,6 +1578,7 @@ configuration:
   shell: "ec-perl"
   hasDebugLevel: false
   checkConnection: true
+  resourceName: $[test_connection_res]
   parameters:
   - name: "config"
     type: "entry"
