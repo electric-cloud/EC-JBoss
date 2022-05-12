@@ -28,7 +28,7 @@ class CheckHostControllerStatus extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                    serverconfig        : '',
+                          config        : '',
                     scriptphysicalpath  : '',
                     criteria            : '',
                     hostcontroller_name : '',
@@ -54,7 +54,7 @@ class CheckHostControllerStatus extends PluginTestHelper {
     @Unroll
     def "Sanity"() {
         def runParams = [
-                serverconfig        : defaultConfigName,
+                      config        : defaultConfigName,
                 scriptphysicalpath  : defaultCliPath,
                 criteria            : 'running',
                 hostcontroller_name : 'master',

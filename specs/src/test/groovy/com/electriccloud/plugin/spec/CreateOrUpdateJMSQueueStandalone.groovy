@@ -44,7 +44,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                         messageSelector      : '',
                         profile              : '',
                         queueName            : '',
-                        serverconfig         : '',
+                              config         : '',
                 ]
         ]
 
@@ -74,7 +74,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -103,7 +103,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -132,7 +132,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -161,7 +161,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : 'FILTER_EXPRESSION',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -190,7 +190,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -219,7 +219,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : 'FILTER_EXPRESSION',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -248,7 +248,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : 'non-existing-profile',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -278,7 +278,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : "Any whitespace filter",
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -310,7 +310,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultStandalone(runParams.queueName, defaultJndiNames) //durable=false
@@ -342,7 +342,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : 'FILTER_EXPRESSION',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultStandalone(runParams.queueName, defaultJndiNames) //without message selector
@@ -375,7 +375,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : "filterTwo",
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueue(runParams.queueName, defaultJndiNames, "--durable=false", " --selector=filterOne", "")
@@ -407,7 +407,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : '',
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -430,7 +430,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -453,7 +453,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : 'conf_non-existing'
+                      config         : 'conf_non-existing'
         ]
 
         when:
@@ -462,7 +462,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "error"
 //        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
-//        assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.serverconfig} doesn't exist."
+//        assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.      config} doesn't exist."
     }
 
     @NewFeature(pluginVersion = "2.6.0")
@@ -477,7 +477,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -508,7 +508,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -533,7 +533,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector  : '',
                 profile          : '',
                 queueName        : "testQueue-$testCaseId",
-                serverconfig     : defaultConfigName
+                      config     : defaultConfigName
         ]
 
         when:
@@ -564,7 +564,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultStandalone(runParams.queueName, "queue/test3, java:jboss/exported/jms/queue/test3") //wrong jndi name
@@ -606,7 +606,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : 'FILTER_EXPRESSION',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultStandalone(runParams.queueName, "queue/test2, java:jboss/exported/jms/queue/test2") //without message selector, durable=false and wrong jndi

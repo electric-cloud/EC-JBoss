@@ -32,22 +32,6 @@ procedures:
 - name: "CheckDeployStatus"
   description: "Check the HTTP status of a given URL"
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -55,7 +39,6 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "appname"
     type: "entry"
     required: true
@@ -100,27 +83,10 @@ procedures:
     label: "Wait time:"
     value: "300"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "CheckHostControllerStatus"
   description: "Checks hostcontroller status."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -128,7 +94,6 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "hostcontroller_name"
     type: "entry"
     required: true
@@ -155,29 +120,12 @@ procedures:
       - name: NOT RUNNING
         value: NOT_RUNNING
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "CheckServerGroupStatus"
   description: "The CheckServerGroupStatus procedure checks if the Status of all\
     \ servers in the Server Group is equal to the Status mentioned in the Criteria\
     \ field."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration Name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -185,7 +133,6 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical Location of the JBoss Client Script:"
-    dependsOn: "serverconfig"
   - name: "serversgroup"
     type: "entry"
     required: true
@@ -218,27 +165,10 @@ procedures:
       - name: STOPPED or DISABLED
         value: STOPPED_OR_DISABLED
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "CheckServerStatus"
   description: "Check the HTTP status of a given URL"
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -246,7 +176,6 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "url_check"
     type: "checkbox"
     required: false
@@ -289,26 +218,10 @@ procedures:
     value: "300"
   shell: "ec-perl"
   properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "CreateDatasource"
   description: "Creates a datasource in JBoss."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -316,7 +229,6 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "application_name"
     type: "entry"
     required: true
@@ -365,27 +277,11 @@ procedures:
     uncheckedValue: "0"
   shell: "ec-perl"
   properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "CreateOrUpdateDataSource"
   description: "This procedure can be used to either create a new data source or\
     \ update certain properties of an existing data source."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "dataSourceName"
     type: "entry"
     required: true
@@ -440,28 +336,12 @@ procedures:
     label: "Additional Options:"
   shell: "ec-perl"
   properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "CreateOrUpdateJMSQueue"
   description: "This procedure creates a new jms queue or updates JNDI names for\
     \ an existing jms queue using the default message provider as specified in the\
     \ configuration of the JBoss EAP messaging subsystem."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "queueName"
     type: "entry"
     required: true
@@ -510,29 +390,12 @@ procedures:
       \ be ignored for updates."
     label: "Additional Options:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "CreateOrUpdateJMSTopic"
   description: "This procedure creates a new jms topic or updates JNDI names for\
     \ an existing jms topic using the default message provider as specified in the\
     \ configuration of the JBoss EAP messaging subsystem."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "topicName"
     type: "entry"
     required: true
@@ -565,28 +428,11 @@ procedures:
       \ be ignored for updates."
     label: "Additional Options:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "CreateOrUpdateXADataSource"
   description: "This procedure can be used to either create a new XA data source\
     \ or update certain properties of an existing XA data source."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "dataSourceName"
     type: "entry"
     required: true
@@ -644,27 +490,10 @@ procedures:
       \ --check-valid-connection-sql=\"select 1 from dual\""
     label: "Additional Options:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "DeleteDatasource"
   description: "Deletes a datasource in JBoss."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -672,7 +501,6 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "datasource_name"
     type: "entry"
     required: true
@@ -685,7 +513,7 @@ procedures:
     label: "Profile name:"
   shell: "ec-perl"
   properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "DeployApp"
   description: "For Standalone and Domain. The DeployApp procedure deploys an application\
     \ (mainly WAR or EAR) from the specified source (usually from filepath) to standalone\
@@ -693,22 +521,6 @@ procedures:
     \ groups (for Domain JBoss) based on provided parameters. This procedure is\
     \ build around jboss-cli command 'deploy' and most parameters are corresponding."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -716,7 +528,6 @@ procedures:
       \ (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted,\
       \ script location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "warphysicalpath"
     type: "entry"
     required: true
@@ -787,7 +598,7 @@ procedures:
     label: "Additional options:"
   shell: "ec-perl"
   properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "DeployApplication"
   description: "The DeployApplication procedure deploys an application (mainly WAR\
     \ or EAR) to a JBoss Standalone or Managed domain. The procedure will automatically\
@@ -801,22 +612,6 @@ procedures:
     \ in an Application that exists gets updated with new content or gets created\
     \ otherwise."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "applicationContentSourcePath"
     type: "entry"
     required: true
@@ -865,28 +660,11 @@ procedures:
       \ the procedure will deploy the Application and leave it disabled."
     label: "Additional Options:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "DisableDeploy"
   description: "Disables a deployment designated by the name argument. Implemented\
     \ only for the Standalone Mode."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -894,7 +672,6 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "appname"
     type: "entry"
     required: true
@@ -908,28 +685,11 @@ procedures:
       \ mode. This argument is not applicable in standalone mode and will be ignored."
     label: "Server groups:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "EnableDeploy"
   description: "Enables an already existing but disabled in the repository deployment\
     \ designated by the name argument. Implemented only for the Standalone Mode."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -937,7 +697,6 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "appname"
     type: "entry"
     required: true
@@ -951,28 +710,11 @@ procedures:
       \ mode. This argument is not applicable in standalone mode and will be ignored."
     label: "Server groups:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "GetEnvInfo"
   description: "This procedure returns different types of information about a Jboss\
     \ environment and writes it to property and logs."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "informationType"
     type: select
     required: true
@@ -1004,28 +746,11 @@ procedures:
       \ the procedure would call /:read-resource('include-runtime=true,include-defaults=true')."
     label: "Additional Options:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "RemoveJMSQueue"
   description: "This procedure removes an existing jms queue in the JBoss EAP messaging\
     \ subsystem."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "queueName"
     type: "entry"
     required: true
@@ -1039,28 +764,11 @@ procedures:
       \ 'full-ha'"
     label: "Profile:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "RemoveJMSTopic"
   description: "This procedure removes an existing jms topic in the JBoss EAP messaging\
     \ subsystem."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "topicName"
     type: "entry"
     required: true
@@ -1074,28 +782,11 @@ procedures:
       \ 'full-ha'"
     label: "Profile:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "RemoveXADataSource"
   description: "This procedure removes an existing XA data source in the JBoss EAP\
     \ 'datasources' subsystem."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "dataSourceName"
     type: "entry"
     required: true
@@ -1110,27 +801,10 @@ procedures:
       \ 'full', 'full-ha'"
     label: "Profile:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "RunCustomCommand"
   description: "Runs custom scripts or procedures."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -1138,34 +812,16 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "customCommand"
     type: "entry"
     required: true
     documentation: "Custom command to run."
     label: "Custom command:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "ShutdownStandaloneServer"
   description: "Shutdown a running standalone server"
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: false
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -1173,29 +829,11 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "StartDomainServer"
   description: "Start a Server in \"domain\" mode"
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: true
@@ -1217,32 +855,11 @@ procedures:
       \ a different host configuration (--host-config). By default host.xml is used."
     label: "Optional host configuration name:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "StartHostController"
   description: "This procedure can be used to start any of the Host Controllers\
     \ (Master or Slave) in a managed domain."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Required parameter. Name of the configuration to be used. URL\
-      \ and credentials are retrieved from the given configuration. To view or create\
-      \ a new configuration, go to the Administration -> Plugins tab, and select\
-      \ 'Configure' action for EC-JBoss plugin. NOTE: information for connecting\
-      \ to Master CLI should be provided within the specified configuration, even\
-      \ for stating slave host controllers."
-    htmlDocumentation: "Required parameter. Name of the configuration to be used.\
-      \ URL and credentials are retrieved from the given configuration.<br/><br/>A\
-      \ Configuration defines connection details and can be created by going to\
-      \ plugin <a style=\"text-decoration: none !important; border-bottom-style:\
-      \ dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family:\
-      \ inherit; border-color: #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>. NOTE: information for connecting\
-      \ to Master CLI should be provided within the specified configuration, even\
-      \ for stating slave host controllers."
-    label: "Configuration Name:"
-    configuration: true
   - name: "startupScript"
     type: "entry"
     required: true
@@ -1291,8 +908,7 @@ procedures:
       \ file surface them as part of the procedure summary logs."
     label: "Log File Location:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "StartServers"
   description: "For Domain only. The StartServers procedure starts the servers in\
     \ the specified server group and checks if these servers are started successfully.\
@@ -1303,22 +919,6 @@ procedures:
     \ e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'.\
     \ Expected value for started servers is 'STARTED'."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -1326,7 +926,6 @@ procedures:
       \ (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted,\
       \ script location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "serversgroup"
     type: "entry"
     required: true
@@ -1346,28 +945,11 @@ procedures:
     label: "Timeout for recurring check of servers (seconds):"
     value: "300"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "StartStandaloneServer"
   description: "The StartStandaloneServer procedure starts a JBoss server in standalone\
     \ mode."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Required parameter. Name of the configuration to be used. URL\
-      \ and credentials are retrieved from the given configuration. To view or create\
-      \ a new configuration, go to the Administration -> Plugins tab, and select\
-      \ 'Configure' action for EC-JBoss plugin."
-    htmlDocumentation: "Required parameter. Name of the configuration to be used.\
-      \ URL and credentials are retrieved from the given configuration.<br/><br/>A\
-      \ Configuration defines connection details and can be created by going to\
-      \ plugin <a style=\"text-decoration: none !important; border-bottom-style:\
-      \ dashed; border-bottom-width: thin; font-size: inherit; color: inherit; font-family:\
-      \ inherit; border-color: #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration Name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: true
@@ -1400,28 +982,11 @@ procedures:
       \ in the procedure summary logs."
     label: "Log File Location:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "StopDomain"
   description: "This procedure stops all servers within a managed domain and optionally\
     \ shuts down all host controllers."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "jbossTimeout"
     type: "entry"
     required: false
@@ -1448,8 +1013,7 @@ procedures:
     checkedValue: "1"
     uncheckedValue: "0"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "StopServers"
   description: "For Domain only. The StopServers procedure stops the servers in\
     \ the specified server group and checks if these servers are stopped successfully.\
@@ -1463,22 +1027,6 @@ procedures:
     \ status indicates that a server is configured to not start automatically while\
     \ 'STOPPED' status indicates that a server is configured to start automatically)."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -1486,7 +1034,6 @@ procedures:
       \ (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted,\
       \ script location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "serversgroup"
     type: "entry"
     required: true
@@ -1506,28 +1053,11 @@ procedures:
     label: "Timeout for recurring check of servers (seconds):"
     value: "300"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 - name: "UndeployApp"
   description: "Undeploys a deployment with the given name and, depending on the\
     \ arguments, removes its content from the repository."
   parameters:
-  - name: "serverconfig"
-    type: "entry"
-    required: true
-    documentation: "Name of the configuration to be used. URL and credentials are\
-      \ retrieved from the given configuration. To view or create a new configuration,\
-      \ go to the Administration -> Plugins tab, and select 'Configure' action for\
-      \ EC-JBoss plugin."
-    htmlDocumentation: "Name of the configuration to be used. URL and credentials\
-      \ are retrieved from the given configuration.<br/><br/>A Configuration defines\
-      \ connection details and can be created by going to plugin <a style=\"text-decoration:\
-      \ none !important; border-bottom-style: dashed; border-bottom-width: thin;\
-      \ font-size: inherit; color: inherit; font-family: inherit; border-color:\
-      \ #d8d8d8; border-spacing: 2px;\" href=\"/commander/pages/EC-JBoss-2.8.0.0/configurations\"\
-      \ target=\"_blank\">configuration page</a>."
-    label: "Configuration name:"
-    configuration: true
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
@@ -1535,7 +1065,6 @@ procedures:
       \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
       \ location from configuration will be used."
     label: "Physical location of the jboss client script:"
-    dependsOn: "serverconfig"
   - name: "appname"
     type: "entry"
     required: true
@@ -1572,8 +1101,7 @@ procedures:
     documentation: "Additional options for deploy command."
     label: "Additional options:"
   shell: "ec-perl"
-  properties: []
-  hasConfig: "attach"
+  hasConfig: true
 configuration:
   shell: "ec-perl"
   hasDebugLevel: false

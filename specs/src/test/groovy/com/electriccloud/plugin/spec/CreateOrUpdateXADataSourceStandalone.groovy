@@ -110,7 +110,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                         jdbcDriverName                  : '',
                         jndiName                        : '',
                         profile                         : '',
-                        serverconfig                    : '',
+                              config                    : '',
                         xaDataSourceProperties          : '',
                 ]
         ]
@@ -170,7 +170,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -220,7 +220,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -270,7 +270,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -309,7 +309,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.postgresql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.postgresql,
             ]
         def credential = [
@@ -347,7 +347,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -393,7 +393,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : newJNDI,
                 profile                         : defaultProfile,
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -433,7 +433,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : JNDI,
                 profile                         : defaultProfile,
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -479,7 +479,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : JNDI,
                 profile                         : defaultProfile,
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -524,7 +524,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : 'default',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -564,7 +564,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : 'full',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -603,7 +603,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : 'default',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -643,7 +643,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -682,7 +682,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -722,7 +722,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -761,7 +761,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -801,7 +801,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -841,7 +841,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -880,7 +880,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : '',
+                      config                    : '',
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -908,7 +908,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -937,7 +937,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : '',
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -966,7 +966,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : '',
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -995,7 +995,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : '',
         ]
         def credential = [
@@ -1024,7 +1024,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -1054,7 +1054,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : 'jboss_conf_not_existing',
+                      config                    : 'jboss_conf_not_existing',
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -1085,7 +1085,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -1114,7 +1114,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : 'MysqlXADS',
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -1143,7 +1143,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : 'wrong_driver',
                 jndiName                        : jndiName.mysql+testCaseId,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -1177,7 +1177,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -1207,7 +1207,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -1244,7 +1244,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                serverconfig                    : defaultConfigName,
+                      config                    : defaultConfigName,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [

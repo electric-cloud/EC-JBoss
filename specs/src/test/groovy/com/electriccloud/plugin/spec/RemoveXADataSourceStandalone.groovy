@@ -63,7 +63,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
                 procName: procName,
                 params  : [
                         profile      : '',
-                        serverconfig : '',
+                              config : '',
                         dataSourceName:    '',
                 ]
         ]
@@ -114,7 +114,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         String jdbcDriverName = "mysql"
         def runParams = [
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 dataSourceName   : 'MysqlXADS',
         ]
         setup:
@@ -139,7 +139,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         String jdbcDriverName = "mysql"
         def runParams = [
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 dataSourceName   : 'MysqlXADS',
         ]
         setup:
@@ -164,7 +164,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
 //        String jdbcDriverName = "mysql"
 //        def runParams = [
 //                profile          : '',
-//                serverconfig     : defaultConfigName,
+//                      config     : defaultConfigName,
 //                dataSourceName   : 'MysqlXADS',
 //        ]
 //        setup:
@@ -192,7 +192,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         String jdbcDriverName = "postgresql"
         def runParams = [
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 dataSourceName   : 'PostgresXADS',
         ]
         setup:
@@ -218,7 +218,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         String jdbcDriverName = "h2"
         def runParams = [
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 dataSourceName   : 'H2XADS',
         ]
         setup:
@@ -243,7 +243,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         String jdbcDriverName = "h2"
         def runParams = [
                 profile          : '',
-                serverconfig     : 'no_name',
+                      config     : 'no_name',
                 dataSourceName   : 'H2XADS',
         ]
         when:
@@ -263,7 +263,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         String jdbcDriverName = "h2"
         def runParams = [
                 profile          : 'profile_name',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 dataSourceName   : 'H2XADS',
         ]
         setup:
@@ -289,7 +289,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         String jdbcDriverName = "h2"
         def runParams = [
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 dataSourceName   : 'no_name',
         ]
         when:

@@ -28,7 +28,7 @@ class CheckServerStatus extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig            : '',
+                              config            : '',
                         scriptphysicalpath      : '',
                         criteria                : '',
                         host                    : '',
@@ -57,7 +57,7 @@ class CheckServerStatus extends PluginTestHelper {
     def "Sanity"() {
 
         def runParams = [
-                serverconfig            : defaultConfigName,
+                      config            : defaultConfigName,
                 scriptphysicalpath      : defaultCliPath,
                 criteria                : 'RUNNING',
                 host                    : '',
