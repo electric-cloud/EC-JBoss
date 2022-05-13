@@ -33,7 +33,7 @@ class ShutdownStandaloneServer extends PluginTestHelper {
                 procName: procName,
                 params  : [
                         scriptphysicalpath: '',
-                        serverconfig: '',
+                              config: '',
                 ]
         ]
 
@@ -45,7 +45,7 @@ class ShutdownStandaloneServer extends PluginTestHelper {
                         additionalOptions: '',
                         alternatejbossconfig: '',
                         scriptphysicalpath: '',
-                        serverconfig: '',
+                              config: '',
                         logFileLocation: '',
                 ]
         ]
@@ -70,14 +70,14 @@ class ShutdownStandaloneServer extends PluginTestHelper {
 
         def runParams = [
                 scriptphysicalpath: defaultCliPath,
-                serverconfig: defaultConfigName,
+                      config: defaultConfigName,
         ]
 
         def runParamsStart = [
                 additionalOptions   : '-b 0.0.0.0 -bmanagement 0.0.0.0 -c standalone-full.xml',
                 alternatejbossconfig: '',
                 scriptphysicalpath: '/opt/jboss/bin/standalone.sh',
-                serverconfig: defaultConfigName,
+                      config: defaultConfigName,
                 logFileLocation: '',
 
         ]

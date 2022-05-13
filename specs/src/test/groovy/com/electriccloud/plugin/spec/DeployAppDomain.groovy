@@ -68,7 +68,7 @@ class DeployAppDomain extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig         : '',
+                              config         : '',
                         scriptphysicalpath   : '',
                         warphysicalpath      : '',
                         appname              : '',
@@ -101,7 +101,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C84582"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
@@ -144,7 +144,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C84582"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
@@ -187,7 +187,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C84612"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
@@ -228,7 +228,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C111810"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
@@ -269,7 +269,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277888"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app-custom-appname.war", // custom app name
@@ -309,7 +309,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277889"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
@@ -350,7 +350,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C111895"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app-custom-appname.war", // custom app name
@@ -390,7 +390,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277892"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app-custom-appname", // no extension here
@@ -430,7 +430,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277930"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
@@ -470,7 +470,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C258992"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
@@ -498,7 +498,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C258987"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
@@ -526,7 +526,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277905"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
@@ -570,7 +570,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277890"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
@@ -617,7 +617,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277906"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
@@ -655,7 +655,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C84613"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
@@ -699,7 +699,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C111812"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
@@ -748,7 +748,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C259002"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
@@ -777,7 +777,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277891"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app with whitespace.war", // whitespaces in path
                 appname              : "$testCaseId-app.war",
@@ -817,7 +817,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277934"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "", // required param not provided
                 appname              : "$testCaseId-app.war",
@@ -842,7 +842,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C84591"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"non-existing-file.war", // non existing file
                 appname              : "$testCaseId-app.war",
@@ -867,7 +867,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277931"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
@@ -908,7 +908,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277893"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "",
@@ -949,7 +949,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277932"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
@@ -993,7 +993,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C277933"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
@@ -1021,7 +1021,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C259006"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : getPathApp()+"$testCaseId-app.war",
                 appname              : "$testCaseId-app.war",
@@ -1050,7 +1050,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C278052"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "--url=$linkToSampleWarFile",
                 appname              : "$testCaseId-app.war",
@@ -1088,7 +1088,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C278053"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "--url=$linkToSampleWarFile2",
                 appname              : "$testCaseId-app.war",
@@ -1132,7 +1132,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C278054"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "--url=$linkToSampleWarFile",
                 appname              : "$testCaseId-app.war",
@@ -1171,7 +1171,7 @@ class DeployAppDomain extends PluginTestHelper {
         String testCaseId = "C278055"
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 warphysicalpath      : "--url=https://github.com/electric-cloud/incorrect-path/hello-world.war",
                 appname              : "$testCaseId-app.war",

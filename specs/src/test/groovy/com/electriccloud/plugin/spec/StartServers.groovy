@@ -36,7 +36,7 @@ class StartServers extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig      : '',
+                              config      : '',
                         scriptphysicalpath: '',
                         serversgroup      : '',
                         wait_time         : '',
@@ -80,7 +80,7 @@ class StartServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -126,7 +126,7 @@ class StartServers extends PluginTestHelper {
 
            when:
            def runParams = [
-                   serverconfig      : defaultConfigName,
+                         config      : defaultConfigName,
                    scriptphysicalpath: defaultCliPath,
                    serversgroup      : serverGroupName,
                    wait_time         : defaultWaitTime
@@ -173,7 +173,7 @@ class StartServers extends PluginTestHelper {
 
            when:
            def runParams = [
-                   serverconfig      : defaultConfigName,
+                         config      : defaultConfigName,
                    scriptphysicalpath: defaultCliPath,
                    serversgroup      : serverGroupName,
                    wait_time         : defaultWaitTime
@@ -221,7 +221,7 @@ class StartServers extends PluginTestHelper {
 
            when:
            def runParams = [
-                   serverconfig      : defaultConfigName,
+                         config      : defaultConfigName,
                    scriptphysicalpath: defaultCliPath,
                    serversgroup      : serverGroupName,
                    wait_time         : defaultWaitTime
@@ -270,7 +270,7 @@ class StartServers extends PluginTestHelper {
 
            when:
            def runParams = [
-                   serverconfig      : defaultConfigName,
+                         config      : defaultConfigName,
                    scriptphysicalpath: defaultCliPath,
                    serversgroup      : serverGroupName,
                    wait_time         : defaultWaitTime
@@ -339,7 +339,7 @@ class StartServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -392,7 +392,7 @@ class StartServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : waitTime
@@ -431,7 +431,7 @@ class StartServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : waitTime
@@ -459,7 +459,7 @@ class StartServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -484,7 +484,7 @@ class StartServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -520,7 +520,7 @@ class StartServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : waitTime
@@ -560,7 +560,7 @@ class StartServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : waitTime
@@ -588,7 +588,7 @@ class StartServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -613,7 +613,7 @@ class StartServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime

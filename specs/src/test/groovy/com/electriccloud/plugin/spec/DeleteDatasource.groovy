@@ -83,7 +83,7 @@ class DeleteDatasource extends PluginTestHelper {
                         scriptphysicalpath  : '',
                         datasource_name     : '',
                         profile             : '',
-                        serverconfig        : '',
+                              config        : '',
                 ]
         ]
 
@@ -100,7 +100,7 @@ class DeleteDatasource extends PluginTestHelper {
 			            jdbcDriverName                  : '',
 			            jndiName                        : '',
 			            profile                         : '',
-			            serverconfig                    : '',
+			                  config                    : '',
                 ]
         ]
 
@@ -132,7 +132,7 @@ class DeleteDatasource extends PluginTestHelper {
                 scriptphysicalpath  : defaultCliPath,
                 datasource_name     : dataSourceName,
                 profile             : '',
-                serverconfig        : defaultConfigName,
+                      config        : defaultConfigName,
         ]
 
         def runParamsCreate = [
@@ -144,7 +144,7 @@ class DeleteDatasource extends PluginTestHelper {
                 jdbcDriverName                  : 'h2',
                 jndiName                        : "java:/${dataSourceName}",
                 profile                         : '',
-                serverconfig                    : defaultConfigName
+                      config                    : defaultConfigName
 
         ]
         def credential = [

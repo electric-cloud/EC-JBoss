@@ -118,7 +118,7 @@ class StartStandaloneServer extends PluginTestHelper {
                         additionalOptions: '',
                         alternatejbossconfig: '',
                         scriptphysicalpath: '',
-                        serverconfig: '',
+                              config: '',
                         logFileLocation: '',
                 ]
         ]
@@ -148,7 +148,7 @@ class StartStandaloneServer extends PluginTestHelper {
                 additionalOptions: additionalOption,
                 alternatejbossconfig: standaloneConfig,
                 scriptphysicalpath: scriptPath,
-                serverconfig: configName,
+                      config: configName,
                 logFileLocation: logFileLocation,
 
         ]
@@ -184,7 +184,7 @@ class StartStandaloneServer extends PluginTestHelper {
             additionalOptions: additionalOption,
             alternatejbossconfig: standaloneConfig,
             scriptphysicalpath: scriptPath,
-            serverconfig: configName,
+                  config: configName,
             logFileLocation: logFileLocation,
 
         ]
@@ -228,7 +228,7 @@ class StartStandaloneServer extends PluginTestHelper {
             additionalOptions: additionalOption,
             alternatejbossconfig: standaloneConfig,
             scriptphysicalpath: scriptPath,
-            serverconfig: configName
+                  config: configName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -247,7 +247,7 @@ class StartStandaloneServer extends PluginTestHelper {
                 additionalOptions: additionalOptions.'docker',
                 alternatejbossconfig: standaloneConfigs.'empty',
                 scriptphysicalpath: scriptPaths.'default',
-                serverconfig: defaultConfigName,
+                      config: defaultConfigName,
                 logFileLocation: logFileLocation,
             ] 
             runProcedureJob = runProcedureUnderTest(runParams)

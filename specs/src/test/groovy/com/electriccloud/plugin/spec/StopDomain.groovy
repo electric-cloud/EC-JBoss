@@ -41,7 +41,7 @@ class StopDomain extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig     		: '',
+                              config     		: '',
                         allControllersShutdown  : '',
                         jbossTimeout        	: '',
 
@@ -69,7 +69,7 @@ class StopDomain extends PluginTestHelper {
         def serverGroupName = "default"
 
         def runParams = [
-                serverconfig     		: defaultConfigName,
+                      config     		: defaultConfigName,
                 allControllersShutdown  : '',
                 jbossTimeout        	: '',
         ]
@@ -102,7 +102,7 @@ class StopDomain extends PluginTestHelper {
         def serverGroupName = "default"
         
         def runParams = [
-    		            serverconfig     		: defaultConfigName,
+    		                  config     		: defaultConfigName,
                         allControllersShutdown  : '',
                         jbossTimeout        	: '',
     	]
@@ -135,7 +135,7 @@ class StopDomain extends PluginTestHelper {
         def serverGroupName = "default"
         
         def runParams = [
-                        serverconfig            : defaultConfigName,
+                              config            : defaultConfigName,
                         allControllersShutdown  : '0',
                         jbossTimeout            : '60',
         ]
@@ -163,7 +163,7 @@ class StopDomain extends PluginTestHelper {
         def serverGroupName = "default"
         
         def runParams = [
-                        serverconfig            : defaultConfigName,
+                              config            : defaultConfigName,
                         allControllersShutdown  : '',
                         jbossTimeout            : '0',
         ]
@@ -197,7 +197,7 @@ class StopDomain extends PluginTestHelper {
         def serverGroupName = "default"
         
         def runParams = [
-                        serverconfig            : defaultConfigName,
+                              config            : defaultConfigName,
                         allControllersShutdown  : '1',
                         jbossTimeout            : '60',
         ]
@@ -231,7 +231,7 @@ class StopDomain extends PluginTestHelper {
         def serverGroupName = "default"
         
         def runParams = [
-                        serverconfig            : defaultConfigName,
+                              config            : defaultConfigName,
                         allControllersShutdown  : '1',
                         jbossTimeout            : '60',
         ]
@@ -266,7 +266,7 @@ class StopDomain extends PluginTestHelper {
         def serverGroupName = "default"
         
         def runParams = [
-                        serverconfig            : 'jboss_conf_not_exist',
+                              config            : 'jboss_conf_not_exist',
                         allControllersShutdown  : '1',
                         jbossTimeout            : '60',
         ]
@@ -286,7 +286,7 @@ class StopDomain extends PluginTestHelper {
         def serverGroupName = "default"
         
         def runParams = [
-                        serverconfig            : '',
+                              config            : '',
                         allControllersShutdown  : '1',
                         jbossTimeout            : '60',
         ]
@@ -304,7 +304,7 @@ class StopDomain extends PluginTestHelper {
         String testCaseId = "C289407"
         def serverGroupName = "default"
         def runParams = [
-                        serverconfig            : defaultConfigName,
+                              config            : defaultConfigName,
                         allControllersShutdown  : '1',
                         jbossTimeout            : '60',
         ]
@@ -336,7 +336,7 @@ class StopDomain extends PluginTestHelper {
         String testCaseId = "C289410"
         def serverGroupName = "default"
         def runParams = [
-                        serverconfig            : defaultConfigName,
+                              config            : defaultConfigName,
                         allControllersShutdown  : '1',
                         jbossTimeout            : '60',
         ]

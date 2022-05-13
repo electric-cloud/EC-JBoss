@@ -35,7 +35,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                         additionalOptions: '',
                         jndiNames        : '',
                         profile          : '',
-                        serverconfig     : '',
+                              config     : '',
                         topicName        : '',
                 ]
         ]
@@ -63,7 +63,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: '',
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
         when:
@@ -90,7 +90,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: '',
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
         when:
@@ -117,7 +117,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : 'full',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
         when:
@@ -146,7 +146,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -177,7 +177,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : '',
         ]
 
@@ -198,7 +198,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : '',
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -220,7 +220,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                serverconfig     : "jboss_conf_non-existing",
+                      config     : "jboss_conf_non-existing",
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -230,7 +230,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "error"
 //        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
-//        assert runProcedureJob.getLowerStepSummary() =~ "Configuration ${runParams.serverconfig} doesn't exist."
+//        assert runProcedureJob.getLowerStepSummary() =~ "Configuration ${runParams.      config} doesn't exist."
 
     }
 
@@ -244,7 +244,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: "--some-wrong-option",
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -268,7 +268,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: '--legacy-entries=java:/test,java:/test2',
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
         when:
@@ -296,7 +296,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 

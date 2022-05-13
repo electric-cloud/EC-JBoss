@@ -45,7 +45,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                         disabledServerGroups           : '',
                         enabledServerGroups            : '',
                         runtimeName                    : '',
-                        serverconfig                   : '',
+                              config                   : '',
                 ]
         ]
 
@@ -74,7 +74,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -110,7 +110,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -146,7 +146,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : 'disabled-server-group',
                 enabledServerGroups            : '',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -182,7 +182,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : 'enabled-server-group',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -218,7 +218,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -255,7 +255,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : "$testCaseId-app-custom-runtimename.war",
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -291,7 +291,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : "$testCaseId-app-custom-runtimename.war",
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -328,7 +328,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : "$testCaseId-app-custom-runtimename.war",
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -365,7 +365,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : "$testCaseId-app.war",
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -401,7 +401,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : "$testCaseId-app.war",
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -438,7 +438,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : "$testCaseId-app-customname-runtime.war",
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         when:
@@ -473,7 +473,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : "$testCaseId-app.war",
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         when:
@@ -507,7 +507,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -546,7 +546,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : "$testCaseId-app.war",
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -585,7 +585,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : 'disabled-server-group',
                 enabledServerGroups            : 'enabled-server-group',
                 runtimeName                    : "$testCaseId-app.war",
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:
@@ -624,7 +624,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         when:
@@ -657,7 +657,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         when:
@@ -680,7 +680,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
         setup:
         downloadArtifact(linkToSampleWarFile, runParams.applicationContentSourcePath)
@@ -718,7 +718,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         when:
@@ -743,7 +743,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : '',
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         when:
@@ -767,7 +767,7 @@ class DeployApplicationStandalone extends PluginTestHelper {
                 disabledServerGroups           : '',
                 enabledServerGroups            : '',
                 runtimeName                    : "$testCaseId-app-new-runtime-name.war",
-                serverconfig                   : defaultConfigName,
+                      config                   : defaultConfigName,
         ]
 
         setup:

@@ -275,7 +275,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 resName : resName,
                 procName: helperProcedureRunCustomCommand,
                 params  : [
-                        serverconfig      : configName,
+                              config      : configName,
                         scriptphysicalpath: '',
                         customCommand     : '',
                 ]

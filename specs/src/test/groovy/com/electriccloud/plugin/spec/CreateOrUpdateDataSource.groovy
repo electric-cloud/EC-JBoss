@@ -186,7 +186,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         nameUpdate: "Data source 'dsName1' has been updated successfully by new user name, password.",
         nameAndJndiUpdate: "Data source 'dsName1' has been updated successfully by new jndi name, user name, password.",
         notUpdate: "Data source 'dsName1' is up-to-date",
-        emptyConfig: "Parameter 'serverconfig' of procedure 'CreateOrUpdateDataSource' is marked as required, but it does not have a value",
+        emptyConfig: "Parameter 'config' of procedure 'CreateOrUpdateDataSource' is marked as required, but it does not have a value",
         emptyProfile: "Required parameter 'profile' is not provided \\(parameter required for JBoss domain\\)",
         emptyDSName: "Parameter 'dataSourceName' of procedure 'CreateOrUpdateDataSource' is marked as required, but it does not have a value",
         emptyJNDIName: "Parameter 'jndiName' of procedure 'CreateOrUpdateDataSource' is marked as required, but it does not have a value",
@@ -307,7 +307,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
 			            jdbcDriverName: '',
 			            jndiName: '',
 			            profile: '',
-			            serverconfig: '',
+			                  config: '',
                 ]
         ]
 
@@ -351,7 +351,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
                 jdbcDriverName: jdbcDriverName,
                 jndiName: jndiName,
                 profile: profile,
-                serverconfig: configName
+                      config: configName
 
         ]
         def credential = [
@@ -420,7 +420,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
             jdbcDriverName: jdbcDriverName,
             jndiName: jndiName,
             profile: profile,
-            serverconfig: configName
+                  config: configName
 
         ]
         def credential = [
@@ -498,7 +498,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
             jdbcDriverName: jdbcDriverName,
             jndiName: jndiName,
             profile: profile,
-            serverconfig: configName
+                  config: configName
 
         ]
         def credential = [
@@ -567,7 +567,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
             jdbcDriverName: jdbcDriverName,
             jndiName: jndiName,
             profile: profile,
-            serverconfig: configName
+                  config: configName
 
         ]
         def credential = [
@@ -636,7 +636,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
             jdbcDriverName: jdbcDriverName,
             jndiName: jndiName,
             profile: profile,
-            serverconfig: configName
+                  config: configName
 
         ]
         def credential = [
@@ -705,7 +705,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
             jdbcDriverName: jdbcDriverName,
             jndiName: jndiName,
             profile: profile,
-            serverconfig: configName
+                  config: configName
         ]
 
         def credential = [
@@ -754,7 +754,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
             jdbcDriverName: jdbcDriverName,
             jndiName: jndiName,
             profile: profile,
-            serverconfig: configName
+                  config: configName
         ]
 
         def credential = [
@@ -805,7 +805,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
             jdbcDriverName: jdbcDriverName,
             jndiName: jndiName,
             profile: profile,
-            serverconfig: configName
+                  config: configName
 
         ]
         def credential = [
@@ -848,7 +848,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
             jdbcDriverName: jdbcDriverName,
             jndiName: jndiName,
             profile: profile,
-            serverconfig: configName
+                  config: configName
 
         ]
         def credential = [

@@ -38,7 +38,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                         additionalOptions: '',
                         jndiNames        : '',
                         profile          : '',
-                        serverconfig     : '',
+                              config     : '',
                         topicName        : '',
                 ]
         ]
@@ -68,7 +68,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: '',
                 jndiNames        : defaultJndiNames,
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
         when:
@@ -95,7 +95,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: '',
                 jndiNames        : defaultJndiNames,
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
         when:
@@ -122,7 +122,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: "--profile=$defaultProfile",
                 jndiNames        : defaultJndiNames,
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
         when:
@@ -150,7 +150,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : 'full-ha',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -185,7 +185,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -217,7 +217,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : '',
         ]
 
@@ -238,7 +238,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : '',
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -260,7 +260,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : defaultProfile,
-                serverconfig     : "jboss_conf_non-existing",
+                      config     : "jboss_conf_non-existing",
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -270,7 +270,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "error"
         //        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
-//        assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.serverconfig} doesn't exist."
+//        assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.      config} doesn't exist."
 
     }
 
@@ -284,7 +284,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: "--some-wrong-option",
                 jndiNames        : defaultJndiNames,
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -307,7 +307,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: '',
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -329,7 +329,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: '',
                 jndiNames        : defaultJndiNames,
                 profile          : 'non-existing-profile',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -351,7 +351,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: '',
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
 
                 ]
@@ -380,7 +380,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: '--legacy-entries=java:/test,java:/test2',
                 jndiNames        : defaultJndiNames,
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
         when:
@@ -407,7 +407,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 

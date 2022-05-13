@@ -35,7 +35,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig          : '',
+                              config          : '',
                         informationType       : '',
                         informationTypeContext: '',
                         additionalOptions     : '',
@@ -60,7 +60,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "Sanity"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeSystemDump,
                 informationTypeContext: '',
                 additionalOptions     : ''
@@ -98,7 +98,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, systemDump with minimum params (systemDump 1)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeSystemDump,
                 informationTypeContext: '',
                 additionalOptions     : ''
@@ -136,7 +136,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, systemDump context ignored (systemDump 2)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeSystemDump,
                 informationTypeContext: 'someContext',
                 additionalOptions     : ''
@@ -174,7 +174,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, systemDump additional options (systemDump 3)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeSystemDump,
                 informationTypeContext: '',
                 additionalOptions     : 'include-runtime=true,include-defaults=true'
@@ -211,7 +211,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Domain, systemDump wrong additional options (systemDump 4)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeSystemDump,
                 informationTypeContext: '',
                 additionalOptions     : 'wrong-option=true'
@@ -228,7 +228,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, profiles with minimum params (profiles 1)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeProfiles,
                 informationTypeContext: '',
                 additionalOptions     : ''
@@ -262,7 +262,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, profiles context ignored (profiles 2)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeProfiles,
                 informationTypeContext: 'someContext',
                 additionalOptions     : ''
@@ -296,7 +296,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, profiles additional options (profiles 3)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeProfiles,
                 informationTypeContext: '',
                 additionalOptions     : 'include-runtime=true,include-defaults=true'
@@ -330,7 +330,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Domain, profiles wrong additional options (profiles 4)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeProfiles,
                 informationTypeContext: '',
                 additionalOptions     : 'wrong-option=true'
@@ -347,7 +347,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, dataSources with minimum params on full profile (dataSources 1)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: 'full',
                 additionalOptions     : ''
@@ -376,7 +376,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, dataSources additional options on full profile (dataSources 2)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: 'full',
                 additionalOptions     : 'include-runtime=true,include-defaults=true'
@@ -405,7 +405,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Domain, dataSources wrong additional options on full profile (dataSources 3)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: 'full',
                 additionalOptions     : 'wrong-option=true'
@@ -422,7 +422,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Domain, dataSources wrong profile (dataSources 4)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: 'wrong-profile',
                 additionalOptions     : ''
@@ -439,7 +439,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, dataSources with minimum params on all profiles (dataSources 5)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: '',
                 additionalOptions     : ''
@@ -477,7 +477,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, dataSources additional options on all profiles (dataSources 6)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: '',
                 additionalOptions     : 'include-runtime=true,include-defaults=true'
@@ -515,7 +515,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Domain, dataSources wrong additional options on all profiles (dataSources 7)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: '',
                 additionalOptions     : 'wrong-option=true'
@@ -532,7 +532,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, xaDataSources with minimum params on full profile (xaDataSources 1)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: 'full',
                 additionalOptions     : ''
@@ -559,7 +559,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, xaDataSources additional options on full profile (xaDataSources 2)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: 'full',
                 additionalOptions     : 'include-runtime=true,include-defaults=true'
@@ -586,7 +586,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Domain, xaDataSources wrong additional options on full profile (xaDataSources 3)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: 'full',
                 additionalOptions     : 'wrong-option=true'
@@ -603,7 +603,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Domain, xaDataSources wrong profile (xaDataSources 4)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: 'wrong-profile',
                 additionalOptions     : ''
@@ -620,7 +620,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, xaDataSources with minimum params on all profiles (xaDataSources 5)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: '',
                 additionalOptions     : ''
@@ -651,7 +651,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "GetEnvInfo, Domain, xaDataSources additional options on all profiles (xaDataSources 6)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: '',
                 additionalOptions     : 'include-runtime=true,include-defaults=true'
@@ -682,7 +682,7 @@ class GetEnvInfoDomain extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Domain, xaDataSources wrong additional options on all profiles (xaDataSources 7)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: '',
                 additionalOptions     : 'wrong-option=true'

@@ -149,7 +149,7 @@ class StartHostController extends PluginTestHelper {
                     hostConfig: '',
                     jbossHostName: '',
                     logFileLocation: '',
-                    serverconfig: '',
+                          config: '',
                     startupScript: '',
                 ]
         ]
@@ -178,7 +178,7 @@ class StartHostController extends PluginTestHelper {
                 hostConfig: hostConfig,
                 jbossHostName: jbossHostName,
                 logFileLocation: logFileLocation,
-                serverconfig: serverconfig,
+                      config:       config,
                 startupScript: startupScript,
         ]
         setup:
@@ -197,7 +197,7 @@ class StartHostController extends PluginTestHelper {
 
 
         where:
-        testCaseId                  | serverconfig      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption                                          | jobExpectedStatus | summary                             | logs
+        testCaseId                  |       config      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption                                          | jobExpectedStatus | summary                             | logs
         testCases.systemTest1.name  | defaultConfigName | domainConfigs.'default' | hostConfigs.'default'    | jbossHostNames.'master'   | startupScripts.'default'  | logFileLocations.'empty'   | additionalOptions.'docker'                                | "success"         | summaries.'default'                 | jobLogs.'default'
         testCases.systemTest2.name  | defaultConfigName | domainConfigs.'default' | hostConfigs.'default'    | jbossHostNames.'master'   | startupScripts.'default'  | logFileLocations.'custom'  | additionalOptions.'docker'+additionalOptions.'customLogs' | "success"         | summaries.'default'                 | jobLogs.'customLogs'
     }
@@ -212,7 +212,7 @@ class StartHostController extends PluginTestHelper {
             hostConfig: hostConfig,
             jbossHostName: jbossHostName,
             logFileLocation: logFileLocation,
-            serverconfig: serverconfig,
+                  config:       config,
             startupScript: startupScript,
         ]
         setup:
@@ -231,7 +231,7 @@ class StartHostController extends PluginTestHelper {
 
 
         where:
-        testCaseId                  | serverconfig      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption                                          | jobExpectedStatus | summary                             | logs
+        testCaseId                  |       config      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption                                          | jobExpectedStatus | summary                             | logs
         testCases.systemTest1.name  | defaultConfigName | domainConfigs.'default' | hostConfigs.'default'    | jbossHostNames.'master'   | startupScripts.'default'  | logFileLocations.'empty'   | additionalOptions.'docker'                                | "success"         | summaries.'default'                 | jobLogs.'default'
         testCases.systemTest2.name  | defaultConfigName | domainConfigs.'default' | hostConfigs.'default'    | jbossHostNames.'master'   | startupScripts.'default'  | logFileLocations.'custom'  | additionalOptions.'docker'+additionalOptions.'customLogs' | "success"         | summaries.'default'                 | jobLogs.'customLogs'
         testCases.systemTest3.name  | defaultConfigName | domainConfigs.'default' | hostConfigs.'default'    | jbossHostNames.'empty'    | startupScripts.'default'  | logFileLocations.'empty'   | additionalOptions.'docker'                                | "warning"         | summaries.'emptyHost'               | jobLogs.'emptyHost'
@@ -252,7 +252,7 @@ class StartHostController extends PluginTestHelper {
             hostConfig: hostConfig,
             jbossHostName: jbossHostName,
             logFileLocation: logFileLocation,
-            serverconfig: serverconfig,
+                  config:       config,
             startupScript: startupScript,
         ]
         setup:
@@ -271,7 +271,7 @@ class StartHostController extends PluginTestHelper {
         cleanup: 
         waitUntilServerIsUp(jbossHostNames.'slave')
         where:
-        testCaseId                  | serverconfig      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption             | jobExpectedStatus | summary                   | logs
+        testCaseId                  |       config      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption             | jobExpectedStatus | summary                   | logs
         testCases.systemTest5.name  | defaultConfigName | domainConfigs.'default' | hostConfigs.'slave'      | jbossHostNames.'slave'    | startupScripts.'default'  | logFileLocations.'empty'   | additionalOptions.'slave'    | "success"         | summaries.'defaultSlave'  | jobLogs.'defaultSlave'
         testCases.systemTest6.name  | defaultConfigName | domainConfigs.'default' | hostConfigs.'slave'      | jbossHostNames.'empty'    | startupScripts.'default'  | logFileLocations.'empty'   | additionalOptions.'slave'    | "warning"         | summaries.'emptyHost'     | jobLogs.'emptyHost'
         testCases.systemTest12.name | defaultConfigName | domainConfigs.'default' | hostConfigs.'slave'      | jbossHostNames.'wrong'    | startupScripts.'default'  | logFileLocations.'empty'   | additionalOptions.'slave'    | "error"           | summaries.'wrongSlaveHost'| jobLogs.'wrongHost'
@@ -287,7 +287,7 @@ class StartHostController extends PluginTestHelper {
             hostConfig: hostConfig,
             jbossHostName: jbossHostName,
             logFileLocation: logFileLocation,
-            serverconfig: serverconfig,
+                  config:       config,
             startupScript: startupScript,
         ]
         setup:
@@ -311,13 +311,13 @@ class StartHostController extends PluginTestHelper {
             hostConfig: hostConfigs.'default',
             jbossHostName: jbossHostNames.'master',
             logFileLocation: logFileLocations.'empty',
-            serverconfig: defaultConfigName,
+                  config: defaultConfigName,
             startupScript: startupScripts.'default',
         ]
         runProcedureJob = runProcedureUnderTest(runParams)
 
         where:
-        testCaseId                 | serverconfig      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption            | jobExpectedStatus | summary              | logs
+        testCaseId                 |       config      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption            | jobExpectedStatus | summary              | logs
         testCases.systemTest7.name | defaultConfigName | domainConfigs.'default' | hostConfigs.'default'    | jbossHostNames.'master'   | startupScripts.'default'  | logFileLocations.'empty'   | additionalOptions.'wrong'   | "error"           | summaries.'error'    | jobLogs.'error'
     }
 
@@ -331,7 +331,7 @@ class StartHostController extends PluginTestHelper {
             hostConfig: hostConfig,
             jbossHostName: jbossHostName,
             logFileLocation: logFileLocation,
-            serverconfig: serverconfig,
+                  config:       config,
             startupScript: startupScript,
         ]
         setup:
@@ -355,13 +355,13 @@ class StartHostController extends PluginTestHelper {
             hostConfig: hostConfigs.'slave',
             jbossHostName: jbossHostNames.'slave',
             logFileLocation: logFileLocations.'empty',
-            serverconfig: defaultConfigName,
+                  config: defaultConfigName,
             startupScript: startupScripts.'default',
         ]
         runProcedureJob = runProcedureUnderTest(runParams)
 
         where:
-        testCaseId                  | serverconfig      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption                | jobExpectedStatus | summary                   | logs
+        testCaseId                  |       config      | domainConfig            | hostConfig               | jbossHostName             | startupScript             | logFileLocation            | additionalOption                | jobExpectedStatus | summary                   | logs
         testCases.systemTest13.name | defaultConfigName | domainConfigs.'default' | hostConfigs.'slave'      | jbossHostNames.'slave'    | startupScripts.'default'  | logFileLocations.'empty'   | additionalOptions.'wrongMaster' | "error"           | summaries.'wrongMaster'   | jobLogs.'wrongMaster'
     }
 
