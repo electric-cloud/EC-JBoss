@@ -1,22 +1,65 @@
-plugins {
-    id "com.cloudbees.cd.plugins.specs" version "1.5.13.0"
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven {
+            url 'https://nexus-internal.cloudbees.com/content/repositories/snapshots'
+            credentials {
+                username = nexusUsername
+                password = nexusPassword
+            }
+        }
+        maven {
+            url 'https://nexus-internal.cloudbees.com/content/groups/mirror'
+            credentials {
+                username = nexusUsername
+                password = nexusPassword
+            }
+        }
+
+    }
+    dependencies {
+        classpath "com.cloudbees.cd.plugins:hen:+"
+    }
 }
+
+plugins {
+    id "com.cloudbees.cd.plugins.specs" version "1.6.10.0"
+}
+
+
+
+apply plugin: 'com.cloudbees.cd.plugins.specs-hen'
+
 
 version = "1.0"
 description = "EC-JBoss Specs"
 sourceCompatibility = 1.8
 
-defaultTasks 'test'
+generateHenClasses {
+    pluginName = 'EC-Rest'
+}
+
+//defaultTasks 'test'
 
 repositories {
-//    jcenter()
+    mavenLocal()
     mavenCentral()
     maven {
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
+        url 'https://nexus-internal.cloudbees.com/content/repositories/snapshots'
+        credentials {
+            username = nexusUsername
+            password = nexusPassword
+        }
     }
     maven {
-        url "https://repo.cloudbees.com/content/repositories/dev-connect"
+        url 'https://nexus-internal.cloudbees.com/content/groups/mirror'
+        credentials {
+            username = nexusUsername
+            password = nexusPassword
+        }
     }
+
 }
 
 dependencies {
@@ -25,6 +68,9 @@ dependencies {
 //    implementation 'com.electriccloud:commander-spec-tests:latest.release'
     implementation 'com.electriccloud:ec-specs-plugins-core:1.9.2'
     implementation 'com.jayway.restassured:rest-assured:2.4.0'
+    implementation("com.cloudbees.cd.plugins:hen:+") {
+        exclude(group: "org.codehaus.groovy", module: "groovy-all")
+    }
 }
 
 sendAllureReports {
