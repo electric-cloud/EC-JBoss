@@ -260,7 +260,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : defaultProfile,
-                      config     : "jboss_conf_non-existing",
+                      config     : wrongConfig,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -269,8 +269,7 @@ class CreateOrUpdateJMSTopicDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        //        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
-//        assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.      config} doesn't exist."
+        assert runProcedureJob.summary() =~ "Configuration ${wrongConfig} does not exist."
 
     }
 

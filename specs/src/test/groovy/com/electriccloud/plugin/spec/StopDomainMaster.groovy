@@ -218,7 +218,7 @@ class StopDomainMaster extends PluginTestHelper {
         def serverGroupName = "default"
         
         def runParams = [
-                              config            : 'jboss_conf_not_exist',
+                              config            : wrongConfig,
                         allControllersShutdown  : '1',
                         jbossTimeout            : '60',
         ]
@@ -226,9 +226,8 @@ class StopDomainMaster extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
         then:
         assert runProcedureJob.getStatus() == 'error'
-        //        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
-//        assert runProcedureJob.getUpperStepSummary() == "Configuration jboss_conf_not_exist doesn't exist.\n"
-    }   
+        assert runProcedureJob.summary() =~ "Configuration ${wrongConfig} does not exist."
+    }
 
     @Timeout(600)
     @NewFeature(pluginVersion = "2.6.0")

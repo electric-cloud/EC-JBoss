@@ -1054,7 +1054,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
                 jdbcDriverName                  : jdbcDriverName,
                 jndiName                        : jndiName.mysql,
                 profile                         : '',
-                      config                    : 'jboss_conf_not_existing',
+                      config                    : wrongConfig,
                 xaDataSourceProperties          : xaDataSourceProperties.mysql,
         ]
         def credential = [
@@ -1066,8 +1066,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-//        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
-//        assert runProcedureJob.getLowerStepSummary() =~ "Configuration jboss_conf_not_existing doesn't exist."
+        assert runProcedureJob.summary() =~ "Configuration ${wrongConfig} does not exist."
     }
 
     @Ignore
