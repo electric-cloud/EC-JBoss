@@ -35,7 +35,7 @@ class StopServers extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig      : '',
+                              config      : '',
                         scriptphysicalpath: '',
                         serversgroup      : '',
                         wait_time         : '',
@@ -81,7 +81,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -129,7 +129,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -180,7 +180,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -230,7 +230,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -276,7 +276,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -321,7 +321,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -368,7 +368,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -413,7 +413,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : waitTime
@@ -453,7 +453,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : waitTime
@@ -481,7 +481,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -506,7 +506,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -543,7 +543,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : waitTime
@@ -584,7 +584,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : waitTime
@@ -612,7 +612,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime
@@ -637,7 +637,7 @@ class StopServers extends PluginTestHelper {
 
         when:
         def runParams = [
-                serverconfig      : defaultConfigName,
+                      config      : defaultConfigName,
                 scriptphysicalpath: defaultCliPath,
                 serversgroup      : serverGroupName,
                 wait_time         : defaultWaitTime

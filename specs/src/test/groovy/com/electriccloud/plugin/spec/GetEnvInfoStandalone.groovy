@@ -37,7 +37,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig          : '',
+                              config          : '',
                         informationType       : '',
                         informationTypeContext: '',
                         additionalOptions     : '',
@@ -62,7 +62,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "Sanity"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeSystemDump,
                 informationTypeContext: '',
                 additionalOptions     : ''
@@ -100,7 +100,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "GetEnvInfo, Standalone, systemDump with minimum params (systemDump 1)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeSystemDump,
                 informationTypeContext: '',
                 additionalOptions     : ''
@@ -138,7 +138,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "GetEnvInfo, Standalone, systemDump context ignored (systemDump 2)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeSystemDump,
                 informationTypeContext: 'someContext',
                 additionalOptions     : ''
@@ -176,7 +176,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "GetEnvInfo, Standalone, systemDump additional options (systemDump 3)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeSystemDump,
                 informationTypeContext: '',
                 additionalOptions     : 'include-runtime=true,include-defaults=true'
@@ -213,7 +213,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Standalone, systemDump wrong additional options (systemDump 4)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeSystemDump,
                 informationTypeContext: '',
                 additionalOptions     : 'wrong-option=true'
@@ -230,7 +230,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, requesting profiles when standalone (profiles 1)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeProfiles,
                 informationTypeContext: '',
                 additionalOptions     : ''
@@ -247,7 +247,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "GetEnvInfo, Standalone, dataSources with minimum params (dataSources 1)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: '',
                 additionalOptions     : ''
@@ -276,7 +276,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "GetEnvInfo, Standalone, dataSources context ignored (dataSources 2)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: 'someContext',
                 additionalOptions     : ''
@@ -305,7 +305,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "GetEnvInfo, Standalone, dataSources additional options (dataSources 3)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: '',
                 additionalOptions     : 'include-runtime=true,include-defaults=true'
@@ -334,7 +334,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Standalone, dataSources wrong additional options (dataSources 4)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeDataSources,
                 informationTypeContext: '',
                 additionalOptions     : 'wrong-option=true'
@@ -351,7 +351,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "GetEnvInfo, Standalone, xaDataSources with minimum params (xaDataSources 1)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: '',
                 additionalOptions     : ''
@@ -378,7 +378,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "GetEnvInfo, Standalone, xaDataSources context ignored (xaDataSources 2)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: 'someContext',
                 additionalOptions     : ''
@@ -405,7 +405,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "GetEnvInfo, Standalone, xaDataSources additional options (xaDataSources 3)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: '',
                 additionalOptions     : 'include-runtime=true,include-defaults=true'
@@ -432,7 +432,7 @@ class GetEnvInfoStandalone extends PluginTestHelper {
     def "Negaitve. GetEnvInfo, Standalone, xaDataSources wrong additional options (xaDataSources 4)"() {
         when:
         def runParams = [
-                serverconfig          : defaultConfigName,
+                      config          : defaultConfigName,
                 informationType       : informationTypeXaDataSources,
                 informationTypeContext: '',
                 additionalOptions     : 'wrong-option=true'

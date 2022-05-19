@@ -32,7 +32,7 @@ class RemoveJMSQueueStandalone extends PluginTestHelper {
                 params  : [
                         profile          : '',
                         queueName        : '',
-                        serverconfig     : '',
+                              config     : '',
                 ]
         ]
 
@@ -58,7 +58,7 @@ class RemoveJMSQueueStandalone extends PluginTestHelper {
         def runParams = [
                 profile          : '',
                 queueName        : '',
-                serverconfig     : defaultConfigName
+                      config     : defaultConfigName
         ]
 
         setup:
@@ -87,7 +87,7 @@ class RemoveJMSQueueStandalone extends PluginTestHelper {
         def runParams = [
                 profile          : '',
                 queueName        : '',
-                serverconfig     : defaultConfigName
+                      config     : defaultConfigName
         ]
 
         setup:
@@ -115,7 +115,7 @@ class RemoveJMSQueueStandalone extends PluginTestHelper {
         def runParams = [
                 profile          : '',
                 queueName        : "testQueue-$testCaseId",
-                serverconfig     : defaultConfigName
+                      config     : defaultConfigName
         ]
 
         when:

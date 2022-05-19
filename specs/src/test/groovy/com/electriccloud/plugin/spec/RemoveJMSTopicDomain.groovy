@@ -32,7 +32,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
                 procName: procName,
                 params  : [
                         profile      : '',
-                        serverconfig : '',
+                              config : '',
                         topicName    : '',
                 ]
         ]
@@ -58,7 +58,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
 
         def runParams = [
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : '',
         ]
 
@@ -86,7 +86,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
 
         def runParams = [
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : '',
         ]
 
@@ -113,7 +113,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
 
         def runParams = [
                 profile          : defaultProfile,
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : 'testTopic-non-existing',
         ]
 
@@ -141,7 +141,7 @@ class RemoveJMSTopicDomain extends PluginTestHelper {
 
         def runParams = [
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : "testTopic-$testCaseId",
         ]
 

@@ -36,7 +36,7 @@ class CheckServerGroupStatus extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig      : '',
+                              config      : '',
                         scriptphysicalpath: '',
                         serversgroup      : '',
                         criteria          : '',
@@ -80,7 +80,7 @@ class CheckServerGroupStatus extends PluginTestHelper {
 
         when:
         def runParamsStarted = [
-                serverconfig        : defaultConfigName,
+                      config        : defaultConfigName,
                 scriptphysicalpath  : defaultCliPath,
                 serversgroup        : serverGroupName,
                 criteria            : 'STARTED',
@@ -98,7 +98,7 @@ class CheckServerGroupStatus extends PluginTestHelper {
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server1))
         runCliCommand(CliCommandsGeneratorHelper.stopServerCmd(server2))
         def runParamsStopped = [
-                serverconfig        : defaultConfigName,
+                      config        : defaultConfigName,
                 scriptphysicalpath  : defaultCliPath,
                 serversgroup        : serverGroupName,
                 criteria            : 'STOPPED',

@@ -30,7 +30,7 @@ class RemoveJMSTopicStandalone extends PluginTestHelper {
                 procName: procName,
                 params  : [
                         profile     : '',
-                        serverconfig: '',
+                              config: '',
                         topicName   : '',
                 ]
         ]
@@ -56,7 +56,7 @@ class RemoveJMSTopicStandalone extends PluginTestHelper {
 
         def runParams = [
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : '',
         ]
 
@@ -84,7 +84,7 @@ class RemoveJMSTopicStandalone extends PluginTestHelper {
 
         def runParams = [
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : '',
         ]
 
@@ -111,7 +111,7 @@ class RemoveJMSTopicStandalone extends PluginTestHelper {
 
         def runParams = [
                 profile          : '',
-                serverconfig     : defaultConfigName,
+                      config     : defaultConfigName,
                 topicName        : 'testTopic-non-existing',
         ]
 

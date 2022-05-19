@@ -44,7 +44,7 @@ class UndeployApp extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig            : '',
+                              config            : '',
                         scriptphysicalpath      : '',
                         additional_options      : '',
                         appname                 : '',
@@ -76,7 +76,7 @@ class UndeployApp extends PluginTestHelper {
         def warPhysicalPath = getPathApp()+appName
 
         def runParams = [
-                serverconfig            : defaultConfigName,
+                      config            : defaultConfigName,
                 scriptphysicalpath      : defaultCliPath,
                 additional_options      : '',
                 appname                 : appName,

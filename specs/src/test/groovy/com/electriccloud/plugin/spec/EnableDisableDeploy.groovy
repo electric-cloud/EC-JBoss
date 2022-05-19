@@ -45,7 +45,7 @@ class EnableDisableDeploy extends PluginTestHelper {
                 resName : resName,
                 procName: 'EnableDeploy',
                 params  : [
-                        serverconfig            : '',
+                              config            : '',
                         scriptphysicalpath      : '',
                         assignservergroups      : '',
                         appname                 : '',
@@ -58,7 +58,7 @@ class EnableDisableDeploy extends PluginTestHelper {
                 resName : resName,
                 procName: 'DisableDeploy',
                 params  : [
-                        serverconfig            : '',
+                              config            : '',
                         scriptphysicalpath      : '',
                         assignservergroups      : '',
                         appname                 : '',
@@ -86,7 +86,7 @@ class EnableDisableDeploy extends PluginTestHelper {
         def warPhysicalPath = getPathApp()+appName
 
         def runParams = [
-                serverconfig            : defaultConfigName,
+                      config            : defaultConfigName,
                 scriptphysicalpath      : defaultCliPath,
                 appname                 : appName,
                 assignservergroups      : '',

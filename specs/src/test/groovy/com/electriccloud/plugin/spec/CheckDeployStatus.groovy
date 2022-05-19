@@ -44,7 +44,7 @@ class CheckDeployStatus extends PluginTestHelper {
                 resName : resName,
                 procName: procName,
                 params  : [
-                        serverconfig        : '',
+                              config        : '',
                         scriptphysicalpath  : '',
                         criteria            : '',
                         appname             : '',
@@ -76,7 +76,7 @@ class CheckDeployStatus extends PluginTestHelper {
         def warPhysicalPath = getPathApp()+appName
 
         def runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 criteria            : 'OK',
                 appname             : appName,
@@ -99,7 +99,7 @@ class CheckDeployStatus extends PluginTestHelper {
 
         when:
         runParams = [
-                serverconfig         : defaultConfigName,
+                      config         : defaultConfigName,
                 scriptphysicalpath   : defaultCliPath,
                 criteria            : 'failed',
                 appname             : appName,

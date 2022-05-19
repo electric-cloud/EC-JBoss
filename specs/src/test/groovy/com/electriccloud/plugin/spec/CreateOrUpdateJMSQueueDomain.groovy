@@ -47,7 +47,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                         messageSelector      : '',
                         profile              : '',
                         queueName            : '',
-                        serverconfig         : '',
+                              config         : '',
                 ]
         ]
 
@@ -77,7 +77,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -107,7 +107,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -136,7 +136,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -165,7 +165,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : 'FILTER_EXPRESSION',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -194,7 +194,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -223,7 +223,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : 'FILTER_EXPRESSION',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
@@ -254,7 +254,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultDomain(runParams.queueName, defaultJndiNames, defaultProfile) //durable=false
@@ -286,7 +286,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : 'FILTER_EXPRESSION',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultDomain(runParams.queueName, defaultJndiNames, defaultProfile) //without message selector
@@ -319,7 +319,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : 'full-ha',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         setup:
@@ -355,7 +355,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : "Any whitespace filter",
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -386,7 +386,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : "filterTwo",
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueue(runParams.queueName, defaultJndiNames, "--durable=false", " --selector=filterOne", " --profile=$defaultProfile")
@@ -419,7 +419,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : '',
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -442,7 +442,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -465,7 +465,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : 'conf_non-existing'
+                      config         : 'conf_non-existing'
         ]
 
         when:
@@ -474,7 +474,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
         then:
         assert runProcedureJob.getStatus() == "error"
         //        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
-//        assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.serverconfig} doesn't exist."
+//        assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.      config} doesn't exist."
     }
 
     @NewFeature(pluginVersion = "2.6.0")
@@ -489,7 +489,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -520,7 +520,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -544,7 +544,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
 
         when:
@@ -567,7 +567,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueue(runParams.queueName, defaultJndiNames, "--durable=false", "", " --profile=$defaultProfile")
@@ -597,7 +597,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector  : '',
                 profile          : defaultProfile,
                 queueName        : "testQueue-$testCaseId",
-                serverconfig     : defaultConfigName
+                      config     : defaultConfigName
         ]
 
         when:
@@ -629,7 +629,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultDomain(runParams.queueName, "queue/test3, java:jboss/exported/jms/queue/test3", defaultProfile) //wrong jndi name
@@ -672,7 +672,7 @@ class CreateOrUpdateJMSQueueDomain extends PluginTestHelper {
                 messageSelector      : 'FILTER_EXPRESSION',
                 profile              : defaultProfile,
                 queueName            : "testQueue-$testCaseId",
-                serverconfig         : defaultConfigName
+                      config         : defaultConfigName
         ]
         setup:
         addJMSQueueDefaultDomain(runParams.queueName, "queue/test4, java:jboss/exported/jms/queue/test4", defaultProfile) //without message selector, durable=false and wrong jndi
