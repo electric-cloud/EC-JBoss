@@ -220,7 +220,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
                 additionalOptions: "",
                 jndiNames        : defaultJndiNames,
                 profile          : '',
-                      config     : "jboss_conf_non-existing",
+                      config     : wrongConfig,
                 topicName        : "testTopic-$testCaseId",
         ]
 
@@ -229,8 +229,7 @@ class CreateOrUpdateJMSTopicStandalone extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-//        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
-//        assert runProcedureJob.getLowerStepSummary() =~ "Configuration ${runParams.      config} doesn't exist."
+        assert runProcedureJob.summary() =~ "Configuration '${wrongConfig}' does not exist."
 
     }
 

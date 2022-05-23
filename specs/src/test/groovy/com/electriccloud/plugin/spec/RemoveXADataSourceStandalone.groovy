@@ -243,7 +243,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         String jdbcDriverName = "h2"
         def runParams = [
                 profile          : '',
-                      config     : 'no_name',
+                      config     : wrongConfig,
                 dataSourceName   : 'H2XADS',
         ]
         when:
@@ -251,9 +251,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         
         then:
         assert runProcedureJob.getStatus() == "error"
-//        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
-//        assert runProcedureJob.getLowerStepSummary() =~ "Configuration no_name doesn't exist."
-//        assert runProcedureJob.getLogs() =~ "Configuration 'no_name' does not exist."
+        assert runProcedureJob.summary() =~ "Configuration '${wrongConfig}' does not exist."
     }
 
     @NewFeature(pluginVersion = "2.6.0")

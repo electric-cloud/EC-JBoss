@@ -16,7 +16,7 @@ class PluginTestHelper extends PluginSpockTestSupport {
     static def helperProcedureMkdir = 'Mkdir'
     static def shell = EnvPropertiesHelper.getOS() == "WINDOWS" ? 'powershell' : 'bash'
     static def helperProcedurerunCustomShellCommand = "runCustomShellCommand"
-
+    static def wrongConfig = "wrong-config"
 
     def createDefaultConfiguration(String configName, props = [:]) {
         String pluginName = "EC-JBoss"
@@ -530,6 +530,10 @@ class PluginTestHelper extends PluginSpockTestSupport {
                 logger.debug("cannot retrieve lower step summary from the property '$property'")
             }
             return summary
+        }
+
+        String summary() {
+            return getUpperStepSummary() ? getUpperStepSummary() : getLowerStepSummary()
         }
 
         Boolean isStatusSuccess() {

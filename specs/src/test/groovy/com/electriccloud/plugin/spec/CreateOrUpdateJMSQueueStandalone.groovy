@@ -453,16 +453,14 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 messageSelector      : '',
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
-                      config         : 'conf_non-existing'
+                      config         : wrongConfig
         ]
 
         when:
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
-
         then:
         assert runProcedureJob.getStatus() == "error"
-//        TODO: uncomment on fix https://cloudbees.atlassian.net/browse/BEE-18013
-//        assert runProcedureJob.getUpperStepSummary() =~ "Configuration ${runParams.      config} doesn't exist."
+        assert runProcedureJob.summary() =~ "Configuration '${wrongConfig}' does not exist."
     }
 
     @NewFeature(pluginVersion = "2.6.0")

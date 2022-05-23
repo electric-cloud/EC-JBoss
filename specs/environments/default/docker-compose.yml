@@ -1,7 +1,7 @@
 version: '3'
 services:
   electric-flow:
-    image: "electricflow/efserver:latest"
+    image: "us-east1-docker.pkg.dev/cloudbees-artifact-registry/flow/plugin-specs/electricflow/efserver:latest"
     ports:
       - "8000:8000"
       - "8443:8443"
@@ -12,7 +12,7 @@ services:
     container_name: electricflow
     tty: true
   jboss:
-    image: electricflow/jboss7:v7.0
+    image: "us-east1-docker.pkg.dev/cloudbees-artifact-registry/flow/plugin-specs/jboss7:v7.0"
     environment:
       - SERVER_CONFIG=standalone-full.xml
       - JBOSS_MODE=standalone
