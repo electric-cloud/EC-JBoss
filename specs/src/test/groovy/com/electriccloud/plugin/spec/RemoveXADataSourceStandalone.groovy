@@ -251,7 +251,7 @@ class RemoveXADataSourceStandalone extends PluginTestHelper {
         
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.summary() =~ "Configuration ${wrongConfig} does not exist."
+        assert runProcedureJob.summary() =~ "Configuration '${wrongConfig}' does not exist."
     }
 
     @NewFeature(pluginVersion = "2.6.0")

@@ -193,7 +193,7 @@ class CreateOrUpdateDataSource extends PluginTestHelper {
         emptyDriver: "Parameter 'jdbcDriverName' of procedure 'CreateOrUpdateDataSource' is marked as required, but it does not have a value",
         emptyUrl: jbossVersion == '7.1' ? "Unable to start the ds because it generated more than one cf" : 'Required parameter \'connectionUrl\' is not provided \\(parameter required for JBoss EAP 6.X and 7.0\\)',
         wrongJNDI: "Jndi name have to start with java:/ or java:jboss/",
-        wrongConfig: "Configuration ${wrongConfig} does not exist",
+        wrongConfig: "Configuration '${wrongConfig}' does not exist",
         wrongDriver: (jbossVersion == '6.0' && EnvPropertiesHelper.getMode() == 'standalone') ? 'Driver named "h2_wrong" is not installed' : (jbossVersion in  ['6.0', '6.1', '6.2', '6.3', '6.4'] && EnvPropertiesHelper.getMode() == 'domain' ) ? "Operation failed or was rolled back on all servers" : jbossVersion != '7.1' ? "is missing \\[jboss.jdbc-driver.h2_wrong\\]" : "Required services that are not installed",
         wrongOptions: jbossVersion != '7.1' ? "Unrecognized argument --min-poolzzz for command" : "Unrecognized arguments: [--min-poolzzz]",
         wrongProfile: /porfile.*not found/,   

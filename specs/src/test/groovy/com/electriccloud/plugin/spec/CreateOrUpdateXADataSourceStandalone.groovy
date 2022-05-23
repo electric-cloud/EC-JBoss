@@ -1066,7 +1066,7 @@ class CreateOrUpdateXADataSourceStandalone extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams, credential)
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.summary() =~ "Configuration ${wrongConfig} does not exist."
+        assert runProcedureJob.summary() =~ "Configuration '${wrongConfig}' does not exist."
     }
 
     @Ignore

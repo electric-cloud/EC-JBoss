@@ -226,7 +226,7 @@ class StopDomainMaster extends PluginTestHelper {
         RunProcedureJob runProcedureJob = runProcedureUnderTest(runParams)
         then:
         assert runProcedureJob.getStatus() == 'error'
-        assert runProcedureJob.summary() =~ "Configuration ${wrongConfig} does not exist."
+        assert runProcedureJob.summary() =~ "Configuration '${wrongConfig}' does not exist."
     }
 
     @Timeout(600)
