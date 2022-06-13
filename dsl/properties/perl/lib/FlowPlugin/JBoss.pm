@@ -163,7 +163,7 @@ sub checkConnection {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: appname
 # Parameter: hosts
@@ -308,7 +308,7 @@ sub checkDeployStatus {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: hostcontroller_name
 # Parameter: wait_time
@@ -363,7 +363,7 @@ sub checkHostControllerStatus {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: serversgroup
 # Parameter: wait_time
@@ -545,7 +545,7 @@ sub checkServerGroupStatus {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: url_check
 # Parameter: host
@@ -677,7 +677,7 @@ sub checkServerStatus {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: application_name
 # Parameter: connectionURL
@@ -710,7 +710,7 @@ sub createDatasource {
         flowpdf         =>  $self
     );
     my $params = $jboss->get_params_as_hashref(qw/
-        serverconfig
+        config
         profile
         connectionURL
         driverClass
@@ -785,7 +785,7 @@ sub createDatasource {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: dataSourceName
 # Parameter: jndiName
 # Parameter: jdbcDriverName
@@ -1094,7 +1094,7 @@ sub createOrUpdateDataSource {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: queueName
 # Parameter: jndiNames
 # Parameter: profile
@@ -1317,7 +1317,7 @@ sub createOrUpdateJMSQueue {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: topicName
 # Parameter: jndiNames
 # Parameter: profile
@@ -1510,7 +1510,7 @@ sub createOrUpdateJMSTopic {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: dataSourceName
 # Parameter: jndiName
 # Parameter: jdbcDriverName
@@ -1810,7 +1810,7 @@ sub createOrUpdateXADataSource {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: datasource_name
 # Parameter: profile
@@ -1838,7 +1838,7 @@ sub deleteDatasource {
     );
 
     my $params = $jboss->get_params_as_hashref(qw/
-        serverconfig
+        config
         datasource_name
         profile
     /);
@@ -1858,7 +1858,7 @@ sub deleteDatasource {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: warphysicalpath
 # Parameter: appname
@@ -2002,7 +2002,7 @@ sub deployApp {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: applicationContentSourcePath
 # Parameter: deploymentName
 # Parameter: runtimeName
@@ -2369,7 +2369,7 @@ sub deployApplication {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: appname
 # Parameter: assignservergroups
@@ -2416,7 +2416,7 @@ sub disableDeploy {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: appname
 # Parameter: assignservergroups
@@ -2463,7 +2463,7 @@ sub enableDeploy {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: informationType
 # Parameter: informationTypeContext
 # Parameter: additionalOptions
@@ -2579,7 +2579,7 @@ sub getEnvInfo {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: queueName
 # Parameter: profile
 
@@ -2717,7 +2717,7 @@ sub removeJMSQueue {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: topicName
 # Parameter: profile
 
@@ -2841,7 +2841,7 @@ sub removeJMSTopic {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: dataSourceName
 # Parameter: profile
 
@@ -2962,7 +2962,7 @@ sub removeXADataSource {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: customCommand
 
@@ -2988,7 +2988,7 @@ sub runCustomCommand {
         flowpdf         => $self
     );
 
-    my $params = $jboss->get_params_as_hashref('customCommand', 'serverconfig', 'scriptphysicalpath');
+    my $params = $jboss->get_params_as_hashref('customCommand', 'config', 'scriptphysicalpath');
     $jboss->out("Custom command: $params->{customCommand}");
     my %result = $jboss->run_command($params->{customCommand});
 
@@ -2999,7 +2999,7 @@ sub runCustomCommand {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 
 # $sr - StepResult object
@@ -3029,7 +3029,7 @@ sub shutdownStandaloneServer {
     $::gEC = new ElectricCommander();
     $::gEC->abortOnError(0);
 
-    $::gServerConfig = ($::gEC->getProperty("serverconfig") )->findvalue("//value");
+    $::gServerConfig = ($::gEC->getProperty("config") )->findvalue("//value");
     my %tempConfig = %$cfg;
 
     if ($tempConfig{java_opts}) {
@@ -3123,7 +3123,7 @@ sub shutdownStandaloneServer {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: alternatejbossconfig
 # Parameter: alternateJBossConfigHost
@@ -3157,7 +3157,7 @@ sub startDomainServer {
     $::gScriptPhysicalLocation = ($::gEC->getProperty("scriptphysicalpath") )->findvalue("//value");
     $::gAlternateJBossConfigDomain = ($::gEC->getProperty("alternatejbossconfig") )->findvalue("//value");
     $::gAlternateJBossConfigHost = ($::gEC->getProperty("alternateJBossConfigHost") )->findvalue("//value");
-    $::gServerConfig = ($::gEC->getProperty("serverconfig") )->findvalue("//value");
+    $::gServerConfig = ($::gEC->getProperty("config") )->findvalue("//value");
 
     my %tempConfig = %$cfg;
 
@@ -3187,7 +3187,7 @@ sub startDomainServer {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: startupScript
 # Parameter: domainConfig
 # Parameter: hostConfig
@@ -3267,7 +3267,7 @@ sub startHostController {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: serversgroup
 # Parameter: wait_time
@@ -3389,7 +3389,7 @@ sub startServers {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: alternatejbossconfig
 # Parameter: additionalOptions
@@ -3451,7 +3451,7 @@ sub startStandaloneServer {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: jbossTimeout
 # Parameter: allControllersShutdown
 
@@ -3723,7 +3723,7 @@ sub stopDomain {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: serversgroup
 # Parameter: wait_time
@@ -3848,7 +3848,7 @@ sub stopServers {
 # Add your code into this method and it will be called when step runs
 # $self - reference to the plugin object
 # $p - step parameters
-# Parameter: serverconfig
+# Parameter: config
 # Parameter: scriptphysicalpath
 # Parameter: appname
 # Parameter: allrelevantservergroups
