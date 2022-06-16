@@ -21,6 +21,8 @@ class DeployAppStandalone extends PluginTestHelper {
     String linkToSampleWarFile = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-1.war"
     @Shared
     String linkToSampleWarFile2 = "https://github.com/electric-cloud/hello-world-war/raw/system_tests/dist/versions/hello-world-war-version-2.war"
+    @Shared
+    def jbossVersion = EnvPropertiesHelper.getVersion()
 
     static String getPathApp(){
         String warphysicalpath = "/tmp/"
@@ -793,7 +795,9 @@ class DeployAppStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "Application '${runParams.appname}' has been successfully deployed from '$linkToSampleWarFile'"
         assert runProcedureJob.getLogs() =~ "Source with deployment is URL \\(such option available for EAP 7 and later versions\\): '--url=$linkToSampleWarFile'"
 
-        String expectedAppName = "$testCaseId-app.war"
+        // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+        // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+        String expectedAppName = jbossVersion == '7.4' ? 'hello-world-war-version-1.war' : "$testCaseId-app.war"
         String expectedRuntimeName = "$testCaseId-app.war"
         String expectedContextRoot = "$testCaseId-app"
 
@@ -801,7 +805,7 @@ class DeployAppStandalone extends PluginTestHelper {
         checkAppDeployedToStandaloneUrl(expectedContextRoot)
 
         cleanup:
-        undeployAppFromStandalone("$testCaseId-app.war")
+        undeployAppFromStandalone(expectedAppName)
     }
 
     @NewFeature(pluginVersion = "2.6.0")
@@ -823,7 +827,9 @@ class DeployAppStandalone extends PluginTestHelper {
         ]
         setup:
         downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
-        String existingAppName = "$testCaseId-app.war"
+        // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+        // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+        String existingAppName = jbossVersion == '7.4' ? 'hello-world-war-version-2.war' : "$testCaseId-app.war"
         String runtimeName = "$testCaseId-app.war"
         deployAppToStandalone(getPathApp()+"$testCaseId-app.war", existingAppName, runtimeName)
 
@@ -841,7 +847,7 @@ class DeployAppStandalone extends PluginTestHelper {
         checkAppDeployedToStandaloneUrl(expectedContextRoot, "2", true)
 
         cleanup:
-        undeployAppFromStandalone("$testCaseId-app.war")
+        undeployAppFromStandalone(existingAppName)
     }
 
     @NewFeature(pluginVersion = "2.6.0")
@@ -863,7 +869,9 @@ class DeployAppStandalone extends PluginTestHelper {
         ]
         setup:
         downloadArtifact(linkToSampleWarFile, getPathApp()+"$testCaseId-app.war")
-        String existingAppName = "$testCaseId-app.war"
+        // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+        // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+        String existingAppName = jbossVersion == '7.4' ? 'hello-world-war-version-2.war' : "$testCaseId-app.war"
         String runtimeName = "$testCaseId-app.war"
         deployAppToStandalone(getPathApp()+"$testCaseId-app.war", existingAppName, runtimeName)
 
@@ -881,7 +889,7 @@ class DeployAppStandalone extends PluginTestHelper {
         checkAppDeployedToStandaloneUrl(expectedContextRoot, "2", true)
 
         cleanup:
-        undeployAppFromStandalone("$testCaseId-app.war")
+        undeployAppFromStandalone(existingAppName)
     }
 
     @NewFeature(pluginVersion = "2.6.0")
