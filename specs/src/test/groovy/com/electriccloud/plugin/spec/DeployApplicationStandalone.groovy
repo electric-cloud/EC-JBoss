@@ -427,7 +427,10 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "deploymentName"
     def "DeployApp, 1st time, url (for EAP 7 and later), custom app name, custom runtime name (C278115)"() {
         String testCaseId = "C278115"
 
@@ -462,7 +465,10 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "deploymentName"
     def "DeployApp, 1st time, url (for EAP 7 and later), disabled flag in additional options (C278115)"() {
         String testCaseId = "C278115"
 
@@ -496,7 +502,10 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "deploymentName"
     def "DeployApp, app already deployed, url (for EAP 7 and later), update app (C278116)"() {
         String testCaseId = "C278116"
 
@@ -756,7 +765,10 @@ class DeployApplicationStandalone extends PluginTestHelper {
 
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "deploymentName"
     def "Negative. DeployApp, app already deployed, url (for EAP 7 and later) is empty, change runtime name (C278196)"() {
         String testCaseId = "C278196"
 
