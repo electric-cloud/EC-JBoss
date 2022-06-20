@@ -1012,7 +1012,7 @@ class DeployAppDomain extends PluginTestHelper {
 
         then:
         assert runProcedureJob.getStatus() == "error"
-        assert runProcedureJob.getUpperStepSummary() =~ "--server-groups can't appear in the same command with --all-server-groups"
+        assert runProcedureJob.getUpperStepSummary() =~ "can't appear in the same command"
     }
 
     @NewFeature(pluginVersion = "2.6.0")
@@ -1045,7 +1045,10 @@ class DeployAppDomain extends PluginTestHelper {
 
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "appname"
     def "DeployApp, 1st time, application content source path --url(C278052)"() {
         String testCaseId = "C278052"
 
@@ -1083,7 +1086,10 @@ class DeployAppDomain extends PluginTestHelper {
 
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "appname"
     def "DeployApp, app already deployed, force flag, application content source path --url(C278053)"() {
         String testCaseId = "C278053"
 
@@ -1127,7 +1133,10 @@ class DeployAppDomain extends PluginTestHelper {
 
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "appname"
     def "DeployApp, app already deployed, force flag (in additional options), application content source path --url (C278054)"() {
         String testCaseId = "C278054"
 

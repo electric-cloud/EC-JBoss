@@ -333,7 +333,10 @@ class DeployApplicationDomain extends PluginTestHelper {
 
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-             @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "appname"
              def "DeployApplication, app already deployed, url (for EAP 7 and later), enabled server group and disabled server group, update app (C278258)"() {
                  String testCaseId = "C278258"
 
@@ -546,10 +549,12 @@ class DeployApplicationDomain extends PluginTestHelper {
                    cleanup:
                    undeployFromAllRelevantServerGroups(expectedAppName)
                }
-
     @NewFeature(pluginVersion = "2.6.0")
-   @Unroll
-   @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @Unroll
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "appname"
     def "DeployApplication, 1st time, url (for EAP 7 and later), enabled server groups (C278256)"() {
         String testCaseId = "C278256"
 
@@ -586,7 +591,10 @@ class DeployApplicationDomain extends PluginTestHelper {
 
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "appname"
     def "DeployApplication, 1st time, url (for EAP 7 and later), disabled server groups (C278265)"() {
         String testCaseId = "C278265"
 
@@ -620,9 +628,12 @@ class DeployApplicationDomain extends PluginTestHelper {
     }
 
 
-       @NewFeature(pluginVersion = "2.6.0")
+    @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-       @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+       // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+       // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+       // This test case is not applicable to 7.4 due to provided custom "appname"
        def "DeployApplication, 1st time, url (for EAP 7 and later), disabled server groups and enabled server groups (C278266)"() {
            String testCaseId = "C278266"
 
@@ -692,7 +703,10 @@ class DeployApplicationDomain extends PluginTestHelper {
 
     @NewFeature(pluginVersion = "2.6.0")
     @Unroll
-          @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' })
+    @IgnoreIf({ env.JBOSS_VERSION =~ '6.*' || env.JBOSS_VERSION =~ '7.4' })
+    // In JBoss 7.4 the parameter --name is ignored if the application is being deployed with the --url option for an unknown reason
+    // New behavior in versions since Wildfly 12 (JBoss 7.1 based on Wildfly 11, JBoss 7.4 based on Wildfly 23)
+    // This test case is not applicable to 7.4 due to provided custom "appname"
           def "Negative. DeployApplication, app already deployed, url (for EAP 7 and later) is empty, update app (C278276)"() {
               String testCaseId = "C278276"
 
