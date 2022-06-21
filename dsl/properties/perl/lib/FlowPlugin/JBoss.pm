@@ -3661,7 +3661,7 @@ sub stopDomain {
             $jboss->log_info("Starting shudown of slave host controller '$host'");
             my $cli_shutdown_slave = $jboss_is_6x
                 ? get_cli_host_shutdown_6x(host => $host)
-                : get_cli_host_shutdown_7x(host => $host, timeout => $param_timeout);
+                : get_cli_host_shutdown_7x(host => $host, timeout => $param_timeout, jboss_version => $product_version);
             run_command_with_exiting_on_error(command => $cli_shutdown_slave, jboss => $jboss);
             $summary .= "\nShutdown was performed for slave host controller '$host'";
             $jboss->log_info("Done with shudown of slave host controller '$host'");
@@ -3695,7 +3695,7 @@ sub stopDomain {
         $jboss->log_info("Starting shudown of master host controller '$master_host'");
         my $cli_shutdown_master = $jboss_is_6x
             ? get_cli_host_shutdown_6x(host => $master_host)
-            : get_cli_host_shutdown_7x(host => $master_host, timeout => $param_timeout);
+            : get_cli_host_shutdown_7x(host => $master_host, timeout => $param_timeout, jboss_version => $product_version);
         run_command_with_exiting_on_error(command => $cli_shutdown_master, jboss => $jboss);
         $summary .= "\nShutdown was performed for master host controller '$master_host'";
         $jboss->log_info("Done with shudown of master host controller '$master_host'");
@@ -4213,10 +4213,18 @@ sub get_cli_host_shutdown_6x {
 sub get_cli_host_shutdown_7x {
     my %args = @_;
     my $host = $args{host} || croak "'host' is required param";
+    my $jboss_version = $args{jboss_version} || croak "'jboss_version' is required param";
     my $timeout = $args{timeout};
 
+    my ($major, $minor) = split(/\./, $jboss_version);
+    my $timeout_opt = '--timeout';
+    # JBoss 7.4 should use --suspend-timeout instead of --timeout
+    if(($major = 7 && $minor >= 4) || $major > 7) {
+        $timeout_opt = '--suspend-timeout';
+    }
+
     my $cli_host_shutdown = "shutdown --host=$host";
-    $cli_host_shutdown .= " --timeout=$timeout" if $timeout && $timeout ne "";
+    $cli_host_shutdown .= " $timeout_opt=$timeout" if $timeout && $timeout ne "";
     return $cli_host_shutdown;
 }
 
