@@ -1,7 +1,7 @@
 ---
 pluginInfo:
   pluginName: "EC-JBoss"
-  version: "3.0.1"
+  version: "3.1.0"
   description: "JBoss Application Server integration"
   author: "CloudBees"
   supportUrl: "http://www.electric-cloud.com/support"
