@@ -2,7 +2,7 @@
 Plugin Version @PLUGIN_VERSION@
 
 
-Revised on April 14, 2022
+Revised on June 21, 2022
 
 
 These procedures have been replaced by more robust procedures and are retained for backwards compatibility. It is strongly recommended that new implementations not use these procedures. Their replacements are in parentheses.
@@ -1597,8 +1597,19 @@ JIRA ticket for JBoss Enterprise Application Platform: https://issues.jboss.org/
 
 Removing XA data sources can fail when call remove command with the following error, e.g.: "JBAS014762: Removing services has lead to unsatisfied dependencies: Service jboss.data-source.reference-factory.MysqlXADSC289546 was depended upon by service jboss.naming.context.java.MysqlXADS Service jboss.xa-data-source-config.MysqlXADSC289546 was depended upon by service jboss.data-source.java:/MysqlXADS" (in Standalone) or "JBAS010839: Operation failed or was rolled back on all servers." (in Domain)
 
+== JBoss EAP 7.4. Deploying a remote artifact using the URL path ignores the custom deployment name
+
+When deploying a remote artifact using the URL path (i.e., --url=<artifact url>), the JBoss CLI ignores the custom deployment name (the --name parameter).
+Due to this new JBoss behavior, the custom deployment name parameters are also ignored in the DeployApp and DeployApplication procedures.
+Launching the DeployApplication procedure may fail if both the URL in the "scriptphysicalpath" parameter and the "deploymentName" parameter are specified at the same time.
+
 [[rns]]
 == Release notes
+
+=== EC-JBoss 3.1.0
+
+- Added JBoss EAP 7.4 support.
+- Fixed issue with accessing non-existent "serverconfig" properties.
 
 === EC-JBoss 3.0.0
 
