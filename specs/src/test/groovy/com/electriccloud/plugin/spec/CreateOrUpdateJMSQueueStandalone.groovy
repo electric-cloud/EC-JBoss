@@ -275,7 +275,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
                 additionalOptions    : '',
                 durable              : '0',
                 jndiNames            : defaultJndiNames,
-                messageSelector      : "Any whitespace filter",
+                messageSelector      : "JMSPriority = 10",
                 profile              : '',
                 queueName            : "testQueue-$testCaseId",
                       config         : defaultConfigName
@@ -289,7 +289,7 @@ class CreateOrUpdateJMSQueueStandalone extends PluginTestHelper {
         assert runProcedureJob.getUpperStepSummary() =~ "JMS queue '${runParams.queueName}' has been added successfully"
 
         String queueName = "testQueue-$testCaseId"
-        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "Any whitespace filter", expectedJndiNames)
+        checkCreateOrUpdateJMSQueue(queueName, defaultDurable, "JMSPriority = 10", expectedJndiNames)
 
         cleanup:
         queueName = "testQueue-$testCaseId"

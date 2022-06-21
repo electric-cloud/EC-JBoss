@@ -108,7 +108,7 @@ B<project_name> => name of project in EC
 
 B<script_path> => path to the jboss-cli.sh or jboss-cli.bat, by default it uses scriptphysicalpath property.
 
-B<serverconfig> => configuration name. By default it uses serverconfig property.
+B<config> => configuration name. By default it uses "config" property.
 
 B<log_level> => specifies log level for current object. By default 1. You shouldn't set log_level less than 1.
 
@@ -146,7 +146,7 @@ sub new {
 
     $self->{project_name} = $params{project_name};
 
-    $params{config_name} ||= $self->get_param('serverconfig');
+    $params{config_name} ||= $self->get_param('config');
 
     if ($params{config_name}) {
         $self->{config_name} = $params{config_name};
