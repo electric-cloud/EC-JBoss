@@ -20,12 +20,9 @@ Use the EC-JBoss plugin to interact with JBoss EAP to perform tasks such as mana
 
 This plugin was developed and tested with following JBoss versions:
 
-* JBoss EAP 6.0 on Linux and Windows
-* JBoss EAP 6.1 on Linux and Windows
-* JBoss EAP 6.2 on Linux and Windows
-* JBoss EAP 6.4 on Linux and Windows
 * JBoss EAP 7.0 on Linux and Windows
 * JBoss EAP 7.1 on Linux and Windows
+* JBoss EAP 7.4 on Linux
 
 *Important*: For all parameter descriptions in the following sections, the required parameters are in [.required]#bold italics#.
 
