@@ -12,7 +12,7 @@ services:
     container_name: electricflow
     tty: true
   jboss:
-    image: "us-east1-docker.pkg.dev/cloudbees-artifact-registry/flow/plugin-specs/jboss7:v7.0"
+    image: "us-east1-docker.pkg.dev/cloudbees-artifact-registry/flow/plugin-specs/jboss7:v7.4"
     environment:
       - SERVER_CONFIG=standalone-full.xml
       - JBOSS_MODE=standalone
@@ -22,16 +22,8 @@ services:
       - "9990:9990"
     networks:
       - internal
-    container_name: jboss7.0
+    container_name: jboss7.4
     tty: true
 networks:
   internal:
     driver: bridge
-
-#networks:
-#  internal:
-#    driver: bridge
-#    ipam:
-#      driver: default
-#      config:
-#        - subnet: 172.29.1.0/24
