@@ -1126,7 +1126,7 @@ configuration:
   - name: "jboss_url"
     type: "entry"
     required: true
-    documentation: "IP Address of JBoss AS."
+    documentation: "URL Address of JBoss AS."
     label: JBoss controller location
   - name: "log_level"
     type: select

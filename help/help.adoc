@@ -1607,6 +1607,7 @@ Launching the DeployApplication procedure may fail if both the URL in the "scrip
 
 - Added JBoss EAP 7.4 support.
 - Fixed issue with accessing non-existent "serverconfig" properties.
+- Preserve URL schema in JBoss endpoint.
 
 === EC-JBoss 3.0.0
 
