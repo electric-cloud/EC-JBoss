@@ -1126,7 +1126,10 @@ configuration:
   - name: "jboss_url"
     type: "entry"
     required: true
-    documentation: "URL Address of JBoss AS."
+    htmlDocumentation: |
+      Address of JBoss controller that is used to connect.
+      Examples:
+      <ul><li>10.20.30.1:9990</li><li>jboss:9990</li><li>remote+https://my-jboss.example.com:12990</li></ul>
     label: JBoss controller location
   - name: "log_level"
     type: select
