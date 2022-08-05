@@ -1132,7 +1132,7 @@ configuration:
       Examples:
       <ul>
        <li>
-         <MULTILINED code>10.20.30.1:9990</code>
+         <code>10.20.30.1:9990</code>
        </li>
        <li>
          <code>jboss:9990</code>
