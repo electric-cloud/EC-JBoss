@@ -272,18 +272,23 @@ procedures:
     type: "entry"
     required: false
     htmlDocumentation: |
-      Provide a host name to check.
-      This parameter is only supported for domain mode and is ignored for the standalone server.
+      Provide a host name to check.<br />
+      <b>NOTE:</b> This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
     adoc: |
       Provide a host name to check.
-      This parameter is only supported for domain mode and is ignored for the standalone server.
+      
+      NOTE: This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
     label: "Host:"
   - name: "server"
     type: "entry"
     required: false
     htmlDocumentation: |
-      Provide a server name to check.
-      This parameter is only supported for domain mode and is ignored for the standalone server.
+      Server name to check.<br />
+      <b>NOTE:</b> This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
+    adoc: |
+      Server name to check.
+      
+      NOTE: This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
     label: "Server:"
   - name: "criteria"
     type: select
@@ -872,17 +877,23 @@ procedures:
     required: false
     htmlDocumentation: |
       Applies the deployment to all available server groups.
-      Represents the <code>--all-server-groups</code> parameter for the JBoss CLI <code>deploy</code> command.
-      This parameter is only supported for domain mode and is ignored for the standalone server.<br />
-      <b>NOTE:</b> This parameter is ignored if <b>Force deployment</b> is selected.<b>Server
-      groups to apply</b> is ignored if this parameter is selected.
+      Represents the <code>--all-server-groups</code> parameter for the JBoss CLI <code>deploy</code> command.<br />
+      <b>NOTE:</b> 
+      <ul>
+      <li>This parameter is only supported for JBoss domain mode and is ignored for the standalone server.</li>
+      <li>This parameter is ignored if <b>Force deployment</b> is selected.</li>
+      <li><b>Server groups to apply</b> is ignored if this parameter is selected.</li>
+      </ul>
     adoc: |
       Applies the deployment to all available server groups.
       Represents the `--all-server-groups` parameter for the JBoss CLI `deploy` command.
-      This parameter is only supported for domain mode and is ignored for the standalone server.
       
-      NOTE: This parameter is ignored if *Force deployment* is selected.
-      *Server groups to apply* is ignored if this parameter is selected.
+      [NOTE]
+      ====
+      * This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
+      * This parameter is ignored if *Force deployment* is selected.
+      * *Server groups to apply* is ignored if this parameter is selected.
+      ====
     label: "Apply to all servers:"
     checkedValue: "1"
     uncheckedValue: "0"
@@ -891,15 +902,21 @@ procedures:
     required: false
     htmlDocumentation: |
       Comma-separated list of server group names that the JBoss CLI <code>deploy</code> command should be applied to.
-      Represents the <code>--server-groups</code> parameter for the JBoss CLI <code>deploy</code> command.
-      This parameter is only supported for domain mode and is ignored for the standalone server.<br />
-      <b>NOTE:</b> This parameter is ignored if <b>Apply to all servers</b> or <b>Force deployment</b> is selected.
+      Represents the <code>--server-groups</code> parameter for the JBoss CLI <code>deploy</code> command.<br />
+      <b>NOTE:</b>
+      <ul>
+      <li>This parameter is ignored if <b>Apply to all servers</b> or <b>Force deployment</b> is selected.</li>
+      <li>This parameter is only supported for JBoss domain mode and is ignored for the standalone server.</li>
+      </ul>
     adoc: |
       Comma-separated list of server group names that the JBoss CLI `deploy` command should be applied to.
       Represents the `--server-groups` parameter for the JBoss CLI `deploy` command.
-      This parameter is only supported for domain mode and is ignored for the standalone server.
       
-      NOTE: This parameter is ignored if *Apply to all servers* or *Force deployment* is selected.
+      [NOTE]
+      ====
+      * This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
+      * This parameter is ignored if *Apply to all servers* or *Force deployment* is selected.
+      ====
     label: "Server groups to apply:"
   - name: "force"
     type: "checkbox"
@@ -967,8 +984,8 @@ procedures:
       For example, <code>/tmp/hello-world.war</code>.</li>
       <li>If using a URL, it should be preceded by a <code>--</code> prefix anchor.
       For example, <code>--url=https://my.site.com/hello-world.war</code>.</li>
-      <b>NOTE:</b> URLs are only supported for EAP versions 7.0 and later.
       </ul>
+      <b>NOTE:</b> URLs are only supported for EAP versions 7.0 and later.
     adoc: |
       Application content source path that is either an absolute filepath (including the name of the WAR or EAR) or a
       URL that the domain controller or the standalone server can resolve.
@@ -1006,13 +1023,14 @@ procedures:
     htmlDocumentation: |
       Enables and assigns server groups, formatted as either a comma-separated list (for example,
       <code>server-group-one,server-group-five</code>) or a single list for all servers (for example,
-      <code>--all-server-groups</code>).
-      This parameter is only supported to JBoss domain.
+      <code>--all-server-groups</code>).<br />
+      <b>NOTE:</b> This parameter is only supported for JBoss domain.
     adoc: |
       Enables and assigns server groups, formatted as either a comma-separated list (for example,
       `server-group-one,server-group-five`) or a single list for all servers (for example,
       `--all-server-groups`).
-      This parameter is only supported to JBoss domain.
+      
+      NOTE: This parameter is only supported for JBoss domain.
     label: "Enabled server groups:"
     value: "--all-server-groups"
   - name: "disabledServerGroups"
@@ -1021,35 +1039,44 @@ procedures:
     htmlDocumentation: |
       Disables and assigns server groups, formatted as either a comma-separated list (for example,
       <code>server-group-one,server-group-five</code>) or a single list for all servers (for example,
-      <code>--all-server-groups</code>).
-      This parameter is only supported to JBoss domain.
+      <code>--all-server-groups</code>).<br />
+      <b>NOTE:</b> This parameter is only supported for JBoss domain.
     adoc: |
       Disables and assigns server groups, formatted as either a comma-separated list (for example,
       `server-group-one,server-group-five`) or a single list for all servers (for example,
       `--all-server-groups`).
-      This parameter is only supported to JBoss domain.
+      
+      NOTE: This parameter is only supported for JBoss domain.
     label: "Disabled server groups:"
   - name: "additionalOptions"
     type: "entry"
     required: false
     htmlDocumentation: |
-      Additional options to pass to the JBoss CLI.
-      The only supported option is <code>--disabled</code>, which deploys the application and leaves it disabled.
-      Applicable to JBoss standalone only.
+      Additional options to pass to the JBoss CLI.<br />
+      <b>NOTE:</b>
+      <ul>
+      <li>The only supported option is <code>--disabled</code>, which deploys the application and leaves it disabled.</li>
+      <li>This parameter is only supported for JBoss standalone.</li>
+      </ul>
     adoc: |
       Additional options to pass to the JBoss CLI.
-      The only supported option is `--disabled`, which deploys the application and leaves it disabled.
-      This parameter is only supported for JBoss standalone.
+      
+      [NOTE]
+      ====
+      * The only supported option is `--disabled`, which deploys the application and leaves it disabled.
+      * This parameter is only supported for JBoss standalone.
+      ====
     label: "Additional options:"
   shell: "ec-perl"
   hasConfig: true
 - name: "DisableDeploy"
   description: |
-    Disables a deployment designated by the name argument.
-    This procedure is only supported for JBoss standalone mode.
+    Disables a deployment designated by the name argument.<br />
+    <b>NOTE:</b> This procedure is only supported for JBoss standalone mode.
   adoc: |
     Disables a deployment designated by the name argument.
-    This procedure is only supported for JBoss standalone mode.
+    
+    NOTE: This procedure is only supported for JBoss standalone mode.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
@@ -1152,12 +1179,13 @@ procedures:
     required: false
     htmlDocumentation: |
       Specify the name of the profile for the information type request.
-      If a profile name is not specified, the procedure returns information for all profiles.
-      This parameter is only supported when <b>Data Sources</b> or <b>XA Data Sources</b> is the selected <b>Information type</b>.
+      If a profile name is not specified, the procedure returns information for all profiles.<br />
+      <b>NOTE:/b>  This parameter is only supported when <b>Data Sources</b> or <b>XA Data Sources</b> is the selected <b>Information type</b>.
     adoc: |
       Specify the name of the profile for the information type request.
       If a profile name is not specified, the procedure returns information for all profiles.
-      This parameter is only supported when *Data Sources* or *XA Data Sources* is the selected *Information type*.
+      
+      NOTE: This parameter is only supported when *Data Sources* or *XA Data Sources* is the selected *Information type*.
     label: "Information type context:"
   - name: "additionalOptions"
     type: "entry"
@@ -1565,15 +1593,16 @@ procedures:
       controller (if Shut down all controllers is selected).
       For example, the following CLI commands can be called: <code>:stop-servers(timeout=60)</code>, <code>shutdown --host=master --timeout=60</code>.
       If the timeout is 0 seconds, the server shuts down immediately.
-      If the timeout is less than 0 seconds, the server waits indefinitely for all requests to finish.
-      This parameter is only supported for JBoss EAP 7.x and is ignored for EAP 6.x.
+      If the timeout is less than 0 seconds, the server waits indefinitely for all requests to finish.<br />
+      <b>NOTE:/b> This parameter is only supported for JBoss EAP 7.x and is ignored for EAP 6.x.
     adoc: |
       Timeout, in seconds, to wait for all active requests to complete and then stop all servers and shut down each host
       controller (if Shut down all controllers is selected).
       For example, the following CLI commands can be called: `:stop-servers(timeout=60)`, `shutdown --host=master --timeout=60`.
       If the timeout is 0 seconds, the server shuts down immediately.
       If the timeout is less than 0 seconds, the server waits indefinitely for all requests to finish.
-      This parameter is only supported for JBoss EAP 7.x and is ignored for EAP 6.x.
+      
+      NOTE: This parameter is only supported for JBoss EAP 7.x and is ignored for EAP 6.x.
     label: "Timeout:"
     value: "60"
   - name: "allControllersShutdown"
