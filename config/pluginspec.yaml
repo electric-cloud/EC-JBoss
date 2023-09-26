@@ -60,9 +60,9 @@ procedures:
     type: "entry"
     required: false
     htmlDocumentation: |
-      Provide the comma-separated list of host names.
+      Comma-separated list of host names.
     adoc: |
-      Provide the comma-separated list of host names.
+      Comma-separated list of host names.
     label: "Hosts:"
   - name: "serversgroup"
     type: "entry"
@@ -88,7 +88,10 @@ procedures:
     type: select
     required: true
     htmlDocumentation: |
-      A desired terminal status of the deployment.
+      Desired terminal status of the deployment.
+      The procedure fails if the criteria cannot be met.
+    adoc: |
+      Desired terminal status of the deployment.
       The procedure fails if the criteria cannot be met.
     label: "Success criteria:"
     options:
@@ -262,9 +265,9 @@ procedures:
     type: "checkbox"
     required: false
     htmlDocumentation: |
-      If selected, the JBoss server URL is checked for availability, instead of checking the terminal status with the jboss-cli.
+      If selected, the JBoss server URL is checked for availability, instead of checking the terminal status with the JBoss CLI.
     adoc: |
-      If selected, the JBoss server URL is checked for availability, instead of checking the terminal status with the jboss-cli.
+      If selected, the JBoss server URL is checked for availability, instead of checking the terminal status with the JBoss CLI.
     label: "Perform URL check:"
     checkedValue: "1"
     uncheckedValue: "0"
@@ -297,12 +300,12 @@ procedures:
       Desired status of the server.
       The procedure fails if the criteria is not met.
       If <b>Perform URL check</b> is not selected, only the terminal status <code>RUNNING</code> for standalone
-      and <code>STARTED</code> for the domain meet the <code>RUNNING</code> success criteria.
+      and <code>STARTED</code> for domain meet the <code>RUNNING</code> success criteria.
     adoc: |
       Desired status of the server.
       The procedure fails if the criteria is not met.
       If *Perform URL check* is not selected, only the terminal status `RUNNING` for standalone
-      and `STARTED` for the domain meet the `RUNNING` success criteria.
+      and `STARTED` for domain meet the `RUNNING` success criteria.
     label: "Success criteria:"
     options:
       - name: RUNNING
@@ -593,9 +596,9 @@ procedures:
     htmlDocumentation: |
       Additional options to pass to the JBoss CLI.
       The parameters in this string are concatenated to a generated command line for creating a queue.
-      For example, If <b>Additional options</b> is populated as follows:
-      <code>--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2</code>,
-      the procedure invokes the following command for the creation of a queue whose name is <code>myQueue</code>:
+      For example, If <b>Additional options</b> is populated as follows:<br />
+      <code>--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2</code><br />
+      Then the procedure invokes the following command for the creation of a queue whose name is <code>myQueue</code>:<br />
       <code>jms-queue add --queue-address=myQueue --entries=java:jboss/exported/jms/queue/test --durable=false
       --legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2</code>.<br />
       <b>NOTE:</b> This parameter is only considered when creating queues and is ignored for updates.
@@ -623,7 +626,10 @@ procedures:
   - name: "topicName"
     type: "entry"
     required: true
-    htmlDocumentation: "Name of the topic."
+    htmlDocumentation: |
+      Name of the topic.
+    adoc: |
+      Name of the topic.
     label: "Topic name:"
   - name: "jndiNames"
     type: "entry"
@@ -653,9 +659,9 @@ procedures:
     htmlDocumentation: |
       Additional options to pass to the JBoss CLI.
       The parameters in this string are concatenated to a generated command line for creating a topic.
-      For example, If <b>Additional options</b> is populated as follows:
-      <code>--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2</code>,
-      the procedure invokes the following command for the creation of a queue whose name is <code>myTopic</code>:
+      For example, If <b>Additional options</b> is populated as follows:<br />
+      <code>--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2</code><br />
+      Then the procedure invokes the following command for the creation of a queue whose name is <code>myTopic</code>:<br />
       <code>jms-topic add --topic-address=myTopic --entries=java:jboss/exported/jms/topic/test --legacy-entries=
       java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2</code>.<br />
       <b>NOTE:</b> This parameter is only considered when creating queues and is ignored for updates.
@@ -793,12 +799,18 @@ procedures:
   - name: "datasource_name"
     type: "entry"
     required: true
-    htmlDocumentation: "Datasource name to delete."
+    htmlDocumentation: |
+      Datasource name to delete.
+    adoc: |
+      Datasource name to delete.
     label: "Datasource name:"
   - name: "profile"
     type: "entry"
     required: false
-    htmlDocumentation: "Profile name for domain mode."
+    htmlDocumentation: |
+      Profile name for domain mode.
+    adoc: |
+      Profile name for domain mode.
     label: "Profile name:"
   shell: "ec-perl"
   properties: []
@@ -835,14 +847,14 @@ procedures:
       URL that the domain controller or standalone server can resolve.
       If using a filepath, it should be the full filesystem path to the application that needs to be deployed.
       For example, <code>/tmp/hello-world.war</code>.
-      If using a URL, it should be preceded by a <code>--</code> prefix anchor.
-      For example, <code>--url=https://my.site.com/hello-world.war</code>.<br />
+      If using a URL, it should be preceded by a <code>--</code> prefix anchor. For example:<br />
+      <code>--url=https://my.site.com/hello-world.war</code><br />
       <b>NOTE:</b> URLs are only supported for EAP versions 7.0 and later.
     adoc: |
       Application content source path that is either an absolute filepath (including the name of the WAR or EAR) or a
       URL that the domain controller or the standalone server can resolve.
-      If using a filepath, it should be the full filesystem path to the application that needs to be deployed.
-      For example, `/tmp/hello-world.war`.
+      If using a filepath, it should be the full filesystem path to the application that needs to be deployed. For example,
+      `/tmp/hello-world.war`.
       If using a URL, it should be preceded by a `--` prefix anchor.
       For example, `--url=https://my.site.com/hello-world.war`.
       
@@ -1180,7 +1192,7 @@ procedures:
     htmlDocumentation: |
       Specify the name of the profile for the information type request.
       If a profile name is not specified, the procedure returns information for all profiles.<br />
-      <b>NOTE:/b>  This parameter is only supported when <b>Data Sources</b> or <b>XA Data Sources</b> is the selected <b>Information type</b>.
+      <b>NOTE:</b> This parameter is only supported when <b>Data Sources</b> or <b>XA Data Sources</b> is the selected <b>Information type</b>.
     adoc: |
       Specify the name of the profile for the information type request.
       If a profile name is not specified, the procedure returns information for all profiles.
@@ -1436,17 +1448,15 @@ procedures:
     htmlDocumentation: |
       Additional options to be passed on to the domain startup script.
       Parameters are concatenated as specified to a generated command line for starting the master or slave host controller.
-      For example:
-      <ul>
-      <li><code>-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0</code></li>
-      <li><code>-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0</code></li>
-      </ul>
+      For example:<br />
+      <code>-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0</code><br />
+      <code>-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0</code>
     adoc: |
       Additional options to be passed on to the domain startup script.
       Parameters are concatenated as specified to a generated command line for starting the master or slave host controller.
       For example:
 
-      *`-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0`
+      * `-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0`
       * `-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0`
     label: "Additional options:"
   - name: "logFileLocation"
@@ -1594,7 +1604,7 @@ procedures:
       For example, the following CLI commands can be called: <code>:stop-servers(timeout=60)</code>, <code>shutdown --host=master --timeout=60</code>.
       If the timeout is 0 seconds, the server shuts down immediately.
       If the timeout is less than 0 seconds, the server waits indefinitely for all requests to finish.<br />
-      <b>NOTE:/b> This parameter is only supported for JBoss EAP 7.x and is ignored for EAP 6.x.
+      <b>NOTE:</b> This parameter is only supported for JBoss EAP 7.x and is ignored for EAP 6.x.
     adoc: |
       Timeout, in seconds, to wait for all active requests to complete and then stop all servers and shut down each host
       controller (if Shut down all controllers is selected).
@@ -1722,7 +1732,11 @@ procedures:
     required: false
     htmlDocumentation: |
       If selected, applies the undeploy to all server groups in which the deployment is enabled.
-      Either server-groups or all-relevant-server-groups is required in domain mode.
+      Either <code>server-groups</code> or <code>all-relevant-server-groups</code> is required in domain mode.
+      This parameter is not supported in JBoss standalone mode.
+    adoc: |
+      If selected, applies the undeploy to all server groups in which the deployment is enabled.
+      Either `server-groups` or `all-relevant-server-groups` is required in domain mode.
       This parameter is not supported in JBoss standalone mode.
     label: "Apply undeploy to all server groups:"
     checkedValue: "1"
@@ -1766,12 +1780,18 @@ configuration:
   - name: "credential"
     type: "credential"
     required: false
-    htmlDocumentation: ""
+    htmlDocumentation: |
+      Login credentials.
+    adoc: |
+      Login credentials.
     label: Login as
   - name: "java_opts"
     type: "entry"
     required: false
-    htmlDocumentation: "Additional JAVA_OPTS"
+    htmlDocumentation: |
+      Additional Java options.
+    adoc: |
+      Additional Java options.
     label: Additional Java options
   - name: "jboss_url"
     type: "entry"
