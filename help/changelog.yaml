@@ -49,9 +49,9 @@
   - For the *StartStandaloneServer* procedure, the handling of the *Optional configuration name* parameter has been fixed.
   - |
     The following improvements have been made for the *StartDomainServer* procedure:
-        * Renamed the *Optional configuration name* parameter to *Optional domain configuration name*.
-        * The handling of the *Optional domain configuration name* parameter has been fixed.
-        * Added support for a new *Optional host configuration name* parameter.
+       ** Renamed the *Optional configuration name* parameter to *Optional domain configuration name*.
+       ** The handling of the *Optional domain configuration name* parameter has been fixed.
+       ** Added support for a new *Optional host configuration name* parameter.
   - For the *CheckServerStatus* procedure, the check for the "NOT RUNNING" success criteria has been fixed.
   - For the *StopServers* procedure, the server check has been expanded by handling the `DISABLED` server status, similar to information about `STOPPED` servers.
   - For the JBoss configuration, renamed the *JBoss AS URL* parameter to *JBoss controller location*.
@@ -61,21 +61,21 @@
     The *DeployApplication* provides a major improvement to the existing *DeployApp* procedure. It provides a very robust interface and its behavior is idempotent.
   - |
     The following improvements have been made for the *DeployApp* procedure:
-        * Renamed the *Path to the application to deploy* parameter to *Application Content Source Path*.
-        * Added URL support within the *Application content source path* parameter for JBoss EAP 7.0 and later.
-        * Changed the successful step summaries.
-        * Improved the documentation.
+       ** Renamed the *Path to the application to deploy* parameter to *Application Content Source Path*.
+       ** Added URL support within the *Application content source path* parameter for JBoss EAP 7.0 and later.
+       ** Changed the successful step summaries.
+       ** Improved the documentation.
   - |
     The following improvements have been made for the *StartServers* procedure:
-        * Renamed the *Wait time* parameter to *Timeout for recurring check of servers (seconds)*.
-        * Changed the behavior for checking servers in order to perform a check at least once.
-        * Improved the documentation.
+       ** Renamed the *Wait time* parameter to *Timeout for recurring check of servers (seconds)*.
+       ** Changed the behavior for checking servers in order to perform a check at least once.
+       ** Improved the documentation.
   - |
     The following improvements have been made for the *StopServers* procedure:
-        * Renamed the *Wait time* parameter to *Timeout for recurring check of servers (seconds)*.
-        * Changed the behavior for checking servers in order to perform a check at least once.
-        * Changed the warning step summary to include information about previously `DISABLED` servers, similar to information about `STOPPED` servers.
-        * Improved the documentation.
+       ** Renamed the *Wait time* parameter to *Timeout for recurring check of servers (seconds)*.
+       ** Changed the behavior for checking servers in order to perform a check at least once.
+       ** Changed the warning step summary to include information about previously `DISABLED` servers, similar to information about `STOPPED` servers.
+       ** Improved the documentation.
   - Fixed non-Ascii characters in plugin forms.
 2.4.1:
   - Configured the plugin to allow the ElectricFlow UI to render the plugin procedure parameters entirely using the configured form XMLs.
@@ -87,28 +87,28 @@
   - Added support for the *CreateOrUpdateDataSource* and *StartHostController* procedures.
   - |
     The following improvements have been made for the *StartStandaloneServer* procedure:
-        * Improved step summary.
-        * The *Physical location of the standalone script* parameter label was updated to *Startup Script*.
-        * The *Optional configuration name* parameter label was updated to *Server Configuration File*.
-        * Added supported for a new optional *Additional options* parameter, for changing startup behavior.
-        * Added supported for a new optional *Log file location* parameter that is used to surface server logs.
-        * Fixed handling of *Server Configuration File* in Windows, to override the default `standalone.xml` file by using a different file that stores server configuration.
-        * Verification of server startup is now verified by connecting the JBoss CLI successfully to the server.
-        * Startup boot errors are now surfaced.
-        * The most recent 100 lines of server logs are shown if a log file location is specified.
+       ** Improved step summary.
+       ** The *Physical location of the standalone script* parameter label was updated to *Startup Script*.
+       ** The *Optional configuration name* parameter label was updated to *Server Configuration File*.
+       ** Added supported for a new optional *Additional options* parameter, for changing startup behavior.
+       ** Added supported for a new optional *Log file location* parameter that is used to surface server logs.
+       ** Fixed handling of *Server Configuration File* in Windows, to override the default `standalone.xml` file by using a different file that stores server configuration.
+       ** Verification of server startup is now verified by connecting the JBoss CLI successfully to the server.
+       ** Startup boot errors are now surfaced.
+       ** The most recent 100 lines of server logs are shown if a log file location is specified.
   - |
     The following improvements have been made for the *CheckServerGroupStatus* procedure:
-        * Improved documentation for step summary.
-        * Added the following new *Criteria* options: `DISABLED` and `STOPPED` or `DISABLED'.
-        * For ElectricFlow 8.3 and later, added an output parameter to capture if the Criteria checked by this procedure returns `TRUE` or `FALSE`.
+       ** Improved documentation for step summary.
+       ** Added the following new *Criteria* options: `DISABLED` and `STOPPED` or `DISABLED'.
+       ** For ElectricFlow 8.3 and later, added an output parameter to capture if the Criteria checked by this procedure returns `TRUE` or `FALSE`.
   - |
     The following improvements have been made for the *StartServers* and *StopServers* procedures:
-        * Improved the step summary for some specific cases.
-        * Standardized approach for writing the step summary, and it is now to be included only in the `/myCall/summary` context.
-        * Fixed logging for log levels *INFO*, *WARNING*, and *ERROR*.
-        * Improved passing of credentials to the JBoss CLI.
-        * Configured the plugin to allow the ElectricFlow UI to create configurations inline of the procedure form.
-        * Added classification of procedures in the top section of the help file.
+       ** Improved the step summary for some specific cases.
+       ** Standardized approach for writing the step summary, and it is now to be included only in the `/myCall/summary` context.
+       ** Fixed logging for log levels *INFO*, *WARNING*, and *ERROR*.
+       ** Improved passing of credentials to the JBoss CLI.
+       ** Configured the plugin to allow the ElectricFlow UI to create configurations inline of the procedure form.
+       ** Added classification of procedures in the top section of the help file.
 2.6.1:
   - The plugin icon has been updated.
 2.6.2:
@@ -118,9 +118,9 @@
 2.7.0:
   - |
     The following updates have been made for creating and editing plugin configuration procedures:
-        * Added the option to check the connection with JBoss within a provided resource.
-        * Added more logging and diagnostic messages.
-        * Jobs with a successful run for creating or editing configuration are no longer automatically removed.
+       ** Added the option to check the connection with JBoss within a provided resource.
+       ** Added more logging and diagnostic messages.
+       ** Jobs with a successful run for creating or editing configuration are no longer automatically removed.
 2.7.1:
   - Renamed  to "{CD}".
 2.7.2:
