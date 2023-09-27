@@ -1780,12 +1780,7 @@ configuration:
   - name: "credential"
     type: "credential"
     required: false
-    htmlDocumentation: |
-      Select the credential option and then specify the following:
-      <ul>
-      <li><b>Runtime credential:</b> Enter the username and password, and then re-enter the password.
-      <li><b>Credential reference:</b> Select the project that contains the credential, and then select the credential you wish to use.
-      </ul>
+    htmlDocumentation: ""
     adoc: |
       Select the credential option and then specify the following:
       * *Runtime credential:* Enter the username and password, and then re-enter the password.
