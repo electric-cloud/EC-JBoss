@@ -1781,9 +1781,15 @@ configuration:
     type: "credential"
     required: false
     htmlDocumentation: |
-      Login credentials.
+      Select the credential option and then specify the following:
+      <ul>
+      <li><b>Runtime credential:</b> Enter the username and password, and then re-enter the password.
+      <li><b>Credential reference:</b> Select the project that contains the credential, and then select the credential you wish to use.
+      </ul>
     adoc: |
-      Login credentials.
+      Select the credential option and then specify the following:
+      * *Runtime credential:* Enter the username and password, and then re-enter the password.
+      * *Credential reference:* Select the project that contains the credential, and then select the credential you wish to use.
     label: Login as
   - name: "java_opts"
     type: "entry"
@@ -1813,21 +1819,6 @@ configuration:
       * `jboss:9990`
       * `remote+https://my-jboss.example.com:12990`
     label: JBoss controller location
-  - name: "log_level"
-    type: select
-    required: false
-    htmlDocumentation: "Log level."
-    label: Log Level
-    value: 1
-    options:
-      - name: INFO
-        value: 1
-      - name: WARNING
-        value: 2
-      - name: ERROR
-        value: 3
-      - name: DEBUG
-        value: 4
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
