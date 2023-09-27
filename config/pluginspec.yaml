@@ -1819,6 +1819,21 @@ configuration:
       * `jboss:9990`
       * `remote+https://my-jboss.example.com:12990`
     label: JBoss controller location
+  - name: "log_level"
+    type: select
+    required: false
+    htmlDocumentation: "Log level."
+    label: Log Level
+    value: 1
+    options:
+      - name: INFO
+        value: 1
+      - name: WARNING
+        value: 2
+      - name: ERROR
+        value: 3
+      - name: DEBUG
+        value: 4
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
