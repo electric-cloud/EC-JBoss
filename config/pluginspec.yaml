@@ -275,10 +275,10 @@ procedures:
     type: "entry"
     required: false
     htmlDocumentation: |
-      Provide a host name to check.<br />
+      Host name to check.<br />
       <b>NOTE:</b> This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
     adoc: |
-      Provide a host name to check.
+      Host name to check.
       
       NOTE: This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
     label: "Host:"
@@ -722,12 +722,12 @@ procedures:
     type: "entry"
     required: true
     htmlDocumentation: |
-      Comma-separated list of XA datasource properties in "key"=>"value" pair format.
+      Comma-separated list of XA datasource properties in <code>"key"=>"value"</code> pair format.
       Note that the key-value pairs are database-dependent and at a minimum should contain the database connection information.
       For example, <code>"URL"⇒"jdbc:oracle:oci8:@tc"</code> for an Oracle database and <code>"ServerName"⇒"localhost",
       "DatabaseName"⇒"test","PortNumber"⇒"3306","DriverType"⇒"4"</code> for a MySQL database.
     adoc: |
-      Comma-separated list of XA datasource properties in "key"=>"value" pair format.
+      Comma-separated list of XA datasource properties in `"key"=>"value"` pair format.
       Note that the key-value pairs are database-dependent and at a minimum should contain the database connection information.
       For example, `"URL"⇒"jdbc:oracle:oci8:@tc"` for an Oracle database and `"ServerName"⇒"localhost"`,
       `"DatabaseName"⇒"test","PortNumber"⇒"3306","DriverType"⇒"4"` for a MySQL database.
@@ -958,13 +958,13 @@ procedures:
       Additional options for the JBoss CLI <code>deploy</code> command.
       The <b>Additional options</b> parameter string is concatenated to a generated command line from the parameters above.<br />
       <b>NOTE:</b> For JBoss EAP 7 and later, do not specify the <code>--url</code> option because there is special handling for
-      such options within the <b>Application content source path</b> parameter.
+      this option within the <b>Application content source path</b> parameter.
     adoc: |
       Additional options for the JBoss CLI `deploy` command.
       The *Additional options* parameter string is concatenated to a generated command line from the parameters above.
       
       NOTE: For JBoss EAP 7 and later, do not specify the `--url` option because there is special handling for
-      such options within the *Application content source path* parameter.
+      this option within the *Application content source path* parameter.
     label: "Additional options:"
   shell: "ec-perl"
   properties: []
