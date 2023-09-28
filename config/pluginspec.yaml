@@ -1817,7 +1817,10 @@ configuration:
   - name: "log_level"
     type: select
     required: false
-    htmlDocumentation: "Log level."
+    htmlDocumentation: |
+      Log level to use for logging output.
+    adoc: |
+      Log level to use for logging output. Supported values are `INFO`, `WARNING`, `ERROR` and `DEBUG`.
     label: Log Level
     value: 1
     options:
