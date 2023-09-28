@@ -1360,10 +1360,10 @@ procedures:
     required: true
     htmlDocumentation: |
       Absolute physical path of the domain script.
-      For example, <code>domain.bat</code>, <code>/usr/tools/bin/domain.sh</code>, <code>c:/Program Files/JBoss/bin/domain.bat</code>.
+      For example, <code>domain.bat</code>, <code>/usr/tools/bin/domain.sh</code>, or <code>c:/Program Files/JBoss/bin/domain.bat</code>.
     adoc: |
       Absolute physical path of the domain script.
-      For example, `domain.bat`, `/usr/tools/bin/domain.sh`, `c:/Program Files/JBoss/bin/domain.bat`.
+      For example, `domain.bat`, `/usr/tools/bin/domain.sh`, or `c:/Program Files/JBoss/bin/domain.bat`.
     label: "Physical location of the domain script"
   - name: "alternatejbossconfig"
     type: "entry"
@@ -1408,10 +1408,10 @@ procedures:
     required: true
     htmlDocumentation: |
       Absolute physical path of the domain script.
-      For example, <code>domain.bat</code>, <code>/usr/tools/bin/domain.sh</code>, <code>c:/ProgramFiles/JBoss/bin/domain.bat</code>.
+      For example, <code>domain.bat</code>, <code>/usr/tools/bin/domain.sh</code>, or <code>c:/ProgramFiles/JBoss/bin/domain.bat</code>.
     adoc: |
       Absolute physical path of the domain script.
-      For example, `domain.bat`, `/usr/tools/bin/domain.sh`, `c:/ProgramFiles/JBoss/bin/domain.bat`.
+      For example, `domain.bat`, `/usr/tools/bin/domain.sh`, or `c:/ProgramFiles/JBoss/bin/domain.bat`.
     label: "Startup script"
   - name: "domainConfig"
     type: "entry"
@@ -1547,10 +1547,10 @@ procedures:
     required: true
     htmlDocumentation: |
       Absolute physical path of the standalone script.
-      For example, <code>standalone.bat</code>, <code>/usr/tools/bin/standalone.sh</code>, <code>c:/Program Files/JBoss/bin/standalone.bat</code>.
+      For example, <code>standalone.bat</code>, <code>/usr/tools/bin/standalone.sh</code>, or <code>c:/Program Files/JBoss/bin/standalone.bat</code>.
     adoc: |
       Absolute physical path of the standalone script.
-      For example, `standalone.bat`, `/usr/tools/bin/standalone.sh`, `c:/Program Files/JBoss/bin/standalone.bat`.
+      For example, `standalone.bat`, `/usr/tools/bin/standalone.sh`, or `c:/Program Files/JBoss/bin/standalone.bat`.
     label: "Startup script"
   - name: "alternatejbossconfig"
     type: "entry"
@@ -1602,14 +1602,14 @@ procedures:
     htmlDocumentation: |
       Timeout, in seconds, to wait for all active requests to complete and then stop all servers and shut down each host
       controller (if Shut down all controllers is selected).
-      For example, the following CLI commands can be called: <code>:stop-servers(timeout=60)</code>, <code>shutdown --host=master --timeout=60</code>.
+      For example, the following CLI commands can be called: <code>:stop-servers(timeout=60)</code> or <code>shutdown --host=master --timeout=60</code>.
       If the timeout is 0 seconds, the server shuts down immediately.
       If the timeout is less than 0 seconds, the server waits indefinitely for all requests to finish.<br />
       <b>NOTE:</b> This parameter is only supported for JBoss EAP 7.x and is ignored for EAP 6.x.
     adoc: |
       Timeout, in seconds, to wait for all active requests to complete and then stop all servers and shut down each host
       controller (if Shut down all controllers is selected).
-      For example, the following CLI commands can be called: `:stop-servers(timeout=60)`, `shutdown --host=master --timeout=60`.
+      For example, the following CLI commands can be called: `:stop-servers(timeout=60)` or `shutdown --host=master --timeout=60`.
       If the timeout is 0 seconds, the server shuts down immediately.
       If the timeout is less than 0 seconds, the server waits indefinitely for all requests to finish.
       
@@ -1822,7 +1822,8 @@ configuration:
     htmlDocumentation: |
       Log level to use for logging output.
     adoc: |
-      Log level to use for logging output. Supported values are `INFO`, `WARNING`, `ERROR` and `DEBUG`.
+      Log level to use for logging output.
+      Supported values are `INFO`, `WARNING`, `ERROR` and `DEBUG`.
     label: Log Level
     value: 1
     options:
