@@ -1391,8 +1391,9 @@ procedures:
     adoc: |
       Name of the host configuration file that {PRODUCT} uses to start the domain or host controller with a
       different host configuration (`--host-config`).
-      By default, `host.xml` is used.<br />
-      <b>NOTE:</b> This parameter is supported for domain and host controllers.
+      By default, `host.xml` is used.
+      
+      NOTE: This parameter is supported for domain and host controllers.
     label: "Optional host configuration name:"
   shell: "ec-perl"
   hasConfig: true
@@ -1645,7 +1646,7 @@ procedures:
     <b>NOTE:/b> This procedure is only supported for JBoss domain mode.
   adoc: |
     Stops servers in the specified server group and verifies the servers have stopped successfully.
-    This procedure is built around the JBoss CLI <code>stop-servers</code> command for the server groups.
+    This procedure is built around the JBoss CLI `stop-servers` command for the server groups.
     For example, `/server-group=some-group-name:stop-servers`.
     The procedure then checks the `status` attributes of the servers on the needed hosts within the specified server group.
     For example, `/host=some-host-name/server-config=some-server-name:read-attribute(name=status)`.
