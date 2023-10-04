@@ -9,7 +9,8 @@ pluginInfo:
   supportLevel: 10
   label: JBoss
   hasAdoc: true
-  detailedDescription: Use the EC-JBoss plugin to interact with JBoss EAP to perform tasks such as managing servers and deployments.
+  detailedDescription: |
+    Use the EC-JBoss plugin to interact with JBoss EAP to perform tasks, such as managing servers and deployments.
 
 properties:
 - propertyName: "postp_loader"
@@ -30,45 +31,69 @@ properties:
     path: "dsl/properties/startstandaloneserver_matchers.pl"
 procedures:
 - name: "CheckDeployStatus"
-  description: "Check the HTTP status of a given URL"
+  description: |
+    Checks the HTTP status of a given URL.
+  adoc: |
+    Checks the HTTP status of a given URL.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "appname"
     type: "entry"
     required: true
-    documentation: "Unique name of the deployment."
-    label: "Deployment name:"
+    htmlDocumentation: |
+      Unique name of the deployment.
+    adoc: |
+      Unique name of the deployment.
+    label: "Deployment name"
   - name: "hosts"
     type: "entry"
     required: false
-    documentation: "Provide the comma-separated list of host names."
-    label: "Hosts:"
+    htmlDocumentation: |
+      Comma-separated list of host names.
+    adoc: |
+      Comma-separated list of host names.
+    label: "Hosts"
   - name: "serversgroup"
     type: "entry"
     required: false
-    documentation: "Provide the comma-separated list of server group names. If \"\
-      Hosts\" parameter has been provided, procedure will search for server groups\
-      \ within that hosts list."
-    label: "Server groups:"
+    htmlDocumentation: |
+      Comma-separated list of server group names.
+      If the <b>Hosts</b> parameter is specified, the procedure searches for server groups within that host's list.
+    adoc: |
+      Comma-separated list of server group names.
+      If the *Hosts* parameter is specified, the procedure searches for server groups within that host's list.
+    label: "Server groups"
   - name: "servers"
     type: "entry"
     required: false
-    documentation: "Provide the comma-separated list of server names. If \"Server\
-      \ groups\" parameter has been provided, procedure will search for servers\
-      \ within that group."
-    label: "Servers:"
+    htmlDocumentation: |
+      Comma-separated list of server names.
+      If the <b>Server groups</b> parameter is specified, the procedure searches for servers within that group.
+    adoc: |
+      Comma-separated list of server names.
+      If the *Server groups* parameter is specified, the procedure searches for servers within that group.
+    label: "Servers"
   - name: "criteria"
     type: select
     required: true
-    documentation: "A desired terminal status of the deployment. The procedure will\
-      \ fail if criteria will not be reached."
-    label: "Success criteria:"
+    htmlDocumentation: |
+      Desired terminal status of the deployment.
+      The procedure fails if the criteria cannot be met.
+    adoc: |
+      Desired terminal status of the deployment.
+      The procedure fails if the criteria cannot be met.
+    label: "Success criteria"
     options:
       - name: OK
         value: OK
@@ -77,43 +102,74 @@ procedures:
   - name: "wait_time"
     type: "entry"
     required: false
-    documentation: "Wait time for terminal status in seconds. If not provided, only\
-      \ one check will be performed. If 0, it will wait until criteria is met. Default\
-      \ 300."
-    label: "Wait time:"
+    htmlDocumentation: |
+      Wait time for terminal status, in seconds.
+      If not provided, only one check is performed.
+      If 0, it waits until the criteria is met.
+      The default is 300 seconds.
+    adoc: |
+      Wait time for terminal status, in seconds.
+      If not provided, only one check is performed.
+      If 0, it waits until the criteria is met.
+      The default is 300 seconds.
+    label: "Wait time"
     value: "300"
   shell: "ec-perl"
   hasConfig: true
 - name: "CheckHostControllerStatus"
-  description: "Checks hostcontroller status."
+  description: |
+    Checks the host controller status.
+  adoc: |
+    Checks the host controller status.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "hostcontroller_name"
     type: "entry"
     required: true
-    documentation: "Host controller name. Default is 'master'."
-    label: "Host controller name:"
+    htmlDocumentation: |
+      Host controller name.
+      The default is <code>master</code>.
+    adoc: |
+      Host controller name.
+      The default is `master`.
+    label: "Host controller name"
     value: "master"
   - name: "wait_time"
     type: "entry"
     required: false
-    documentation: "Wait time for terminal state in seconds. If not provided, only\
-      \ one check will be performed. If 0, it will wait until criteria is met. Default\
-      \ 300."
-    label: "Wait time:"
+    htmlDocumentation: |
+      Wait time for terminal status, in seconds.
+      If not provided, only one check is performed.
+      If 0, it waits until the criteria is met.
+      The default is 300 seconds.
+    adoc: |
+      Wait time for terminal status, in seconds.
+      If not provided, only one check is performed.
+      If 0, it waits until the criteria is met.
+      The default is 300 seconds.
+    label: "Wait time"
     value: "300"
   - name: "criteria"
     type: select
     required: true
-    documentation: "A desired terminal status of the host controller. The procedure\
-      \ will fail if criteria will not be reached."
-    label: "Success criteria:"
+    htmlDocumentation: |
+      Desired terminal status of the host controller.
+      The procedure fails if the criteria is not met.
+    adoc: |
+      Desired terminal status of the host controller.
+      The procedure fails if the criteria is not met.
+    label: "Success criteria"
     options:
       - name: RUNNING
         value: RUNNING
@@ -122,39 +178,60 @@ procedures:
   shell: "ec-perl"
   hasConfig: true
 - name: "CheckServerGroupStatus"
-  description: "The CheckServerGroupStatus procedure checks if the Status of all\
-    \ servers in the Server Group is equal to the Status mentioned in the Criteria\
-    \ field."
+  description: |
+    Checks if the status of all servers in the server group is equal to the status in the Criteria field.
+  adoc: |
+    Checks if the status of all servers in the server group is equal to the status in the *Criteria* field.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical Location of the JBoss Client Script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "serversgroup"
     type: "entry"
     required: true
-    documentation: "The name of server group to be checked."
-    label: "Servers Group Name:"
+    htmlDocumentation: |
+      The name of server group to be checked.
+    adoc: |
+      The name of server group to be checked.
+    label: "Servers group name"
   - name: "wait_time"
     type: "entry"
     required: false
-    documentation: "Maximum duration (in seconds) of server group status check retries.\
-      \ If not provided, only one check will be performed. If 0, it will wait until\
-      \ criteria is met. Default 300."
-    label: "Wait Time:"
+    htmlDocumentation: |
+      Wait time for terminal status, in seconds.
+      If not provided, only one check is performed.
+      If 0, it waits until the criteria is met.
+      The default is 300 seconds.
+    adoc: |
+      Wait time for terminal status, in seconds.
+      If not provided, only one check is performed.
+      If 0, it waits until the criteria is met.
+      The default is 300 seconds.
+    label: "Wait time"
     value: "300"
   - name: "criteria"
     type: select
     required: true
-    documentation: "A desired status for all servers in the group. Possible options:\
-      \ 'STARTED', 'STOPPED', 'DISABLED', 'STOPPED or DISABLED'. The procedure will\
-      \ have status success if criteria is met. For CloudBees CD 8.3 and later:\
-      \ the procedure returns 'TRUE' or 'FALSE' based on the check, the result is\
-      \ captured in the Output Parameter, called \"servergroupstatus\"."
-    label: "Criteria:"
+    htmlDocumentation: |
+      Desired status for all servers in the group.
+      The procedure status is successful if the criteria is met.
+      The procedure returns <code>TRUE</code> or <code>FALSE</code> based on the check, and the result is captured
+      in the <b>servergroupstatus</b> output parameter.
+    adoc: |
+      Desired status for all servers in the group.
+      The procedure status is successful if the criteria is met.
+      The procedure returns `TRUE` or `FALSE` based on the check, and the result is captured
+      in the *servergroupstatus* output parameter.
+    label: "Criteria"
     options:
       - name: STARTED
         value: STARTED
@@ -167,42 +244,69 @@ procedures:
   shell: "ec-perl"
   hasConfig: true
 - name: "CheckServerStatus"
-  description: "Check the HTTP status of a given URL"
+  description: |
+    Checks the HTTP status of a given URL.
+  adoc: |
+    Checks the HTTP status of a given URL.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "url_check"
     type: "checkbox"
     required: false
-    documentation: "Select this option to check JBoss server url for availability\
-      \ instead of checking terminal status with jboss-cli."
-    label: "Perform URL check:"
+    htmlDocumentation: |
+      If selected, the JBoss server URL is checked for availability, instead of checking the terminal status with the JBoss CLI.
+    adoc: |
+      If selected, the JBoss server URL is checked for availability, instead of checking the terminal status with the JBoss CLI.
+    label: "Perform URL check"
     checkedValue: "1"
     uncheckedValue: "0"
   - name: "host"
     type: "entry"
     required: false
-    documentation: "Provide a host name to check. Applicable only for domain mode\
-      \ and will be ignored for standalone server."
-    label: "Host:"
+    htmlDocumentation: |
+      Host name to check.<br />
+      <b>NOTE:</b> This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
+    adoc: |
+      Host name to check.
+      
+      NOTE: This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
+    label: "Host"
   - name: "server"
     type: "entry"
     required: false
-    documentation: "Provide a server name to check. Applicable only for domain mode\
-      \ and will be ignored for standalone server."
-    label: "Server:"
+    htmlDocumentation: |
+      Server name to check.<br />
+      <b>NOTE:</b> This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
+    adoc: |
+      Server name to check.
+      
+      NOTE: This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
+    label: "Server"
   - name: "criteria"
     type: select
     required: true
-    documentation: "A desired status of the server. The procedure fails if criteria\
-      \ is not met. If \"Perform URL check\" is not set: only terminal status 'running'\
-      \ for standalone and 'STARTED' for domain meet RUNNING criteria."
-    label: "Success criteria:"
+    htmlDocumentation: |
+      Desired status of the server.
+      The procedure fails if the criteria is not met.
+      If <b>Perform URL check</b> is not selected, only the terminal status <code>RUNNING</code> for standalone
+      and <code>STARTED</code> for domain meet the <code>RUNNING</code> success criteria.
+    adoc: |
+      Desired status of the server.
+      The procedure fails if the criteria is not met.
+      If *Perform URL check* is not selected, only the terminal status `RUNNING` for standalone
+      and `STARTED` for domain meet the `RUNNING` success criteria.
+    label: "Success criteria"
     options:
       - name: RUNNING
         value: RUNNING
@@ -211,516 +315,870 @@ procedures:
   - name: "wait_time"
     type: "entry"
     required: false
-    documentation: "Wait time for terminal status in seconds. If not provided, only\
-      \ one check will be performed. If 0, it will wait until criteria is met. Default\
-      \ 300."
-    label: "Wait time:"
+    htmlDocumentation: |
+      Wait time for terminal status, in seconds.
+      If not provided, only one check is performed.
+      If 0, it waits until the criteria is met.
+      The default is 300 seconds.
+    adoc: |
+      Wait time for terminal status, in seconds.
+      If not provided, only one check is performed.
+      If 0, it waits until the criteria is met.
+      The default is 300 seconds.
+    label: "Wait time"
     value: "300"
   shell: "ec-perl"
   properties: []
   hasConfig: true
 - name: "CreateDatasource"
-  description: "Creates a datasource in JBoss."
+  description: |
+    Creates a datasource in JBoss.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      The physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      The physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "application_name"
     type: "entry"
     required: true
-    documentation: "Application name."
-    label: "Application name:"
+    htmlDocumentation: |
+      Application name.
+    adoc: |
+      Application name.
+    label: "Application name"
   - name: "connectionURL"
     type: "entry"
     required: true
-    documentation: "The JDBC driver connection URL. i.e., 'jdbc:mysql://localhost:3306/ectest'."
-    label: "Connection driver URL:"
+    htmlDocumentation: |
+      The JDBC driver connection URL.
+      For example, <code>jdbc:mysql://localhost:3306/ectest</code>.
+    adoc: |
+      The JDBC driver connection URL.
+      For example, `jdbc:mysql://localhost:3306/ectest`.
+    label: "Connection driver URL"
   - name: "driverClass"
     type: "entry"
     required: true
-    documentation: "The fully qualifed name of the JDBC driver class. i.e., 'com.mysql.jdbc.Driver'."
-    label: "Driver class:"
+    htmlDocumentation: |
+      The fully qualified name of the JDBC driver class.
+      For example, <code>com.mysql.jdbc.Driver</code>.
+    adoc: |
+      The fully qualified name of the JDBC driver class.
+      For example, `com.mysql.jdbc.Driver`.
+    label: "Driver class"
   - name: "jndiName"
     type: "entry"
     required: true
-    documentation: "Specifies the JNDI name for the datasource. This should start\
-      \ with either java:/ or java:jboss/. i.e., 'java:jboss/datasources/MySql'."
-    label: "JNDI name:"
+    htmlDocumentation: |
+      The JNDI name for the datasource.
+      This should start with either <code>java:/</code> or <code>java:jboss/</code>.
+      For example, <code>java:jboss/datasources/MySql</code>.
+    adoc: |
+      The JNDI name for the datasource.
+      This should start with either `java:/` or `java:jboss/`.
+      For example, `java:jboss/datasources/MySql`.
+    label: "JNDI name"
   - name: "driverName"
     type: "entry"
     required: true
-    documentation: "Defines the JDBC driver the datasource should use. This can\
-      \ be either the name of the .jar file or the name of the module, depending\
-      \ on how the driver has been deployed. i.e., 'mysql-connector-java-5.1.20-bin.jar'."
-    label: "Driver name:"
+    htmlDocumentation: |
+      Defines the JDBC driver the datasource should use.
+      This can be either the name of the .jar file or the name of the module, depending on how the driver has been deployed.
+      For example, <code>mysql-connector-java-5.1.20-bin.jar</code>.
+    adoc: |
+      Defines the JDBC driver the datasource should use.
+      This can be either the name of the .jar file or the name of the module, depending on how the driver has been deployed.
+      For example, `mysql-connector-java-5.1.20-bin.jar`.
+    label: "Driver name"
   - name: "profile"
     type: "entry"
     required: false
-    documentation: "Profile name for domain mode."
-    label: "Profile name:"
+    htmlDocumentation: |
+      Profile name for domain mode.
+    adoc: |
+      Profile name for domain mode.
+    label: "Profile name"
   - name: "ds_credential"
     type: "credential"
     required: false
-    documentation: "Specify credential that contains username and password for data\
-      \ source."
-    label: "Datasource credential:"
+    htmlDocumentation: |
+      The credentials that contain the username and password for the datasource.
+    adoc: |
+      The credentials that contain the username and password for the datasource.
+    label: "Datasource credential"
   - name: "enabled"
     type: "checkbox"
     required: false
-    documentation: "Specifies if the datasource should be enabled after creation."
-    label: "Enable Datasource?:"
+    htmlDocumentation: |
+      Specifies if the datasource should be enabled after creation.
+    adoc: |
+      Specifies if the datasource should be enabled after creation.
+    label: "Enable datasource?"
     checkedValue: "1"
     uncheckedValue: "0"
   shell: "ec-perl"
   properties: []
   hasConfig: true
 - name: "CreateOrUpdateDataSource"
-  description: "This procedure can be used to either create a new data source or\
-    \ update certain properties of an existing data source."
+  description: |
+    Creates a new datasource or updates certain properties of an existing datasource.
+  adoc: |
+    Creates a new datasource or updates certain properties of an existing datasource.
   parameters:
   - name: "dataSourceName"
     type: "entry"
     required: true
-    documentation: "Name of the Data Source. This will also serve as the unique\
-      \ identifier for this resource. For example MySqlDS"
-    label: "Data Source Name:"
+    htmlDocumentation: |
+      Name of the datasource.
+      This also serves as the unique identifier for this resource.
+      For example, <code>MySqlDS</code>.
+    adoc: |
+      Name of the datasource.
+      This also serves as the unique identifier for this resource.
+      For example, `MySqlDS`.
+    label: "Datasource name"
   - name: "jndiName"
     type: "entry"
     required: true
-    documentation: "JNDI Name of the Data Source. For example java:/MySqlDS"
-    label: "JNDI Name:"
+    htmlDocumentation: |
+      JNDI name of the datasource.
+      For example, <code>java:/MySqlDS</code>.
+    adoc: |
+      JNDI name of the datasource.
+      For example, `java:/MySqlDS`.
+    label: "JNDI name"
   - name: "jdbcDriverName"
     type: "entry"
     required: true
-    documentation: "Defines the JDBC driver the data source should use. It is a\
-      \ symbolic name matching the name of installed driver. For example mysql"
-    label: "JDBC Driver Name:"
+    htmlDocumentation: |
+      Defines the JDBC driver the datasource should use.
+      It is a symbolic name matching the name of installed driver.
+      For example, <code>mysql</code>.
+    adoc: |
+      Defines the JDBC driver the datasource should use.
+      It is a symbolic name matching the name of installed driver.
+      For example, `mysql`.
+    label: "JDBC driver name"
   - name: "connectionUrl"
     type: "entry"
     required: false
-    documentation: "Required for JBoss EAP 6.X, 7.0. Not Required for 7.1. The JDBC\
-      \ driver connection URL. For example jdbc:mysql://localhost:3306/mysqldb"
-    label: "Connection URL:"
+    htmlDocumentation: |
+      The JDBC driver connection URL.
+      For example, <code>jdbc:mysql://localhost:3306/mysqldb</code>.
+      This is required for JBoss EAP 6.X and 7.0; it is not required for 7.1.
+    adoc: |
+      The JDBC driver connection URL.
+      For example, `\jdbc:mysql://localhost:3306/mysqldb`.
+      This is required for JBoss EAP 6.X and 7.0; it is not required for 7.1.
+    label: "Connection URL"
   - name: "dataSourceConnection_credential"
     type: "credential"
     required: true
-    documentation: "Credential that contains username and password used for the\
-      \ connection (need to be attached to step)."
-    label: "Data Source Connection Credentials:"
+    htmlDocumentation: |
+      Credentials that contain the username and password used for the connection, and need to be attached to the step.
+    adoc: |
+      Credentials that contain the username and password used for the connection, and need to be attached to the step.
+    label: "Datasource connection credentials"
   - name: "enabled"
     type: "entry"
     required: true
-    documentation: "If the created Data Source should be enabled or not. Default\
-      \ is true."
-    label: "Enabled:"
+    htmlDocumentation: |
+      Specifies if the created datasource should be enabled. 
+      Default is true.
+    adoc: |
+      Specifies if the created datasource should be enabled. 
+      Default is true.
+    label: "Enabled"
     checkedValue: "1"
     uncheckedValue: "0"
   - name: "profile"
     type: "entry"
     required: false
-    documentation: "Required for Domain, will be ignored for Standalone. Name of\
-      \ the Server Profile to which this Data Source applies to. For example: 'full',\
-      \ 'full-ha'"
-    label: "Profile:"
+    htmlDocumentation: |
+      Name of the server profile the datasource applies to.
+      For example, <code>full</code> or <code>full-ha</code>.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    adoc: |
+      Name of the server profile the datasource applies to.
+      For example, `full` or `full-ha`.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    label: "Profile"
   - name: "additionalOptions"
     type: "entry"
     required: false
-    documentation: "'Additional options' to be passed on to jboss-cli. The parameters\
-      \ mentioned in this string will be concatenated to already generated command\
-      \ line for creating data source. For example: --min-pool-size=5 --max-pool-size=10\
-      \ --check-valid-connection-sql=\"select 1 from dual\""
-    label: "Additional Options:"
+    htmlDocumentation: |
+      Additional options to pass to the JBoss CLI.
+      The parameters in this string are concatenated to a generated command line for creating an XA datasource.
+      For example, <code>--min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql=&quot;select 1 from dual&quot;</code>.
+    adoc: |
+      Additional options to pass to the JBoss CLI.
+      The parameters in this string are concatenated to a generated command line for creating an XA datasource.
+      For example, `--min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select 1 from dual"`.
+    label: "Additional options"
   shell: "ec-perl"
   properties: []
   hasConfig: true
 - name: "CreateOrUpdateJMSQueue"
-  description: "This procedure creates a new jms queue or updates JNDI names for\
-    \ an existing jms queue using the default message provider as specified in the\
-    \ configuration of the JBoss EAP messaging subsystem."
+  description: |
+    Creates a new JMS queue or updates JNDI names for an existing JMS queue using the default message provider,
+    as specified in the configuration of the JBoss EAP messaging subsystem.
+  adoc: |
+    Creates a new JMS queue or updates JNDI names for an existing JMS queue using the default message provider,
+    as specified in the configuration of the JBoss EAP messaging subsystem.
   parameters:
   - name: "queueName"
     type: "entry"
     required: true
-    documentation: "Name of the Queue."
-    label: "Queue Name:"
+    htmlDocumentation: |
+      Name of the queue.
+    adoc: |
+      Name of the queue.
+    label: "Queue name"
   - name: "jndiNames"
     type: "entry"
     required: true
-    documentation: "Format: comma separated JNDI names (do not use whitespaces).\
-      \ The list of JNDI names the queue will be bound to. For example: 'java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2'"
-    label: "JNDI Names:"
+    htmlDocumentation: |
+      Comma-separated list of JNDI names the queue binds to.
+      For example, <code>java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2</code>.
+    adoc: |
+      Comma-separated list of JNDI names the queue binds to.
+      For example, `java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2`.
+    label: "JNDI names"
   - name: "profile"
     type: "entry"
     required: false
-    documentation: "Required for Domain, will be ignored for Standalone. Name of\
-      \ profile in Domain where queue should be created or updated (in case of need).\
-      \ For example: 'full', 'full-ha'"
-    label: "Profile:"
+    htmlDocumentation: |
+      Name of the domain where the queue should be created or updated.
+      For example, <code>full</code> or <code>full-ha</code>.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    adoc: |
+      Name of the domain where the queue should be created or updated.
+      For example, `full` or `full-ha`.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    label: "Profile"
   - name: "durable"
     type: "entry"
     required: false
-    documentation: "Whether the queue to be created is durable or not. Default is\
-      \ false (unchecked) - non durable. NOTE: This parameter will be considered\
-      \ only when creating queues and will be ignored for updates."
-    label: "Durable:"
+    htmlDocumentation: |
+      If selected, the created queue is durable.<br />
+      <b>NOTE:</b> This parameter is considered only when creating queues and is ignored for updates.
+    adoc: |
+      If selected, the created queue is durable.
+      
+      NOTE: This parameter is considered only when creating queues and is ignored for updates.
+    label: "Durable"
     checkedValue: "1"
     uncheckedValue: "0"
   - name: "messageSelector"
     type: "entry"
     required: false
-    documentation: "JMS message selector. Only messages that match the selector\
-      \ will be added to the queue. For example: color='red'. NOTE: This parameter\
-      \ will be considered only when creating queues and will be ignored for updates."
-    label: "Message Selector:"
+    htmlDocumentation: |
+      JMS message selector.
+      Only messages that match the selector are added to the queue.
+      For example, <code>color='red'</code>.<br />
+      <b>NOTE:</b> This parameter is only used when creating queues and is ignored for updates.
+    adoc: |
+      JMS message selector.
+      Only messages that match the selector are added to the queue.
+      For example, `color='red'`.
+      
+      NOTE: This parameter is only used when creating queues and is ignored for updates.
+    label: "Message selector"
   - name: "additionalOptions"
     type: "entry"
     required: false
-    documentation: "'Additional options' to be passed on to jboss-cli. The parameters\
-      \ mentioned in this string will be concatenated to already generated command\
-      \ line for creating queue. The following is an example: If Additional options\
-      \ is populated as follows '--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'\
-      \ the procedure invoke the following command for the creation of a queue whose\
-      \ name is myQueue: 'jms-queue add --queue-address=myQueue --entries=java:jboss/exported/jms/queue/test\
-      \ --durable=false --legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2'.\
-      \ NOTE: This parameter will be considered only when creating queues and will\
-      \ be ignored for updates."
-    label: "Additional Options:"
+    htmlDocumentation: |
+      Additional options to pass to the JBoss CLI.
+      The parameters in this string are concatenated to a generated command line for creating a queue.
+      For example, If <b>Additional options</b> is populated as follows:<br />
+      <code>--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2</code><br />
+      Then the procedure invokes the following command for the creation of a queue whose name is <code>myQueue</code>:<br />
+      <code>jms-queue add --queue-address=myQueue --entries=java:jboss/exported/jms/queue/test --durable=false
+      --legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2</code>.<br />
+      <b>NOTE:</b> This parameter is only considered when creating queues and is ignored for updates.
+    adoc: |
+      Additional options to pass to the JBoss CLI.
+      The parameters in this string are concatenated to a generated command line for creating a queue.
+      For example, If *Additional options* is populated as follows:
+      `--legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2`,
+      the procedure invokes the following command for the creation of a queue whose name is `myQueue`:
+      `jms-queue add --queue-address=myQueue --entries=java:jboss/exported/jms/queue/test --durable=false
+      --legacy-entries=java:jboss/exported/jms/queue/legacy1,java:jboss/exported/jms/queue/legacy2`
+      
+      NOTE: This parameter is only considered when creating queues and is ignored for updates.
+    label: "Additional options"
   shell: "ec-perl"
   hasConfig: true
 - name: "CreateOrUpdateJMSTopic"
-  description: "This procedure creates a new jms topic or updates JNDI names for\
-    \ an existing jms topic using the default message provider as specified in the\
-    \ configuration of the JBoss EAP messaging subsystem."
+  description: |
+    Creates a new JMS topic or updates JNDI names for an existing JMS topic using the default message provider as
+    specified in the configuration of the JBoss EAP messaging subsystem.
+  adoc: |
+    Creates a new JMS topic or updates JNDI names for an existing JMS topic using the default message provider as
+    specified in the configuration of the JBoss EAP messaging subsystem.
   parameters:
   - name: "topicName"
     type: "entry"
     required: true
-    documentation: "Name of the Topic."
-    label: "Topic Name:"
+    htmlDocumentation: |
+      Name of the topic.
+    adoc: |
+      Name of the topic.
+    label: "Topic name"
   - name: "jndiNames"
     type: "entry"
     required: true
-    documentation: "Format: comma separated JNDI names (do not use whitespaces).\
-      \ The list of JNDI names the topic will be bound to. For example: 'java:jboss/exported/jms/topic/test,java:jboss/exported/jms/topic/test2'"
-    label: "JNDI Names:"
+    htmlDocumentation: |
+      Comma-separated list of JNDI names the queue binds to.
+      For example, <code>java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2</code>.
+    adoc: |
+      Comma-separated list of JNDI names the queue binds to.
+      For example, `java:jboss/exported/jms/queue/test,java:jboss/exported/jms/queue/test2`.
+    label: "JNDI names"
   - name: "profile"
     type: "entry"
     required: false
-    documentation: "Required for Domain, will be ignored for Standalone. Name of\
-      \ profile in Domain where topic should be created or updated (in case of need).\
-      \ For example: 'full', 'full-ha'"
-    label: "Profile:"
+    htmlDocumentation: |
+      Name of the profile in the domain where the topic should be created or updated.
+      For example, <code>full</code> or <code>full-ha</code>.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    adoc: |
+      Name of the profile in the domain where the topic should be created or updated.
+      For example, `full` or `full-ha`.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    label: "Profile"
   - name: "additionalOptions"
     type: "entry"
     required: false
-    documentation: "'Additional options' to be passed on to jboss-cli. The parameters\
-      \ mentioned in this string will be concatenated to already generated command\
-      \ line for creating topic. The following is an example: If Additional options\
-      \ is populated as follows '--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'\
-      \ the procedure invoke the following command for the creation of a topic whose\
-      \ name is myTopic: 'jms-topic add --topic-address=myTopic --entries=java:jboss/exported/jms/topic/test\
-      \ --legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2'.\
-      \ NOTE: This parameter will be considered only when creating topics and will\
-      \ be ignored for updates."
-    label: "Additional Options:"
+    htmlDocumentation: |
+      Additional options to pass to the JBoss CLI.
+      The parameters in this string are concatenated to a generated command line for creating a topic.
+      For example, if <b>Additional options</b> is populated as follows:<br />
+      <code>--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2</code><br />
+      Then the procedure invokes the following command for the creation of a queue whose name is <code>myTopic</code>:<br />
+      <code>jms-topic add --topic-address=myTopic --entries=java:jboss/exported/jms/topic/test --legacy-entries=
+      java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2</code>.<br />
+      <b>NOTE:</b> This parameter is only considered when creating queues and is ignored for updates.
+    adoc: |
+      Additional options to pass to the JBoss CLI.
+      The parameters in this string are concatenated to a generated command line for creating a topic.
+      For example, if *Additional options* is populated as follows:
+      `--legacy-entries=java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2`,
+      the procedure invokes the following command for the creation of a queue whose name is `myTopic`:
+      `jms-topic add --topic-address=myTopic --entries=java:jboss/exported/jms/topic/test --legacy-entries=
+      java:jboss/exported/jms/topic/legacy1,java:jboss/exported/jms/topic/legacy2`
+      
+      NOTE: This parameter is only considered when creating queues and is ignored for updates.
+    label: "Additional options"
   shell: "ec-perl"
   hasConfig: true
 - name: "CreateOrUpdateXADataSource"
-  description: "This procedure can be used to either create a new XA data source\
-    \ or update certain properties of an existing XA data source."
+  description: |
+    Creates a new XA datasource or updates certain properties of an existing XA datasource.
+  adoc: |
+    Creates a new XA datasource or updates certain properties of an existing XA datasource.
   parameters:
   - name: "dataSourceName"
     type: "entry"
     required: true
-    documentation: "Name of the Data Source. This will also serve as the unique\
-      \ identifier for this resource. For example MysqlXADS"
-    label: "Data Source Name:"
+    htmlDocumentation: |
+      Name of the datasource.
+      This also serves as the unique identifier for this resource.
+      For example, <code>MysqlXADS</code>.
+    adoc: |
+      Name of the datasource.
+      This also serves as the unique identifier for this resource.
+      For example, `MysqlXADS`.
+    label: "Datasource name"
   - name: "jndiName"
     type: "entry"
     required: true
-    documentation: "JNDI Name of the Data Source. For example java:/MysqlXADS"
-    label: "JNDI Name:"
+    htmlDocumentation: |
+      JNDI name of the datasource.
+      For example, <code>java:/MysqlXADS</code>.
+    adoc: |
+      JNDI name of the datasource.
+      For example, `java:/MysqlXADS`.
+    label: "JNDI name"
   - name: "jdbcDriverName"
     type: "entry"
     required: true
-    documentation: "Defines the JDBC driver the data source should use. It is a\
-      \ symbolic name matching the name of installed driver. For example mysql."
-    label: "JDBC Driver Name:"
+    htmlDocumentation: |
+      Defines the JDBC driver the datasource should use.
+      It is a symbolic name matching the name of the installed driver.
+      For example, <code>mysql</code>.
+    adoc: |
+      Defines the JDBC driver the datasource should use.
+      It is a symbolic name matching the name of the installed driver.
+      For example,`mysql`.
+    label: "JDBC driver name"
   - name: "xaDataSourceProperties"
     type: "entry"
     required: true
-    documentation: "A comma-separated list of XA data source properties in \"key\"\
-      =>\"value\" pair format. Note that the key value pairs are database dependent\
-      \ and at a minimum should contain the database connection information. For\
-      \ example: \"URL\"=>\"jdbc:oracle:oci8:@tc\" for an Oracle database; \"ServerName\"\
-      =>\"localhost\",\"DatabaseName\"=>\"test\",\"PortNumber\"=>\"3306\",\"DriverType\"\
-      =>\"4\" for a Mysql database"
-    label: "XA Data Source Properties:"
+    htmlDocumentation: |
+      Comma-separated list of XA datasource properties in <code>"key"=>"value"</code> pair format.
+      Note that the key-value pairs are database-dependent and at a minimum should contain the database connection information.
+      For example, <code>"URL"⇒"jdbc:oracle:oci8:@tc"</code> for an Oracle database and <code>"ServerName"⇒"localhost",
+      "DatabaseName"⇒"test","PortNumber"⇒"3306","DriverType"⇒"4"</code> for a MySQL database.
+    adoc: |
+      Comma-separated list of XA datasource properties in `"key"=>"value"` pair format.
+      Note that the key-value pairs are database-dependent and at a minimum should contain the database connection information.
+      For example, `"URL"⇒"jdbc:oracle:oci8:@tc"` for an Oracle database and `"ServerName"⇒"localhost"`,
+      `"DatabaseName"⇒"test","PortNumber"⇒"3306","DriverType"⇒"4"` for a MySQL database.
+    label: "XA datasource properties"
   - name: "dataSourceConnection_credential"
     type: "credential"
     required: true
-    documentation: "Credential that contains username and password used for the\
-      \ connection (need to be attached to step)."
-    label: "Data Source Connection Credentials:"
+    htmlDocumentation: |
+      Credential that contains the username and password used for the connection.
+      It must be attached to a step.
+    adoc: |
+      Credential that contains the username and password used for the connection.
+      It must be attached to a step.
+    label: "Datasource connection credentials"
   - name: "enabled"
     type: "entry"
     required: true
-    documentation: "If the created XA Data Source should be enabled or not. Default\
-      \ is true."
-    label: "Enabled:"
+    htmlDocumentation: |
+      If selected, the created XA datasource is enabled.
+    adoc: |
+      If selected, the created XA datasource is enabled.
+    label: "Enabled"
     checkedValue: "1"
     uncheckedValue: "0"
   - name: "profile"
     type: "entry"
     required: false
-    documentation: "Required for Domain, will be ignored for Standalone. Name of\
-      \ the Server Profile to which this XA Data Source applies to. For example:\
-      \ 'full', 'full-ha'"
-    label: "Profile:"
+    htmlDocumentation: |
+      Name of the server profile this XA datasource applies to.
+      For example, <code>full</code> or <code>full-ha</code>.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    adoc: |
+      Name of the server profile this XA datasource applies to.
+      For example, `full` or `full-ha`.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    label: "Profile"
   - name: "additionalOptions"
     type: "entry"
     required: false
-    documentation: "'Additional options' to be passed on to jboss-cli. The parameters\
-      \ mentioned in this string will be concatenated to already generated command\
-      \ line for creating xa data source. For example: --min-pool-size=5 --max-pool-size=10\
-      \ --check-valid-connection-sql=\"select 1 from dual\""
-    label: "Additional Options:"
+    htmlDocumentation: |
+      Additional options to pass to the JBoss CLI.
+      The parameters in this string are concatenated to a generated command line for creating an XA datasource.
+      For example, <code>--min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql=&quot;select 1 from dual&quot;</code>.
+    adoc: |
+      Additional options to pass to the JBoss CLI.
+      The parameters in this string are concatenated to a generated command line for creating an XA datasource.
+      For example, `--min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select 1 from dual"`.
+    label: "Additional options"
   shell: "ec-perl"
   hasConfig: true
 - name: "DeleteDatasource"
-  description: "Deletes a datasource in JBoss."
+  description: |
+    Deletes a datasource in JBoss.
+  adoc: |
+    Deletes a datasource in JBoss.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "datasource_name"
     type: "entry"
     required: true
-    documentation: "Datasource name to delete."
-    label: "Datasource name:"
+    htmlDocumentation: |
+      Datasource name to delete.
+    adoc: |
+      Datasource name to delete.
+    label: "Datasource name"
   - name: "profile"
     type: "entry"
     required: false
-    documentation: "Profile name for domain mode."
-    label: "Profile name:"
+    htmlDocumentation: |
+      Profile name for domain mode.
+    adoc: |
+      Profile name for domain mode.
+    label: "Profile name"
   shell: "ec-perl"
   properties: []
   hasConfig: true
 - name: "DeployApp"
-  description: "For Standalone and Domain. The DeployApp procedure deploys an application\
-    \ (mainly WAR or EAR) from the specified source (usually from filepath) to standalone\
-    \ server (for Standalone JBoss) or to content repository and specified server\
-    \ groups (for Domain JBoss) based on provided parameters. This procedure is\
-    \ build around jboss-cli command 'deploy' and most parameters are corresponding."
+  description: |
+    Deploys an application (typically WAR or EAR) from the specified source (typically from <code>filepath</code>) to a standalone
+    server for standalone JBoss or to a content repository and specified server groups for domain JBoss, based on the
+    provided parameters.
+    This procedure is built around the JBoss CLI <code>deploy</code> command, and most of the parameters correspond with it.
+  adoc: |
+    Deploys an application (typically WAR or EAR) from the specified source (typically from `filepath`) to a standalone
+    server for standalone JBoss or to a content repository and specified server groups for domain JBoss, based on the
+    provided parameters.
+    This procedure is built around the JBoss CLI `deploy` command, and most of the parameters correspond with it.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted,\
-      \ script location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "warphysicalpath"
     type: "entry"
     required: true
-    documentation: "Either an absolute filepath (including the name of the WAR or\
-      \ EAR) or a URL that the Domain controller or the Standalone Server (as the\
-      \ case may be) can resolve. URL is supported only for 7.0 EAP and later versions.\
-      \ This parameter should be populated as follows. If using filepath, it should\
-      \ be the full filesystem path to the application that needs to be deployed.\
-      \ E.g. '/tmp/hello-world.war'. If using URL it should be preceded by a --\
-      \ prefix anchor. E.g. '--url=https://my.site.com/hello-world.war'."
-    label: "Application Content Source Path:"
+    htmlDocumentation: |
+      Application content source path that is either an absolute filepath (including the name of the WAR or EAR) or a
+      URL that the domain controller or standalone server can resolve.
+      If using a filepath, it should be the full filesystem path to the application that needs to be deployed.
+      For example, <code>/tmp/hello-world.war</code>.
+      If using a URL, it should be preceded by a <code>--</code> prefix anchor. For example:<br />
+      <code>--url=https://my.site.com/hello-world.war</code><br />
+      <b>NOTE:</b> URLs are only supported for EAP versions 7.0 and later.
+    adoc: |
+      Application content source path that is either an absolute filepath (including the name of the WAR or EAR) or a
+      URL that the domain controller or the standalone server can resolve.
+      If using a filepath, it should be the full filesystem path to the application that needs to be deployed. For example,
+      `/tmp/hello-world.war`.
+      If using a URL, it should be preceded by a `--` prefix anchor.
+      For example, `--url=https://my.site.com/hello-world.war`.
+      
+      NOTE: URLs are only supported for EAP versions 7.0 and later.
+    label: "Application content source path"
   - name: "appname"
     type: "entry"
     required: false
-    documentation: "Stands for '--name' parameter for jboss-cli 'deploy' command.\
-      \ The unique name of the deployment. If this parameter is not provided then\
-      \ JBoss will retrieve the deployment name from the file name of 'file_path'\
-      \ or '--url'."
-    label: "Deployment name:"
+    htmlDocumentation: |
+      Unique name of the deployment.
+      If this parameter is not provided, JBoss retrieves the deployment name from the file name of <code>file_path</code>
+      or <code>--url</code>.
+      The name is used in place of the <code>--name</code> parameter for the JBoss CLI <code>deploy</code> command.
+    adoc: |
+      Unique name of the deployment.
+      If this parameter is not provided, JBoss retrieves the deployment name from the file name of `file_path`
+      or `--url`.
+      The name is used in place of the `--name` parameter for the JBoss CLI `deploy` command.
+    label: "Deployment name"
   - name: "runtimename"
     type: "entry"
     required: false
-    documentation: "The runtime name for the deployment. If not specified it will\
-      \ be the same as 'Deployment Name'."
-    label: "Runtime name for deployment:"
+    htmlDocumentation: |
+      The runtime name for the deployment.
+      If not specified, it is the same as the <b>Deployment name</b>.
+    adoc: |
+      The runtime name for the deployment.
+      If not specified, it is the same as the *Deployment name*.
+    label: "Runtime name for deployment"
   - name: "assignallservergroups"
     type: "checkbox"
     required: false
-    documentation: "For Domain only (will be ignored in case of Standalone). Stands\
-      \ for '--all-server-groups' parameter for jboss-cli 'deploy' command. NOTE:\
-      \ this parameter will be ignored if 'Force deployment' is chosen; 'Server\
-      \ groups to apply' will be ignored if this parameter is chosen. This parameter\
-      \ indicates that deploy should apply to all the available server groups."
-    label: "Apply to all servers:"
+    htmlDocumentation: |
+      Applies the deployment to all available server groups.
+      Represents the <code>--all-server-groups</code> parameter for the JBoss CLI <code>deploy</code> command.<br />
+      <b>NOTE:</b> 
+      <ul>
+      <li>This parameter is only supported for JBoss domain mode and is ignored for the standalone server.</li>
+      <li>This parameter is ignored if <b>Force deployment</b> is selected.</li>
+      <li><b>Server groups to apply</b> is ignored if this parameter is selected.</li>
+      </ul>
+    adoc: |
+      Applies the deployment to all available server groups.
+      Represents the `--all-server-groups` parameter for the JBoss CLI `deploy` command.
+      
+      [NOTE]
+      ====
+      * This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
+      * This parameter is ignored if *Force deployment* is selected.
+      * *Server groups to apply* is ignored if this parameter is selected.
+      ====
+    label: "Apply to all servers"
     checkedValue: "1"
     uncheckedValue: "0"
   - name: "assignservergroups"
     type: "entry"
     required: false
-    documentation: "For Domain only (will be ignored in case of Standalone). Stands\
-      \ for '--server-groups' parameter for jboss-cli 'deploy' command. NOTE: this\
-      \ parameter will be ignored if 'Apply to all servers' or 'Force deployment'\
-      \ is chosen. Provide comma separated list of server group names the deploy\
-      \ command should apply to."
-    label: "Server groups to apply:"
+    htmlDocumentation: |
+      Comma-separated list of server group names that the JBoss CLI <code>deploy</code> command should be applied to.
+      Represents the <code>--server-groups</code> parameter for the JBoss CLI <code>deploy</code> command.<br />
+      <b>NOTE:</b>
+      <ul>
+      <li>This parameter is ignored if <b>Apply to all servers</b> or <b>Force deployment</b> is selected.</li>
+      <li>This parameter is only supported for JBoss domain mode and is ignored for the standalone server.</li>
+      </ul>
+    adoc: |
+      Comma-separated list of server group names that the JBoss CLI `deploy` command should be applied to.
+      Represents the `--server-groups` parameter for the JBoss CLI `deploy` command.
+      
+      [NOTE]
+      ====
+      * This parameter is only supported for JBoss domain mode and is ignored for the standalone server.
+      * This parameter is ignored if *Apply to all servers* or *Force deployment* is selected.
+      ====
+    label: "Server groups to apply"
   - name: "force"
     type: "checkbox"
     required: false
-    documentation: "Stands for '--force' parameter for jboss-cli 'deploy' command.\
-      \ NOTE: in case of JBoss Domain if this parameter is chosen then 'Apply to\
-      \ all servers' and 'Server groups to apply' will be ignored. Chose this option\
-      \ in order to force the replacement of the existing deployment with the one\
-      \ specified in 'file_path' or '--url', see required 'Application Content Source\
-      \ Path' parameter. If 'Force deployment' is Off and the deployment with the\
-      \ specified deployment name (see 'Deployment name' parameter) already exists\
-      \ - deploy will fail and the corresponding message will printed."
-    label: "Force deployment:"
+    htmlDocumentation: |
+      Replaces the current deployment with the deployment specified in <code>file_path</code> or <code>--url</code>
+      (refer to the required <b>Application content source path</b> parameter).
+      Represents the <code>--force</code> parameter for the JBoss CLI <code>deploy</code> command.
+      If Force deployment is not selected and the deployment with the specified deployment name (refer to the
+      <b>Deployment name</b> parameter) already exists, the deployment fails and the corresponding message is printed.<br />
+      <b>NOTE:</b> For JBoss domain, if this parameter is selected, the <b>Apply to all servers</b> and <b>Server groups to apply</b> parameters are ignored.
+    adoc: |
+      Replaces the current deployment with the deployment specified in `file_path` or `--url`
+      (refer to the required *Application content source path* parameter).
+      Represents the `--force` parameter for the JBoss CLI `deploy` command.
+      If Force deployment is not selected and the deployment with the specified deployment name (refer to the
+      *Deployment name* parameter) already exists, the deployment fails and the corresponding message is printed.
+      
+      NOTE: For JBoss domain, if this parameter is selected, the *Apply to all servers* and *Server groups to apply* parameters are ignored.
+    label: "Force deployment"
     checkedValue: "1"
     uncheckedValue: "0"
   - name: "additional_options"
     type: "entry"
     required: false
-    documentation: "Additional options for jboss-cli 'deploy' command. The 'Additional\
-      \ options' string will be concatenated to already generated command line from\
-      \ the parameters above. NOTE: for JBoss EAP 7 and later do not specify '--url'\
-      \ option here because we have special handling for such option within 'Application\
-      \ Content Source Path' parameter."
-    label: "Additional options:"
+    htmlDocumentation: |
+      Additional options for the JBoss CLI <code>deploy</code> command.
+      The <b>Additional options</b> parameter string is concatenated to a generated command line from the parameters above.<br />
+      <b>NOTE:</b> For JBoss EAP 7 and later, do not specify the <code>--url</code> option because there is special handling for
+      this option within the <b>Application content source path</b> parameter.
+    adoc: |
+      Additional options for the JBoss CLI `deploy` command.
+      The *Additional options* parameter string is concatenated to a generated command line from the parameters above.
+      
+      NOTE: For JBoss EAP 7 and later, do not specify the `--url` option because there is special handling for
+      this option within the *Application content source path* parameter.
+    label: "Additional options"
   shell: "ec-perl"
   properties: []
   hasConfig: true
 - name: "DeployApplication"
-  description: "The DeployApplication procedure deploys an application (mainly WAR\
-    \ or EAR) to a JBoss Standalone or Managed domain. The procedure will automatically\
-    \ detect as to which operating mode (Standalone/Domain) JBoss is running as.\
-    \ The DeployApplication procedure is a major improvement to the existing DeployApp\
-    \ procedure. It provides a very robust interface that brings in the complete\
-    \ range of possibilities(enabled/disabled states, enabled/disabled servergroups)\
-    \ from Jboss during deployment to a Domain. Most importantly its behavior is\
-    \ idempotent i.e., it leaves a deployment in the specified state every single\
-    \ time it runs and hence can be run as part of an environment template where\
-    \ in an Application that exists gets updated with new content or gets created\
-    \ otherwise."
+  description: |
+    Automatically detects the JBoss operating mode and deploys an application (typically WAR or EAR) to a JBoss
+    standalone or managed domain.
+    It provides a robust interface that provides the complete range of possibilities from JBoss (enabled/disabled states,
+    enabled/disabled server groups) during deployment to a domain.
+    Its behavior is idempotent; it leaves a deployment in the specified state every time it runs and can be run as part
+    of an environment template, where an existing application is updated with new content or a new application is created.
+  adoc: |
+    Automatically detects the JBoss operating mode and deploys an application (typically WAR or EAR) to a JBoss
+    standalone or managed domain.
+    It provides a robust interface that provides the complete range of possibilities from JBoss (enabled/disabled states,
+    enabled/disabled server groups) during deployment to a domain.
+    Its behavior is idempotent; it leaves a deployment in the specified state every time it runs and can be run as part
+    of an environment template, where an existing application is updated with new content or a new application is created.
   parameters:
   - name: "applicationContentSourcePath"
     type: "entry"
     required: true
-    documentation: "Either an absolute filepath (including the name of the WAR or\
-      \ EAR) or a URL that the Domain controller or the Standalone Server (as the\
-      \ case may be) can resolve. URL is supported only for 7.0 EAP and later versions.\
-      \ This parameter should be populated as follows. If using filepath, it should\
-      \ be the full filesystem path to the application that needs to be deployed.\
-      \ E.g. '/tmp/hello-world.war'. If using URL it should be preceded by a --\
-      \ prefix anchor. E.g. '--url=https://my.site.com/hello-world.war'."
-    label: "Application Content Source Path:"
+    htmlDocumentation: |
+      Application content source path that is either an absolute filepath (including the name of the WAR or EAR) or a
+      URL that the domain controller or standalone server can resolve.
+      <ul>
+      <li>If using a filepath, it should be the full filesystem path to the application that needs to be deployed.
+      For example, <code>/tmp/hello-world.war</code>.</li>
+      <li>If using a URL, it should be preceded by a <code>--</code> prefix anchor. For example:<br />
+      <code>--url=https://my.site.com/hello-world.war</code>.</li>
+      </ul>
+      <b>NOTE:</b> URLs are only supported for EAP versions 7.0 and later.
+    adoc: |
+      Application content source path that is either an absolute filepath (including the name of the WAR or EAR) or a
+      URL that the domain controller or the standalone server can resolve.
+      
+      * If using a filepath, it should be the full filesystem path to the application that needs to be deployed.
+      For example, `/tmp/hello-world.war`.
+      * If using a URL, it should be preceded by a `--` prefix anchor. For example,
+      `--url=https://my.site.com/hello-world.war`.
+      
+      NOTE: URLs are only supported for EAP versions 7.0 and later.
+    label: "Application content source path"
   - name: "deploymentName"
     type: "entry"
     required: false
-    documentation: "The unique name of the deployment. If this parameter is not\
-      \ passed, it will be derived from 'Application Content Source Path' parameter."
-    label: "Deployment Name:"
+    htmlDocumentation: |
+      Unique name of the deployment.
+      If not specified, it is derived from the <b>Application content source path</b> parameter.
+    adoc: |
+      Unique name of the deployment.
+      If not specified, it is derived from the *Application content source path* parameter.
+    label: "Deployment name"
   - name: "runtimeName"
     type: "entry"
     required: false
-    documentation: "The runtime name for the deployment. If not specified it will\
-      \ be the same as 'Deployment Name'."
-    label: "Runtime Name:"
+    htmlDocumentation: |
+      The runtime name for the deployment.
+      If not specified, it is the same as <b>Deployment name</b>.
+    adoc: |
+      The runtime name for the deployment.
+      If not specified, it is the same as *Deployment name*.
+    label: "Runtime name"
   - name: "enabledServerGroups"
     type: "entry"
     required: false
-    documentation: "Applicable to Jboss Domain only. Server groups specified in\
-      \ this parameter will be assigned (if not already assigned) and enabled. These\
-      \ are the formatting rules: Either a comma separated list of server groups\
-      \ (e.g. 'server-group-one,server-group-five') or '--all-server-groups'."
-    label: "Enabled Server Groups:"
+    htmlDocumentation: |
+      Enables and assigns server groups, formatted as either a comma-separated list (for example,
+      <code>server-group-one,server-group-five</code>) or a single list for all servers (for example,
+      <code>--all-server-groups</code>).<br />
+      <b>NOTE:</b> This parameter is only supported for JBoss domain.
+    adoc: |
+      Enables and assigns server groups, formatted as either a comma-separated list (for example,
+      `server-group-one,server-group-five`) or a single list for all servers (for example,
+      `--all-server-groups`).
+      
+      NOTE: This parameter is only supported for JBoss domain.
+    label: "Enabled server groups"
     value: "--all-server-groups"
   - name: "disabledServerGroups"
     type: "entry"
     required: false
-    documentation: "Applicable to Jboss Domain only. Server groups specified in\
-      \ this parameter will be assigned (if not already assigned) and disabled.\
-      \ These are the formatting rules: Either a comma separated list of server\
-      \ groups (e.g. 'server-group-one,server-group-five') or '--all-server-groups'."
-    label: "Disabled Server Groups:"
+    htmlDocumentation: |
+      Disables and assigns server groups, formatted as either a comma-separated list (for example,
+      <code>server-group-one,server-group-five</code>) or a single list for all servers (for example,
+      <code>--all-server-groups</code>).<br />
+      <b>NOTE:</b> This parameter is only supported for JBoss domain.
+    adoc: |
+      Disables and assigns server groups, formatted as either a comma-separated list (for example,
+      `server-group-one,server-group-five`) or a single list for all servers (for example,
+      `--all-server-groups`).
+      
+      NOTE: This parameter is only supported for JBoss domain.
+    label: "Disabled server groups"
   - name: "additionalOptions"
     type: "entry"
     required: false
-    documentation: "Applicable to JBoss Standalone only. Currently supported additional\
-      \ option is '--disabled' for Standalone Server. If it is populated as '--disabled'\
-      \ the procedure will deploy the Application and leave it disabled."
-    label: "Additional Options:"
+    htmlDocumentation: |
+      Additional options to pass to the JBoss CLI.<br />
+      <b>NOTE:</b>
+      <ul>
+      <li>The only supported option is <code>--disabled</code>, which deploys the application and leaves it disabled.</li>
+      <li>This parameter is only supported for JBoss standalone.</li>
+      </ul>
+    adoc: |
+      Additional options to pass to the JBoss CLI.
+      
+      [NOTE]
+      ====
+      * The only supported option is `--disabled`, which deploys the application and leaves it disabled.
+      * This parameter is only supported for JBoss standalone.
+      ====
+    label: "Additional options"
   shell: "ec-perl"
   hasConfig: true
 - name: "DisableDeploy"
-  description: "Disables a deployment designated by the name argument. Implemented\
-    \ only for the Standalone Mode."
+  description: |
+    Disables a deployment designated by the name argument.<br />
+    <b>NOTE:</b> This procedure is only supported for JBoss standalone mode.
+  adoc: |
+    Disables a deployment designated by the name argument.
+    
+    NOTE: This procedure is only supported for JBoss standalone mode.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "appname"
     type: "entry"
     required: true
-    documentation: "Unique name of the deployment to disable."
-    label: "Deployment name:"
+    htmlDocumentation: |
+      Unique name of the deployment to disable.
+    adoc: |
+      Unique name of the deployment to disable.
+    label: "Deployment name"
   - name: "assignservergroups"
     type: "entry"
     required: false
-    documentation: "Provide the comma-separated list of server group names the disable\
-      \ deployment command applies to. Server groups parameter is required in domain\
-      \ mode. This argument is not applicable in standalone mode and will be ignored."
-    label: "Server groups:"
+    htmlDocumentation: |
+      Comma-separated list of server group names the <code>disable deployment</code> command applies to.
+      This parameter is not supported for JBoss standalone mode, and is ignored.
+    adoc: |
+      Comma-separated list of server group names that the `disable deployment` command applies to.
+      This parameter is not supported for JBoss standalone mode, and is ignored.
+    label: "Server groups"
   shell: "ec-perl"
   hasConfig: true
 - name: "EnableDeploy"
-  description: "Enables an already existing but disabled in the repository deployment\
-    \ designated by the name argument. Implemented only for the Standalone Mode."
+  description: |
+    Enables an already existing but disabled in the repository deployment designated by the name argument.<br />
+    <b>NOTE:</b> This procedure is only supported for JBoss standalone mode.
+  adoc: |
+    Enables an already existing but disabled in the repository deployment designated by the name argument.
+    
+    NOTE: This procedure is only supported for JBoss standalone mode.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "appname"
     type: "entry"
     required: true
-    documentation: "Unique name of the deployment to enable."
-    label: "Deployment name:"
+    htmlDocumentation: |
+      Unique name of the deployment to enable.
+    adoc: |
+      Unique name of the deployment to enable.
+    label: "Deployment name"
   - name: "assignservergroups"
     type: "entry"
     required: false
-    documentation: "Provide the comma-separated list of server group names the enable\
-      \ deployment command applies to. Server groups parameter is required in domain\
-      \ mode. This argument is not applicable in standalone mode and will be ignored."
-    label: "Server groups:"
+    htmlDocumentation: |
+      Comma-separated list of server group names the <code>enable deployment</code> command applies to.
+      This parameter is not supported for JBoss standalone mode, and is ignored.
+    adoc: |
+      Comma-separated list of server group names that the `enable deployment` command applies to.
+      This parameter is not supported for JBoss standalone mode, and is ignored.
+    label: "Server groups"
   shell: "ec-perl"
   hasConfig: true
 - name: "GetEnvInfo"
-  description: "This procedure returns different types of information about a Jboss\
-    \ environment and writes it to property and logs."
+  description: |
+    Returns different types of information about a JBoss environment and writes it to properties and logs.
+  adoc: |
+    Returns different types of information about a JBoss environment and writes it to properties and logs.
   parameters:
   - name: "informationType"
     type: select
     required: true
-    documentation: "Information Type. Possible options: System Dump; Profiles (for\
-      \ Domain only); Data Sources; XA Data Sources."
-    label: "Information Type:"
+    htmlDocumentation: |
+      Type of information requested about the JBoss environment.
+    adoc: |
+      Type of information requested about the JBoss environment.
+    label: "Information type"
     options:
       - name: System Dump
         value: systemDump
@@ -733,373 +1191,591 @@ procedures:
   - name: "informationTypeContext"
     type: "entry"
     required: false
-    documentation: "Optional parameter. Applies only when Information Type is \"\
-      Data Sources\" or \"XA Data Sources\". Information Type Context. Enter the\
-      \ name of the Profile for which Information Type is requested for. If none\
-      \ the procedure would return for all profiles."
-    label: "Information Type Context:"
+    htmlDocumentation: |
+      Specify the name of the profile for the information type request.
+      If a profile name is not specified, the procedure returns information for all profiles.<br />
+      <b>NOTE:</b> This parameter is only supported when <b>Data Sources</b> or <b>XA Data Sources</b> is the selected <b>Information type</b>.
+    adoc: |
+      Specify the name of the profile for the information type request.
+      If a profile name is not specified, the procedure returns information for all profiles.
+      
+      NOTE: This parameter is only supported when *Data Sources* or *XA Data Sources* is the selected *Information type*.
+    label: "Information type context"
   - name: "additionalOptions"
     type: "entry"
     required: false
-    documentation: "'Additional Options' that can be included into CLI call to limit\
-      \ the information requested. For example, if you provide 'include-runtime=true,include-defaults=true'\
-      \ the procedure would call /:read-resource('include-runtime=true,include-defaults=true')."
-    label: "Additional Options:"
+    htmlDocumentation: |
+      Additional options to pass to the JBoss CLI call to limit the information requested.
+      For example, if you provide <code>include-runtime=true,include-defaults=true</code>, the procedure
+      calls <code>/:read-resource(include-runtime=true,include-defaults=true)</code>.
+    adoc: |
+      Additional options to pass to the JBoss CLI call to limit the information requested.
+      For example, if you provide `include-runtime=true,include-defaults=true`, the procedure
+      calls `/:read-resource(include-runtime=true,include-defaults=true)`.
+    label: "Additional options"
   shell: "ec-perl"
   hasConfig: true
 - name: "RemoveJMSQueue"
-  description: "This procedure removes an existing jms queue in the JBoss EAP messaging\
-    \ subsystem."
+  description: |
+    Removes an existing JMS queue in the JBoss EAP messaging subsystem.
+  adoc: |
+    Removes an existing JMS queue in the JBoss EAP messaging subsystem.
   parameters:
   - name: "queueName"
     type: "entry"
     required: true
-    documentation: "Name of the Queue."
-    label: "Queue Name:"
+    htmlDocumentation: |
+      Name of the queue.
+    adoc: |
+      Name of the queue.
+    label: "Queue name"
   - name: "profile"
     type: "entry"
     required: false
-    documentation: "Required for Domain, will be ignored for Standalone. Name of\
-      \ profile in Domain form which queue should be removed. For example: 'full',\
-      \ 'full-ha'"
-    label: "Profile:"
+    htmlDocumentation: |
+      Name of the profile the queue should be removed from.
+      For example, <code>full</code> or <code>full-ha</code>.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    adoc: |
+      Name of the profile the queue should be removed from.
+      For example, `full` or `full-ha`.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    label: "Profile"
   shell: "ec-perl"
   hasConfig: true
 - name: "RemoveJMSTopic"
-  description: "This procedure removes an existing jms topic in the JBoss EAP messaging\
-    \ subsystem."
+  description: |
+    Removes an existing JMS topic in the JBoss EAP messaging subsystem.
+  adoc: |
+    Removes an existing JMS topic in the JBoss EAP messaging subsystem.
   parameters:
   - name: "topicName"
     type: "entry"
     required: true
-    documentation: "Name of the Topic."
-    label: "Topic Name:"
+    htmlDocumentation: |
+      Name of the topic.
+    adoc: |
+      Name of the topic.
+    label: "Topic name"
   - name: "profile"
     type: "entry"
     required: false
-    documentation: "Required for Domain, will be ignored for Standalone. Name of\
-      \ profile in Domain form which topic should be removed. For example: 'full',\
-      \ 'full-ha'"
-    label: "Profile:"
+    htmlDocumentation: |
+      Name of the profile in domain form that the topic should be removed from.
+      For example, <code>full</code> or <code>full-ha</code>.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    adoc: |
+      Name of the profile the queue should be removed from.
+      For example, `full` or `full-ha`.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    label: "Profile"
   shell: "ec-perl"
   hasConfig: true
 - name: "RemoveXADataSource"
-  description: "This procedure removes an existing XA data source in the JBoss EAP\
-    \ 'datasources' subsystem."
+  description: |
+    Removes an existing XA datasource in the JBoss EAP <code>data sources</code> subsystem.
+  adoc: |
+    Removes an existing XA datasource in the JBoss EAP `data sources` subsystem.
   parameters:
   - name: "dataSourceName"
     type: "entry"
     required: true
-    documentation: "Name of the Data Source. This will also serve as the unique\
-      \ identifier for this resource. For example MysqlXADS."
-    label: "Data Source Name:"
+    htmlDocumentation: |
+      Name of the datasource.
+      This also serves as the unique identifier for this resource.
+      For example, <code>MysqlXADS</code>.
+    adoc: |
+      Name of the datasource.
+      This also serves as the unique identifier for this resource.
+      For example, `MysqlXADS`.
+    label: "Datasource name"
   - name: "profile"
     type: "entry"
     required: false
-    documentation: "Required for Domain, will be ignored for Standalone. Name of\
-      \ the Server Profile to which this XA Data Source applies to. For example:\
-      \ 'full', 'full-ha'"
-    label: "Profile:"
+    htmlDocumentation: |
+      Name of the server profile the XA datasource applies to.
+      For example, <code>full</code> or <code>full-ha</code>.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    adoc: |
+      Name of the server profile the XA datasource applies to.
+      For example, `full` or `full-ha`.
+      The name is required for JBoss domain, but is ignored for JBoss standalone mode.
+    label: "Profile"
   shell: "ec-perl"
   hasConfig: true
 - name: "RunCustomCommand"
-  description: "Runs custom scripts or procedures."
+  description: |
+    Runs custom scripts or procedures.
+  adoc: |
+    Runs custom scripts or procedures.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "customCommand"
     type: "entry"
     required: true
-    documentation: "Custom command to run."
-    label: "Custom command:"
+    htmlDocumentation: |
+      Custom command to run.
+    adoc: |
+      Custom command to run.
+    label: "Custom command"
   shell: "ec-perl"
   hasConfig: true
 - name: "ShutdownStandaloneServer"
-  description: "Shutdown a running standalone server"
+  description: |
+    Shuts down a running standalone server.
+  adoc: |
+    Shuts down a running standalone server.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   shell: "ec-perl"
   hasConfig: true
 - name: "StartDomainServer"
-  description: "Start a Server in \"domain\" mode"
+  description: |
+    Starts a server in domain mode.
+  adoc: |
+    Starts a server in domain mode.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: true
-    documentation: "Provide the absolute physical path of the domain script, i.e:\
-      \ 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program Files/JBoss/bin/domain.bat'."
-    label: "Physical location of the domain script:"
+    htmlDocumentation: |
+      Absolute physical path of the domain script.
+      For example, <code>domain.bat</code>, <code>/usr/tools/bin/domain.sh</code>, or <code>c:/Program Files/JBoss/bin/domain.bat</code>.
+    adoc: |
+      Absolute physical path of the domain script.
+      For example, `domain.bat`, `/usr/tools/bin/domain.sh`, or `c:/Program Files/JBoss/bin/domain.bat`.
+    label: "Physical location of the domain script"
   - name: "alternatejbossconfig"
     type: "entry"
     required: false
-    documentation: "For domain controllers only. Name of the domain configuration\
-      \ file that CloudBees CD uses to start the domain controller with a different\
-      \ domain configuration (--domain-config). By default domain.xml is used."
-    label: "Optional domain configuration name:"
+    htmlDocumentation: |
+      Name of the domain configuration file that CloudBees CD/RO uses to start the domain controller with a different
+      domain configuration (<code>--domain-config</code>).
+      By default, <code>domain.xml</code> is used.<br />
+      <b>NOTE:</b> This parameter is supported for domain controllers only.
+    adoc: |
+      Name of the domain configuration file that {PRODUCT} uses to start the domain controller with a different
+      domain configuration (`--domain-config`).
+      By default, `domain.xml` is used.
+      
+      NOTE: This parameter is supported for domain controllers.
+    label: "Optional domain configuration name"
   - name: "alternateJBossConfigHost"
     type: "entry"
     required: false
-    documentation: "For domain and host controllers. Name of the host configuration\
-      \ file that CloudBees CD uses to start the domain or host controller with\
-      \ a different host configuration (--host-config). By default host.xml is used."
-    label: "Optional host configuration name:"
+    htmlDocumentation: |
+      Name of the host configuration file that CloudBees CD/RO uses to start the domain or host controller with a
+      different host configuration (<code>--host-config</code>).
+      By default, <code>host.xml</code> is used.<br />
+      <b>NOTE:</b> This parameter is supported for domain and host controllers.
+    adoc: |
+      Name of the host configuration file that {PRODUCT} uses to start the domain or host controller with a
+      different host configuration (`--host-config`).
+      By default, `host.xml` is used.
+      
+      NOTE: This parameter is supported for domain and host controllers.
+    label: "Optional host configuration name"
   shell: "ec-perl"
   hasConfig: true
 - name: "StartHostController"
-  description: "This procedure can be used to start any of the Host Controllers\
-    \ (Master or Slave) in a managed domain."
+  description: |
+    Start any of the host controllers in a managed domain.
+  adoc: |
+    Start any of the host controllers in a managed domain.
   parameters:
   - name: "startupScript"
     type: "entry"
     required: true
-    documentation: "Required parameter. Provide the absolute physical path of the\
-      \ domain script, i.e: 'domain.bat', '/usr/tools/bin/domain.sh', 'c:/Program\
-      \ Files/JBoss/bin/domain.bat'."
-    label: "Startup Script:"
+    htmlDocumentation: |
+      Absolute physical path of the domain script.
+      For example, <code>domain.bat</code>, <code>/usr/tools/bin/domain.sh</code>, or <code>c:/ProgramFiles/JBoss/bin/domain.bat</code>.
+    adoc: |
+      Absolute physical path of the domain script.
+      For example, `domain.bat`, `/usr/tools/bin/domain.sh`, or `c:/ProgramFiles/JBoss/bin/domain.bat`.
+    label: "Startup script"
   - name: "domainConfig"
     type: "entry"
     required: false
-    documentation: "Optional Parameter. Applies only to master host controllers.\
-      \ Use this parameter only if you have a need to override the default domain.xml\
-      \ by a different file which stores your domain configuration."
-    label: "Domain Configuration File:"
+    htmlDocumentation: |
+      Overrides the default <code>domain.xml</code> file with a different file that stores your domain configuration.
+      Applies only to master host controllers.
+    adoc: |
+      Overrides the default `domain.xml` file with a different file that stores your domain configuration.
+      Applies only to master host controllers.
+    label: "Domain configuration file"
   - name: "hostConfig"
     type: "entry"
     required: false
-    documentation: "Optional Parameter. Use this parameter only if you have a need\
-      \ to override the default host.xml by a different file which stores your host\
-      \ configuration."
-    label: "Host Configuration File:"
+    htmlDocumentation: |
+      Overrides the default <code>host.xml</code> file with a different file that stores your host configuration.
+    adoc: |
+      Overrides the default `host.xml` file using a different file that stores your host configuration.
+    label: "Host configuration file"
   - name: "jbossHostName"
     type: "entry"
     required: false
-    documentation: "Optional parameter. Host Name of the started Host Controller.\
-      \ If provided this parameter would be used to connect using the Master Host\
-      \ Controller Jboss-cli and surface any boot errors upon startup."
-    label: "Host Name:"
+    htmlDocumentation: |
+      Host name of the active host controller.
+      If provided, this parameter is used to connect using the master host controller JBoss CLI and surfaces any
+      boot errors upon startup.
+    adoc: |
+      Host name of the active host controller.
+      If provided, this parameter is used to connect using the master host controller JBoss CLI and surfaces any
+      boot errors upon startup.
+    label: "Host name"
   - name: "additionalOptions"
     type: "entry"
     required: false
-    documentation: "Optional parameter. 'Additional options' to be passed on to\
-      \ domain startup script. If provided parameters will be concatenated AS IS\
-      \ to already generated command line for starting master or slave host controller.\
-      \ These are some examples. 1. '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master\
-      \ -b=0.0.0.0 -bmanagement=0.0.0.0'. 2. '-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1\
-      \ -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345\
-      \ -b=0.0.0.0'."
-    label: "Additional Options:"
+    htmlDocumentation: |
+      Additional options to be passed on to the domain startup script.
+      Parameters are concatenated as specified to a generated command line for starting the master or slave host controller.
+      For example:<br />
+      <ul>
+      <li><code>-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0</code></li>
+      <li><code>-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0</code></li>
+      </ul>
+    adoc: |
+      Additional options to be passed on to the domain startup script.
+      Parameters are concatenated as specified to a generated command line for starting the master or slave host controller.
+      For example:
+
+      * `-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-master -b=0.0.0.0 -bmanagement=0.0.0.0`
+      * `-Djboss.domain.base.dir=/opt/jboss/domain-copied-for-slave-1 -Djboss.domain.master.address=some-master-ip -Djboss.management.native.port=12345 -b=0.0.0.0`
+    label: "Additional options"
   - name: "logFileLocation"
     type: "entry"
     required: false
-    documentation: "Optional parameter. Absolute path location to Host controller\
-      \ log file. For example, /opt/jboss/domain-copied-for-slave-1/log/host-controller.log\
-      \ . If provided the procedure will read recent 100 log lines from the specified\
-      \ file surface them as part of the procedure summary logs."
-    label: "Log File Location:"
+    htmlDocumentation: |
+      Absolute path location to the host controller log file.
+      For example, <code>/opt/jboss/domain-copied-for-slave-1/log/host-controller.log</code>.
+      If specified, the procedure reads the most recent 100 log lines from the log file and includes them in the procedure summary logs.
+    adoc: |
+      Absolute path location to the host controller log file.
+      For example, `/opt/jboss/domain-copied-for-slave-1/log/host-controller.log`.
+      If specified, the procedure reads the most recent 100 log lines from the log file and includes them in the procedure summary logs.
+    label: "Log file location"
   shell: "ec-perl"
   hasConfig: true
 - name: "StartServers"
-  description: "For Domain only. The StartServers procedure starts the servers in\
-    \ the specified server group and checks if these servers are started successfully.\
-    \ This procedure is build around jboss-cli command 'start-servers' for the server\
-    \ groups, e.g. '/server-group=some-group-name:start-servers'. Check of servers\
-    \ statuses is done also with help of cli - basically the procedure checks 'status'\
-    \ attributes of needed servers on needed hosts (within specified server group),\
-    \ e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'.\
-    \ Expected value for started servers is 'STARTED'."
+  description: |
+    Starts the servers in the specified server group and verifies the servers have started successfully.
+    This procedure is built around the JBoss CLI <code>start-servers</code> command for the server groups.
+    For example, <code>/server-group=some-group-name:start-servers</code>.
+    The procedure then checks the <code>status</code> attributes of the servers on the needed hosts within the specified server group.
+    For example, <code>/host=some-host-name/server-config=some-server-name:read-attribute(name=status)</code>.
+    The expected response for started servers is <code>STARTED</code>.<br />
+    <b>NOTE:/b> This procedure is only supported for JBoss domain mode.
+  adoc: |
+    Starts the servers in the specified server group and verifies the servers have started successfully.
+    This procedure is built around the JBoss CLI `start-servers` command for the server groups.
+    For example, `/server-group=some-group-name:start-servers`.
+    The procedure then checks the `status` attributes of the servers on the needed hosts within the specified server group.
+    For example, `/host=some-host-name/server-config=some-server-name:read-attribute(name=status)`.
+    The expected response for started servers is `STARTED`.
+    
+    NOTE: This procedure is only supported for JBoss domain mode.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted,\
-      \ script location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "serversgroup"
     type: "entry"
     required: true
-    documentation: "The name of the server group to start. The following cli command\
-      \ will be called: e.g. if 'some-group-name' is specified then '/server-group=some-group-name:start-servers'\
-      \ is called."
-    label: "Servers group:"
+    htmlDocumentation: |
+      Name of the server group to start.
+      For example, the CLI command is called if <code>some-group-name</code> is specified and then
+      <code>/server-group=some-group-name:start-servers</code> is called.
+    adoc: |
+      Name of the server group to start.
+      For example, the CLI command is called if `some-group-name` is specified and then
+      `/server-group=some-group-name:start-servers` is called.
+    label: "Servers group"
   - name: "wait_time"
     type: "entry"
     required: false
-    documentation: "After start-servers command for the server group is called the\
-      \ procedure starts performing recurring check of servers if they are started\
-      \ ('status' attribute is 'STARTED', see procedure description). Delay between\
-      \ each check is 5 seconds (hard coded value). Check will be performed only\
-      \ one time if the timeout is not specified or it is less than 5 seconds. Default\
-      \ is 300 seconds."
-    label: "Timeout for recurring check of servers (seconds):"
+    htmlDocumentation: |
+      After the <code>start-servers</code> command for the server group is called, the procedure performs
+      a recurring check of servers to determine if they are started (the <code>status</code> attribute is <code>STARTED</code>).
+      The delay between each check is 5 seconds.
+      The check is performed only one time if the timeout is not specified or if it is less than 5 seconds.
+      Default is 300 seconds.
+    adoc: |
+      After the `start-servers` command for the server group is called, the procedure performs
+      a recurring check of servers to determine if they are started (the `status` attribute is `STARTED`).
+      The delay between each check is 5 seconds.
+      The check is performed only one time if the timeout is not specified or if it is less than 5 seconds.
+      Default is 300 seconds.
+    label: "Timeout for recurring check of servers (seconds)"
     value: "300"
   shell: "ec-perl"
   hasConfig: true
 - name: "StartStandaloneServer"
-  description: "The StartStandaloneServer procedure starts a JBoss server in standalone\
-    \ mode."
+  description: |
+    Starts a JBoss server in standalone mode.
+  adoc: |
+    Starts a JBoss server in standalone mode.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: true
-    documentation: "Required parameter. Provide the absolute physical path of the\
-      \ standalone script, i.e: 'standalone.bat', '/usr/tools/bin/standalone.sh',\
-      \ 'c:/Program Files/JBoss/bin/standalone.bat'."
-    label: "Startup Script:"
+    htmlDocumentation: |
+      Absolute physical path of the standalone script.
+      For example, <code>standalone.bat</code>, <code>/usr/tools/bin/standalone.sh</code>, or <code>c:/Program Files/JBoss/bin/standalone.bat</code>.
+    adoc: |
+      Absolute physical path of the standalone script.
+      For example, `standalone.bat`, `/usr/tools/bin/standalone.sh`, or `c:/Program Files/JBoss/bin/standalone.bat`.
+    label: "Startup script"
   - name: "alternatejbossconfig"
     type: "entry"
     required: false
-    documentation: "Optional parameter. Name of the server configuration file to\
-      \ use (stands for '--server-config' option for standalone startup script).\
-      \ For example: standalone-full.xml, standalone-full-ha.xml. By default standalone.xml\
-      \ is used."
-    label: "Server Configuration File:"
+    htmlDocumentation: |
+      Name of the server configuration file to use (represents the <code>--server-config</code> option for the standalone startup script).
+      For example, <code>standalone-full.xml</code> or <code>standalone-full-ha.xml</code>.
+      By default, <code>standalone.xml</code> is used.
+    adoc: |
+      Name of the server configuration file to use (represents the `--server-config` option for the standalone startup script).
+      For example, `standalone-full.xml` or `standalone-full-ha.xml`.
+      By default, `standalone.xml` is used.
+    label: "Server configuration file"
   - name: "additionalOptions"
     type: "entry"
     required: false
-    documentation: "Optional parameter. 'Additional options' to be passed on to\
-      \ standalone startup script. The parameters mentioned in this string will\
-      \ be concatenated to already generated command line for starting JBoss as\
-      \ a Standalone Server. For example: -b=0.0.0.0 -bmanagement=0.0.0.0"
-    label: "Additional Options:"
+    htmlDocumentation: |
+      Additional options to pass to the standalone startup script.
+      The parameters in this string are concatenated to a generated command line for starting JBoss as a standalone server.
+      For example,<br />
+      <code>-b=0.0.0.0 -bmanagement=0.0.0.0</code>.
+    adoc: |
+      Additional options to pass to the standalone startup script.
+      The parameters in this string are concatenated to a generated command line for starting JBoss as a standalone server.
+      For example,
+      `-b=0.0.0.0 -bmanagement=0.0.0.0`.
+    label: "Additional options"
   - name: "logFileLocation"
     type: "entry"
     required: false
-    documentation: "Optional parameter. Absolute path location to server log file.\
-      \ For example, /opt/jboss/standalone/log/server.log . If provided the procedure\
-      \ will the most recent 100 log lines from the specified file and surface them\
-      \ in the procedure summary logs."
-    label: "Log File Location:"
+    htmlDocumentation: |
+      Absolute path location to the server log file.
+      For example, <code>/opt/jboss/standalone/log/server.log</code>.
+      If specified, the procedure reads the most recent 100 log lines from the log file and includes them in the procedure summary logs.
+    adoc: |
+      Absolute path location to the server log file.
+      For example, `/opt/jboss/standalone/log/server.log`.
+      If specified, the procedure reads the most recent 100 log lines from the log file and includes them in the procedure summary logs.
+    label: "Log file location"
   shell: "ec-perl"
   hasConfig: true
 - name: "StopDomain"
-  description: "This procedure stops all servers within a managed domain and optionally\
-    \ shuts down all host controllers."
+  description: |
+    Stops all servers within a managed domain and optionally shuts down all host controllers.
+  adoc: |
+    Stops all servers within a managed domain and optionally shuts down all host controllers.
   parameters:
   - name: "jbossTimeout"
     type: "entry"
     required: false
-    documentation: "Supported only for EAP 7.X and ignored for EAP 6.X. Timeout\
-      \ for stopping all servers within domain and for shutdown each host controller\
-      \ (if 'All Controllers Shutdown' is chosen). For example, the following CLI\
-      \ commands can be called: ':stop-servers(timeout=60)', 'shutdown --host=master\
-      \ --timeout=60'. According to JBoss documentation: \"The shutdown timeout\
-      \ in seconds. If this is zero then the server will shutdown immediately. A\
-      \ value larger than zero means the server will wait up to this many seconds\
-      \ for all active requests to finish. A value smaller than zero means that\
-      \ the server will wait indefinitely for all active requests to finish.\""
-    label: "Timeout:"
+    htmlDocumentation: |
+      Timeout, in seconds, to wait for all active requests to complete and then stop all servers and shut down each host
+      controller (if <b>Shut down all controllers</b> is selected).
+      For example, the following CLI commands can be called: <code>:stop-servers(timeout=60)</code> or <code>shutdown --host=master --timeout=60</code>.
+      If the timeout is 0 seconds, the server shuts down immediately.
+      If the timeout is less than 0 seconds, the server waits indefinitely for all requests to finish.<br />
+      <b>NOTE:</b> This parameter is only supported for JBoss EAP 7.x and is ignored for EAP 6.x.
+    adoc: |
+      Timeout, in seconds, to wait for all active requests to complete and then stop all servers and shut down each host
+      controller (if *Shut down all controllers* is selected).
+      For example, the following CLI commands can be called: `:stop-servers(timeout=60)` or `shutdown --host=master --timeout=60`.
+      If the timeout is 0 seconds, the server shuts down immediately.
+      If the timeout is less than 0 seconds, the server waits indefinitely for all requests to finish.
+      
+      NOTE: This parameter is only supported for JBoss EAP 7.x and is ignored for EAP 6.x.
+    label: "Timeout"
     value: "60"
   - name: "allControllersShutdown"
     type: "entry"
     required: false
-    documentation: "Whether the procedure should perform shutdown of controllers.\
-      \ If chosen all controllers are shutdown one by one with the master host controller\
-      \ being shut down the last. If after shutting down, some servers are still\
-      \ in STOPPING STATUS the procedure will return a status of warning. By default\
-      \ this option is No ie., no host controller is shut down."
-    label: "All Controllers Shutdown:"
+    htmlDocumentation: |
+      If selected, all controllers are shutdown one-by-one with the master host controller shut down last.
+      After shutting down, if some servers are still in a <code>STOPPING STATUS</code> state, a warning status is returned.
+      By default, this option not selected, and no host controllers are shut down.
+    adoc: |
+      If selected, all controllers are shutdown one-by-one with the master host controller shut down last.
+      After shutting down, if some servers are still in a `STOPPING STATUS` state, a warning status is returned.
+      By default, this option not selected, and no host controllers are shut down.
+    label: "Shut down all controllers"
     checkedValue: "1"
     uncheckedValue: "0"
   shell: "ec-perl"
   hasConfig: true
 - name: "StopServers"
-  description: "For Domain only. The StopServers procedure stops the servers in\
-    \ the specified server group and checks if these servers are stopped successfully.\
-    \ This procedure is build around jboss-cli command 'stop-servers' for the server\
-    \ groups, e.g. '/server-group=some-group-name:stop-servers'. Check of servers\
-    \ statuses is done also with help of cli - basically the procedure checks 'status'\
-    \ attributes of needed servers on needed hosts (within specified server group),\
-    \ e.g. '/host=some-host-name/server-config=some-server-name:read-attribute(name=status)'.\
-    \ Expected value for stopped servers is 'STOPPED' or 'DISABLED' (similar statuses\
-    \ which indicate that servers are stopped, the difference is that 'DISABLED'\
-    \ status indicates that a server is configured to not start automatically while\
-    \ 'STOPPED' status indicates that a server is configured to start automatically)."
+  description: |
+    Stops servers in the specified server group and verifies the servers have stopped successfully.
+    This procedure is built around the JBoss CLI <code>stop-servers</code> command for the server groups.
+    For example, <code>/server-group=some-group-name:stop-servers</code>.
+    The procedure then checks the <code>status</code> attributes of the servers on the needed hosts within the specified server group.
+    For example, <code>/host=some-host-name/server-config=some-server-name:read-attribute(name=status)</code>.
+    The expected response value for stopped servers is <code>STOPPED</code> or <code>DISABLED</code>.
+    These are similar statuses which indicate that servers are stopped, but the <code>DISABLED</code>
+    status indicates that a server is configured to not start automatically while the <code>STOPPED</code> status indicates 
+    that a server is configured to start automatically.<br />
+    <b>NOTE:/b> This procedure is only supported for JBoss domain mode.
+  adoc: |
+    Stops servers in the specified server group and verifies the servers have stopped successfully.
+    This procedure is built around the JBoss CLI `stop-servers` command for the server groups.
+    For example, `/server-group=some-group-name:stop-servers`.
+    The procedure then checks the `status` attributes of the servers on the needed hosts within the specified server group.
+    For example, `/host=some-host-name/server-config=some-server-name:read-attribute(name=status)`.
+    The expected response value for stopped servers is `STOPPED` or `DISABLED`.
+    These are similar statuses which indicate that servers are stopped, but the `DISABLED`
+    status indicates that a server is configured to not start automatically while the `STOPPED` status indicates 
+    that a server is configured to start automatically.
+    
+    NOTE: This procedure is only supported for JBoss domain mode.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ (CLI) script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted,\
-      \ script location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "serversgroup"
     type: "entry"
     required: true
-    documentation: "The name of the server group to stop. The following cli command\
-      \ will be called: e.g. if 'some-group-name' is specified then '/server-group=some-group-name:stop-servers'\
-      \ is called."
-    label: "Servers group:"
+    htmlDocumentation: |
+      The name of the server group to stop.
+      For example, the CLI command is called if <code>some-group-name</code> is specified and then 
+      <code>/server-group=some-group-name:stop-servers</code> is called.
+    adoc: |
+      The name of the server group to stop.
+      For example, the CLI command is called if `some-group-name` is specified and then 
+      `/server-group=some-group-name:stop-servers` is called.
+    label: "Servers group"
   - name: "wait_time"
     type: "entry"
     required: false
-    documentation: "After stop-servers command for the server group is called the\
-      \ procedure starts performing recurring check of servers if they are started\
-      \ ('status' attribute is 'STOPPED' or 'DISABLED', see procedure description).\
-      \ Delay between each check is 5 seconds (hard coded value). Check will be\
-      \ performed only one time if the timeout is not specified or it is less than\
-      \ 5 seconds. Default is 300 seconds."
-    label: "Timeout for recurring check of servers (seconds):"
+    htmlDocumentation: |
+      After the <code>stop-servers</code> command for the server group is called, the procedure performs
+      a recurring check of servers to determine if they are stopped (the <code>status</code> attribute is 
+      <code>STOPPED</code> or <code>DISABLED</code>).
+      The delay between each check is 5 seconds.
+      The check is performed only one time if the timeout is not specified or if it is less than 5 seconds.
+      Default is 300 seconds.
+    adoc: |
+      After the `stop-servers` command for the server group is called, the procedure performs
+      a recurring check of servers every 5 seconds to determine if they are stopped (the `status` attribute is 
+      `STOPPED` or `DISABLED`).
+      The delay between each check is 5 seconds.
+      The check is performed only one time if the timeout is not specified or if it is less than 5 seconds.
+      Default is 300 seconds.
+    label: "Timeout for recurring check of servers (seconds)"
     value: "300"
   shell: "ec-perl"
   hasConfig: true
 - name: "UndeployApp"
-  description: "Undeploys a deployment with the given name and, depending on the\
-    \ arguments, removes its content from the repository."
+  description: |
+    Undeploys a deployment with the given name and, depending on the arguments, removes its content from the repository.
+  adoc: |
+    Undeploys a deployment with the given name and, depending on the arguments, removes its content from the repository.
   parameters:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Provide the physical location of the jboss Command Line Interface\
-      \ script, i.e: 'jboss-cli.bat', '/path/to/jboss-cli.sh'. If omitted, script\
-      \ location from configuration will be used."
-    label: "Physical location of the jboss client script:"
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: "Physical location of the JBoss client script"
   - name: "appname"
     type: "entry"
     required: true
-    documentation: "Unique name of the application (deployment) to undeploy."
-    label: "Deployment name:"
+    htmlDocumentation: |
+      Unique name of the application (deployment) to undeploy.
+    adoc: |
+      Unique name of the application (deployment) to undeploy.
+    label: "Deployment name"
   - name: "allrelevantservergroups"
     type: "checkbox"
     required: false
-    documentation: "Select this option to apply undeploy to all server groups in\
-      \ which the deployment is enabled. Either server-groups or all-relevant-server-groups\
-      \ is required in domain mode. This argument is not applicable in standalone\
-      \ mode."
-    label: "Apply undeploy to all server groups:"
+    htmlDocumentation: |
+      If selected, applies the undeploy to all server groups in which the deployment is enabled.
+      Either <code>server-groups</code> or <code>all-relevant-server-groups</code> is required in domain mode.
+      This parameter is not supported in JBoss standalone mode.
+    adoc: |
+      If selected, applies the undeploy to all server groups in which the deployment is enabled.
+      Either `server-groups` or `all-relevant-server-groups` is required in domain mode.
+      This parameter is not supported in JBoss standalone mode.
+    label: "Apply undeploy to all server groups"
     checkedValue: "1"
     uncheckedValue: "0"
   - name: "servergroups"
     type: "entry"
     required: false
-    documentation: "Provide the comma-separated list of server group names the undeploy\
-      \ command applies to."
-    label: "Server groups to apply:"
+    htmlDocumentation: |
+      Comma-separated list of server group names the undeploy command applies to.
+    adoc: |
+      Comma-separated list of server group names the undeploy command applies to.
+    label: "Server groups to apply"
   - name: "keepcontent"
     type: "checkbox"
     required: false
-    documentation: "Select this option to disable the deployment and keep the content\
-      \ of the deployment, or unselect it to disable the deployment and removes\
-      \ its content from the repository."
-    label: "Keep content:"
+    htmlDocumentation: |
+      If selected, the deployment is disabled and the deployment content is retained.
+      If not selected, the deployment is disabled and the deployment content is removed from the repository.
+    adoc: |
+      If selected, the deployment is disabled and the deployment content is retained.
+      If not selected, the deployment is disabled and the deployment content is removed from the repository.
+    label: "Keep content"
     checkedValue: "1"
     uncheckedValue: "0"
   - name: "additional_options"
     type: "entry"
     required: false
-    documentation: "Additional options for deploy command."
-    label: "Additional options:"
+    htmlDocumentation: |
+      Additional options for the <code>deploy</code> command.
+    adoc: |
+      Additional options for the `deploy` command.
+    label: "Additional options"
   shell: "ec-perl"
   hasConfig: true
 configuration:
@@ -1108,34 +1784,52 @@ configuration:
   checkConnection: true
   resourceName: $[test_connection_res]
   parameters:
-  - name: "config"
-    type: "entry"
-    required: true
-    documentation: "Configuration Name"
-    label: Configuration name
   - name: "credential"
     type: "credential"
     required: false
-    documentation: ""
+    htmlDocumentation: ""
+    adoc: |
+      Select the credential option and then specify the following:
+      
+      * *Runtime credential:* Enter the username and password, and then re-enter the password.
+      * *Credential reference:* Select the project that contains the credential, and then select the credential you wish to use.
     label: Login as
   - name: "java_opts"
     type: "entry"
     required: false
-    documentation: "Additional JAVA_OPTS"
+    htmlDocumentation: |
+      Additional Java options.
+    adoc: |
+      Additional Java options.
     label: Additional Java options
   - name: "jboss_url"
     type: "entry"
     required: true
     # Issue with rendering multi-line HTML https://cloudbees.atlassian.net/browse/BEE-20754
     htmlDocumentation: |
-      Address of JBoss controller that is used to connect.
+      Address of the JBoss controller that is used to connect.
       Examples:
-      <ul><li><code>10.20.30.1:9990</code></li><li><code>jboss:9990</code></li><li><code>remote+https://my-jboss.example.com:12990</code></li></ul>
+      <ul>
+      <li><code>10.20.30.1:9990</code></li>
+      <li><code>jboss:9990</code></li>
+      <li><code>remote+https://my-jboss.example.com:12990</code></li>
+      </ul>
+    adoc: |
+      Address of the JBoss controller that is used to connect.
+      Examples:
+      
+      * `10.20.30.1:9990`
+      * `jboss:9990`
+      * `remote+https://my-jboss.example.com:12990`
     label: JBoss controller location
   - name: "log_level"
     type: select
     required: false
-    documentation: "Log level."
+    htmlDocumentation: |
+      Log level to use for logging output.
+    adoc: |
+      Log level to use for logging output.
+      Supported values are `INFO`, `WARNING`, `ERROR` and `DEBUG`.
     label: Log Level
     value: 1
     options:
@@ -1150,10 +1844,20 @@ configuration:
   - name: "scriptphysicalpath"
     type: "entry"
     required: false
-    documentation: "Physical path to jboss-cli."
-    label: Physical location of the jboss client script
+    htmlDocumentation: |
+      Physical location of the JBoss CLI script.
+      For example, <code>jboss-cli.bat</code> or <code>/path/to/jboss-cli.sh</code>.
+      If omitted, the script location from the configuration is used.
+    adoc: |
+      Physical location of the JBoss CLI script.
+      For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
+      If omitted, the script location from the configuration is used.
+    label: Physical location of the JBoss client script
   - name: "test_connection_res"
     type: "entry"
     required: false
-    documentation: "A resource which is used for the testing connection."
-    label: Check Connection Resource
+    htmlDocumentation: |
+      Resource used for testing the connection.
+    adoc: |
+      Resource used for testing the connection.
+    label: Check connection resource

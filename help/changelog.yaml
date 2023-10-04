@@ -1,0 +1,137 @@
+2.0.1:
+  - Improved the XML parameter panels.
+  - Reformatted the documentation.
+2.0.2:
+  - Upgraded the plugin to use the new XML parameter form.
+  - Added a direct link to the new documentation.
+2.0.3:
+  - Made improvements to the documentation.
+2.0.4:
+  - Added minor fixes.
+2.0.5:
+  - Changed the procedure names in the step picker section.
+2.0.6:
+  - Added five new procedures to check the status of deployments, create datasources, delete datasources, stop servers, and restart servers.
+  - Fixed minor bugs.
+2.0.7:
+  - Fixed a `POST_PROCESSOR_ERROR` in the *CheckServerStatus* procedure.
+  - Fixed an error in the *CheckDeployStatus* procedure where the *Success criteria* was set to *Page not found*.
+  - Fixed a bug in the *DeployApp* procedure where the *Runtime name for deployment* parameter was specified.
+2.1.0:
+  - Added support for the *RunCustomCommand* procedure to run user-specified commands on JBoss instances.
+  - Added support for the *StartServers* procedure to start server groups.
+  - Added support for the *StopServers* procedure to stop server groups.
+  - Fixed the *CreateDatasource*, *DeleteDatasource*, *DeployApp*, *UndeployApp*,  *EnableDeploy*, and *DisableDeploy* procedures.
+  - Fixed plugin errors on Linux ElectricFlow instances.
+2.1.1:
+  - Cleaned up the code.
+  - Fixed the procedure descriptions and updated the documentation.
+2.1.2:
+  - Improved the plugin for improved Windows support.
+  - Replaced the *Username* and *Password* parameters with credentials in the *CreateDatasource* procedure for backward incompatibility.
+2.1.3:
+  - Updated the *ShutdownStandaloneServer*, *StartDomainServer*, and *StartStandaloneServer* procedures.
+  - Added a link to the *Plugin Configuration* page within the plugin step panels.
+2.1.4:
+  - Fixed an issue with configurations being cached for Internet Explorer.
+2.1.5:
+  - In the *DeleteDatasource* procedure, the *application_name* property has been renamed to *datasource_name*.
+  - Added support for the *CheckHostControllerStatus* and *CheckServerGroupStatus* procedures.
+  - Fixed an issue where the *CheckDeploymentStatus* procedure was unable to check the status of the deployment in domain mode.
+  - |
+    The following parameters have been added to the *CheckDeployStatus* procedure: *Hosts*, *ServerGroups*, *Servers*, 
+    *Criteria*, and *Wait time*.
+  - The *Additional Java options* and *Physical location of the JBoss client script* fields have been added to the configuration.
+  - The *Physical location of the JBoss client script* field is now optional.
+  - The *EnableDeploy* and *DisableDeploy* procedures have been improved to work with both JBoss domain and standalone modes.
+  - Fixed a bug where the *CreateDatasource* procedure failed when enabling a datasource on JBoss 6.0.0.
+2.3.2:
+  - For the *StartStandaloneServer* procedure, the handling of the *Optional configuration name* parameter has been fixed.
+  - |
+    The following improvements have been made for the *StartDomainServer* procedure:
+       ** Renamed the *Optional configuration name* parameter to *Optional domain configuration name*.
+       ** The handling of the *Optional domain configuration name* parameter has been fixed.
+       ** Added support for a new *Optional host configuration name* parameter.
+  - For the *CheckServerStatus* procedure, the check for the "NOT RUNNING" success criteria has been fixed.
+  - For the *StopServers* procedure, the server check has been expanded by handling the `DISABLED` server status, similar to information about `STOPPED` servers.
+  - For the JBoss configuration, renamed the *JBoss AS URL* parameter to *JBoss controller location*.
+2.4.0:
+  - |
+    Added support for the *DeployApplication*, the *CreateOrUpdateJMSQueue*, the *CreateOrUpdateJMSTopic*, the *RemoveJMSQueue*, and the *RemoveJMSTopic* procedures.
+    The *DeployApplication* provides a major improvement to the existing *DeployApp* procedure. It provides a very robust interface and its behavior is idempotent.
+  - |
+    The following improvements have been made for the *DeployApp* procedure:
+       ** Renamed the *Path to the application to deploy* parameter to *Application Content Source Path*.
+       ** Added URL support within the *Application content source path* parameter for JBoss EAP 7.0 and later.
+       ** Changed the successful step summaries.
+       ** Improved the documentation.
+  - |
+    The following improvements have been made for the *StartServers* procedure:
+       ** Renamed the *Wait time* parameter to *Timeout for recurring check of servers (seconds)*.
+       ** Changed the behavior for checking servers in order to perform a check at least once.
+       ** Improved the documentation.
+  - |
+    The following improvements have been made for the *StopServers* procedure:
+       ** Renamed the *Wait time* parameter to *Timeout for recurring check of servers (seconds)*.
+       ** Changed the behavior for checking servers in order to perform a check at least once.
+       ** Changed the warning step summary to include information about previously `DISABLED` servers, similar to information about `STOPPED` servers.
+       ** Improved the documentation.
+  - Fixed non-Ascii characters in plugin forms.
+2.4.1:
+  - Configured the plugin to allow the ElectricFlow UI to render the plugin procedure parameters entirely using the configured form XMLs.
+  - Enabled the plugin for managing the plugin configurations inline when defining an application process step or a pipeline stage task.
+2.5.0:
+  - Added support for the *CreateOrUpdateXADataSource*, *RemoveXADataSource*, *StopDomain*, and *GetEnvInfo* procedures.
+  - For the *StartServers* and *StopServers* procedures, fixed the step summary to show correct information if the controller is not available.
+2.6.0:
+  - Added support for the *CreateOrUpdateDataSource* and *StartHostController* procedures.
+  - |
+    The following improvements have been made for the *StartStandaloneServer* procedure:
+       ** Improved step summary.
+       ** The *Physical location of the standalone script* parameter label was updated to *Startup Script*.
+       ** The *Optional configuration name* parameter label was updated to *Server Configuration File*.
+       ** Added supported for a new optional *Additional options* parameter, for changing startup behavior.
+       ** Added supported for a new optional *Log file location* parameter that is used to surface server logs.
+       ** Fixed handling of *Server Configuration File* in Windows, to override the default `standalone.xml` file by using a different file that stores server configuration.
+       ** Verification of server startup is now verified by connecting the JBoss CLI successfully to the server.
+       ** Startup boot errors are now surfaced.
+       ** The most recent 100 lines of server logs are shown if a log file location is specified.
+  - |
+    The following improvements have been made for the *CheckServerGroupStatus* procedure:
+       ** Improved documentation for step summary.
+       ** Added the following new *Criteria* options: `DISABLED` and `STOPPED` or `DISABLED'.
+       ** For ElectricFlow 8.3 and later, added an output parameter to capture if the Criteria checked by this procedure returns `TRUE` or `FALSE`.
+  - |
+    The following improvements have been made for the *StartServers* and *StopServers* procedures:
+       ** Improved the step summary for some specific cases.
+       ** Standardized approach for writing the step summary, and it is now to be included only in the `/myCall/summary` context.
+       ** Fixed logging for log levels *INFO*, *WARNING*, and *ERROR*.
+       ** Improved passing of credentials to the JBoss CLI.
+       ** Configured the plugin to allow the ElectricFlow UI to create configurations inline of the procedure form.
+       ** Added classification of procedures in the top section of the help file.
+2.6.1:
+  - The plugin icon has been updated.
+2.6.2:
+  - Fixed the issue with lost output parameters for {PRODUCT} 9.0. Previously, when upgrading or performing a clean installation of {PRODUCT} 9.0, output parameters were not created for the plugin's procedures.
+2.6.3:
+  - Renamed to "CloudBees".
+2.7.0:
+  - |
+    The following updates have been made for creating and editing plugin configuration procedures:
+       ** Added the option to check the connection with JBoss within a provided resource.
+       ** Added more logging and diagnostic messages.
+       ** Jobs with a successful run for creating or editing configuration are no longer automatically removed.
+2.7.1:
+  - Renamed  to "{CD}".
+2.7.2:
+  - The documentation has been migrated to the main documentation site.
+2.8.0:
+  - Plugin configuration has been improved to support external credentials.
+2.8.1:
+  - Added session validation.
+3.0.0:
+  - Exception handling has been improved.
+3.1.0:
+  - Added JBoss EAP 7.4 support.
+  - Fixed issue with accessing non-existent `serverconfig` properties.
+  - Preserve protocol definition in JBoss endpoint.
