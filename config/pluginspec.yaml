@@ -1,12 +1,13 @@
 ---
 pluginInfo:
   pluginName: "EC-JBoss"
-  version: "3.1.0"
+  version: "4.0.0"
   description: "JBoss Application Server integration"
   author: "CloudBees"
   supportUrl: "http://www.electric-cloud.com/support"
   category: "Application Server"
   supportLevel: 10
+  minCommanderVersion: 10.3
   label: JBoss
   hasAdoc: true
   detailedDescription: |
@@ -14,7 +15,7 @@ pluginInfo:
 
 properties:
 - propertyName: "postp_loader"
-  value: "ec-perl -MElectricCommander -MElectricCommander::PropMod -e \"ElectricCommander::PropMod::loadPerlCodeFromProperty(ElectricCommander->new(),\
+  value: "cb-perl -MElectricCommander -MElectricCommander::PropMod -e \"ElectricCommander::PropMod::loadPerlCodeFromProperty(ElectricCommander->new(),\
     \ '/projects/EC-JBoss-2.8.0.0/jboss_driver/EC::POSTP');EC::POSTP->run(\\@ARGV)\"\
     ;"
 - propertyName: "postp_matchers"
@@ -114,7 +115,7 @@ procedures:
       The default is 300 seconds.
     label: "Wait time"
     value: "300"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "CheckHostControllerStatus"
   description: |
@@ -175,7 +176,7 @@ procedures:
         value: RUNNING
       - name: NOT RUNNING
         value: NOT_RUNNING
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "CheckServerGroupStatus"
   description: |
@@ -241,7 +242,7 @@ procedures:
         value: DISABLED
       - name: STOPPED or DISABLED
         value: STOPPED_OR_DISABLED
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "CheckServerStatus"
   description: |
@@ -327,7 +328,7 @@ procedures:
       The default is 300 seconds.
     label: "Wait time"
     value: "300"
-  shell: "ec-perl"
+  shell: "cb-perl"
   properties: []
   hasConfig: true
 - name: "CreateDatasource"
@@ -424,7 +425,7 @@ procedures:
     label: "Enable datasource?"
     checkedValue: "1"
     uncheckedValue: "0"
-  shell: "ec-perl"
+  shell: "cb-perl"
   properties: []
   hasConfig: true
 - name: "CreateOrUpdateDataSource"
@@ -523,7 +524,7 @@ procedures:
       The parameters in this string are concatenated to a generated command line for creating an XA datasource.
       For example, `--min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select 1 from dual"`.
     label: "Additional options"
-  shell: "ec-perl"
+  shell: "cb-perl"
   properties: []
   hasConfig: true
 - name: "CreateOrUpdateJMSQueue"
@@ -615,7 +616,7 @@ procedures:
       
       NOTE: This parameter is only considered when creating queues and is ignored for updates.
     label: "Additional options"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "CreateOrUpdateJMSTopic"
   description: |
@@ -678,7 +679,7 @@ procedures:
       
       NOTE: This parameter is only considered when creating queues and is ignored for updates.
     label: "Additional options"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "CreateOrUpdateXADataSource"
   description: |
@@ -778,7 +779,7 @@ procedures:
       The parameters in this string are concatenated to a generated command line for creating an XA datasource.
       For example, `--min-pool-size=5 --max-pool-size=10 --check-valid-connection-sql="select 1 from dual"`.
     label: "Additional options"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "DeleteDatasource"
   description: |
@@ -814,7 +815,7 @@ procedures:
     adoc: |
       Profile name for domain mode.
     label: "Profile name"
-  shell: "ec-perl"
+  shell: "cb-perl"
   properties: []
   hasConfig: true
 - name: "DeployApp"
@@ -968,7 +969,7 @@ procedures:
       NOTE: For JBoss EAP 7 and later, do not specify the `--url` option because there is special handling for
       this option within the *Application content source path* parameter.
     label: "Additional options"
-  shell: "ec-perl"
+  shell: "cb-perl"
   properties: []
   hasConfig: true
 - name: "DeployApplication"
@@ -1081,7 +1082,7 @@ procedures:
       * This parameter is only supported for JBoss standalone.
       ====
     label: "Additional options"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "DisableDeploy"
   description: |
@@ -1122,7 +1123,7 @@ procedures:
       Comma-separated list of server group names that the `disable deployment` command applies to.
       This parameter is not supported for JBoss standalone mode, and is ignored.
     label: "Server groups"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "EnableDeploy"
   description: |
@@ -1163,7 +1164,7 @@ procedures:
       Comma-separated list of server group names that the `enable deployment` command applies to.
       This parameter is not supported for JBoss standalone mode, and is ignored.
     label: "Server groups"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "GetEnvInfo"
   description: |
@@ -1213,7 +1214,7 @@ procedures:
       For example, if you provide `include-runtime=true,include-defaults=true`, the procedure
       calls `/:read-resource(include-runtime=true,include-defaults=true)`.
     label: "Additional options"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "RemoveJMSQueue"
   description: |
@@ -1241,7 +1242,7 @@ procedures:
       For example, `full` or `full-ha`.
       The name is required for JBoss domain, but is ignored for JBoss standalone mode.
     label: "Profile"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "RemoveJMSTopic"
   description: |
@@ -1269,7 +1270,7 @@ procedures:
       For example, `full` or `full-ha`.
       The name is required for JBoss domain, but is ignored for JBoss standalone mode.
     label: "Profile"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "RemoveXADataSource"
   description: |
@@ -1301,7 +1302,7 @@ procedures:
       For example, `full` or `full-ha`.
       The name is required for JBoss domain, but is ignored for JBoss standalone mode.
     label: "Profile"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "RunCustomCommand"
   description: |
@@ -1329,7 +1330,7 @@ procedures:
     adoc: |
       Custom command to run.
     label: "Custom command"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "ShutdownStandaloneServer"
   description: |
@@ -1349,7 +1350,7 @@ procedures:
       For example, `jboss-cli.bat` or `/path/to/jboss-cli.sh`.
       If omitted, the script location from the configuration is used.
     label: "Physical location of the JBoss client script"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "StartDomainServer"
   description: |
@@ -1397,7 +1398,7 @@ procedures:
       
       NOTE: This parameter is supported for domain and host controllers.
     label: "Optional host configuration name"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "StartHostController"
   description: |
@@ -1476,7 +1477,7 @@ procedures:
       For example, `/opt/jboss/domain-copied-for-slave-1/log/host-controller.log`.
       If specified, the procedure reads the most recent 100 log lines from the log file and includes them in the procedure summary logs.
     label: "Log file location"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "StartServers"
   description: |
@@ -1538,7 +1539,7 @@ procedures:
       Default is 300 seconds.
     label: "Timeout for recurring check of servers (seconds)"
     value: "300"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "StartStandaloneServer"
   description: |
@@ -1594,7 +1595,7 @@ procedures:
       For example, `/opt/jboss/standalone/log/server.log`.
       If specified, the procedure reads the most recent 100 log lines from the log file and includes them in the procedure summary logs.
     label: "Log file location"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "StopDomain"
   description: |
@@ -1636,7 +1637,7 @@ procedures:
     label: "Shut down all controllers"
     checkedValue: "1"
     uncheckedValue: "0"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "StopServers"
   description: |
@@ -1706,7 +1707,7 @@ procedures:
       Default is 300 seconds.
     label: "Timeout for recurring check of servers (seconds)"
     value: "300"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 - name: "UndeployApp"
   description: |
@@ -1776,10 +1777,10 @@ procedures:
     adoc: |
       Additional options for the `deploy` command.
     label: "Additional options"
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasConfig: true
 configuration:
-  shell: "ec-perl"
+  shell: "cb-perl"
   hasDebugLevel: false
   checkConnection: true
   resourceName: $[test_connection_res]
