@@ -99,7 +99,7 @@
   - |
     The following improvements have been made for the *CheckServerGroupStatus* procedure:
        ** Improved documentation for step summary.
-       ** Added the following new *Criteria* options: `DISABLED` and `STOPPED` or `DISABLED'.
+       ** Added the following new *Criteria* options: `DISABLED` and `STOPPED` or `DISABLED`.
        ** For ElectricFlow 8.3 and later, added an output parameter to capture if the Criteria checked by this procedure returns `TRUE` or `FALSE`.
   - |
     The following improvements have been made for the *StartServers* and *StopServers* procedures:
