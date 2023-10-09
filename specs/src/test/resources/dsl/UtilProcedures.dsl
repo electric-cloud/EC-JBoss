@@ -55,7 +55,7 @@ my $response = $ua->request($request, sub {
 
 close $fh;
             '''
-            shell = 'ec-perl'
+            shell = 'cb-perl'
         }
         formalParameter 'url', defaultValue: '', {
             type = "textarea"
@@ -87,7 +87,7 @@ else {
     exit -1;
 }
             '''
-            shell = 'ec-perl'
+            shell = 'cb-perl'
         }
         formalParameter 'url', defaultValue: '', {
             type = "textarea"

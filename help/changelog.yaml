@@ -99,7 +99,7 @@
   - |
     The following improvements have been made for the *CheckServerGroupStatus* procedure:
        ** Improved documentation for step summary.
-       ** Added the following new *Criteria* options: `DISABLED` and `STOPPED` or `DISABLED'.
+       ** Added the following new *Criteria* options: `DISABLED` and `STOPPED` or `DISABLED`.
        ** For ElectricFlow 8.3 and later, added an output parameter to capture if the Criteria checked by this procedure returns `TRUE` or `FALSE`.
   - |
     The following improvements have been made for the *StartServers* and *StopServers* procedures:
@@ -135,3 +135,6 @@
   - Added JBoss EAP 7.4 support.
   - Fixed issue with accessing non-existent `serverconfig` properties.
   - Preserve protocol definition in JBoss endpoint.
+4.0.0:
+  - Upgraded from Perl 5.8 to Perl 5.32. The EC-JBoss plugin is not backward compatible with {PRODUCT} 10.3 and earlier.
+  - Starting with the 4.0.0 release, a new agent is required to run EC-JBoss plugin procedures.

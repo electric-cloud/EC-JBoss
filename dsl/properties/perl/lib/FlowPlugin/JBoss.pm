@@ -4960,7 +4960,7 @@ sub start_host_controller {
         # Windows has a much more complex execution and quoting problem. First, we cannot just execute under "cmd.exe"
         # because ecdaemon automatically puts quote marks around every parameter passed to it -- but the "/K" and "/C"
         # option to cmd.exe can't have quotes (it sees the option as a parameter not an option to itself). To avoid this, we
-        # use "ec-perl -e xxx" to execute a one-line script that we create on the fly. The one-line script is an "exec()"
+        # use "cb-perl -e xxx" to execute a one-line script that we create on the fly. The one-line script is an "exec()"
         # call to our shell script. Unfortunately, each of these wrappers strips away or interprets certain metacharacters
         # -- quotes, embedded spaces, and backslashes in particular. We end up escaping these metacharacters repeatedly so
         # that when it gets to the last level it's a nice simple script call. Most of this was determined by trial and error
@@ -4984,7 +4984,7 @@ sub start_host_controller {
         $commandline = "exec(" . $commandline . ");";
         $commandline = DQUOTE . $commandline . DQUOTE;
         print "Command line: $commandline\n";
-        @systemcall = ("ecdaemon", "--", "ec-perl", "-e", $commandline);
+        @systemcall = ("ecdaemon", "--", "cb-perl", "-e", $commandline);
 
     }
     else {
@@ -5042,7 +5042,7 @@ sub startServer($){
         # Windows has a much more complex execution and quoting problem. First, we cannot just execute under "cmd.exe"
         # because ecdaemon automatically puts quote marks around every parameter passed to it -- but the "/K" and "/C"
         # option to cmd.exe can't have quotes (it sees the option as a parameter not an option to itself). To avoid this, we
-        # use "ec-perl -e xxx" to execute a one-line script that we create on the fly. The one-line script is an "exec()"
+        # use "cb-perl -e xxx" to execute a one-line script that we create on the fly. The one-line script is an "exec()"
         # call to our shell script. Unfortunately, each of these wrappers strips away or interprets certain metacharacters
         # -- quotes, embedded spaces, and backslashes in particular. We end up escaping these metacharacters repeatedly so
         # that when it gets to the last level it's a nice simple script call. Most of this was determined by trial and error
@@ -5062,7 +5062,7 @@ sub startServer($){
         $commandline = "exec(" . $commandline . ");";
         $commandline = DQUOTE . $commandline . DQUOTE;
         print "Command line: $commandline\n";
-        @systemcall = ("ecdaemon", "--", "ec-perl", "-e", $commandline);
+        @systemcall = ("ecdaemon", "--", "cb-perl", "-e", $commandline);
 
     }
     else {
@@ -5119,7 +5119,7 @@ sub start_standalone_server {
         # Windows has a much more complex execution and quoting problem. First, we cannot just execute under "cmd.exe"
         # because ecdaemon automatically puts quote marks around every parameter passed to it -- but the "/K" and "/C"
         # option to cmd.exe can't have quotes (it sees the option as a parameter not an option to itself). To avoid this, we
-        # use "ec-perl -e xxx" to execute a one-line script that we create on the fly. The one-line script is an "exec()"
+        # use "cb-perl -e xxx" to execute a one-line script that we create on the fly. The one-line script is an "exec()"
         # call to our shell script. Unfortunately, each of these wrappers strips away or interprets certain metacharacters
         # -- quotes, embedded spaces, and backslashes in particular. We end up escaping these metacharacters repeatedly so
         # that when it gets to the last level it's a nice simple script call. Most of this was determined by trial and error
@@ -5138,7 +5138,7 @@ sub start_standalone_server {
         $commandline = "exec(" . $commandline . ");";
         $commandline = DQUOTE . $commandline . DQUOTE;
         print "Command line: $commandline\n";
-        @systemcall = ("ecdaemon", "--", "ec-perl", "-e", $commandline);
+        @systemcall = ("ecdaemon", "--", "cb-perl", "-e", $commandline);
     }
     else {
         # Linux is comparatively simple, just some quotes around the script name in case of embedded spaces.
