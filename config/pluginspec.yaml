@@ -1,7 +1,7 @@
 ---
 pluginInfo:
   pluginName: "EC-JBoss"
-  version: "4.0.0"
+  version: "4.0.1"
   description: "JBoss Application Server integration"
   author: "CloudBees"
   supportUrl: "http://www.electric-cloud.com/support"
@@ -756,6 +756,7 @@ procedures:
     label: "Enabled"
     checkedValue: "1"
     uncheckedValue: "0"
+    initiallyChecked: "0"
   - name: "profile"
     type: "entry"
     required: false
