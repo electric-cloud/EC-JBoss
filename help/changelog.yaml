@@ -139,5 +139,5 @@
   - Upgraded from Perl 5.8 to Perl 5.32. The EC-JBoss plugin is not backward compatible with {PRODUCT} 10.3 and earlier.
   - Starting with the 4.0.0 release, a new agent is required to run EC-JBoss plugin procedures.
 4.0.1:
-  - Fixed wrong type for `Enabled` parameter for 'CreateOrUpdateDataSource' and 'CreateOrUpdateXADataSource'.
+  - Updated the input type for *Enabled* fields to a checkbox for the *CreateOrUpdateDataSource* and *CreateOrUpdateXADataSource* procedures.
   
