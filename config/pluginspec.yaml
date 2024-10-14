@@ -1,7 +1,7 @@
 ---
 pluginInfo:
   pluginName: "EC-JBoss"
-  version: "4.0.0"
+  version: "4.0.1"
   description: "JBoss Application Server integration"
   author: "CloudBees"
   supportUrl: "http://www.electric-cloud.com/support"
@@ -489,7 +489,7 @@ procedures:
       Credentials that contain the username and password used for the connection, and need to be attached to the step.
     label: "Datasource connection credentials"
   - name: "enabled"
-    type: "entry"
+    type: "checkbox"
     required: true
     htmlDocumentation: |
       Specifies if the created datasource should be enabled. 
@@ -500,6 +500,7 @@ procedures:
     label: "Enabled"
     checkedValue: "1"
     uncheckedValue: "0"
+    initiallyChecked: "1"
   - name: "profile"
     type: "entry"
     required: false
@@ -746,7 +747,7 @@ procedures:
       It must be attached to a step.
     label: "Datasource connection credentials"
   - name: "enabled"
-    type: "entry"
+    type: "checkbox"
     required: true
     htmlDocumentation: |
       If selected, the created XA datasource is enabled.
@@ -755,6 +756,7 @@ procedures:
     label: "Enabled"
     checkedValue: "1"
     uncheckedValue: "0"
+    initiallyChecked: "0"
   - name: "profile"
     type: "entry"
     required: false
