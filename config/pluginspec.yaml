@@ -498,9 +498,9 @@ procedures:
       Specifies if the created datasource should be enabled. 
       Default is true.
     label: "Enabled"
-    checkedValue: "1"
-    uncheckedValue: "0"
-    initiallyChecked: "1"
+    checkedValue: true
+    uncheckedValue: false
+    initiallyChecked: true
   - name: "profile"
     type: "entry"
     required: false
@@ -754,9 +754,9 @@ procedures:
     adoc: |
       If selected, the created XA datasource is enabled.
     label: "Enabled"
-    checkedValue: "1"
-    uncheckedValue: "0"
-    initiallyChecked: "0"
+    checkedValue: true
+    uncheckedValue: false
+    initiallyChecked: false
   - name: "profile"
     type: "entry"
     required: false
