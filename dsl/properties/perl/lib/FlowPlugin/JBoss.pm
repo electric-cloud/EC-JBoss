@@ -4219,7 +4219,7 @@ sub get_cli_host_shutdown_7x {
     my ($major, $minor) = split(/\./, $jboss_version);
     my $timeout_opt = '--timeout';
     # JBoss 7.4 should use --suspend-timeout instead of --timeout
-    if(($major = 7 && $minor >= 4) || $major > 7) {
+    if(($major == 7 && $minor >= 4) || $major > 7) {
         $timeout_opt = '--suspend-timeout';
     }
 
