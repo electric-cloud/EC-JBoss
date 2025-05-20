@@ -10,12 +10,13 @@ defaultTasks 'test'
 
 repositories {
 //    jcenter()
-    mavenCentral()
+    mavenLocal()
     maven {
-        url 'https://oss.sonatype.org/content/repositories/snapshots'
-    }
-    maven {
-        url "https://repo.cloudbees.com/content/repositories/dev-connect"
+        url 'https://proxy.artifacts.cloudbees.com/repository/mirror'
+        credentials {
+            username = System.getenv('NEXUS_USERNAME') ?: nexusUsername
+            password = System.getenv('NEXUS_PASSWORD') ?: nexusPassword
+        }
     }
 }
 
